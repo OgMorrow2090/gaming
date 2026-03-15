@@ -17,7 +17,7 @@ jobs:
         uses: microsoft/setup-msbuild@v2
 
       - name: Build Release
-        run: msbuild mystic-clicker.vcxproj /p:Configuration=Release /p:Platform=x64
+        run: msbuild mystic-clicker.vcxproj /p:Configuration=Release /p:Platform=x64 /p:PlatformToolset=v143
 
       - name: Upload DLL artifact
         uses: actions/upload-artifact@v4

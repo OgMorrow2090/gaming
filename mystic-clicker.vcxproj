@@ -69,7 +69,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src\mystic-clicker;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)modules\mystic-clicker;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -87,7 +87,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src\mystic-clicker;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)modules\mystic-clicker;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -99,14 +99,14 @@
   </ItemDefinitionGroup>
   
   <ItemGroup>
-    <ClCompile Include="src\mystic-clicker\entry.cpp" />
-    <ClCompile Include="src\mystic-clicker\keybinds.cpp" />
-    <ClCompile Include="src\mystic-clicker\input-sim.cpp" />
-    <ClCompile Include="src\mystic-clicker\config.cpp" />
+    <ClCompile Include="modules\mystic-clicker\entry.cpp" />
+    <ClCompile Include="modules\mystic-clicker\keybinds.cpp" />
+    <ClCompile Include="modules\mystic-clicker\input-sim.cpp" />
+    <ClCompile Include="modules\mystic-clicker\config.cpp" />
   </ItemGroup>
 
   <ItemGroup>
-    <ClInclude Include="src\mystic-clicker\shared.h" />
+    <ClInclude Include="modules\mystic-clicker\shared.h" />
     <ClInclude Include="include\Nexus.h" />
   </ItemGroup>
   

@@ -40,7 +40,7 @@ User Presses Hotkey → Nexus Keybind Handler → Calculate Button Position → 
 
 ## 📁 FILE STRUCTURE CONVENTIONS
 
-### **Source Files (`src/mystic-clicker/`)**
+### **Source Files (`modules/mystic-clicker/`)**
 
 | File | Purpose |
 |------|---------|

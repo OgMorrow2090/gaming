@@ -125,8 +125,8 @@ guildwars2/
 ├── roadmap.md                         # Development plans
 ├── mystic-clicker.sln                 # Visual Studio solution
 ├── mystic-clicker.vcxproj             # Visual Studio project
-├── src/
-│   └── mystic-clicker/                # Mystic Clicker addon source
+├── modules/
+│   └── mystic-clicker/                # Mystic Clicker addon module
 │       ├── entry.cpp                  # DLL entry point and addon definition
 │       ├── keybinds.cpp               # Hotkey registration and handlers
 │       ├── input-sim.cpp              # Mouse/keyboard input simulation

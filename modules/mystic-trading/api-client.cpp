@@ -528,10 +528,9 @@ static std::vector<FlipItem> ParseBltcPage(const std::string& html)
 {
     std::vector<FlipItem> items;
 
-    // Regex patterns
+    // Regex patterns - use custom delimiter to avoid issues with quotes
     std::regex rowRe(
-        R"(<img\s+class="icon-item\s+rarity-(\w+)[^"]*"\s+src="([^"]+)"[^>]*data-id="(\d+)".*?)"
-        R"(<td\s+class="td-name[^"]*"><a[^>]*>([^<]+)</a>)",
+        R"xx(<img\s+class="icon-item\s+rarity-(\w+)[^"]*"\s+src="([^"]+)"[^>]*data-id="(\d+)".*?<td\s+class="td-name[^"]*"><a[^>]*>([^<]+)</a>)xx",
         std::regex::optimize
     );
 

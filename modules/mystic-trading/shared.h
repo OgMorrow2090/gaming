@@ -142,6 +142,9 @@ void StopDataFetch();
 // Clipboard
 void CopyToClipboard(const std::string& text);
 
+// Icon loading via Nexus texture API
+void LoadItemIcon(const std::string& iconUrl, int itemId);
+
 // Config
 void LoadConfig();
 void SaveConfig();

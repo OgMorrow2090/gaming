@@ -2,6 +2,8 @@
  * render.cpp
  *
  * ImGui render callbacks for Mystic Trading.
+ * Styled after Fast Swap with accent bars, row tints, and clean tables.
+ *
  * - RenderDashboard: full portal view with all boards side by side
  * - RenderFlipList: slim draggable flip column for docking next to TP
  * - RenderOptions: addon settings in Nexus options
@@ -10,167 +12,311 @@
 #include "shared.h"
 #include "imgui/imgui.h"
 #include <cstdio>
+#include <cstring>
+#include <algorithm>
+
+// ============================================================================
+// Style Constants (Fast Swap inspired)
+// ============================================================================
+
+static const float ACCENT_WIDTH     = 3.0f;
+static const float ROW_HEIGHT       = 24.0f;
+static const float ICON_SIZE        = 20.0f;
+static const float SECTION_SPACING  = 8.0f;
 
 // Rarity colors matching the portal
 static ImVec4 GetRarityColor(Rarity r)
 {
     switch (r)
     {
-    case Rarity::Fine:        return ImVec4(0.384f, 0.643f, 0.855f, 1.0f); // #62A4DA
-    case Rarity::Masterwork:  return ImVec4(0.102f, 0.576f, 0.024f, 1.0f); // #1a9306
-    case Rarity::Rare:        return ImVec4(0.988f, 0.816f, 0.043f, 1.0f); // #fcd00b
-    case Rarity::Exotic:      return ImVec4(1.000f, 0.643f, 0.020f, 1.0f); // #ffa405
-    case Rarity::Ascended:    return ImVec4(0.984f, 0.243f, 0.553f, 1.0f); // #fb3e8d
-    case Rarity::Legendary:   return ImVec4(0.298f, 0.075f, 0.616f, 1.0f); // #4C139D
-    default:                  return ImVec4(0.667f, 0.667f, 0.667f, 1.0f); // #AAAAAA
+    case Rarity::Fine:        return ImVec4(0.384f, 0.643f, 0.855f, 1.0f);
+    case Rarity::Masterwork:  return ImVec4(0.102f, 0.576f, 0.024f, 1.0f);
+    case Rarity::Rare:        return ImVec4(0.988f, 0.816f, 0.043f, 1.0f);
+    case Rarity::Exotic:      return ImVec4(1.000f, 0.643f, 0.020f, 1.0f);
+    case Rarity::Ascended:    return ImVec4(0.984f, 0.243f, 0.553f, 1.0f);
+    case Rarity::Legendary:   return ImVec4(0.298f, 0.075f, 0.616f, 1.0f);
+    default:                  return ImVec4(0.667f, 0.667f, 0.667f, 1.0f);
     }
 }
 
-// Gold color for coin display
+// Section header accent colors (matching portal board borders)
+static const ImVec4 COLOR_DELIVERY  = ImVec4(1.0f, 1.0f, 1.0f, 0.8f);
+static const ImVec4 COLOR_FLIPS     = ImVec4(0.925f, 0.306f, 0.596f, 1.0f); // #ec4899
+static const ImVec4 COLOR_SELLING   = ImVec4(0.133f, 0.773f, 0.369f, 1.0f); // #22c55e
+static const ImVec4 COLOR_BUYING    = ImVec4(0.918f, 0.702f, 0.031f, 1.0f); // #eab308
+static const ImVec4 COLOR_WALLET    = ImVec4(0.545f, 0.361f, 0.965f, 1.0f); // #8b5cf6
+static const ImVec4 COLOR_BANK      = ImVec4(0.937f, 0.267f, 0.267f, 1.0f); // #ef4444
+static const ImVec4 COLOR_MATS      = ImVec4(0.976f, 0.451f, 0.086f, 1.0f); // #f97316
+
+// Coin colors
 static const ImVec4 COLOR_GOLD   = ImVec4(1.0f, 0.843f, 0.0f, 1.0f);
 static const ImVec4 COLOR_SILVER = ImVec4(0.75f, 0.75f, 0.75f, 1.0f);
 static const ImVec4 COLOR_COPPER = ImVec4(0.72f, 0.45f, 0.2f, 1.0f);
 
+// Row background (alternating, Fast Swap style)
+static const ImVec4 ROW_BG_A = ImVec4(0.22f, 0.26f, 0.32f, 0.35f);
+static const ImVec4 ROW_BG_B = ImVec4(0.22f, 0.26f, 0.32f, 0.15f);
+
+// ============================================================================
+// Helpers
+// ============================================================================
+
+static bool CaseInsensitiveFind(const std::string& haystack, const std::string& needle)
+{
+    if (needle.empty()) return true;
+    std::string h = haystack, n = needle;
+    std::transform(h.begin(), h.end(), h.begin(), ::tolower);
+    std::transform(n.begin(), n.end(), n.begin(), ::tolower);
+    return h.find(n) != std::string::npos;
+}
+
+// Draw a colored accent bar on the left side of the current row
+static void DrawAccentBar(ImVec4 color)
+{
+    ImVec2 pos = ImGui::GetCursorScreenPos();
+    ImGui::GetWindowDrawList()->AddRectFilled(
+        ImVec2(pos.x - ACCENT_WIDTH - 2, pos.y),
+        ImVec2(pos.x - 2, pos.y + ROW_HEIGHT),
+        ImGui::ColorConvertFloat4ToU32(color)
+    );
+}
+
+// Draw alternating row background
+static void DrawRowBg(int index)
+{
+    ImVec2 pos = ImGui::GetCursorScreenPos();
+    float width = ImGui::GetContentRegionAvail().x;
+    ImVec4 bg = (index % 2 == 0) ? ROW_BG_A : ROW_BG_B;
+    ImGui::GetWindowDrawList()->AddRectFilled(
+        pos,
+        ImVec2(pos.x + width, pos.y + ROW_HEIGHT),
+        ImGui::ColorConvertFloat4ToU32(bg)
+    );
+}
+
 // Render coin amount inline
-static void RenderCoins(Coins c)
+static void RenderCoins(Coins c, bool compact = false)
 {
     if (c.gold > 0)
     {
         ImGui::TextColored(COLOR_GOLD, "%dg", c.gold);
-        ImGui::SameLine();
+        ImGui::SameLine(0, 2);
     }
-    ImGui::TextColored(COLOR_SILVER, "%02ds", c.silver);
-    ImGui::SameLine();
+    if (!compact || c.gold > 0 || c.silver > 0)
+    {
+        ImGui::TextColored(COLOR_SILVER, "%02ds", c.silver);
+        ImGui::SameLine(0, 2);
+    }
     ImGui::TextColored(COLOR_COPPER, "%02dc", c.copper);
 }
 
-// Copy button - small clipboard icon next to item name
+// Try to render item icon, returns true if rendered
+static bool RenderItemIcon(int itemId)
+{
+    if (!APIDefs) return false;
+
+    char idBuf[64];
+    snprintf(idBuf, sizeof(idBuf), "MT_ICON_%d", itemId);
+    Texture_t* tex = APIDefs->Textures_Get(idBuf);
+
+    if (tex && tex->Resource)
+    {
+        ImGui::Image(tex->Resource, ImVec2(ICON_SIZE, ICON_SIZE));
+        return true;
+    }
+
+    // Placeholder square
+    ImVec2 pos = ImGui::GetCursorScreenPos();
+    ImGui::GetWindowDrawList()->AddRect(pos, ImVec2(pos.x + ICON_SIZE, pos.y + ICON_SIZE),
+        ImGui::ColorConvertFloat4ToU32(ImVec4(0.4f, 0.4f, 0.4f, 0.5f)));
+    ImGui::Dummy(ImVec2(ICON_SIZE, ICON_SIZE));
+    return false;
+}
+
+// Copy button with tooltip and flash feedback
 static bool RenderCopyButton(const char* id, const std::string& textToCopy)
 {
     ImGui::PushID(id);
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(1, 1, 1, 0.15f));
-    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(1, 1, 1, 0.3f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(1, 1, 1, 0.2f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.4f, 1.0f, 0.4f, 0.4f));
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
 
     bool clicked = ImGui::SmallButton("[C]");
 
+    ImGui::PopStyleVar();
     ImGui::PopStyleColor(3);
     ImGui::PopID();
 
     if (clicked)
-    {
         CopyToClipboard(textToCopy);
-    }
 
-    // Tooltip
     if (ImGui::IsItemHovered())
-    {
-        ImGui::SetTooltip("Copy \"%s\"", textToCopy.c_str());
-    }
+        ImGui::SetTooltip("Copy \"%s\" to clipboard", textToCopy.c_str());
 
     return clicked;
 }
 
-// Render a single flip item row (used by both dashboard and flip column)
-static void RenderFlipRow(const FlipItem& item, bool compact)
+// Section header with colored accent and item count
+static bool RenderSectionHeader(const char* label, ImVec4 accentColor, int count = -1, Coins* total = nullptr)
+{
+    // Draw accent bar for header
+    ImVec2 pos = ImGui::GetCursorScreenPos();
+    ImGui::GetWindowDrawList()->AddRectFilled(
+        ImVec2(pos.x, pos.y),
+        ImVec2(pos.x + ImGui::GetContentRegionAvail().x, pos.y + 2),
+        ImGui::ColorConvertFloat4ToU32(accentColor)
+    );
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4);
+
+    bool open = ImGui::CollapsingHeader(label, ImGuiTreeNodeFlags_DefaultOpen);
+
+    // Show count and total on same line as header
+    if (count >= 0 || total)
+    {
+        ImGui::SameLine(ImGui::GetWindowWidth() - 200);
+        if (count >= 0)
+        {
+            ImGui::TextDisabled("(%d)", count);
+            if (total) ImGui::SameLine();
+        }
+        if (total) RenderCoins(*total);
+    }
+
+    return open;
+}
+
+// ============================================================================
+// Row Renderers
+// ============================================================================
+
+static void RenderFlipRow(const FlipItem& item, int index, bool compact)
 {
     ImGui::PushID(item.id);
+    DrawRowBg(index);
+    DrawAccentBar(COLOR_FLIPS);
 
-    // Copy button
-    RenderCopyButton("copy", item.name);
+    // Icon
+    RenderItemIcon(item.id);
     ImGui::SameLine();
 
-    // Item name with rarity color
-    ImVec4 color = GetRarityColor(item.rarity);
-    ImGui::TextColored(color, "%s", item.name.c_str());
+    // Copy button
+    RenderCopyButton("cp", item.name);
+    ImGui::SameLine();
+
+    // Name with rarity color
+    ImGui::TextColored(GetRarityColor(item.rarity), "%s", item.name.c_str());
 
     if (compact)
     {
-        // Compact: profit + ROI on same line
-        ImGui::SameLine(ImGui::GetWindowWidth() - 180);
-        RenderCoins(item.profit);
-        ImGui::SameLine();
-        ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "(%.0f%%)", item.roi);
+        // Compact mode: profit + ROI right-aligned
+        ImGui::SameLine(ImGui::GetWindowWidth() - 160);
+        RenderCoins(item.profit, true);
+        ImGui::SameLine(0, 4);
+        if (item.roi >= 50.0f)
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.3f, 1.0f), "%.0f%%", item.roi);
+        else if (item.roi >= 25.0f)
+            ImGui::TextColored(ImVec4(0.8f, 1.0f, 0.0f, 1.0f), "%.0f%%", item.roi);
+        else
+            ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "%.0f%%", item.roi);
     }
     else
     {
-        // Full: show buy/sell/profit/ROI + volumes
-        ImGui::Indent(24);
+        // Full mode: detailed row
+        ImGui::Indent(ICON_SIZE + 28);
 
-        ImGui::Text("Buy: ");
+        ImGui::TextDisabled("Buy:");
         ImGui::SameLine();
         RenderCoins(item.buyPrice);
-        ImGui::SameLine();
-        ImGui::Text("  Sell: ");
+        ImGui::SameLine(0, 12);
+
+        ImGui::TextDisabled("Sell:");
         ImGui::SameLine();
         RenderCoins(item.sellPrice);
-        ImGui::SameLine();
-        ImGui::Text("  Profit: ");
+        ImGui::SameLine(0, 12);
+
+        ImGui::TextDisabled("Profit:");
         ImGui::SameLine();
         RenderCoins(item.profit);
-        ImGui::SameLine();
-        ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), " (%.0f%% ROI)", item.roi);
+        ImGui::SameLine(0, 4);
+
+        if (item.roi >= 50.0f)
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.3f, 1.0f), "(%.0f%%)", item.roi);
+        else
+            ImGui::TextColored(ImVec4(0.8f, 1.0f, 0.0f, 1.0f), "(%.0f%%)", item.roi);
 
         ImGui::TextDisabled("S:%d  D:%d  Sold:%d  Bought:%d",
             item.supply, item.demand, item.sold, item.bought);
 
-        ImGui::Unindent(24);
+        ImGui::Unindent(ICON_SIZE + 28);
     }
 
-    ImGui::Separator();
+    ImGui::Spacing();
     ImGui::PopID();
 }
 
-// Render a transaction row (buy/sell order)
-static void RenderTransactionRow(const Transaction& tx)
+static void RenderTransactionRow(const Transaction& tx, int index, ImVec4 accent)
 {
-    ImGui::PushID(tx.itemId);
+    ImGui::PushID(tx.itemId + index * 100000);
+    DrawRowBg(index);
+    DrawAccentBar(accent);
 
-    RenderCopyButton("copy", tx.name);
+    RenderItemIcon(tx.itemId);
     ImGui::SameLine();
 
-    ImVec4 color = GetRarityColor(tx.rarity);
-    ImGui::TextColored(color, "%s", tx.name.c_str());
+    RenderCopyButton("cp", tx.name);
     ImGui::SameLine();
-    ImGui::Text(" x%d  ", tx.quantity);
+
+    ImGui::TextColored(GetRarityColor(tx.rarity), "%s", tx.name.c_str());
     ImGui::SameLine();
+    ImGui::TextDisabled("x%d", tx.quantity);
+    ImGui::SameLine(ImGui::GetWindowWidth() - 140);
     RenderCoins(tx.price);
 
-    ImGui::Separator();
+    ImGui::Spacing();
     ImGui::PopID();
 }
 
-// Render a bank/material item row
-static void RenderItemRow(const Item& item)
+static void RenderItemRow(const Item& item, int index, ImVec4 accent)
 {
-    ImGui::PushID(item.id);
+    ImGui::PushID(item.id + index * 100000);
+    DrawRowBg(index);
+    DrawAccentBar(accent);
 
-    RenderCopyButton("copy", item.name);
+    RenderItemIcon(item.id);
     ImGui::SameLine();
 
-    ImVec4 color = GetRarityColor(item.rarity);
-    ImGui::TextColored(color, "%s", item.name.c_str());
+    RenderCopyButton("cp", item.name);
     ImGui::SameLine();
-    ImGui::Text(" x%d  ", item.count);
+
+    ImGui::TextColored(GetRarityColor(item.rarity), "%s", item.name.c_str());
     ImGui::SameLine();
+    ImGui::TextDisabled("x%d", item.count);
+    ImGui::SameLine(ImGui::GetWindowWidth() - 140);
     RenderCoins(item.totalValue);
 
-    ImGui::Separator();
+    ImGui::Spacing();
     ImGui::PopID();
 }
 
 // ============================================================================
-// FULL DASHBOARD - All boards side by side
+// FULL DASHBOARD
 // ============================================================================
+
 void RenderDashboard()
 {
     if (!g_ShowDashboard) return;
 
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(12, 12));
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8, 4));
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.08f, 0.08f, 0.10f, 0.95f));
+
     ImGui::SetNextWindowSize(ImVec2(1200, 700), ImGuiCond_FirstUseEver);
-    if (!ImGui::Begin("Mystic Trading##Dashboard", &g_ShowDashboard,
-        ImGuiWindowFlags_NoCollapse))
+    if (!ImGui::Begin("Mystic Trading##Dashboard", &g_ShowDashboard, ImGuiWindowFlags_NoCollapse))
     {
         ImGui::End();
+        ImGui::PopStyleColor();
+        ImGui::PopStyleVar(2);
         return;
     }
 
@@ -178,155 +324,191 @@ void RenderDashboard()
 
     if (!g_Data.loaded)
     {
-        ImGui::Text("Loading data from portal...");
+        ImGui::TextDisabled("Connecting to portal...");
         ImGui::End();
+        ImGui::PopStyleColor();
+        ImGui::PopStyleVar(2);
         return;
     }
 
-    // Two-column layout: left (TP data) | right (flips + market)
     float totalWidth = ImGui::GetContentRegionAvail().x;
 
-    // ---- LEFT COLUMN: Delivery, Selling, Buying, Wallet ----
-    ImGui::BeginChild("LeftColumn", ImVec2(totalWidth * 0.5f, 0), true);
+    // ---- LEFT COLUMN ----
+    ImGui::BeginChild("LeftCol", ImVec2(totalWidth * 0.48f, 0), true, ImGuiWindowFlags_NoScrollbar);
     {
         // Delivery Box
-        if (ImGui::CollapsingHeader("Delivery Box", ImGuiTreeNodeFlags_DefaultOpen))
+        int deliveryCount = (int)g_Data.tradingPost.delivery.items.size();
+        if (RenderSectionHeader("Delivery Box", COLOR_DELIVERY, deliveryCount,
+            g_Data.tradingPost.delivery.coins.raw > 0 ? &g_Data.tradingPost.delivery.coins : nullptr))
         {
-            if (g_Data.tradingPost.delivery.coins.raw > 0)
-            {
-                ImGui::Text("Coins: ");
-                ImGui::SameLine();
-                RenderCoins(g_Data.tradingPost.delivery.coins);
-            }
+            static char deliverySearch[128] = "";
+            ImGui::SetNextItemWidth(-1);
+            ImGui::InputTextWithHint("##delsearch", "Search...", deliverySearch, sizeof(deliverySearch));
+
+            ImGui::BeginChild("DeliveryList", ImVec2(0, 150), false);
+            int idx = 0;
             for (auto& item : g_Data.tradingPost.delivery.items)
-                RenderItemRow(item);
-            if (g_Data.tradingPost.delivery.items.empty())
-                ImGui::TextDisabled("Empty");
+            {
+                if (!CaseInsensitiveFind(item.name, deliverySearch)) continue;
+                RenderItemRow(item, idx++, COLOR_DELIVERY);
+            }
+            if (idx == 0) ImGui::TextDisabled("Empty");
+            ImGui::EndChild();
         }
+
+        ImGui::Spacing();
 
         // Selling
-        if (ImGui::CollapsingHeader("Selling", ImGuiTreeNodeFlags_DefaultOpen))
+        int sellCount = (int)g_Data.tradingPost.sells.size();
+        if (RenderSectionHeader("Selling", COLOR_SELLING, sellCount, &g_Data.tradingPost.sellValue))
         {
-            ImGui::Text("Total: ");
-            ImGui::SameLine();
-            RenderCoins(g_Data.tradingPost.sellValue);
-            ImGui::Separator();
+            static char sellSearch[128] = "";
+            ImGui::SetNextItemWidth(-1);
+            ImGui::InputTextWithHint("##sellsearch", "Search...", sellSearch, sizeof(sellSearch));
+
+            ImGui::BeginChild("SellList", ImVec2(0, 200), false);
+            int idx = 0;
             for (auto& tx : g_Data.tradingPost.sells)
-                RenderTransactionRow(tx);
-            if (g_Data.tradingPost.sells.empty())
-                ImGui::TextDisabled("No active sell orders");
+            {
+                if (!CaseInsensitiveFind(tx.name, sellSearch)) continue;
+                RenderTransactionRow(tx, idx++, COLOR_SELLING);
+            }
+            if (idx == 0) ImGui::TextDisabled("No active sell orders");
+            ImGui::EndChild();
         }
+
+        ImGui::Spacing();
 
         // Buying
-        if (ImGui::CollapsingHeader("Buying", ImGuiTreeNodeFlags_DefaultOpen))
+        int buyCount = (int)g_Data.tradingPost.buys.size();
+        if (RenderSectionHeader("Buying", COLOR_BUYING, buyCount, &g_Data.tradingPost.buyValue))
         {
-            ImGui::Text("Total: ");
-            ImGui::SameLine();
-            RenderCoins(g_Data.tradingPost.buyValue);
-            ImGui::Separator();
+            static char buySearch[128] = "";
+            ImGui::SetNextItemWidth(-1);
+            ImGui::InputTextWithHint("##buysearch", "Search...", buySearch, sizeof(buySearch));
+
+            ImGui::BeginChild("BuyList", ImVec2(0, 200), false);
+            int idx = 0;
             for (auto& tx : g_Data.tradingPost.buys)
-                RenderTransactionRow(tx);
-            if (g_Data.tradingPost.buys.empty())
-                ImGui::TextDisabled("No active buy orders");
+            {
+                if (!CaseInsensitiveFind(tx.name, buySearch)) continue;
+                RenderTransactionRow(tx, idx++, COLOR_BUYING);
+            }
+            if (idx == 0) ImGui::TextDisabled("No active buy orders");
+            ImGui::EndChild();
         }
 
+        ImGui::Spacing();
+
         // Wallet
-        if (ImGui::CollapsingHeader("Wallet"))
+        if (RenderSectionHeader("Wallet", COLOR_WALLET, -1, &g_Data.tradingPost.wallet.gold))
         {
-            ImGui::Text("Gold: ");
-            ImGui::SameLine();
-            RenderCoins(g_Data.tradingPost.wallet.gold);
+            static char walletSearch[128] = "";
+            ImGui::SetNextItemWidth(-1);
+            ImGui::InputTextWithHint("##walletsearch", "Search currencies...", walletSearch, sizeof(walletSearch));
+
             for (auto& c : g_Data.tradingPost.wallet.currencies)
             {
-                ImGui::Text("%s: %d", c.name.c_str(), c.value);
+                if (!CaseInsensitiveFind(c.name, walletSearch)) continue;
+                ImGui::TextDisabled("%s:", c.name.c_str());
+                ImGui::SameLine();
+                ImGui::Text("%d", c.value);
             }
         }
     }
     ImGui::EndChild();
 
-    ImGui::SameLine();
+    ImGui::SameLine(0, SECTION_SPACING);
 
-    // ---- RIGHT COLUMN: Flips, Bank, Materials ----
-    ImGui::BeginChild("RightColumn", ImVec2(0, 0), true);
+    // ---- RIGHT COLUMN ----
+    ImGui::BeginChild("RightCol", ImVec2(0, 0), true, ImGuiWindowFlags_NoScrollbar);
     {
         // Flips
-        if (ImGui::CollapsingHeader("Flips", ImGuiTreeNodeFlags_DefaultOpen))
+        int flipCount = (int)g_Data.flips.size();
+        if (RenderSectionHeader("Flips", COLOR_FLIPS, flipCount))
         {
-            ImGui::Text("%zu profitable flips", g_Data.flips.size());
-            ImGui::Separator();
-
-            // Search filter
             static char flipSearch[128] = "";
-            ImGui::InputText("Search##flips", flipSearch, sizeof(flipSearch));
+            ImGui::SetNextItemWidth(-1);
+            ImGui::InputTextWithHint("##flipsearch", "Search flips...", flipSearch, sizeof(flipSearch));
 
             ImGui::BeginChild("FlipsList", ImVec2(0, 300), false);
+            int idx = 0;
             for (auto& flip : g_Data.flips)
             {
-                // Filter by search
-                if (flipSearch[0] != '\0')
-                {
-                    std::string lower = flip.name;
-                    std::string query = flipSearch;
-                    // Simple case-insensitive search
-                    for (auto& c : lower) c = (char)tolower(c);
-                    for (auto& c : query) c = (char)tolower(c);
-                    if (lower.find(query) == std::string::npos)
-                        continue;
-                }
-                RenderFlipRow(flip, false);
+                if (!CaseInsensitiveFind(flip.name, flipSearch)) continue;
+                RenderFlipRow(flip, idx++, false);
             }
+            if (idx == 0) ImGui::TextDisabled("No flips found");
             ImGui::EndChild();
         }
+
+        ImGui::Spacing();
 
         // Bank
-        if (ImGui::CollapsingHeader("Bank"))
+        int bankCount = (int)g_Data.bank.size();
+        if (RenderSectionHeader("Bank", COLOR_BANK, bankCount, &g_Data.bankTotal))
         {
-            ImGui::Text("Total: ");
-            ImGui::SameLine();
-            RenderCoins(g_Data.bankTotal);
-            ImGui::Separator();
+            static char bankSearch[128] = "";
+            ImGui::SetNextItemWidth(-1);
+            ImGui::InputTextWithHint("##banksearch", "Search bank...", bankSearch, sizeof(bankSearch));
 
             ImGui::BeginChild("BankList", ImVec2(0, 200), false);
+            int idx = 0;
             for (auto& item : g_Data.bank)
-                RenderItemRow(item);
-            if (g_Data.bank.empty())
-                ImGui::TextDisabled("No data");
+            {
+                if (!CaseInsensitiveFind(item.name, bankSearch)) continue;
+                RenderItemRow(item, idx++, COLOR_BANK);
+            }
+            if (idx == 0) ImGui::TextDisabled("No data");
             ImGui::EndChild();
         }
 
+        ImGui::Spacing();
+
         // Materials
-        if (ImGui::CollapsingHeader("Materials"))
+        int matsCount = (int)g_Data.materials.size();
+        if (RenderSectionHeader("Materials", COLOR_MATS, matsCount, &g_Data.matsTotal))
         {
-            ImGui::Text("Total: ");
-            ImGui::SameLine();
-            RenderCoins(g_Data.matsTotal);
-            ImGui::Separator();
+            static char matsSearch[128] = "";
+            ImGui::SetNextItemWidth(-1);
+            ImGui::InputTextWithHint("##matssearch", "Search materials...", matsSearch, sizeof(matsSearch));
 
             ImGui::BeginChild("MatsList", ImVec2(0, 200), false);
+            int idx = 0;
             for (auto& item : g_Data.materials)
-                RenderItemRow(item);
-            if (g_Data.materials.empty())
-                ImGui::TextDisabled("No data");
+            {
+                if (!CaseInsensitiveFind(item.name, matsSearch)) continue;
+                RenderItemRow(item, idx++, COLOR_MATS);
+            }
+            if (idx == 0) ImGui::TextDisabled("No data");
             ImGui::EndChild();
         }
     }
     ImGui::EndChild();
 
     ImGui::End();
+    ImGui::PopStyleColor();
+    ImGui::PopStyleVar(2);
 }
 
 // ============================================================================
-// FLIP COLUMN - Slim, resizable, draggable list for docking next to TP
+// FLIP COLUMN - Slim, draggable, resizable
 // ============================================================================
+
 void RenderFlipList()
 {
     if (!g_ShowFlipList) return;
 
-    ImGui::SetNextWindowSize(ImVec2(320, 600), ImGuiCond_FirstUseEver);
-    if (!ImGui::Begin("Flips##FlipColumn", &g_ShowFlipList,
-        ImGuiWindowFlags_NoCollapse))
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(6, 2));
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.06f, 0.06f, 0.08f, 0.92f));
+
+    ImGui::SetNextWindowSize(ImVec2(340, 600), ImGuiCond_FirstUseEver);
+    if (!ImGui::Begin("Flips##FlipColumn", &g_ShowFlipList, ImGuiWindowFlags_NoCollapse))
     {
         ImGui::End();
+        ImGui::PopStyleColor();
+        ImGui::PopStyleVar(2);
         return;
     }
 
@@ -334,43 +516,56 @@ void RenderFlipList()
 
     if (!g_Data.loaded)
     {
-        ImGui::Text("Loading...");
+        ImGui::TextDisabled("Loading...");
         ImGui::End();
+        ImGui::PopStyleColor();
+        ImGui::PopStyleVar(2);
         return;
     }
 
-    // Search filter
+    // Header bar with accent
+    ImVec2 pos = ImGui::GetCursorScreenPos();
+    ImGui::GetWindowDrawList()->AddRectFilled(
+        pos, ImVec2(pos.x + ImGui::GetContentRegionAvail().x, pos.y + 2),
+        ImGui::ColorConvertFloat4ToU32(COLOR_FLIPS));
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4);
+
+    ImGui::TextColored(COLOR_FLIPS, "Profitable Flips");
+    ImGui::SameLine(ImGui::GetWindowWidth() - 60);
+    ImGui::TextDisabled("(%zu)", g_Data.flips.size());
+
+    // Search
     static char search[128] = "";
     ImGui::SetNextItemWidth(-1);
     ImGui::InputTextWithHint("##flipsearch", "Search items...", search, sizeof(search));
-    ImGui::Separator();
+    ImGui::Spacing();
 
-    // Compact flip list - just name + profit + copy button
+    // Scrollable flip list
+    ImGui::BeginChild("FlipScroll", ImVec2(0, 0), false);
+    int idx = 0;
     for (auto& flip : g_Data.flips)
     {
-        // Filter
-        if (search[0] != '\0')
-        {
-            std::string lower = flip.name;
-            std::string query = search;
-            for (auto& c : lower) c = (char)tolower(c);
-            for (auto& c : query) c = (char)tolower(c);
-            if (lower.find(query) == std::string::npos)
-                continue;
-        }
-        RenderFlipRow(flip, true);
+        if (!CaseInsensitiveFind(flip.name, search)) continue;
+        RenderFlipRow(flip, idx++, true);
     }
+    if (idx == 0)
+        ImGui::TextDisabled("No matching flips");
+    ImGui::EndChild();
 
     ImGui::End();
+    ImGui::PopStyleColor();
+    ImGui::PopStyleVar(2);
 }
 
 // ============================================================================
-// OPTIONS - Addon settings rendered in Nexus options panel
+// OPTIONS - Nexus addon settings panel
 // ============================================================================
+
 void RenderOptions()
 {
-    ImGui::Text("Mystic Trading Settings");
+    ImGui::TextColored(COLOR_FLIPS, "Mystic Trading");
     ImGui::Separator();
+    ImGui::Spacing();
 
     // Portal URL
     static char urlBuf[256];
@@ -380,52 +575,48 @@ void RenderOptions()
         strncpy(urlBuf, g_PortalUrl.c_str(), sizeof(urlBuf) - 1);
         urlInit = true;
     }
-    if (ImGui::InputText("Portal URL", urlBuf, sizeof(urlBuf)))
-    {
+    ImGui::Text("Portal URL");
+    if (ImGui::InputText("##url", urlBuf, sizeof(urlBuf)))
         g_PortalUrl = urlBuf;
-    }
 
     // Refresh interval
-    if (ImGui::SliderInt("Refresh (seconds)", &g_RefreshInterval, 10, 300))
-    {
-        // Clamped by slider
-    }
+    ImGui::Text("Refresh Interval");
+    ImGui::SliderInt("##refresh", &g_RefreshInterval, 10, 300, "%d seconds");
 
-    // Session cookie (masked)
-    static char sessionBuf[512] = "";
-    ImGui::InputText("Session Cookie", sessionBuf, sizeof(sessionBuf), ImGuiInputTextFlags_Password);
-    if (ImGui::IsItemDeactivatedAfterEdit())
-    {
-        // Save session cookie to config file
-        std::string configPath = g_ConfigPath.empty() ? "mystic-trading.cfg" : g_ConfigPath;
-
-        // Read existing config
-        std::ifstream inFile(configPath);
-        std::string content;
-        std::string line;
-        bool foundSession = false;
-        while (std::getline(inFile, line))
-        {
-            if (line.find("session=") == 0)
-            {
-                content += "session=" + std::string(sessionBuf) + "\n";
-                foundSession = true;
-            }
-            else
-            {
-                content += line + "\n";
-            }
-        }
-        inFile.close();
-
-        if (!foundSession)
-            content += "session=" + std::string(sessionBuf) + "\n";
-
-        std::ofstream outFile(configPath);
-        outFile << content;
-    }
-
+    ImGui::Spacing();
     ImGui::Separator();
-    ImGui::TextDisabled("Keybinds: ALT+T = Dashboard, ALT+F = Flip Column");
+    ImGui::Spacing();
+
+    // Session cookie
+    ImGui::Text("Session Cookie");
+    ImGui::TextDisabled("From your portal login (browser dev tools > Application > Cookies)");
+    static char sessionBuf[512] = "";
+    ImGui::InputText("##session", sessionBuf, sizeof(sessionBuf), ImGuiInputTextFlags_Password);
+    if (ImGui::IsItemDeactivatedAfterEdit() && sessionBuf[0] != '\0')
+    {
+        // Save to config
+        std::string configContent;
+        configContent += "portal_url=" + g_PortalUrl + "\n";
+        configContent += "refresh=" + std::to_string(g_RefreshInterval) + "\n";
+        configContent += "session=" + std::string(sessionBuf) + "\n";
+
+        std::string configPath = std::string(APIDefs->Paths_GetAddonDirectory("MysticTrading")) + "\\mystic-trading.cfg";
+        std::ofstream f(configPath);
+        if (f.is_open())
+            f << configContent;
+
+        if (APIDefs)
+            APIDefs->Log(LOGL_INFO, "MysticTrading", "Session cookie updated.");
+    }
+
+    ImGui::Spacing();
+    ImGui::Separator();
+    ImGui::Spacing();
+
+    ImGui::TextDisabled("Keybinds:");
+    ImGui::BulletText("ALT+T - Toggle full dashboard");
+    ImGui::BulletText("ALT+F - Toggle flip column");
+    ImGui::Spacing();
     ImGui::TextDisabled("Click [C] next to any item to copy its name to clipboard.");
+    ImGui::TextDisabled("Drag the flip column next to the Trading Post for quick flipping.");
 }

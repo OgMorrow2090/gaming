@@ -1,8 +1,10 @@
 /**
  * api-client.cpp
  *
- * Background data fetcher for Mystic Trading.
- * Fetches trading post data from the addams.family portal API.
+ * Standalone GW2 API client and GW2BLTC scraper for Mystic Trading.
+ * Talks directly to api.guildwars2.com and gw2bltc.com — no portal dependency.
+ *
+ * Replicates the same logic as addams.family/web/backend/games.py
  */
 
 #include "shared.h"
@@ -11,6 +13,9 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <set>
+#include <map>
+#include <regex>
 #include <wininet.h>
 
 #pragma comment(lib, "wininet.lib")
@@ -18,7 +23,9 @@
 static std::atomic<bool> g_Running{false};
 static std::thread g_FetchThread;
 static std::string g_ConfigPath;
-static std::string g_SessionCookie;
+
+static const char* GW2_API = "https://api.guildwars2.com/v2";
+static const char* BLTC_SEARCH = "https://www.gw2bltc.com/en/tp/search";
 
 void SetApiConfig(const char* addonPath)
 {
@@ -30,20 +37,25 @@ void SetApiConfig(const char* addonPath)
 // HTTP
 // ============================================================================
 
-static std::string HttpGet(const std::string& url, const std::string& sessionCookie)
+static std::string HttpGet(const std::string& url, const std::string& bearerToken = "")
 {
     std::string result;
 
     HINTERNET hInternet = InternetOpenA("MysticTrading/0.1", INTERNET_OPEN_TYPE_PRECONFIG, nullptr, nullptr, 0);
     if (!hInternet) return result;
 
-    std::string headers = "Cookie: session=" + sessionCookie + "\r\n";
+    std::string headers;
+    if (!bearerToken.empty())
+        headers = "Authorization: Bearer " + bearerToken + "\r\n";
 
     DWORD flags = INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE;
     if (url.find("https://") == 0)
         flags |= INTERNET_FLAG_SECURE;
 
-    HINTERNET hUrl = InternetOpenUrlA(hInternet, url.c_str(), headers.c_str(), (DWORD)headers.length(), flags, 0);
+    HINTERNET hUrl = InternetOpenUrlA(hInternet, url.c_str(),
+        headers.empty() ? nullptr : headers.c_str(),
+        headers.empty() ? 0 : (DWORD)headers.length(),
+        flags, 0);
 
     if (hUrl)
     {
@@ -65,7 +77,6 @@ static std::string HttpGet(const std::string& url, const std::string& sessionCoo
 // JSON Parsing Helpers
 // ============================================================================
 
-// Find the end of a JSON object starting at the opening brace
 static size_t FindObjectEnd(const std::string& json, size_t start)
 {
     int depth = 0;
@@ -73,7 +84,6 @@ static size_t FindObjectEnd(const std::string& json, size_t start)
     {
         if (json[i] == '"')
         {
-            // Skip strings (handle escaped quotes)
             i++;
             while (i < json.length() && json[i] != '"')
             {
@@ -89,7 +99,6 @@ static size_t FindObjectEnd(const std::string& json, size_t start)
     return std::string::npos;
 }
 
-// Find a key in JSON and return the value substring
 static std::string FindValue(const std::string& json, const std::string& key)
 {
     std::string search = "\"" + key + "\":";
@@ -98,10 +107,7 @@ static std::string FindValue(const std::string& json, const std::string& key)
     pos += search.length();
     while (pos < json.length() && (json[pos] == ' ' || json[pos] == '\t' || json[pos] == '\n' || json[pos] == '\r'))
         pos++;
-
     if (pos >= json.length()) return "";
-
-    // String value
     if (json[pos] == '"')
     {
         size_t end = pos + 1;
@@ -112,8 +118,6 @@ static std::string FindValue(const std::string& json, const std::string& key)
         }
         return json.substr(pos + 1, end - pos - 1);
     }
-
-    // Object or array
     if (json[pos] == '{' || json[pos] == '[')
     {
         size_t end = FindObjectEnd(json, pos);
@@ -121,40 +125,24 @@ static std::string FindValue(const std::string& json, const std::string& key)
             return json.substr(pos, end - pos + 1);
         return "";
     }
-
-    // Number, bool, null
     size_t end = json.find_first_of(",}] \t\n\r", pos);
     if (end == std::string::npos) end = json.length();
     return json.substr(pos, end - pos);
 }
 
-static int ToInt(const std::string& s, int def = 0)
-{
-    if (s.empty()) return def;
-    return atoi(s.c_str());
-}
+static int ToInt(const std::string& s, int def = 0) { return s.empty() ? def : atoi(s.c_str()); }
+static float ToFloat(const std::string& s, float def = 0.0f) { return s.empty() ? def : (float)atof(s.c_str()); }
 
-static float ToFloat(const std::string& s, float def = 0.0f)
-{
-    if (s.empty()) return def;
-    return (float)atof(s.c_str());
-}
-
-// Split a JSON array into individual element strings
 static std::vector<std::string> SplitArray(const std::string& arr)
 {
     std::vector<std::string> results;
     if (arr.empty() || arr[0] != '[') return results;
-
     size_t pos = 1;
     while (pos < arr.length())
     {
-        // Skip whitespace
         while (pos < arr.length() && (arr[pos] == ' ' || arr[pos] == '\t' || arr[pos] == '\n' || arr[pos] == '\r' || arr[pos] == ','))
             pos++;
-
         if (pos >= arr.length() || arr[pos] == ']') break;
-
         if (arr[pos] == '{' || arr[pos] == '[')
         {
             size_t end = FindObjectEnd(arr, pos);
@@ -164,7 +152,6 @@ static std::vector<std::string> SplitArray(const std::string& arr)
         }
         else
         {
-            // Primitive value
             size_t end = arr.find_first_of(",]", pos);
             if (end == std::string::npos) break;
             results.push_back(arr.substr(pos, end - pos));
@@ -174,13 +161,14 @@ static std::vector<std::string> SplitArray(const std::string& arr)
     return results;
 }
 
-static Coins ParseCoins(const std::string& json)
+static Coins CopperToCoins(int copper)
 {
     Coins c{};
-    c.gold = ToInt(FindValue(json, "gold"));
-    c.silver = ToInt(FindValue(json, "silver"));
-    c.copper = ToInt(FindValue(json, "copper"));
-    c.raw = ToInt(FindValue(json, "raw"));
+    int abs_c = copper < 0 ? -copper : copper;
+    c.gold = (abs_c / 10000) * (copper < 0 ? -1 : 1);
+    c.silver = (abs_c % 10000) / 100;
+    c.copper = abs_c % 100;
+    c.raw = copper;
     return c;
 }
 
@@ -197,165 +185,458 @@ static Rarity ParseRarity(const std::string& str)
 }
 
 // ============================================================================
-// Endpoint Parsers
+// GW2 API Helpers
 // ============================================================================
 
-static std::vector<FlipItem> ParseFlips(const std::string& json)
+struct ItemInfo {
+    std::string name;
+    std::string icon;
+    std::string rarity;
+    std::string type;
+};
+
+struct PriceInfo {
+    int buy = 0;
+    int sell = 0;
+};
+
+// Fetch item details in batches of 200
+static std::map<int, ItemInfo> FetchItems(const std::set<int>& ids, const std::string& apiKey)
 {
-    std::vector<FlipItem> items;
-    std::string arr = FindValue(json, "items");
-    if (arr.empty()) return items;
+    std::map<int, ItemInfo> items;
+    std::vector<int> idVec(ids.begin(), ids.end());
 
-    for (auto& obj : SplitArray(arr))
+    for (size_t i = 0; i < idVec.size(); i += 200)
     {
-        FlipItem item{};
-        item.id = ToInt(FindValue(obj, "id"));
-        item.name = FindValue(obj, "name");
-        item.icon = FindValue(obj, "icon");
-        item.rarity = ParseRarity(FindValue(obj, "rarity"));
-        item.roi = ToFloat(FindValue(obj, "roi"));
-        item.supply = ToInt(FindValue(obj, "supply"));
-        item.demand = ToInt(FindValue(obj, "demand"));
-        item.sold = ToInt(FindValue(obj, "sold"));
-        item.bought = ToInt(FindValue(obj, "bought"));
+        std::string idsStr;
+        for (size_t j = i; j < idVec.size() && j < i + 200; j++)
+        {
+            if (!idsStr.empty()) idsStr += ",";
+            idsStr += std::to_string(idVec[j]);
+        }
 
-        std::string buyJson = FindValue(obj, "buy_price");
-        if (!buyJson.empty()) item.buyPrice = ParseCoins(buyJson);
+        std::string url = std::string(GW2_API) + "/items?ids=" + idsStr;
+        std::string json = HttpGet(url);
+        if (json.empty() || json[0] != '[') continue;
 
-        std::string sellJson = FindValue(obj, "sell_price");
-        if (!sellJson.empty()) item.sellPrice = ParseCoins(sellJson);
-
-        std::string profitJson = FindValue(obj, "profit");
-        if (!profitJson.empty()) item.profit = ParseCoins(profitJson);
-
-        if (item.id > 0) items.push_back(item);
+        for (auto& obj : SplitArray(json))
+        {
+            int id = ToInt(FindValue(obj, "id"));
+            if (id <= 0) continue;
+            ItemInfo info;
+            info.name = FindValue(obj, "name");
+            info.icon = FindValue(obj, "icon");
+            info.rarity = FindValue(obj, "rarity");
+            info.type = FindValue(obj, "type");
+            items[id] = info;
+        }
     }
     return items;
 }
 
-static std::vector<Transaction> ParseTransactions(const std::string& json, const std::string& key)
+// Fetch TP prices in batches of 200
+static std::map<int, PriceInfo> FetchPrices(const std::set<int>& ids)
 {
-    std::vector<Transaction> txns;
-    std::string arr = FindValue(json, key);
-    if (arr.empty()) return txns;
+    std::map<int, PriceInfo> prices;
+    std::vector<int> idVec(ids.begin(), ids.end());
 
-    for (auto& obj : SplitArray(arr))
+    for (size_t i = 0; i < idVec.size(); i += 200)
     {
-        Transaction tx{};
-        tx.itemId = ToInt(FindValue(obj, "item_id"));
-        tx.name = FindValue(obj, "name");
-        tx.icon = FindValue(obj, "icon");
-        tx.rarity = ParseRarity(FindValue(obj, "rarity"));
-        tx.quantity = ToInt(FindValue(obj, "quantity"));
-        tx.created = FindValue(obj, "created");
-
-        std::string priceJson = FindValue(obj, "price");
-        if (!priceJson.empty()) tx.price = ParseCoins(priceJson);
-
-        if (tx.itemId > 0) txns.push_back(tx);
-    }
-    return txns;
-}
-
-static std::vector<Item> ParseItems(const std::string& json, const std::string& key)
-{
-    std::vector<Item> items;
-    std::string arr = FindValue(json, key);
-    if (arr.empty()) return items;
-
-    for (auto& obj : SplitArray(arr))
-    {
-        Item item{};
-        item.id = ToInt(FindValue(obj, "id"));
-        item.name = FindValue(obj, "name");
-        item.icon = FindValue(obj, "icon");
-        item.rarity = ParseRarity(FindValue(obj, "rarity"));
-        item.count = ToInt(FindValue(obj, "count"), 1);
-
-        std::string priceJson = FindValue(obj, "price");
-        if (!priceJson.empty()) item.price = ParseCoins(priceJson);
-
-        // Some endpoints use "sell_price" instead of "price"
-        if (item.price.raw == 0)
+        std::string idsStr;
+        for (size_t j = i; j < idVec.size() && j < i + 200; j++)
         {
-            std::string sellJson = FindValue(obj, "sell_price");
-            if (!sellJson.empty()) item.price = ParseCoins(sellJson);
+            if (!idsStr.empty()) idsStr += ",";
+            idsStr += std::to_string(idVec[j]);
         }
 
-        std::string totalJson = FindValue(obj, "total_value");
-        if (!totalJson.empty())
-            item.totalValue = ParseCoins(totalJson);
-        else
-        {
-            // Calculate total = price * count
-            item.totalValue.raw = item.price.raw * item.count;
-            item.totalValue.gold = item.totalValue.raw / 10000;
-            item.totalValue.silver = (item.totalValue.raw % 10000) / 100;
-            item.totalValue.copper = item.totalValue.raw % 100;
-        }
+        std::string url = std::string(GW2_API) + "/commerce/prices?ids=" + idsStr;
+        std::string json = HttpGet(url);
+        if (json.empty() || json[0] != '[') continue;
 
-        if (item.id > 0) items.push_back(item);
+        for (auto& obj : SplitArray(json))
+        {
+            int id = ToInt(FindValue(obj, "id"));
+            if (id <= 0) continue;
+            PriceInfo p;
+            std::string buysJson = FindValue(obj, "buys");
+            std::string sellsJson = FindValue(obj, "sells");
+            p.buy = ToInt(FindValue(buysJson, "unit_price"));
+            p.sell = ToInt(FindValue(sellsJson, "unit_price"));
+            prices[id] = p;
+        }
     }
-    return items;
+    return prices;
 }
 
-static std::vector<Currency> ParseCurrencies(const std::string& json)
+// ============================================================================
+// Trading Post Refresh (direct GW2 API)
+// ============================================================================
+
+static void RefreshTradingPost(const std::string& apiKey)
 {
+    // Fetch all endpoints
+    std::string deliveryJson = HttpGet(std::string(GW2_API) + "/commerce/delivery", apiKey);
+    std::string sellsJson = HttpGet(std::string(GW2_API) + "/commerce/transactions/current/sells", apiKey);
+    std::string buysJson = HttpGet(std::string(GW2_API) + "/commerce/transactions/current/buys", apiKey);
+    std::string walletJson = HttpGet(std::string(GW2_API) + "/account/wallet", apiKey);
+
+    // Parse wallet
+    int walletCopper = 0;
     std::vector<Currency> currencies;
-    std::string arr = FindValue(json, "currencies");
-    if (arr.empty()) return currencies;
-
-    for (auto& obj : SplitArray(arr))
+    if (!walletJson.empty() && walletJson[0] == '[')
     {
-        Currency c{};
-        c.id = ToInt(FindValue(obj, "id"));
-        c.name = FindValue(obj, "name");
-        c.icon = FindValue(obj, "icon");
-        c.value = ToInt(FindValue(obj, "value"));
-
-        if (c.id > 0) currencies.push_back(c);
+        for (auto& obj : SplitArray(walletJson))
+        {
+            int id = ToInt(FindValue(obj, "id"));
+            int value = ToInt(FindValue(obj, "value"));
+            if (id == 1)
+                walletCopper = value;
+            else if (value > 0)
+            {
+                Currency c;
+                c.id = id;
+                c.value = value;
+                currencies.push_back(c);
+            }
+        }
     }
-    return currencies;
-}
 
-static TradingPostData ParseTradingPost(const std::string& json)
-{
+    // Parse delivery
+    int deliveryCopper = 0;
+    std::vector<std::pair<int, int>> deliveryRaw; // id, count
+    if (!deliveryJson.empty() && deliveryJson[0] == '{')
+    {
+        deliveryCopper = ToInt(FindValue(deliveryJson, "coins"));
+        std::string itemsArr = FindValue(deliveryJson, "items");
+        for (auto& obj : SplitArray(itemsArr))
+        {
+            int id = ToInt(FindValue(obj, "id"));
+            int count = ToInt(FindValue(obj, "count"));
+            if (id > 0) deliveryRaw.push_back({id, count});
+        }
+    }
+
+    // Parse sells
+    struct TxRaw { int itemId; int price; int quantity; std::string created; };
+    std::vector<TxRaw> sellsRaw, buysRaw;
+
+    auto parseTxArray = [](const std::string& json) -> std::vector<TxRaw> {
+        std::vector<TxRaw> txns;
+        if (json.empty() || json[0] != '[') return txns;
+        for (auto& obj : SplitArray(json))
+        {
+            TxRaw tx;
+            tx.itemId = ToInt(FindValue(obj, "item_id"));
+            tx.price = ToInt(FindValue(obj, "price"));
+            tx.quantity = ToInt(FindValue(obj, "quantity"), 1);
+            tx.created = FindValue(obj, "created");
+            if (tx.itemId > 0) txns.push_back(tx);
+        }
+        return txns;
+    };
+
+    sellsRaw = parseTxArray(sellsJson);
+    buysRaw = parseTxArray(buysJson);
+
+    // Collect all item IDs
+    std::set<int> allIds;
+    for (auto& d : deliveryRaw) allIds.insert(d.first);
+    for (auto& tx : sellsRaw) allIds.insert(tx.itemId);
+    for (auto& tx : buysRaw) allIds.insert(tx.itemId);
+
+    auto itemDetails = FetchItems(allIds, apiKey);
+
+    // Build trading post data
     TradingPostData tp{};
-
-    // Wallet
-    std::string walletJson = FindValue(json, "wallet");
-    if (!walletJson.empty())
-        tp.wallet.gold = ParseCoins(walletJson);
-
-    // Currencies
-    tp.wallet.currencies = ParseCurrencies(json);
+    tp.wallet.gold = CopperToCoins(walletCopper);
+    tp.wallet.currencies = currencies;
 
     // Delivery
-    std::string deliveryJson = FindValue(json, "delivery");
-    if (!deliveryJson.empty())
+    tp.delivery.coins = CopperToCoins(deliveryCopper);
+    for (auto& d : deliveryRaw)
     {
-        std::string coinsJson = FindValue(deliveryJson, "coins");
-        if (!coinsJson.empty())
-            tp.delivery.coins = ParseCoins(coinsJson);
-        tp.delivery.items = ParseItems(deliveryJson, "items");
+        Item item{};
+        item.id = d.first;
+        item.count = d.second;
+        auto it = itemDetails.find(d.first);
+        if (it != itemDetails.end())
+        {
+            item.name = it->second.name;
+            item.icon = it->second.icon;
+            item.rarity = ParseRarity(it->second.rarity);
+        }
+        tp.delivery.items.push_back(item);
     }
 
-    // Buy/sell orders
-    tp.sells = ParseTransactions(json, "sells");
-    tp.buys = ParseTransactions(json, "buys");
-
-    // Summary totals
-    std::string summaryJson = FindValue(json, "summary");
-    if (!summaryJson.empty())
+    // Sells
+    int sellTotal = 0;
+    for (auto& tx : sellsRaw)
     {
-        std::string sellValJson = FindValue(summaryJson, "sell_value");
-        if (!sellValJson.empty()) tp.sellValue = ParseCoins(sellValJson);
+        Transaction t{};
+        t.itemId = tx.itemId;
+        t.price = CopperToCoins(tx.price);
+        t.quantity = tx.quantity;
+        t.created = tx.created;
+        sellTotal += tx.price * tx.quantity;
+        auto it = itemDetails.find(tx.itemId);
+        if (it != itemDetails.end())
+        {
+            t.name = it->second.name;
+            t.icon = it->second.icon;
+            t.rarity = ParseRarity(it->second.rarity);
+        }
+        tp.sells.push_back(t);
+    }
+    tp.sellValue = CopperToCoins(sellTotal);
 
-        std::string buyValJson = FindValue(summaryJson, "buy_value");
-        if (!buyValJson.empty()) tp.buyValue = ParseCoins(buyValJson);
+    // Buys
+    int buyTotal = 0;
+    for (auto& tx : buysRaw)
+    {
+        Transaction t{};
+        t.itemId = tx.itemId;
+        t.price = CopperToCoins(tx.price);
+        t.quantity = tx.quantity;
+        t.created = tx.created;
+        buyTotal += tx.price * tx.quantity;
+        auto it = itemDetails.find(tx.itemId);
+        if (it != itemDetails.end())
+        {
+            t.name = it->second.name;
+            t.icon = it->second.icon;
+            t.rarity = ParseRarity(it->second.rarity);
+        }
+        tp.buys.push_back(t);
+    }
+    tp.buyValue = CopperToCoins(buyTotal);
+
+    // Update global
+    {
+        std::lock_guard<std::mutex> lock(g_DataMutex);
+        g_Data.tradingPost = tp;
+    }
+}
+
+// ============================================================================
+// Bank / Materials Refresh (direct GW2 API)
+// ============================================================================
+
+static void RefreshBankOrMats(const std::string& apiKey, const std::string& endpoint, bool isBank)
+{
+    std::string json = HttpGet(std::string(GW2_API) + endpoint, apiKey);
+    if (json.empty() || json[0] != '[') return;
+
+    // Parse slots
+    std::set<int> ids;
+    struct Slot { int id; int count; };
+    std::vector<Slot> slots;
+
+    for (auto& obj : SplitArray(json))
+    {
+        if (obj == "null") continue;
+        int id = ToInt(FindValue(obj, "id"));
+        int count = ToInt(FindValue(obj, "count"), 1);
+        if (id <= 0 || (count <= 0 && !isBank)) continue;
+        ids.insert(id);
+        slots.push_back({id, count});
     }
 
-    return tp;
+    auto itemDetails = FetchItems(ids, apiKey);
+    auto prices = FetchPrices(ids);
+
+    std::vector<Item> items;
+    int totalRaw = 0;
+    for (auto& s : slots)
+    {
+        Item item{};
+        item.id = s.id;
+        item.count = s.count;
+        auto it = itemDetails.find(s.id);
+        if (it != itemDetails.end())
+        {
+            item.name = it->second.name;
+            item.icon = it->second.icon;
+            item.rarity = ParseRarity(it->second.rarity);
+        }
+        auto pit = prices.find(s.id);
+        int sell = pit != prices.end() ? pit->second.sell : 0;
+        item.price = CopperToCoins(sell);
+        int total = sell * s.count;
+        item.totalValue = CopperToCoins(total);
+        totalRaw += total;
+        items.push_back(item);
+    }
+
+    // Sort by total value descending
+    std::sort(items.begin(), items.end(), [](const Item& a, const Item& b) {
+        return a.totalValue.raw > b.totalValue.raw;
+    });
+
+    {
+        std::lock_guard<std::mutex> lock(g_DataMutex);
+        if (isBank)
+        {
+            g_Data.bank = items;
+            g_Data.bankTotal = CopperToCoins(totalRaw);
+        }
+        else
+        {
+            g_Data.materials = items;
+            g_Data.matsTotal = CopperToCoins(totalRaw);
+        }
+    }
+}
+
+// ============================================================================
+// BLTC Flip Scraping
+// ============================================================================
+
+static int ParseCoinSpan(const std::string& html, const std::string& cssClass)
+{
+    size_t pos = html.find(cssClass);
+    if (pos == std::string::npos) return 0;
+    pos = html.find(">", pos);
+    if (pos == std::string::npos) return 0;
+    pos++;
+    size_t end = html.find("<", pos);
+    if (end == std::string::npos) return 0;
+    return atoi(html.substr(pos, end - pos).c_str());
+}
+
+static int ParseCoinTd(const std::string& td)
+{
+    int total = 0;
+    total += ParseCoinSpan(td, "cur-t1c") * 10000; // gold
+    total += ParseCoinSpan(td, "cur-t1b") * 100;    // silver
+    total += ParseCoinSpan(td, "cur-t1a");           // copper
+    return total;
+}
+
+static std::string HtmlUnescape(const std::string& s)
+{
+    std::string result = s;
+    size_t pos;
+    while ((pos = result.find("&amp;")) != std::string::npos) result.replace(pos, 5, "&");
+    while ((pos = result.find("&lt;")) != std::string::npos) result.replace(pos, 4, "<");
+    while ((pos = result.find("&gt;")) != std::string::npos) result.replace(pos, 4, ">");
+    while ((pos = result.find("&quot;")) != std::string::npos) result.replace(pos, 6, "\"");
+    while ((pos = result.find("&#39;")) != std::string::npos) result.replace(pos, 5, "'");
+    return result;
+}
+
+static std::vector<FlipItem> ParseBltcPage(const std::string& html)
+{
+    std::vector<FlipItem> items;
+
+    // Regex patterns
+    std::regex rowRe(
+        R"(<img\s+class="icon-item\s+rarity-(\w+)[^"]*"\s+src="([^"]+)"[^>]*data-id="(\d+)".*?)"
+        R"(<td\s+class="td-name[^"]*"><a[^>]*>([^<]+)</a>)",
+        std::regex::optimize
+    );
+
+    auto rowIt = std::sregex_iterator(html.begin(), html.end(), rowRe);
+    auto rowEnd = std::sregex_iterator();
+
+    for (auto it = rowIt; it != rowEnd; ++it)
+    {
+        auto& m = *it;
+        std::string rarityClass = m[1].str();
+        std::string icon = m[2].str();
+        int itemId = atoi(m[3].str().c_str());
+        std::string name = HtmlUnescape(m[4].str());
+
+        // Find the row's coin TDs after this match
+        size_t rowStart = (size_t)m.position() + m.length();
+
+        // Find coin TDs (ones with cur-t1)
+        std::vector<int> coins;
+        std::regex tdRe(R"(<td[^>]*>.*?</td>)", std::regex::optimize);
+        std::string remaining = html.substr(rowStart, 2000); // look ahead
+        auto tdIt = std::sregex_iterator(remaining.begin(), remaining.end(), tdRe);
+        for (auto tdi = tdIt; tdi != std::sregex_iterator() && coins.size() < 4; ++tdi)
+        {
+            std::string td = (*tdi)[0].str();
+            if (td.find("cur-t1") != std::string::npos)
+                coins.push_back(ParseCoinTd(td));
+        }
+
+        if (coins.size() < 3) continue;
+
+        // Find numeric TDs for supply/demand/sold/offers/bought/bids
+        std::vector<int> nums;
+        std::regex numTdRe(R"(<td[^>]*>(\d+)</td>)");
+        auto numIt = std::sregex_iterator(remaining.begin(), remaining.end(), numTdRe);
+        for (auto ni = numIt; ni != std::sregex_iterator() && nums.size() < 6; ++ni)
+            nums.push_back(atoi((*ni)[1].str().c_str()));
+
+        // Map rarity
+        std::map<std::string, std::string> rarityMap = {
+            {"junk","Junk"}, {"basic","Basic"}, {"fine","Fine"},
+            {"masterwork","Masterwork"}, {"rare","Rare"}, {"exotic","Exotic"},
+            {"ascended","Ascended"}, {"legendary","Legendary"},
+        };
+        std::string rarity = rarityMap.count(rarityClass) ? rarityMap[rarityClass] : rarityClass;
+
+        int sellC = coins[0], buyC = coins[1], profitC = coins[2];
+        float roi = buyC > 0 ? (float)profitC / (float)buyC * 100.0f : 0.0f;
+
+        // Try to parse ROI from 4th coin td if available
+        if (coins.size() >= 4 && coins[3] > 0)
+            roi = (float)coins[3]; // Sometimes BLTC puts ROI as a number
+
+        FlipItem flip{};
+        flip.id = itemId;
+        flip.name = name;
+        flip.icon = icon;
+        flip.rarity = ParseRarity(rarity);
+        flip.buyPrice = CopperToCoins(buyC);
+        flip.sellPrice = CopperToCoins(sellC);
+        flip.profit = CopperToCoins(profitC);
+        flip.roi = roi;
+        flip.supply = nums.size() > 0 ? nums[0] : 0;
+        flip.demand = nums.size() > 1 ? nums[1] : 0;
+        flip.sold = nums.size() > 2 ? nums[2] : 0;
+        flip.bought = nums.size() > 4 ? nums[4] : 0;
+
+        items.push_back(flip);
+    }
+
+    return items;
+}
+
+static void RefreshFlips()
+{
+    std::vector<FlipItem> allFlips;
+
+    for (int page = 1; page <= 4; page++)
+    {
+        char url[512];
+        snprintf(url, sizeof(url),
+            "%s?profit-pct-min=10&profit-pct-max=100&sold-day-min=20&bought-day-min=20&sort=profit&page=%d",
+            BLTC_SEARCH, page);
+
+        std::string html = HttpGet(url);
+        if (html.empty()) break;
+
+        auto pageFlips = ParseBltcPage(html);
+        if (pageFlips.empty()) break;
+
+        allFlips.insert(allFlips.end(), pageFlips.begin(), pageFlips.end());
+    }
+
+    if (!allFlips.empty())
+    {
+        std::lock_guard<std::mutex> lock(g_DataMutex);
+        g_Data.flips = allFlips;
+    }
+
+    if (APIDefs)
+    {
+        char msg[128];
+        snprintf(msg, sizeof(msg), "Fetched %zu flips from GW2BLTC", allFlips.size());
+        APIDefs->Log(LOGL_DEBUG, "MysticTrading", msg);
+    }
 }
 
 // ============================================================================
@@ -366,17 +647,12 @@ void LoadItemIcon(const std::string& iconUrl, int itemId)
 {
     if (!APIDefs || iconUrl.empty()) return;
 
-    // Create a unique identifier for each icon
     char idBuf[64];
     snprintf(idBuf, sizeof(idBuf), "MT_ICON_%d", itemId);
 
-    // Check if already loaded
     Texture_t* existing = APIDefs->Textures_Get(idBuf);
     if (existing) return;
 
-    // Parse URL into remote + endpoint
-    // Icons are like: https://render.guildwars2.com/file/HASH/ITEMID.png
-    // Nexus expects: remote = "https://render.guildwars2.com", endpoint = "/file/HASH/ITEMID.png"
     size_t protoEnd = iconUrl.find("://");
     if (protoEnd == std::string::npos) return;
     size_t pathStart = iconUrl.find('/', protoEnd + 3);
@@ -394,75 +670,52 @@ void LoadItemIcon(const std::string& iconUrl, int itemId)
 
 static void FetchLoop()
 {
-    int fetchCount = 0;
+    int cycle = 0;
 
     while (g_Running)
     {
-        // Re-read config each cycle
+        // Read API key from config
+        std::string apiKey;
         {
             std::ifstream f(g_ConfigPath);
             std::string line;
             while (std::getline(f, line))
             {
-                if (line.find("session=") == 0)
-                    g_SessionCookie = line.substr(8);
-                if (line.find("portal_url=") == 0)
-                    g_PortalUrl = line.substr(11);
+                if (line.find("api_key=") == 0)
+                    apiKey = line.substr(8);
                 if (line.find("refresh=") == 0)
                     g_RefreshInterval = atoi(line.substr(8).c_str());
             }
         }
 
-        if (g_SessionCookie.empty())
+        if (apiKey.empty())
         {
             if (APIDefs)
-                APIDefs->Log(LOGL_WARNING, "MysticTrading", "No session cookie configured. Set it in Nexus addon options.");
+                APIDefs->Log(LOGL_WARNING, "MysticTrading", "No GW2 API key configured. Set it in Nexus addon options.");
             for (int i = 0; i < 100 && g_Running; i++)
                 Sleep(100);
             continue;
         }
 
-        std::string baseUrl = g_PortalUrl + "/api/games/gw2";
+        // Always refresh trading post (30s)
+        RefreshTradingPost(apiKey);
 
-        // Always fetch trading post + flips
-        std::string tpJson = HttpGet(baseUrl + "/trading-post", g_SessionCookie);
-        std::string flipsJson = HttpGet(baseUrl + "/flips", g_SessionCookie);
+        // Refresh flips every 5th cycle (~2.5 min at 30s interval)
+        if (cycle % 5 == 0)
+            RefreshFlips();
 
-        // Fetch bank + materials less frequently (every 5th cycle)
-        std::string bankJson, matsJson;
-        if (fetchCount % 5 == 0)
+        // Refresh bank + materials every 10th cycle (~5 min)
+        if (cycle % 10 == 0)
         {
-            bankJson = HttpGet(baseUrl + "/bank", g_SessionCookie);
-            matsJson = HttpGet(baseUrl + "/materials", g_SessionCookie);
+            RefreshBankOrMats(apiKey, "/account/bank", true);
+            RefreshBankOrMats(apiKey, "/account/materials", false);
         }
 
-        // Parse and update
+        // Queue icon loads
         {
             std::lock_guard<std::mutex> lock(g_DataMutex);
-
-            if (!tpJson.empty())
-                g_Data.tradingPost = ParseTradingPost(tpJson);
-
-            if (!flipsJson.empty())
-                g_Data.flips = ParseFlips(flipsJson);
-
-            if (!bankJson.empty())
-            {
-                g_Data.bank = ParseItems(bankJson, "items");
-                std::string totalJson = FindValue(bankJson, "total");
-                if (!totalJson.empty()) g_Data.bankTotal = ParseCoins(totalJson);
-            }
-
-            if (!matsJson.empty())
-            {
-                g_Data.materials = ParseItems(matsJson, "items");
-                std::string totalJson = FindValue(matsJson, "total");
-                if (!totalJson.empty()) g_Data.matsTotal = ParseCoins(totalJson);
-            }
-
             g_Data.loaded = true;
 
-            // Queue icon loads for visible items
             for (auto& flip : g_Data.flips)
                 LoadItemIcon(flip.icon, flip.id);
             for (auto& item : g_Data.tradingPost.delivery.items)
@@ -480,15 +733,14 @@ static void FetchLoop()
         if (APIDefs)
         {
             char msg[256];
-            snprintf(msg, sizeof(msg), "Data refreshed: %zu flips, %zu sells, %zu buys, %zu bank, %zu mats",
-                g_Data.flips.size(), g_Data.tradingPost.sells.size(),
+            snprintf(msg, sizeof(msg), "Cycle %d: %zu flips, %zu sells, %zu buys, %zu bank, %zu mats",
+                cycle, g_Data.flips.size(), g_Data.tradingPost.sells.size(),
                 g_Data.tradingPost.buys.size(), g_Data.bank.size(), g_Data.materials.size());
             APIDefs->Log(LOGL_DEBUG, "MysticTrading", msg);
         }
 
-        fetchCount++;
+        cycle++;
 
-        // Sleep for refresh interval (interruptible)
         for (int i = 0; i < g_RefreshInterval * 10 && g_Running; i++)
             Sleep(100);
     }
@@ -515,7 +767,6 @@ void CopyToClipboard(const std::string& text)
 {
     if (!OpenClipboard(nullptr)) return;
     EmptyClipboard();
-
     HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, text.size() + 1);
     if (hMem)
     {
@@ -538,42 +789,31 @@ void LoadConfig()
 {
     std::ifstream f(g_ConfigPath);
     if (!f.is_open()) return;
-
     std::string line;
     while (std::getline(f, line))
     {
-        if (line.find("portal_url=") == 0)
-            g_PortalUrl = line.substr(11);
         if (line.find("refresh=") == 0)
             g_RefreshInterval = atoi(line.substr(8).c_str());
-        if (line.find("session=") == 0)
-            g_SessionCookie = line.substr(8);
     }
 }
 
 void SaveConfig()
 {
-    // Read existing session first
-    std::string existingSession;
+    // Read existing API key
+    std::string existingKey;
     {
         std::ifstream f(g_ConfigPath);
         std::string line;
         while (std::getline(f, line))
         {
-            if (line.find("session=") == 0)
-                existingSession = line.substr(8);
+            if (line.find("api_key=") == 0)
+                existingKey = line.substr(8);
         }
     }
 
     std::ofstream f(g_ConfigPath);
     if (!f.is_open()) return;
-
-    f << "portal_url=" << g_PortalUrl << "\n";
     f << "refresh=" << g_RefreshInterval << "\n";
-
-    // Preserve session cookie
-    if (!existingSession.empty())
-        f << "session=" << existingSession << "\n";
-    else if (!g_SessionCookie.empty())
-        f << "session=" << g_SessionCookie << "\n";
+    if (!existingKey.empty())
+        f << "api_key=" << existingKey << "\n";
 }

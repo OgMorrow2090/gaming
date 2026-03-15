@@ -569,17 +569,29 @@ void RenderOptions()
     ImGui::Separator();
     ImGui::Spacing();
 
-    // Portal URL
-    static char urlBuf[256];
-    static bool urlInit = false;
-    if (!urlInit)
+    // GW2 API Key
+    ImGui::Text("GW2 API Key");
+    ImGui::TextDisabled("Generate at account.arena.net/applications");
+    ImGui::TextDisabled("Needs: account, inventories, tradingpost, wallet");
+    static char apiKeyBuf[256] = "";
+    ImGui::InputText("##apikey", apiKeyBuf, sizeof(apiKeyBuf), ImGuiInputTextFlags_Password);
+    if (ImGui::IsItemDeactivatedAfterEdit() && apiKeyBuf[0] != '\0')
     {
-        strncpy_s(urlBuf, sizeof(urlBuf), g_PortalUrl.c_str(), _TRUNCATE);
-        urlInit = true;
+        // Save to config
+        std::string configPath = std::string(APIDefs->Paths_GetAddonDirectory("MysticTrading")) + "\\mystic-trading.cfg";
+        std::string configContent;
+        configContent += "refresh=" + std::to_string(g_RefreshInterval) + "\n";
+        configContent += "api_key=" + std::string(apiKeyBuf) + "\n";
+
+        std::ofstream f(configPath);
+        if (f.is_open())
+            f << configContent;
+
+        if (APIDefs)
+            APIDefs->Log(LOGL_INFO, "MysticTrading", "GW2 API key updated.");
     }
-    ImGui::Text("Portal URL");
-    if (ImGui::InputText("##url", urlBuf, sizeof(urlBuf)))
-        g_PortalUrl = urlBuf;
+
+    ImGui::Spacing();
 
     // Refresh interval
     ImGui::Text("Refresh Interval");
@@ -589,36 +601,13 @@ void RenderOptions()
     ImGui::Separator();
     ImGui::Spacing();
 
-    // Session cookie
-    ImGui::Text("Session Cookie");
-    ImGui::TextDisabled("From your portal login (browser dev tools > Application > Cookies)");
-    static char sessionBuf[512] = "";
-    ImGui::InputText("##session", sessionBuf, sizeof(sessionBuf), ImGuiInputTextFlags_Password);
-    if (ImGui::IsItemDeactivatedAfterEdit() && sessionBuf[0] != '\0')
-    {
-        // Save to config
-        std::string configContent;
-        configContent += "portal_url=" + g_PortalUrl + "\n";
-        configContent += "refresh=" + std::to_string(g_RefreshInterval) + "\n";
-        configContent += "session=" + std::string(sessionBuf) + "\n";
-
-        std::string configPath = std::string(APIDefs->Paths_GetAddonDirectory("MysticTrading")) + "\\mystic-trading.cfg";
-        std::ofstream f(configPath);
-        if (f.is_open())
-            f << configContent;
-
-        if (APIDefs)
-            APIDefs->Log(LOGL_INFO, "MysticTrading", "Session cookie updated.");
-    }
-
-    ImGui::Spacing();
-    ImGui::Separator();
-    ImGui::Spacing();
-
     ImGui::TextDisabled("Keybinds:");
     ImGui::BulletText("ALT+T - Toggle full dashboard");
     ImGui::BulletText("ALT+F - Toggle flip column");
     ImGui::Spacing();
-    ImGui::TextDisabled("Click [C] next to any item to copy its name to clipboard.");
-    ImGui::TextDisabled("Drag the flip column next to the Trading Post for quick flipping.");
+    ImGui::TextDisabled("Click [C] next to any item to copy its name.");
+    ImGui::TextDisabled("Drag the flip column next to the TP for quick flipping.");
+    ImGui::Spacing();
+    ImGui::TextDisabled("Data: GW2 API (direct) + GW2BLTC (flips)");
+    ImGui::TextDisabled("No external portal dependency — fully standalone.");
 }

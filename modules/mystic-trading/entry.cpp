@@ -25,7 +25,6 @@ bool g_ShowFlipList = false;
 PortalData g_Data{};
 std::mutex g_DataMutex;
 
-std::string g_PortalUrl = "https://portal.addams.family";
 int g_RefreshInterval = 30;
 
 // Forward declarations
@@ -58,7 +57,7 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     AddonDef.Version.Build = 0;
     AddonDef.Version.Revision = 0;
     AddonDef.Author = "OgMorrow2090";
-    AddonDef.Description = "In-game trading post overlay with flips, orders, bank, and materials from the addams.family portal.";
+    AddonDef.Description = "In-game trading post overlay with flips, orders, bank, and materials. Standalone — talks directly to GW2 API and GW2BLTC.";
 
     AddonDef.Load = AddonLoad;
     AddonDef.Unload = AddonUnload;

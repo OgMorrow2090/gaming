@@ -150,5 +150,4 @@ void LoadConfig();
 void SaveConfig();
 
 // Config values
-extern std::string g_PortalUrl;
 extern int g_RefreshInterval;

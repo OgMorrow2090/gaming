@@ -1,0 +1,26 @@
+name: Build Mystic Clicker
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build Release
+        run: msbuild mystic-clicker.vcxproj /p:Configuration=Release /p:Platform=x64
+
+      - name: Upload DLL artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mystic-clicker
+          path: bin/Release/mystic-clicker.dll

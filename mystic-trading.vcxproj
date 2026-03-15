@@ -105,12 +105,18 @@
     <ClCompile Include="modules\mystic-trading\keybinds.cpp" />
     <ClCompile Include="modules\mystic-trading\api-client.cpp" />
     <ClCompile Include="modules\mystic-trading\render.cpp" />
+    <ClCompile Include="include\imgui\imgui.cpp" />
+    <ClCompile Include="include\imgui\imgui_draw.cpp" />
+    <ClCompile Include="include\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="include\imgui\imgui_tables.cpp" />
   </ItemGroup>
 
   <ItemGroup>
     <ClInclude Include="modules\mystic-trading\shared.h" />
     <ClInclude Include="include\Nexus.h" />
     <ClInclude Include="include\imgui\imgui.h" />
+    <ClInclude Include="include\imgui\imgui_internal.h" />
+    <ClInclude Include="include\imgui\imconfig.h" />
   </ItemGroup>
 
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

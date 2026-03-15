@@ -1,4 +1,4 @@
-name: Build Mystic Clicker
+name: Build GW2 Addons
 
 on:
   push:
@@ -9,6 +9,13 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        module:
+          - name: mystic-clicker
+            vcxproj: mystic-clicker.vcxproj
+          - name: mystic-trading
+            vcxproj: mystic-trading.vcxproj
 
     steps:
       - uses: actions/checkout@v4
@@ -16,11 +23,11 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      - name: Build Release
-        run: msbuild mystic-clicker.vcxproj /p:Configuration=Release /p:Platform=x64 /p:PlatformToolset=v143
+      - name: Build ${{ matrix.module.name }}
+        run: msbuild ${{ matrix.module.vcxproj }} /p:Configuration=Release /p:Platform=x64 /p:PlatformToolset=v143
 
-      - name: Upload DLL artifact
+      - name: Upload ${{ matrix.module.name }} DLL
         uses: actions/upload-artifact@v4
         with:
-          name: mystic-clicker
-          path: bin/Release/mystic-clicker.dll
+          name: ${{ matrix.module.name }}
+          path: bin/Release/${{ matrix.module.name }}.dll

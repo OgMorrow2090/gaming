@@ -19,9 +19,6 @@ Release/
 *.exp
 *.lib
 
-# ImGui (not used in current implementation)
-include/imgui/
-
 # OS files
 Thumbs.db
 .DS_Store

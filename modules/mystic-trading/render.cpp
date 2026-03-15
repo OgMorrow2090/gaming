@@ -14,6 +14,8 @@
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
+#include <fstream>
+#include <string>
 
 // ============================================================================
 // Style Constants (Fast Swap inspired)
@@ -121,7 +123,7 @@ static bool RenderItemIcon(int itemId)
 
     if (tex && tex->Resource)
     {
-        ImGui::Image(tex->Resource, ImVec2(ICON_SIZE, ICON_SIZE));
+        ImGui::Image((ImTextureID)tex->Resource, ImVec2(ICON_SIZE, ICON_SIZE));
         return true;
     }
 
@@ -572,7 +574,7 @@ void RenderOptions()
     static bool urlInit = false;
     if (!urlInit)
     {
-        strncpy(urlBuf, g_PortalUrl.c_str(), sizeof(urlBuf) - 1);
+        strncpy_s(urlBuf, sizeof(urlBuf), g_PortalUrl.c_str(), _TRUNCATE);
         urlInit = true;
     }
     ImGui::Text("Portal URL");

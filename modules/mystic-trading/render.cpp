@@ -565,6 +565,9 @@ void RenderFlipList()
 
 void RenderOptions()
 {
+    if (!APIDefs) return;
+    if (ImGuiCtx) ImGui::SetCurrentContext(ImGuiCtx);
+
     ImGui::TextColored(COLOR_FLIPS, "Mystic Trading");
     ImGui::Separator();
     ImGui::Spacing();

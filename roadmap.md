@@ -2,7 +2,7 @@
 
 Development plans for Guild Wars 2 Addons.
 
-## ✅ Completed: Inventory Hotkeys Addon v1.0.0
+## ✅ Completed: Mystic Clicker Addon v1.0.0
 
 ### Phase 1: Foundation ✅
 

@@ -14,9 +14,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <ProjectGuid>{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}</ProjectGuid>
-    <RootNamespace>InventoryHotkeys</RootNamespace>
+    <RootNamespace>MysticClicker</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>inventory-hotkeys</ProjectName>
+    <ProjectName>mystic-clicker</ProjectName>
   </PropertyGroup>
   
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -51,14 +51,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)bin\Debug\</OutDir>
     <IntDir>$(ProjectDir)obj\Debug\</IntDir>
-    <TargetName>inventory-hotkeys</TargetName>
+    <TargetName>mystic-clicker</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ProjectDir)bin\Release\</OutDir>
     <IntDir>$(ProjectDir)obj\Release\</IntDir>
-    <TargetName>inventory-hotkeys</TargetName>
+    <TargetName>mystic-clicker</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   
@@ -69,7 +69,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src\mystic-clicker;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -87,7 +87,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src\mystic-clicker;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -99,14 +99,14 @@
   </ItemDefinitionGroup>
   
   <ItemGroup>
-    <ClCompile Include="src\entry.cpp" />
-    <ClCompile Include="src\keybinds.cpp" />
-    <ClCompile Include="src\input-sim.cpp" />
-    <ClCompile Include="src\config.cpp" />
+    <ClCompile Include="src\mystic-clicker\entry.cpp" />
+    <ClCompile Include="src\mystic-clicker\keybinds.cpp" />
+    <ClCompile Include="src\mystic-clicker\input-sim.cpp" />
+    <ClCompile Include="src\mystic-clicker\config.cpp" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <ClInclude Include="src\shared.h" />
+    <ClInclude Include="src\mystic-clicker\shared.h" />
     <ClInclude Include="include\Nexus.h" />
   </ItemGroup>
   

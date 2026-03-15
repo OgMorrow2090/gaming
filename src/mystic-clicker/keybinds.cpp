@@ -1,7 +1,7 @@
 /**
  * keybinds.cpp
  * 
- * Keybind registration and handler for Inventory Hotkeys addon.
+ * Keybind registration and handler for Mystic Clicker addon.
  * Routes keybind events to appropriate input simulation functions.
  * 
  * Author: OgMorrow2090

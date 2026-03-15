@@ -76,7 +76,7 @@ void CaptureTpRemovePosition();
 void CaptureGenericPosition(int slot);
 
 // Config functions
-void SetConfigPath(const char* addonPath);
+void SetConfigPath(const char* addonPath, const char* legacyPath);
 void LoadButtonPositions();
 void SaveButtonPositions();
 void CheckResolutionChange();

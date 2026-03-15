@@ -1,7 +1,7 @@
 /**
  * input-sim.cpp
  * 
- * Input simulation functions for clicking inventory buttons.
+ * Input simulation functions for Mystic Clicker addon.
  * Uses Nexus SendWndProcToGameOnly() to send mouse events directly to the game.
  * 
  * Author: OgMorrow2090
@@ -37,7 +37,7 @@ static void EnsureGameWindow()
     if (GameWindow == nullptr)
     {
         GameWindow = GetForegroundWindow();
-        APIDefs->Log(LOGL_WARNING, "InventoryHotkeys", "Using foreground window");
+        APIDefs->Log(LOGL_WARNING, "MysticClicker", "Using foreground window");
     }
 }
 
@@ -53,7 +53,7 @@ void SimulateClickAt(int x, int y)
     EnsureGameWindow();
     if (GameWindow == nullptr)
     {
-        APIDefs->Log(LOGL_WARNING, "InventoryHotkeys", "Game window not available");
+        APIDefs->Log(LOGL_WARNING, "MysticClicker", "Game window not available");
         return;
     }
     
@@ -71,7 +71,7 @@ void SimulateRightClickAt(int x, int y)
     EnsureGameWindow();
     if (GameWindow == nullptr)
     {
-        APIDefs->Log(LOGL_WARNING, "InventoryHotkeys", "Game window not available");
+        APIDefs->Log(LOGL_WARNING, "MysticClicker", "Game window not available");
         return;
     }
     
@@ -100,7 +100,7 @@ void SimulateDepositMaterialsClick()
         APIDefs->GUI_SendAlert("Deposit position not set! Use Ctrl+Shift+D to capture");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "InventoryHotkeys", "Clicking Deposit Materials");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Deposit Materials");
     SimulateClickAt(g_DepositX, g_DepositY);
 }
 
@@ -111,7 +111,7 @@ void SimulateSortInventoryClick()
         APIDefs->GUI_SendAlert("Sort position not set! Use Ctrl+Shift+C to capture");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "InventoryHotkeys", "Clicking Sort/Compact");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Sort/Compact");
     SimulateClickAt(g_SortX, g_SortY);
 }
 
@@ -122,13 +122,13 @@ void SimulateOpenChestClick()
         APIDefs->GUI_SendAlert("Chest position not set! Use Ctrl+Shift+B to capture");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "InventoryHotkeys", "Right-clicking Bouncy Chest");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Right-clicking Bouncy Chest");
     SimulateRightClickAt(g_ChestX, g_ChestY);
 }
 
 void SimulateDepositAndSort()
 {
-    APIDefs->Log(LOGL_INFO, "InventoryHotkeys", "Combo: Deposit + Sort");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Combo: Deposit + Sort");
     
     // First deposit
     if (g_DepositX != 0 || g_DepositY != 0)
@@ -152,7 +152,7 @@ void SimulateExitInstanceClick()
         APIDefs->GUI_SendAlert("Exit Instance position not set! Use Ctrl+Shift+E to capture");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "InventoryHotkeys", "Clicking Exit Instance");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Exit Instance");
     SimulateClickAt(g_ExitInstanceX, g_ExitInstanceY);
 }
 
@@ -181,7 +181,7 @@ void SimulateGenericClick(int slot)
     
     char buffer[64];
     sprintf_s(buffer, "Clicking %s", slotName);
-    APIDefs->Log(LOGL_INFO, "InventoryHotkeys", buffer);
+    APIDefs->Log(LOGL_INFO, "MysticClicker", buffer);
     SimulateClickAt(x, y);
 }
 
@@ -192,7 +192,7 @@ void SimulateYesDialogClick()
         APIDefs->GUI_SendAlert("Yes Dialog position not set! Capture first");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "InventoryHotkeys", "Clicking Yes Dialog");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Yes Dialog");
     SimulateClickAt(g_YesDialogX, g_YesDialogY);
 }
 
@@ -203,7 +203,7 @@ void SimulateMysticForgeClick()
         APIDefs->GUI_SendAlert("Mystic Forge position not set! Capture first");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "InventoryHotkeys", "Clicking Mystic Forge");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Mystic Forge");
     SimulateClickAt(g_MysticForgeX, g_MysticForgeY);
 }
 
@@ -214,7 +214,7 @@ void SimulateMysticRefillClick()
         APIDefs->GUI_SendAlert("Mystic Refill position not set! Capture first");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "InventoryHotkeys", "Clicking Mystic Refill");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Mystic Refill");
     SimulateClickAt(g_MysticRefillX, g_MysticRefillY);
 }
 
@@ -225,7 +225,7 @@ void SimulateVendorClick()
         APIDefs->GUI_SendAlert("Vendor position not set! Capture first");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "InventoryHotkeys", "Clicking Vendor");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Vendor");
     SimulateClickAt(g_VendorX, g_VendorY);
 }
 
@@ -236,7 +236,7 @@ void SimulateSellJunkClick()
         APIDefs->GUI_SendAlert("Sell Junk position not set! Capture first");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "InventoryHotkeys", "Clicking Sell Junk");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Sell Junk");
     SimulateClickAt(g_SellJunkX, g_SellJunkY);
 }
 
@@ -247,7 +247,7 @@ void SimulateTradingPostClick()
         APIDefs->GUI_SendAlert("Trading Post position not set! Capture first");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "InventoryHotkeys", "Clicking Trading Post");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Trading Post");
     SimulateClickAt(g_TradingPostX, g_TradingPostY);
 }
 
@@ -258,7 +258,7 @@ void SimulateTpRemoveClick()
         APIDefs->GUI_SendAlert("TP Remove position not set! Capture first");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "InventoryHotkeys", "Clicking TP Remove");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking TP Remove");
     SimulateClickAt(g_TpRemoveX, g_TpRemoveY);
 }
 
@@ -277,14 +277,14 @@ void SimulateMysticForgeCombo()
     }
     
     // Click Forge first
-    APIDefs->Log(LOGL_INFO, "InventoryHotkeys", "Mystic Forge Combo: Forge");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Mystic Forge Combo: Forge");
     SimulateClickAt(g_MysticForgeX, g_MysticForgeY);
     
     // Wait 100ms (same as Deposit+Sort combo)
     Sleep(100);
     
     // Click Refill
-    APIDefs->Log(LOGL_INFO, "InventoryHotkeys", "Mystic Forge Combo: Refill");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Mystic Forge Combo: Refill");
     SimulateClickAt(g_MysticRefillX, g_MysticRefillY);
 }
 
@@ -309,7 +309,7 @@ static void CapturePosition(int& outX, int& outY, const char* name)
         
         char buffer[128];
         sprintf_s(buffer, "%s captured: (%d, %d) - Saved!", name, pt.x, pt.y);
-        APIDefs->Log(LOGL_INFO, "InventoryHotkeys", buffer);
+        APIDefs->Log(LOGL_INFO, "MysticClicker", buffer);
         APIDefs->GUI_SendAlert(buffer);
         
         // Auto-save after each capture
@@ -317,7 +317,7 @@ static void CapturePosition(int& outX, int& outY, const char* name)
     }
     else
     {
-        APIDefs->Log(LOGL_WARNING, "InventoryHotkeys", "Failed to get cursor position");
+        APIDefs->Log(LOGL_WARNING, "MysticClicker", "Failed to get cursor position");
         APIDefs->GUI_SendAlert("Failed to capture position!");
     }
 }

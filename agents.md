@@ -13,7 +13,7 @@
 
 ## 🏗️ PROJECT OVERVIEW
 
-This repository contains Nexus addon development for Guild Wars 2. The primary project is an **Inventory Hotkeys Addon** that allows users to trigger inventory management functions via keyboard shortcuts instead of clicking buttons.
+This repository contains Nexus addon development for Guild Wars 2. The primary project is an **Mystic Clicker Addon** that allows users to trigger inventory management functions via keyboard shortcuts instead of clicking buttons.
 
 ### **Technical Context**
 
@@ -25,7 +25,7 @@ This repository contains Nexus addon development for Guild Wars 2. The primary p
 
 ## 🎯 CORE FUNCTIONALITY
 
-### **Inventory Hotkeys Addon**
+### **Mystic Clicker Addon**
 
 The addon intercepts registered keybinds and simulates mouse clicks on the inventory UI buttons:
 
@@ -40,13 +40,14 @@ User Presses Hotkey → Nexus Keybind Handler → Calculate Button Position → 
 
 ## 📁 FILE STRUCTURE CONVENTIONS
 
-### **Source Files (`src/`)**
+### **Source Files (`src/mystic-clicker/`)**
 
 | File | Purpose |
 |------|---------|
 | `entry.cpp` | DLL entry point, `GetAddonDef()` export, Load/Unload functions |
 | `keybinds.cpp` | Keybind registration and `ProcessKeybind()` handler |
 | `input-sim.cpp` | Input simulation using `SendWndProcToGameOnly()` |
+| `config.cpp` | Configuration file handling with per-resolution support |
 | `shared.h` | Global state, API pointer, shared definitions |
 
 ### **Include Files (`include/`)**
@@ -70,7 +71,7 @@ extern "C" __declspec(dllexport) AddonDefinition* GetAddonDef()
 {
     AddonDef.Signature = -12345;  // Negative for non-Raidcore addons
     AddonDef.APIVersion = NEXUS_API_VERSION;
-    AddonDef.Name = "Inventory Hotkeys";
+    AddonDef.Name = "Mystic Clicker";
     AddonDef.Version.Major = 1;
     AddonDef.Version.Minor = 0;
     AddonDef.Version.Build = 0;
@@ -214,13 +215,13 @@ The following keybind identifier names conflict with Nexus internals and will br
 ### **Deployment Path (Steam)**
 
 ```text
-C:\Program Files (x86)\Steam\steamapps\common\Guild Wars 2\addons\inventory-hotkeys.dll
+C:\Program Files (x86)\Steam\steamapps\common\Guild Wars 2\addons\mystic-clicker.dll
 ```
 
 **Deploy Command:**
 
 ```powershell
-Copy-Item "bin\Release\inventory-hotkeys.dll" "C:\Program Files (x86)\Steam\steamapps\common\Guild Wars 2\addons\" -Force
+Copy-Item "bin\Release\mystic-clicker.dll" "C:\Program Files (x86)\Steam\steamapps\common\Guild Wars 2\addons\" -Force
 ```
 
 ### **Naming Conventions**
@@ -249,8 +250,8 @@ if (icon != nullptr && icon->Resource != nullptr)
 
 ```cpp
 // Use Nexus logging for debugging
-APIDefs->Log(ELogLevel_INFO, "InventoryHotkeys", "Addon loaded successfully");
-APIDefs->Log(ELogLevel_WARNING, "InventoryHotkeys", "Could not detect inventory position");
+APIDefs->Log(ELogLevel_INFO, "MysticClicker", "Addon loaded successfully");
+APIDefs->Log(ELogLevel_WARNING, "MysticClicker", "Could not detect inventory position");
 ```
 
 ## 🔒 Security Audit & Hardening (MANDATORY)

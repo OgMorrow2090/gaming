@@ -1,9 +1,9 @@
 /**
  * entry.cpp
- * 
- * DLL entry point and Nexus addon definition for Inventory Hotkeys.
+ *
+ * DLL entry point and Nexus addon definition for Mystic Clicker.
  * Exports GetAddonDef() which Nexus calls to register the addon.
- * 
+ *
  * Author: OgMorrow2090
  * Repository: https://github.com/OgMorrow2090/guildwars2
  */
@@ -52,13 +52,13 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     AddonDef.APIVersion = NEXUS_API_VERSION;
     
     // Addon metadata
-    AddonDef.Name = "Inventory Hotkeys";
-    AddonDef.Version.Major = 1;
-    AddonDef.Version.Minor = 4;
+    AddonDef.Name = "Mystic Clicker";
+    AddonDef.Version.Major = 2;
+    AddonDef.Version.Minor = 0;
     AddonDef.Version.Build = 0;
     AddonDef.Version.Revision = 0;
     AddonDef.Author = "OgMorrow2090";
-    AddonDef.Description = "Hotkeys for inventory actions with per-resolution config support.";
+    AddonDef.Description = "One-click hotkeys for inventory, vendors, trading post, Mystic Forge, and more.";
     
     // Callbacks
     AddonDef.Load = AddonLoad;
@@ -84,7 +84,8 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs = aApi;
     
     // Set config path and load saved positions
-    SetConfigPath(APIDefs->Paths_GetAddonDirectory("InventoryHotkeys"));
+    SetConfigPath(APIDefs->Paths_GetAddonDirectory("MysticClicker"),
+                  APIDefs->Paths_GetAddonDirectory("MysticClicker"));
     LoadButtonPositions();
     
     // Get game window handle for input simulation
@@ -102,11 +103,11 @@ void AddonLoad(AddonAPI_t* aApi)
     if (GameWindow == nullptr)
     {
         // Last resort: get foreground window (will be set on first keybind press)
-        APIDefs->Log(LOGL_WARNING, "InventoryHotkeys", "Game window not found at load - will try on keybind press");
+        APIDefs->Log(LOGL_WARNING, "MysticClicker", "Game window not found at load - will try on keybind press");
     }
     else
     {
-        APIDefs->Log(LOGL_INFO, "InventoryHotkeys", "Game window found successfully!");
+        APIDefs->Log(LOGL_INFO, "MysticClicker", "Game window found successfully!");
     }
     
     // 13 action keybinds
@@ -137,7 +138,7 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(CAPTURE_TRADING_POST, ProcessKeybind, "CTRL+SHIFT+O");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_TP_REMOVE, ProcessKeybind, "CTRL+SHIFT+T");
 
-    APIDefs->Log(LOGL_INFO, "InventoryHotkeys", "Addon loaded - 24 keybinds.");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Addon loaded - 24 keybinds.");
 }
 
 /**
@@ -175,7 +176,7 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(CAPTURE_TRADING_POST);
     APIDefs->InputBinds_Deregister(CAPTURE_TP_REMOVE);
     
-    APIDefs->Log(LOGL_INFO, "InventoryHotkeys", "Addon unloaded.");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Addon unloaded.");
     APIDefs = nullptr;
     GameWindow = nullptr;
 }

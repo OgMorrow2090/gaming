@@ -7,6 +7,25 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-03-15
+
+### Changed
+
+- **Renamed addon to Mystic Clicker** - formerly "Inventory Hotkeys"
+- **New addon directory**: `MysticClicker` (was `InventoryHotkeys`)
+- **New config filenames**: `mystic-clicker-{width}x{height}.cfg` (was `inventory-hotkeys-*.cfg`)
+- **New DLL name**: `mystic-clicker.dll` (was `inventory-hotkeys.dll`)
+- **Reorganized source code** into `src/mystic-clicker/` subfolder for multi-module support
+
+### Added
+
+- **Automatic config migration** - On first load, copies all saved position configs from the old `InventoryHotkeys` directory to `MysticClicker` with renamed filenames. No manual action needed.
+
+### Technical
+
+- Solution and project files renamed to `mystic-clicker.sln` / `mystic-clicker.vcxproj`
+- Source files moved to `src/mystic-clicker/` to prepare for additional addon modules
+
 ## [1.4.0] - 2026-02-05
 
 ### Fixed
@@ -129,6 +148,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Date       | Highlights                                      |
 | ------- | ---------- | ----------------------------------------------- |
+| 2.0.0   | 2026-03-15 | Renamed to Mystic Clicker, config migration     |
 | 1.3.0   | 2026-02-04 | Mystic Forge, Vendor, Trading Post hotkeys      |
 | 1.2.0   | 2026-02-04 | Exit instance hotkey, 5 generic hotkeys         |
 | 1.1.0   | 2026-02-04 | Per-resolution configs, multi-device support    |

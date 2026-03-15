@@ -1,9 +1,9 @@
 /**
  * config.cpp
  * 
- * Configuration file handling for button positions.
+ * Configuration file handling for Mystic Clicker button positions.
  * Saves/loads positions to resolution-specific config files.
- * e.g., inventory-hotkeys-1920x1080.cfg, inventory-hotkeys-2560x1440.cfg
+ * e.g., mystic-clicker-1920x1080.cfg, mystic-clicker-2560x1440.cfg
  * 
  * Author: OgMorrow2090
  * Repository: https://github.com/OgMorrow2090/guildwars2
@@ -85,7 +85,7 @@ void GetCurrentResolution(int& width, int& height)
 std::string GetConfigPathForResolution(int width, int height)
 {
     char buffer[512];
-    sprintf_s(buffer, "%s\\inventory-hotkeys-%dx%d.cfg", g_ConfigDir.c_str(), width, height);
+    sprintf_s(buffer, "%s\\mystic-clicker-%dx%d.cfg", g_ConfigDir.c_str(), width, height);
     return std::string(buffer);
 }
 
@@ -102,21 +102,74 @@ std::string GetCurrentConfigPath()
 // Config File Functions
 // =============================================================================
 
-void SetConfigPath(const char* addonPath)
+static void MigrateLegacyConfigs(const std::string& newDir, const char* legacyPath)
+{
+    if (legacyPath == nullptr) return;
+
+    std::string oldDir(legacyPath);
+
+    // Check if legacy directory exists
+    DWORD attrs = GetFileAttributesA(oldDir.c_str());
+    if (attrs == INVALID_FILE_ATTRIBUTES || !(attrs & FILE_ATTRIBUTE_DIRECTORY))
+        return;
+
+    // Find all old config files and copy them with new names
+    std::string searchPattern = oldDir + "\\inventory-hotkeys-*.cfg";
+    WIN32_FIND_DATAA fd;
+    HANDLE hFind = FindFirstFileA(searchPattern.c_str(), &fd);
+
+    if (hFind == INVALID_HANDLE_VALUE) return;
+
+    int migrated = 0;
+    do
+    {
+        std::string oldFile = oldDir + "\\" + fd.cFileName;
+
+        // Replace "inventory-hotkeys-" with "mystic-clicker-" in filename
+        std::string newName(fd.cFileName);
+        size_t pos = newName.find("inventory-hotkeys-");
+        if (pos != std::string::npos)
+            newName.replace(pos, 18, "mystic-clicker-");
+
+        std::string newFile = newDir + "\\" + newName;
+
+        // Only copy if destination doesn't already exist
+        if (GetFileAttributesA(newFile.c_str()) == INVALID_FILE_ATTRIBUTES)
+        {
+            CopyFileA(oldFile.c_str(), newFile.c_str(), TRUE);
+            migrated++;
+        }
+    } while (FindNextFileA(hFind, &fd));
+
+    FindClose(hFind);
+
+    if (migrated > 0)
+    {
+        char buffer[128];
+        sprintf_s(buffer, "Migrated %d config(s) from InventoryHotkeys", migrated);
+        APIDefs->Log(LOGL_INFO, "MysticClicker", buffer);
+        APIDefs->GUI_SendAlert(buffer);
+    }
+}
+
+void SetConfigPath(const char* addonPath, const char* legacyPath)
 {
     if (addonPath != nullptr)
     {
         g_ConfigDir = std::string(addonPath);
-        
+
         // Create directory if it doesn't exist
         CreateDirectoryA(addonPath, NULL);
-        
+
+        // Migrate configs from old InventoryHotkeys directory
+        MigrateLegacyConfigs(g_ConfigDir, legacyPath);
+
         // Log current resolution
         int width, height;
         GetCurrentResolution(width, height);
         char buffer[128];
         sprintf_s(buffer, "Detected resolution: %dx%d", width, height);
-        APIDefs->Log(LOGL_INFO, "InventoryHotkeys", buffer);
+        APIDefs->Log(LOGL_INFO, "MysticClicker", buffer);
     }
 }
 
@@ -124,7 +177,7 @@ void LoadButtonPositions()
 {
     if (g_ConfigDir.empty())
     {
-        APIDefs->Log(LOGL_WARNING, "InventoryHotkeys", "Config path not set");
+        APIDefs->Log(LOGL_WARNING, "MysticClicker", "Config path not set");
         return;
     }
     
@@ -136,7 +189,7 @@ void LoadButtonPositions()
         char buffer[256];
         sprintf_s(buffer, "No config for %dx%d - use Ctrl+Shift+D/S/B to capture positions", 
                   g_CurrentResWidth, g_CurrentResHeight);
-        APIDefs->Log(LOGL_INFO, "InventoryHotkeys", buffer);
+        APIDefs->Log(LOGL_INFO, "MysticClicker", buffer);
         APIDefs->GUI_SendAlert(buffer);
         return;
     }
@@ -216,14 +269,14 @@ void LoadButtonPositions()
     sprintf_s(buffer, "Loaded [%dx%d]: Deposit(%d,%d) Sort(%d,%d) Chest(%d,%d)", 
               g_CurrentResWidth, g_CurrentResHeight,
               g_DepositX, g_DepositY, g_SortX, g_SortY, g_ChestX, g_ChestY);
-    APIDefs->Log(LOGL_INFO, "InventoryHotkeys", buffer);
+    APIDefs->Log(LOGL_INFO, "MysticClicker", buffer);
 }
 
 void SaveButtonPositions()
 {
     if (g_ConfigDir.empty())
     {
-        APIDefs->Log(LOGL_WARNING, "InventoryHotkeys", "Config path not set");
+        APIDefs->Log(LOGL_WARNING, "MysticClicker", "Config path not set");
         APIDefs->GUI_SendAlert("Error: Config path not set!");
         return;
     }
@@ -233,7 +286,7 @@ void SaveButtonPositions()
     std::ofstream file(configPath);
     if (!file.is_open())
     {
-        APIDefs->Log(LOGL_WARNING, "InventoryHotkeys", "Failed to save config file");
+        APIDefs->Log(LOGL_WARNING, "MysticClicker", "Failed to save config file");
         APIDefs->GUI_SendAlert("Error: Could not save config file!");
         return;
     }
@@ -277,7 +330,7 @@ void SaveButtonPositions()
     
     char buffer[256];
     sprintf_s(buffer, "Saved config for %dx%d", g_CurrentResWidth, g_CurrentResHeight);
-    APIDefs->Log(LOGL_INFO, "InventoryHotkeys", buffer);
+    APIDefs->Log(LOGL_INFO, "MysticClicker", buffer);
     APIDefs->GUI_SendAlert(buffer);
 }
 
@@ -296,7 +349,7 @@ void CheckResolutionChange()
         char buffer[256];
         sprintf_s(buffer, "Resolution changed: %dx%d -> %dx%d", 
                   g_CurrentResWidth, g_CurrentResHeight, width, height);
-        APIDefs->Log(LOGL_INFO, "InventoryHotkeys", buffer);
+        APIDefs->Log(LOGL_INFO, "MysticClicker", buffer);
         
         // Reset all positions for new resolution
         g_DepositX = 0;
@@ -412,7 +465,7 @@ void CheckResolutionChange()
             file.close();
             
             sprintf_s(buffer, "Loaded config for %dx%d", width, height);
-            APIDefs->Log(LOGL_INFO, "InventoryHotkeys", buffer);
+            APIDefs->Log(LOGL_INFO, "MysticClicker", buffer);
             APIDefs->GUI_SendAlert(buffer);
         }
         else

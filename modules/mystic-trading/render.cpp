@@ -146,7 +146,7 @@ static bool RenderCopyIcon(const char* id, const std::string& textToCopy)
     // Back page
     dl->AddRect(ImVec2(pos.x + 3, pos.y), ImVec2(pos.x + sz, pos.y + sz - 3), color, 1.0f);
     // Front page (offset)
-    dl->AddRectFilled(ImVec2(pos.x, pos.y + 3), ImVec2(pos.x + sz - 3, pos.y + sz), ImVec4(0.08f, 0.08f, 0.10f, 1.0f));
+    dl->AddRectFilled(ImVec2(pos.x, pos.y + 3), ImVec2(pos.x + sz - 3, pos.y + sz), ImGui::ColorConvertFloat4ToU32(ImVec4(0.08f, 0.08f, 0.10f, 1.0f)));
     dl->AddRect(ImVec2(pos.x, pos.y + 3), ImVec2(pos.x + sz - 3, pos.y + sz), color, 1.0f);
 
     ImGui::PopID();

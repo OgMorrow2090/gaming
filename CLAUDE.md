@@ -14,6 +14,8 @@ When the user says "cleanup", "session end", or "synchronize", read and follow t
 
 **Additionally**: Always update `memory/MEMORY.md` with any new stable patterns, conventions, or architectural decisions discovered during the session. This is separate from `memory/chat.md` (which logs session activity). MEMORY.md should capture reusable knowledge for future sessions. All memory files live in the `memory/` directory inside the repo and must be committed.
 
+**Memory merge rule**: If local memory exists at `~/.claude/projects/*/memory/`, it is stale. Merge any unique content into the repo `memory/` directory, then delete the local copy. The repo is the single source of truth for all memory.
+
 ## Key Rules
 
 - Source of truth: the Git repository for all code and configurations

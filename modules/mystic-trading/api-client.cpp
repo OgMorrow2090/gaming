@@ -300,6 +300,36 @@ static void RefreshTradingPost(const std::string& apiKey)
         }
     }
 
+    // Fetch currency details (name + icon) from /v2/currencies
+    if (!currencies.empty())
+    {
+        std::string curIds;
+        for (auto& c : currencies)
+        {
+            if (!curIds.empty()) curIds += ",";
+            curIds += std::to_string(c.id);
+        }
+        std::string curJson = HttpGet(std::string(GW2_API) + "/currencies?ids=" + curIds);
+        if (!curJson.empty() && curJson[0] == '[')
+        {
+            for (auto& obj : SplitArray(curJson))
+            {
+                int id = ToInt(FindValue(obj, "id"));
+                std::string name = FindValue(obj, "name");
+                std::string icon = FindValue(obj, "icon");
+                for (auto& c : currencies)
+                {
+                    if (c.id == id)
+                    {
+                        c.name = name;
+                        c.icon = icon;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     // Parse delivery
     int deliveryCopper = 0;
     std::vector<std::pair<int, int>> deliveryRaw; // id, count

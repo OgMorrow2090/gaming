@@ -333,19 +333,16 @@ static void RefreshTradingPost(const std::string& apiKey)
 
         // Sort to match portal: pinned currencies first, then by GW2 API order
         // PINNED_CURRENCIES from addams.family portal Games.vue
-        static const int PINNED[] = { 2, 23, 45, 78, 80, 79, 28, 70 };
-        static const int PINNED_COUNT = 8;
-
-        auto getPinIndex = [](int id) -> int {
-            for (int i = 0; i < PINNED_COUNT; i++)
-                if (PINNED[i] == id) return i;
-            return PINNED_COUNT + 1;
-        };
-
         std::sort(currencies.begin(), currencies.end(),
-            [&getPinIndex](const Currency& a, const Currency& b) {
-                int ai = getPinIndex(a.id);
-                int bi = getPinIndex(b.id);
+            [](const Currency& a, const Currency& b) {
+                // Hardcoded pin order: Karma, Spirit Shard, Volatile Magic,
+                // Fine/Master/Rare Rift Essence, Magnetite Shard, Legendary Insight
+                const int pinIds[] = { 2, 23, 45, 78, 80, 79, 28, 70 };
+                int ai = 999, bi = 999;
+                for (int i = 0; i < 8; i++) {
+                    if (pinIds[i] == a.id) ai = i;
+                    if (pinIds[i] == b.id) bi = i;
+                }
                 if (ai != bi) return ai < bi;
                 return a.order < b.order;
             });

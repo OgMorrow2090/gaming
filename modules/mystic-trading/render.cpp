@@ -421,8 +421,8 @@ void RenderDashboard()
 
         ImGui::Spacing();
 
-        // 2. Currencies / Wallet — always expanded
-        RenderSectionHeader("Currencies", COLOR_WALLET, -1, &g_Data.tradingPost.wallet.gold, true);
+        // 2. Wallet — always expanded (matches portal)
+        RenderSectionHeader("Wallet", COLOR_WALLET, -1, &g_Data.tradingPost.wallet.gold, true);
         {
             static char walletSearch[128] = "";
             ImGui::SetNextItemWidth(-1);

@@ -331,9 +331,24 @@ static void RefreshTradingPost(const std::string& apiKey)
             }
         }
 
-        // Sort by GW2 API order (same as portal)
+        // Sort to match portal: pinned currencies first, then by GW2 API order
+        // PINNED_CURRENCIES from addams.family portal Games.vue
+        static const int PINNED[] = { 2, 23, 45, 78, 80, 79, 28, 70 };
+        static const int PINNED_COUNT = 8;
+
+        auto getPinIndex = [](int id) -> int {
+            for (int i = 0; i < PINNED_COUNT; i++)
+                if (PINNED[i] == id) return i;
+            return PINNED_COUNT + 1;
+        };
+
         std::sort(currencies.begin(), currencies.end(),
-            [](const Currency& a, const Currency& b) { return a.order < b.order; });
+            [&getPinIndex](const Currency& a, const Currency& b) {
+                int ai = getPinIndex(a.id);
+                int bi = getPinIndex(b.id);
+                if (ai != bi) return ai < bi;
+                return a.order < b.order;
+            });
     }
 
     // Parse delivery

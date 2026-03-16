@@ -300,11 +300,9 @@ void RenderDeliveryBox()
     bool hasDelivery = g_Data.tradingPost.delivery.coins.raw > 0 ||
                        !g_Data.tradingPost.delivery.items.empty();
 
-    // Auto-show when there are delivery items (only auto-show, never auto-hide if user opened it)
-    if (hasDelivery && !g_ShowDelivery && !g_LockDelivery)
-        g_ShowDelivery = true;
-
-    if (!g_ShowDelivery) return;
+    // Always force show when there are items/gold to collect
+    // ALT+D toggles manually when empty
+    if (!g_ShowDelivery && !hasDelivery) return;
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(6, 2));

@@ -566,12 +566,15 @@ void RenderFlipList()
 
 void RenderOptions()
 {
-    if (!APIDefs) return;
-    // Do NOT call SetCurrentContext here — Nexus sets it before calling options render
-    // Calling it with a stale/wrong context crashes the game
-
-    ImGui::TextColored(COLOR_FLIPS, "Mystic Trading");
+    ImGui::Text("Mystic Trading v0.1");
     ImGui::Separator();
+
+    if (!APIDefs)
+    {
+        ImGui::Text("Addon not loaded.");
+        return;
+    }
+
     ImGui::Spacing();
 
     // GW2 API Key
@@ -579,28 +582,27 @@ void RenderOptions()
     ImGui::TextDisabled("Generate at account.arena.net/applications");
     ImGui::TextDisabled("Needs: account, inventories, tradingpost, wallet");
     static char apiKeyBuf[256] = "";
-    ImGui::InputText("##apikey", apiKeyBuf, sizeof(apiKeyBuf), ImGuiInputTextFlags_Password);
-    if (ImGui::IsItemDeactivatedAfterEdit() && apiKeyBuf[0] != '\0')
+    if (ImGui::InputText("##mt_apikey", apiKeyBuf, sizeof(apiKeyBuf), ImGuiInputTextFlags_Password))
     {
-        // Save to config
+        // just buffer update
+    }
+    if (ImGui::Button("Save API Key") && apiKeyBuf[0] != '\0')
+    {
         std::string configPath = std::string(APIDefs->Paths_GetAddonDirectory("MysticTrading")) + "\\mystic-trading.cfg";
-        std::string configContent;
-        configContent += "refresh=" + std::to_string(g_RefreshInterval) + "\n";
-        configContent += "api_key=" + std::string(apiKeyBuf) + "\n";
-
         std::ofstream f(configPath);
         if (f.is_open())
-            f << configContent;
-
-        if (APIDefs)
-            APIDefs->Log(LOGL_INFO, "MysticTrading", "GW2 API key updated.");
+        {
+            f << "refresh=" << g_RefreshInterval << "\n";
+            f << "api_key=" << apiKeyBuf << "\n";
+        }
+        APIDefs->Log(LOGL_INFO, "MysticTrading", "GW2 API key saved.");
     }
 
     ImGui::Spacing();
 
     // Refresh interval
-    ImGui::Text("Refresh Interval");
-    ImGui::SliderInt("##refresh", &g_RefreshInterval, 10, 300, "%d seconds");
+    ImGui::Text("Refresh Interval (seconds)");
+    ImGui::SliderInt("##mt_refresh", &g_RefreshInterval, 10, 300, "%d");
 
     ImGui::Spacing();
     ImGui::Separator();
@@ -614,5 +616,4 @@ void RenderOptions()
     ImGui::TextDisabled("Drag the flip column next to the TP for quick flipping.");
     ImGui::Spacing();
     ImGui::TextDisabled("Data: GW2 API (direct) + GW2BLTC (flips)");
-    ImGui::TextDisabled("No external portal dependency — fully standalone.");
 }

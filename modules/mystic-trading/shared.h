@@ -103,6 +103,7 @@ struct Currency {
     std::string name;
     std::string icon;
     int value;
+    int order;  // GW2 API sort order
 };
 
 // Wallet data

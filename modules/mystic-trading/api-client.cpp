@@ -317,17 +317,23 @@ static void RefreshTradingPost(const std::string& apiKey)
                 int id = ToInt(FindValue(obj, "id"));
                 std::string name = FindValue(obj, "name");
                 std::string icon = FindValue(obj, "icon");
+                int order = ToInt(FindValue(obj, "order"), 999);
                 for (auto& c : currencies)
                 {
                     if (c.id == id)
                     {
                         c.name = name;
                         c.icon = icon;
+                        c.order = order;
                         break;
                     }
                 }
             }
         }
+
+        // Sort by GW2 API order (same as portal)
+        std::sort(currencies.begin(), currencies.end(),
+            [](const Currency& a, const Currency& b) { return a.order < b.order; });
     }
 
     // Parse delivery

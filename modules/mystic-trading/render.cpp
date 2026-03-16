@@ -13,6 +13,7 @@
 #include "imgui/imgui.h"
 #include <cstdio>
 #include <cstring>
+#include <fstream>
 #include <algorithm>
 #include <fstream>
 #include <string>
@@ -566,7 +567,8 @@ void RenderFlipList()
 void RenderOptions()
 {
     if (!APIDefs) return;
-    if (ImGuiCtx) ImGui::SetCurrentContext(ImGuiCtx);
+    // Do NOT call SetCurrentContext here — Nexus sets it before calling options render
+    // Calling it with a stale/wrong context crashes the game
 
     ImGui::TextColored(COLOR_FLIPS, "Mystic Trading");
     ImGui::Separator();

@@ -876,6 +876,8 @@ void LoadConfig()
             g_IconScale = (float)atof(line.substr(11).c_str());
         if (line.find("row_scale=") == 0)
             g_RowScale = (float)atof(line.substr(10).c_str());
+        if (line.find("flip_limit=") == 0)
+            g_FlipLimit = atoi(line.substr(11).c_str());
     }
 }
 
@@ -899,6 +901,7 @@ void SaveConfig()
     f << "font_scale=" << g_FontScale << "\n";
     f << "icon_scale=" << g_IconScale << "\n";
     f << "row_scale=" << g_RowScale << "\n";
+    f << "flip_limit=" << g_FlipLimit << "\n";
     if (!existingKey.empty())
         f << "api_key=" << existingKey << "\n";
 }

@@ -32,6 +32,7 @@ int g_RefreshInterval = 30;
 float g_FontScale = 1.0f;
 float g_IconScale = 1.0f;
 float g_RowScale = 1.0f;
+int g_FlipLimit = 20;
 
 // Forward declarations
 void AddonLoad(AddonAPI_t* aApi);

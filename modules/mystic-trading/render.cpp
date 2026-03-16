@@ -512,6 +512,7 @@ void RenderDashboard()
             int idx = 0;
             for (auto& flip : g_Data.flips)
             {
+                if (idx >= g_FlipLimit) break;
                 if (!CaseInsensitiveFind(flip.name, flipSearch)) continue;
                 RenderFlipRow(flip, idx++, false);
             }
@@ -626,11 +627,12 @@ void RenderFlipList()
     ImGui::InputTextWithHint("##flipsearch", "Search items...", search, sizeof(search));
     ImGui::Spacing();
 
-    // Scrollable flip list
+    // Scrollable flip list (limited by g_FlipLimit)
     ImGui::BeginChild("FlipScroll", ImVec2(0, 0), false);
     int idx = 0;
     for (auto& flip : g_Data.flips)
     {
+        if (idx >= g_FlipLimit) break;
         if (!CaseInsensitiveFind(flip.name, search)) continue;
         RenderFlipRow(flip, idx++, true);
     }
@@ -695,6 +697,25 @@ void RenderOptions()
     // Refresh interval
     ImGui::Text("Refresh Interval (seconds)");
     ImGui::SliderInt("##mt_refresh", &g_RefreshInterval, 10, 300, "%d");
+
+    ImGui::Spacing();
+    ImGui::Separator();
+    ImGui::Spacing();
+
+    // Flip limit dropdown
+    ImGui::Text("Flip Items to Show");
+    {
+        const char* flipOptions[] = { "20", "50", "100" };
+        int currentIdx = 0;
+        if (g_FlipLimit == 50) currentIdx = 1;
+        else if (g_FlipLimit == 100) currentIdx = 2;
+        if (ImGui::Combo("##mt_fliplimit", &currentIdx, flipOptions, 3))
+        {
+            if (currentIdx == 0) g_FlipLimit = 20;
+            else if (currentIdx == 1) g_FlipLimit = 50;
+            else g_FlipLimit = 100;
+        }
+    }
 
     ImGui::Spacing();
     ImGui::Separator();

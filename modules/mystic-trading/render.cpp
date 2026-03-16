@@ -300,16 +300,9 @@ void RenderDeliveryBox()
     bool hasDelivery = g_Data.tradingPost.delivery.coins.raw > 0 ||
                        !g_Data.tradingPost.delivery.items.empty();
 
-    // Auto-show when there are delivery items
-    if (hasDelivery && !g_ShowDelivery)
+    // Auto-show when there are delivery items (only auto-show, never auto-hide if user opened it)
+    if (hasDelivery && !g_ShowDelivery && !g_LockDelivery)
         g_ShowDelivery = true;
-
-    // Hide when nothing to deliver (unless locked)
-    if (!hasDelivery && !g_LockDelivery)
-    {
-        g_ShowDelivery = false;
-        return;
-    }
 
     if (!g_ShowDelivery) return;
 

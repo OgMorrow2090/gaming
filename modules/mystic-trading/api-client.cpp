@@ -15,7 +15,6 @@
 #include <algorithm>
 #include <set>
 #include <map>
-#include <regex>
 #include <wininet.h>
 
 #pragma comment(lib, "wininet.lib")
@@ -524,71 +523,125 @@ static std::string HtmlUnescape(const std::string& s)
     return result;
 }
 
+// Helper: extract string between two markers
+static std::string ExtractBetween(const std::string& s, size_t start, const std::string& before, const std::string& after)
+{
+    size_t a = s.find(before, start);
+    if (a == std::string::npos) return "";
+    a += before.length();
+    size_t b = s.find(after, a);
+    if (b == std::string::npos) return "";
+    return s.substr(a, b - a);
+}
+
+// Helper: extract int from next <td>...</td> containing only digits
+static int ExtractNextNumTd(const std::string& s, size_t& pos)
+{
+    // Find next <td that contains a bare number
+    while (pos < s.length())
+    {
+        size_t tdStart = s.find("<td", pos);
+        if (tdStart == std::string::npos) break;
+        size_t gt = s.find(">", tdStart);
+        if (gt == std::string::npos) break;
+        size_t tdEnd = s.find("</td>", gt);
+        if (tdEnd == std::string::npos) break;
+        std::string content = s.substr(gt + 1, tdEnd - gt - 1);
+        pos = tdEnd + 5;
+        // Check if content is just digits (possibly with commas)
+        std::string digits;
+        for (char c : content)
+        {
+            if (c >= '0' && c <= '9') digits += c;
+        }
+        if (!digits.empty() && content.find("<") == std::string::npos)
+            return atoi(digits.c_str());
+    }
+    return 0;
+}
+
 static std::vector<FlipItem> ParseBltcPage(const std::string& html)
 {
     std::vector<FlipItem> items;
 
-    // Regex patterns - use custom delimiter to avoid issues with quotes
-    std::regex rowRe(
-        R"xx(<img\s+class="icon-item\s+rarity-(\w+)[^"]*"\s+src="([^"]+)"[^>]*data-id="(\d+)".*?<td\s+class="td-name[^"]*"><a[^>]*>([^<]+)</a>)xx",
-        std::regex::optimize
-    );
-
-    auto rowIt = std::sregex_iterator(html.begin(), html.end(), rowRe);
-    auto rowEnd = std::sregex_iterator();
-
-    for (auto it = rowIt; it != rowEnd; ++it)
+    // Find each row by searching for "icon-item" class
+    size_t searchPos = 0;
+    while (searchPos < html.length())
     {
-        auto& m = *it;
-        std::string rarityClass = m[1].str();
-        std::string icon = m[2].str();
-        int itemId = atoi(m[3].str().c_str());
-        std::string name = HtmlUnescape(m[4].str());
+        // Find next item icon
+        size_t iconPos = html.find("icon-item", searchPos);
+        if (iconPos == std::string::npos) break;
 
-        // Find the row's coin TDs after this match
-        size_t rowStart = (size_t)m.position() + m.length();
+        // Extract rarity from class="icon-item rarity-exotic ..."
+        std::string rarity = ExtractBetween(html, iconPos, "rarity-", " ");
+        if (rarity.empty()) rarity = ExtractBetween(html, iconPos, "rarity-", "\"");
+        if (rarity.empty()) { searchPos = iconPos + 10; continue; }
 
-        // Find coin TDs (ones with cur-t1)
-        std::vector<int> coins;
-        std::regex tdRe(R"(<td[^>]*>.*?</td>)", std::regex::optimize);
-        std::string remaining = html.substr(rowStart, 2000); // look ahead
-        auto tdIt = std::sregex_iterator(remaining.begin(), remaining.end(), tdRe);
-        for (auto tdi = tdIt; tdi != std::sregex_iterator() && coins.size() < 4; ++tdi)
+        // Extract icon src
+        std::string icon = ExtractBetween(html, iconPos, "src=\"", "\"");
+
+        // Extract data-id
+        std::string idStr = ExtractBetween(html, iconPos, "data-id=\"", "\"");
+        int itemId = atoi(idStr.c_str());
+        if (itemId <= 0) { searchPos = iconPos + 10; continue; }
+
+        // Extract item name from td-name link
+        size_t namePos = html.find("td-name", iconPos);
+        if (namePos == std::string::npos) { searchPos = iconPos + 10; continue; }
+        std::string name = HtmlUnescape(ExtractBetween(html, namePos, ">", "</a>"));
+        // The first > is the td, then <a...>, we need the text inside <a>
+        size_t aPos = html.find("<a", namePos);
+        if (aPos != std::string::npos)
         {
-            std::string td = (*tdi)[0].str();
+            size_t aGt = html.find(">", aPos);
+            if (aGt != std::string::npos)
+            {
+                size_t aEnd = html.find("</a>", aGt);
+                if (aEnd != std::string::npos)
+                    name = HtmlUnescape(html.substr(aGt + 1, aEnd - aGt - 1));
+            }
+        }
+        if (name.empty()) { searchPos = iconPos + 10; continue; }
+
+        // Find coin values (cur-t1c = gold, cur-t1b = silver, cur-t1a = copper)
+        // There are 4 coin columns after the name: sell, buy, profit, ROI
+        std::vector<int> coins;
+        size_t coinSearch = namePos;
+        for (int col = 0; col < 4 && coinSearch < html.length(); col++)
+        {
+            // Find next <td that contains coin spans
+            size_t tdPos = html.find("<td", coinSearch);
+            if (tdPos == std::string::npos) break;
+            size_t tdEnd = html.find("</td>", tdPos);
+            if (tdEnd == std::string::npos) break;
+            std::string td = html.substr(tdPos, tdEnd - tdPos + 5);
+            coinSearch = tdEnd + 5;
+
             if (td.find("cur-t1") != std::string::npos)
                 coins.push_back(ParseCoinTd(td));
         }
 
-        if (coins.size() < 3) continue;
+        if (coins.size() < 3) { searchPos = iconPos + 10; continue; }
 
-        // Find numeric TDs for supply/demand/sold/offers/bought/bids
+        // Parse 6 numeric TDs: supply, demand, sold, offers, bought, bids
         std::vector<int> nums;
-        std::regex numTdRe(R"(<td[^>]*>(\d+)</td>)");
-        auto numIt = std::sregex_iterator(remaining.begin(), remaining.end(), numTdRe);
-        for (auto ni = numIt; ni != std::sregex_iterator() && nums.size() < 6; ++ni)
-            nums.push_back(atoi((*ni)[1].str().c_str()));
-
-        // Map rarity
-        std::map<std::string, std::string> rarityMap = {
-            {"junk","Junk"}, {"basic","Basic"}, {"fine","Fine"},
-            {"masterwork","Masterwork"}, {"rare","Rare"}, {"exotic","Exotic"},
-            {"ascended","Ascended"}, {"legendary","Legendary"},
-        };
-        std::string rarity = rarityMap.count(rarityClass) ? rarityMap[rarityClass] : rarityClass;
+        size_t numPos = coinSearch;
+        for (int i = 0; i < 6; i++)
+            nums.push_back(ExtractNextNumTd(html, numPos));
 
         int sellC = coins[0], buyC = coins[1], profitC = coins[2];
         float roi = buyC > 0 ? (float)profitC / (float)buyC * 100.0f : 0.0f;
 
-        // Try to parse ROI from 4th coin td if available
-        if (coins.size() >= 4 && coins[3] > 0)
-            roi = (float)coins[3]; // Sometimes BLTC puts ROI as a number
+        // Map rarity string
+        std::string rarityCapitalized = rarity;
+        if (!rarityCapitalized.empty())
+            rarityCapitalized[0] = (char)toupper(rarityCapitalized[0]);
 
         FlipItem flip{};
         flip.id = itemId;
         flip.name = name;
         flip.icon = icon;
-        flip.rarity = ParseRarity(rarity);
+        flip.rarity = ParseRarity(rarityCapitalized);
         flip.buyPrice = CopperToCoins(buyC);
         flip.sellPrice = CopperToCoins(sellC);
         flip.profit = CopperToCoins(profitC);
@@ -599,6 +652,7 @@ static std::vector<FlipItem> ParseBltcPage(const std::string& html)
         flip.bought = nums.size() > 4 ? nums[4] : 0;
 
         items.push_back(flip);
+        searchPos = numPos > iconPos ? numPos : iconPos + 10;
     }
 
     return items;

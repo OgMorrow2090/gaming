@@ -14,6 +14,7 @@
 #include <cstdio>
 #include <cstring>
 #include <fstream>
+#include <mutex>
 #include <algorithm>
 #include <fstream>
 #include <string>
@@ -577,10 +578,19 @@ void RenderOptions()
 
     ImGui::Spacing();
 
-    // GW2 API Key
+    // GW2 API Key status
     ImGui::Text("GW2 API Key");
     ImGui::TextDisabled("Generate at account.arena.net/applications");
     ImGui::TextDisabled("Needs: account, inventories, tradingpost, wallet");
+    {
+        std::lock_guard<std::mutex> lock(g_DataMutex);
+        if (g_Data.loaded)
+            ImGui::TextColored(ImVec4(0.2f, 0.8f, 0.2f, 1.0f), "Key: Active - data is loading");
+        else
+            ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.2f, 1.0f), "Key: Waiting for first fetch...");
+    }
+    ImGui::Spacing();
+    ImGui::Text("Enter new key to replace:");
     static char apiKeyBuf[256] = "";
     if (ImGui::InputText("##mt_apikey", apiKeyBuf, sizeof(apiKeyBuf), ImGuiInputTextFlags_Password))
     {

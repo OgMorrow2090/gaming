@@ -615,8 +615,22 @@ void RenderFlipList()
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4);
 
     ImGui::TextColored(COLOR_FLIPS, "Profitable Flips");
-    ImGui::SameLine(ImGui::GetWindowWidth() - 100);
-    ImGui::TextDisabled("(%zu)", g_Data.flips.size());
+    ImGui::SameLine(ImGui::GetWindowWidth() - 150);
+
+    // Flip limit dropdown right in the header
+    {
+        const char* opts[] = { "20", "50", "100" };
+        int ci = 0;
+        if (g_FlipLimit == 50) ci = 1;
+        else if (g_FlipLimit == 100) ci = 2;
+        ImGui::SetNextItemWidth(50);
+        if (ImGui::Combo("##flipcnt", &ci, opts, 3))
+        {
+            if (ci == 0) g_FlipLimit = 20;
+            else if (ci == 1) g_FlipLimit = 50;
+            else g_FlipLimit = 100;
+        }
+    }
     ImGui::SameLine();
     if (ImGui::SmallButton(g_LockFlipList ? "Unlock" : "Lock"))
         g_LockFlipList = !g_LockFlipList;

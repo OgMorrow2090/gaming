@@ -23,9 +23,13 @@
 // ============================================================================
 
 static const float ACCENT_WIDTH     = 3.0f;
-static const float ROW_HEIGHT       = 24.0f;
-static const float ICON_SIZE        = 20.0f;
+static const float BASE_ROW_HEIGHT  = 24.0f;
+static const float BASE_ICON_SIZE   = 20.0f;
 static const float SECTION_SPACING  = 8.0f;
+
+// Scaled sizes (use these everywhere)
+static float RowHeight() { return BASE_ROW_HEIGHT * g_RowScale; }
+static float IconSize()  { return BASE_ICON_SIZE * g_IconScale; }
 
 static ImVec4 GetRarityColor(Rarity r)
 {
@@ -74,7 +78,7 @@ static void DrawAccentBar(ImVec4 color)
     ImVec2 pos = ImGui::GetCursorScreenPos();
     ImGui::GetWindowDrawList()->AddRectFilled(
         ImVec2(pos.x - ACCENT_WIDTH - 2, pos.y),
-        ImVec2(pos.x - 2, pos.y + ROW_HEIGHT),
+        ImVec2(pos.x - 2, pos.y + RowHeight()),
         ImGui::ColorConvertFloat4ToU32(color));
 }
 
@@ -84,7 +88,7 @@ static void DrawRowBg(int index)
     float width = ImGui::GetContentRegionAvail().x;
     ImVec4 bg = (index % 2 == 0) ? ROW_BG_A : ROW_BG_B;
     ImGui::GetWindowDrawList()->AddRectFilled(
-        pos, ImVec2(pos.x + width, pos.y + ROW_HEIGHT),
+        pos, ImVec2(pos.x + width, pos.y + RowHeight()),
         ImGui::ColorConvertFloat4ToU32(bg));
 }
 
@@ -111,31 +115,40 @@ static bool RenderItemIcon(int itemId)
     Texture_t* tex = APIDefs->Textures_Get(idBuf);
     if (tex && tex->Resource)
     {
-        ImGui::Image((ImTextureID)tex->Resource, ImVec2(ICON_SIZE, ICON_SIZE));
+        ImGui::Image((ImTextureID)tex->Resource, ImVec2(IconSize(), IconSize()));
         return true;
     }
     ImVec2 pos = ImGui::GetCursorScreenPos();
-    ImGui::GetWindowDrawList()->AddRect(pos, ImVec2(pos.x + ICON_SIZE, pos.y + ICON_SIZE),
+    ImGui::GetWindowDrawList()->AddRect(pos, ImVec2(pos.x + IconSize(), pos.y + IconSize()),
         ImGui::ColorConvertFloat4ToU32(ImVec4(0.4f, 0.4f, 0.4f, 0.5f)));
-    ImGui::Dummy(ImVec2(ICON_SIZE, ICON_SIZE));
+    ImGui::Dummy(ImVec2(IconSize(), IconSize()));
     return false;
 }
 
-// Styled copy icon button — clipboard icon (right-aligned after value)
+// Draw a clipboard copy icon (two overlapping rectangles)
 static bool RenderCopyIcon(const char* id, const std::string& textToCopy)
 {
     ImGui::PushID(id);
-    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(1, 1, 1, 0.15f));
-    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.4f, 1.0f, 0.4f, 0.3f));
-    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(3, 2));
-    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 3.0f);
 
-    // Use a clipboard-like icon: small square with lines
-    bool clicked = ImGui::SmallButton(">>"); // arrow style copy indicator
+    float sz = 14.0f * g_IconScale;
+    ImVec2 pos = ImGui::GetCursorScreenPos();
 
-    ImGui::PopStyleVar(2);
-    ImGui::PopStyleColor(3);
+    // Invisible button for interaction
+    bool clicked = ImGui::InvisibleButton("##copy", ImVec2(sz + 4, sz + 2));
+
+    ImU32 color;
+    if (ImGui::IsItemHovered())
+        color = ImGui::ColorConvertFloat4ToU32(ImVec4(1.0f, 1.0f, 1.0f, 0.9f));
+    else
+        color = ImGui::ColorConvertFloat4ToU32(ImVec4(0.6f, 0.6f, 0.6f, 0.7f));
+
+    ImDrawList* dl = ImGui::GetWindowDrawList();
+    // Back page
+    dl->AddRect(ImVec2(pos.x + 3, pos.y), ImVec2(pos.x + sz, pos.y + sz - 3), color, 1.0f);
+    // Front page (offset)
+    dl->AddRectFilled(ImVec2(pos.x, pos.y + 3), ImVec2(pos.x + sz - 3, pos.y + sz), ImVec4(0.08f, 0.08f, 0.10f, 1.0f));
+    dl->AddRect(ImVec2(pos.x, pos.y + 3), ImVec2(pos.x + sz - 3, pos.y + sz), color, 1.0f);
+
     ImGui::PopID();
 
     if (clicked)
@@ -208,7 +221,7 @@ static void RenderFlipRow(const FlipItem& item, int index, bool compact)
         ImGui::SameLine(ImGui::GetWindowWidth() - 30);
         RenderCopyIcon("cp", item.name);
 
-        ImGui::Indent(ICON_SIZE + 8);
+        ImGui::Indent(IconSize() + 8);
         ImGui::TextDisabled("Buy:");
         ImGui::SameLine();
         RenderCoins(item.buyPrice);
@@ -227,7 +240,7 @@ static void RenderFlipRow(const FlipItem& item, int index, bool compact)
             ImGui::TextColored(ImVec4(0.8f, 1.0f, 0.0f, 1.0f), "(%.0f%%)", item.roi);
         ImGui::TextDisabled("S:%d  D:%d  Sold:%d  Bought:%d",
             item.supply, item.demand, item.sold, item.bought);
-        ImGui::Unindent(ICON_SIZE + 8);
+        ImGui::Unindent(IconSize() + 8);
     }
 
     ImGui::Spacing();
@@ -318,6 +331,7 @@ void RenderDeliveryBox()
         ImGui::PopStyleVar(2);
         return;
     }
+    ImGui::SetWindowFontScale(g_FontScale);
 
     // Header
     ImVec2 pos = ImGui::GetCursorScreenPos();
@@ -380,6 +394,7 @@ void RenderDashboard()
         ImGui::PopStyleVar(2);
         return;
     }
+    ImGui::SetWindowFontScale(g_FontScale);
 
     std::lock_guard<std::mutex> lock(g_DataMutex);
 
@@ -415,8 +430,8 @@ void RenderDashboard()
 
         ImGui::Spacing();
 
-        // 2. Currencies / Wallet
-        if (RenderSectionHeader("Currencies", COLOR_WALLET, -1, &g_Data.tradingPost.wallet.gold))
+        // 2. Currencies / Wallet — always expanded
+        RenderSectionHeader("Currencies", COLOR_WALLET, -1, &g_Data.tradingPost.wallet.gold, true);
         {
             static char walletSearch[128] = "";
             ImGui::SetNextItemWidth(-1);
@@ -425,6 +440,20 @@ void RenderDashboard()
             for (auto& c : g_Data.tradingPost.wallet.currencies)
             {
                 if (!CaseInsensitiveFind(c.name, walletSearch)) continue;
+
+                // Currency icon
+                if (!c.icon.empty())
+                {
+                    char iconId[64];
+                    snprintf(iconId, sizeof(iconId), "MT_CUR_%d", c.id);
+                    Texture_t* tex = APIDefs ? APIDefs->Textures_Get(iconId) : nullptr;
+                    if (tex && tex->Resource)
+                    {
+                        ImGui::Image((ImTextureID)tex->Resource, ImVec2(IconSize() * 0.8f, IconSize() * 0.8f));
+                        ImGui::SameLine();
+                    }
+                }
+
                 ImGui::TextDisabled("%s:", c.name.c_str());
                 ImGui::SameLine();
                 ImGui::Text("%d", c.value);
@@ -573,6 +602,7 @@ void RenderFlipList()
         ImGui::PopStyleVar(2);
         return;
     }
+    ImGui::SetWindowFontScale(g_FontScale);
 
     std::lock_guard<std::mutex> lock(g_DataMutex);
 
@@ -674,6 +704,25 @@ void RenderOptions()
     // Refresh interval
     ImGui::Text("Refresh Interval (seconds)");
     ImGui::SliderInt("##mt_refresh", &g_RefreshInterval, 10, 300, "%d");
+
+    ImGui::Spacing();
+    ImGui::Separator();
+    ImGui::Spacing();
+
+    // UI Scale settings
+    ImGui::Text("Appearance");
+    ImGui::Text("Text Size");
+    ImGui::SliderFloat("##mt_fontscale", &g_FontScale, 0.7f, 2.0f, "%.1f");
+    ImGui::Text("Icon Size");
+    ImGui::SliderFloat("##mt_iconscale", &g_IconScale, 0.5f, 3.0f, "%.1f");
+    ImGui::Text("Row Height");
+    ImGui::SliderFloat("##mt_rowscale", &g_RowScale, 0.7f, 2.0f, "%.1f");
+    if (ImGui::Button("Reset to Default"))
+    {
+        g_FontScale = 1.0f;
+        g_IconScale = 1.0f;
+        g_RowScale = 1.0f;
+    }
 
     ImGui::Spacing();
     ImGui::Separator();

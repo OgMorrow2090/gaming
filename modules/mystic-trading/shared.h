@@ -156,3 +156,8 @@ void SaveConfig();
 
 // Config values
 extern int g_RefreshInterval;
+
+// UI Scale settings
+extern float g_FontScale;      // 0.7 - 2.0, default 1.0
+extern float g_IconScale;      // 0.5 - 3.0, default 1.0
+extern float g_RowScale;       // 0.7 - 2.0, default 1.0

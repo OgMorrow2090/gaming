@@ -29,6 +29,9 @@ PortalData g_Data{};
 std::mutex g_DataMutex;
 
 int g_RefreshInterval = 30;
+float g_FontScale = 1.0f;
+float g_IconScale = 1.0f;
+float g_RowScale = 1.0f;
 
 // Forward declarations
 void AddonLoad(AddonAPI_t* aApi);
@@ -96,8 +99,9 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->GUI_Register(RT_OptionsRender, RenderOptions);
 
     // ESC closes dashboard and flip list (but NOT delivery box)
-    APIDefs->GUI_RegisterCloseOnEscape("Mystic Trading Dashboard", &g_ShowDashboard);
-    APIDefs->GUI_RegisterCloseOnEscape("Mystic Trading Flips", &g_ShowFlipList);
+    // Names must match ImGui::Begin() window IDs exactly
+    APIDefs->GUI_RegisterCloseOnEscape("Mystic Trading##Dashboard", &g_ShowDashboard);
+    APIDefs->GUI_RegisterCloseOnEscape("Flips##FlipColumn", &g_ShowFlipList);
 
     // Register keybinds
     APIDefs->InputBinds_RegisterWithString(KB_TOGGLE_DASHBOARD, ProcessKeybind, "ALT+T");
@@ -120,8 +124,8 @@ void AddonUnload()
     APIDefs->GUI_Deregister(RenderDeliveryBox);
     APIDefs->GUI_Deregister(RenderOptions);
 
-    APIDefs->GUI_DeregisterCloseOnEscape("Mystic Trading Dashboard");
-    APIDefs->GUI_DeregisterCloseOnEscape("Mystic Trading Flips");
+    APIDefs->GUI_DeregisterCloseOnEscape("Mystic Trading##Dashboard");
+    APIDefs->GUI_DeregisterCloseOnEscape("Flips##FlipColumn");
 
     APIDefs->InputBinds_Deregister(KB_TOGGLE_DASHBOARD);
     APIDefs->InputBinds_Deregister(KB_TOGGLE_FLIPLIST);

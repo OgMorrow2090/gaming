@@ -717,6 +717,27 @@ void LoadItemIcon(const std::string& iconUrl, int itemId)
     APIDefs->Textures_GetOrCreateFromURL(idBuf, remote.c_str(), endpoint.c_str());
 }
 
+static void LoadCurrencyIcon(const std::string& iconUrl, int currencyId)
+{
+    if (!APIDefs || iconUrl.empty()) return;
+
+    char idBuf[64];
+    snprintf(idBuf, sizeof(idBuf), "MT_CUR_%d", currencyId);
+
+    Texture_t* existing = APIDefs->Textures_Get(idBuf);
+    if (existing) return;
+
+    size_t protoEnd = iconUrl.find("://");
+    if (protoEnd == std::string::npos) return;
+    size_t pathStart = iconUrl.find('/', protoEnd + 3);
+    if (pathStart == std::string::npos) return;
+
+    std::string remote = iconUrl.substr(0, pathStart);
+    std::string endpoint = iconUrl.substr(pathStart);
+
+    APIDefs->Textures_GetOrCreateFromURL(idBuf, remote.c_str(), endpoint.c_str());
+}
+
 // ============================================================================
 // Fetch Loop
 // ============================================================================
@@ -781,6 +802,8 @@ static void FetchLoop()
                 LoadItemIcon(item.icon, item.id);
             for (auto& item : g_Data.materials)
                 LoadItemIcon(item.icon, item.id);
+            for (auto& c : g_Data.tradingPost.wallet.currencies)
+                LoadCurrencyIcon(c.icon, c.id);
         }
 
         if (APIDefs)
@@ -847,6 +870,12 @@ void LoadConfig()
     {
         if (line.find("refresh=") == 0)
             g_RefreshInterval = atoi(line.substr(8).c_str());
+        if (line.find("font_scale=") == 0)
+            g_FontScale = (float)atof(line.substr(11).c_str());
+        if (line.find("icon_scale=") == 0)
+            g_IconScale = (float)atof(line.substr(11).c_str());
+        if (line.find("row_scale=") == 0)
+            g_RowScale = (float)atof(line.substr(10).c_str());
     }
 }
 
@@ -867,6 +896,9 @@ void SaveConfig()
     std::ofstream f(g_ConfigPath);
     if (!f.is_open()) return;
     f << "refresh=" << g_RefreshInterval << "\n";
+    f << "font_scale=" << g_FontScale << "\n";
+    f << "icon_scale=" << g_IconScale << "\n";
+    f << "row_scale=" << g_RowScale << "\n";
     if (!existingKey.empty())
         f << "api_key=" << existingKey << "\n";
 }

@@ -18,4 +18,8 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     {
         g_ShowFlipList = !g_ShowFlipList;
     }
+    else if (strcmp(aIdentifier, KB_TOGGLE_DELIVERY) == 0)
+    {
+        g_ShowDelivery = !g_ShowDelivery;
+    }
 }

@@ -21,10 +21,14 @@ extern ImGuiContext* ImGuiCtx;
 // Keybind identifiers
 constexpr const char* KB_TOGGLE_DASHBOARD = "MT_TOGGLE_DASHBOARD";
 constexpr const char* KB_TOGGLE_FLIPLIST  = "MT_TOGGLE_FLIPLIST";
+constexpr const char* KB_TOGGLE_DELIVERY  = "MT_TOGGLE_DELIVERY";
 
 // Window visibility
 extern bool g_ShowDashboard;
 extern bool g_ShowFlipList;
+extern bool g_ShowDelivery;
+extern bool g_LockFlipList;
+extern bool g_LockDelivery;
 
 // Keybind handler
 void ProcessKeybind(const char* aIdentifier, bool aIsRelease);
@@ -32,6 +36,7 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease);
 // Render callbacks
 void RenderDashboard();
 void RenderFlipList();
+void RenderDeliveryBox();
 void RenderOptions();
 
 // Coin display helper

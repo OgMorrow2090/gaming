@@ -2,7 +2,7 @@
  * entry.cpp
  *
  * DLL entry point and Nexus addon definition for Mystic Trading.
- * In-game overlay for trading post data from the addams.family portal.
+ * Standalone in-game trading post overlay.
  *
  * Author: OgMorrow2090
  * Repository: https://github.com/OgMorrow2090/guildwars2
@@ -21,6 +21,9 @@ ImGuiContext* ImGuiCtx = nullptr;
 
 bool g_ShowDashboard = false;
 bool g_ShowFlipList = false;
+bool g_ShowDelivery = false;
+bool g_LockFlipList = false;
+bool g_LockDelivery = false;
 
 PortalData g_Data{};
 std::mutex g_DataMutex;
@@ -53,7 +56,7 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
 
     AddonDef.Name = "Mystic Trading";
     AddonDef.Version.Major = 0;
-    AddonDef.Version.Minor = 1;
+    AddonDef.Version.Minor = 2;
     AddonDef.Version.Build = 0;
     AddonDef.Version.Revision = 0;
     AddonDef.Author = "OgMorrow2090";
@@ -82,49 +85,47 @@ void AddonLoad(AddonAPI_t* aApi)
         (void (*)(void*, void*))APIDefs->ImguiFree
     );
 
-    // Load config (portal URL, refresh interval)
+    // Load config
     SetApiConfig(APIDefs->Paths_GetAddonDirectory("MysticTrading"));
     LoadConfig();
 
     // Register render callbacks
     APIDefs->GUI_Register(RT_Render, RenderDashboard);
     APIDefs->GUI_Register(RT_Render, RenderFlipList);
+    APIDefs->GUI_Register(RT_Render, RenderDeliveryBox);
     APIDefs->GUI_Register(RT_OptionsRender, RenderOptions);
 
-    // Register close-on-escape
+    // ESC closes dashboard and flip list (but NOT delivery box)
     APIDefs->GUI_RegisterCloseOnEscape("Mystic Trading Dashboard", &g_ShowDashboard);
     APIDefs->GUI_RegisterCloseOnEscape("Mystic Trading Flips", &g_ShowFlipList);
 
     // Register keybinds
     APIDefs->InputBinds_RegisterWithString(KB_TOGGLE_DASHBOARD, ProcessKeybind, "ALT+T");
     APIDefs->InputBinds_RegisterWithString(KB_TOGGLE_FLIPLIST, ProcessKeybind, "ALT+F");
+    APIDefs->InputBinds_RegisterWithString(KB_TOGGLE_DELIVERY, ProcessKeybind, "ALT+D");
 
     // Start background data fetching
     StartDataFetch();
 
-    APIDefs->Log(LOGL_INFO, "MysticTrading", "Addon loaded - dashboard (ALT+T), flip list (ALT+F).");
+    APIDefs->Log(LOGL_INFO, "MysticTrading", "Addon loaded - dashboard (ALT+T), flips (ALT+F), delivery (ALT+D).");
 }
 
 void AddonUnload()
 {
-    // Stop background fetch
     StopDataFetch();
-
-    // Save config
     SaveConfig();
 
-    // Deregister render callbacks
     APIDefs->GUI_Deregister(RenderDashboard);
     APIDefs->GUI_Deregister(RenderFlipList);
+    APIDefs->GUI_Deregister(RenderDeliveryBox);
     APIDefs->GUI_Deregister(RenderOptions);
 
-    // Deregister close-on-escape
     APIDefs->GUI_DeregisterCloseOnEscape("Mystic Trading Dashboard");
     APIDefs->GUI_DeregisterCloseOnEscape("Mystic Trading Flips");
 
-    // Deregister keybinds
     APIDefs->InputBinds_Deregister(KB_TOGGLE_DASHBOARD);
     APIDefs->InputBinds_Deregister(KB_TOGGLE_FLIPLIST);
+    APIDefs->InputBinds_Deregister(KB_TOGGLE_DELIVERY);
 
     APIDefs->Log(LOGL_INFO, "MysticTrading", "Addon unloaded.");
     APIDefs = nullptr;

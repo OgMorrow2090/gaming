@@ -2,10 +2,10 @@
  * render.cpp
  *
  * ImGui render callbacks for Mystic Trading.
- * Styled after Fast Swap with accent bars, row tints, and clean tables.
  *
- * - RenderDashboard: full portal view with all boards side by side
- * - RenderFlipList: slim draggable flip column for docking next to TP
+ * - RenderDashboard: full view — Delivery, Currencies, then rest (all collapsed by default)
+ * - RenderFlipList: slim draggable flip column, lockable size/position
+ * - RenderDeliveryBox: auto-shows when delivery items waiting, lockable, no ESC close
  * - RenderOptions: addon settings in Nexus options
  */
 
@@ -16,11 +16,10 @@
 #include <fstream>
 #include <mutex>
 #include <algorithm>
-#include <fstream>
 #include <string>
 
 // ============================================================================
-// Style Constants (Fast Swap inspired)
+// Style Constants
 // ============================================================================
 
 static const float ACCENT_WIDTH     = 3.0f;
@@ -28,7 +27,6 @@ static const float ROW_HEIGHT       = 24.0f;
 static const float ICON_SIZE        = 20.0f;
 static const float SECTION_SPACING  = 8.0f;
 
-// Rarity colors matching the portal
 static ImVec4 GetRarityColor(Rarity r)
 {
     switch (r)
@@ -43,21 +41,18 @@ static ImVec4 GetRarityColor(Rarity r)
     }
 }
 
-// Section header accent colors (matching portal board borders)
 static const ImVec4 COLOR_DELIVERY  = ImVec4(1.0f, 1.0f, 1.0f, 0.8f);
-static const ImVec4 COLOR_FLIPS     = ImVec4(0.925f, 0.306f, 0.596f, 1.0f); // #ec4899
-static const ImVec4 COLOR_SELLING   = ImVec4(0.133f, 0.773f, 0.369f, 1.0f); // #22c55e
-static const ImVec4 COLOR_BUYING    = ImVec4(0.918f, 0.702f, 0.031f, 1.0f); // #eab308
-static const ImVec4 COLOR_WALLET    = ImVec4(0.545f, 0.361f, 0.965f, 1.0f); // #8b5cf6
-static const ImVec4 COLOR_BANK      = ImVec4(0.937f, 0.267f, 0.267f, 1.0f); // #ef4444
-static const ImVec4 COLOR_MATS      = ImVec4(0.976f, 0.451f, 0.086f, 1.0f); // #f97316
+static const ImVec4 COLOR_FLIPS     = ImVec4(0.925f, 0.306f, 0.596f, 1.0f);
+static const ImVec4 COLOR_SELLING   = ImVec4(0.133f, 0.773f, 0.369f, 1.0f);
+static const ImVec4 COLOR_BUYING    = ImVec4(0.918f, 0.702f, 0.031f, 1.0f);
+static const ImVec4 COLOR_WALLET    = ImVec4(0.545f, 0.361f, 0.965f, 1.0f);
+static const ImVec4 COLOR_BANK      = ImVec4(0.937f, 0.267f, 0.267f, 1.0f);
+static const ImVec4 COLOR_MATS      = ImVec4(0.976f, 0.451f, 0.086f, 1.0f);
 
-// Coin colors
 static const ImVec4 COLOR_GOLD   = ImVec4(1.0f, 0.843f, 0.0f, 1.0f);
 static const ImVec4 COLOR_SILVER = ImVec4(0.75f, 0.75f, 0.75f, 1.0f);
 static const ImVec4 COLOR_COPPER = ImVec4(0.72f, 0.45f, 0.2f, 1.0f);
 
-// Row background (alternating, Fast Swap style)
 static const ImVec4 ROW_BG_A = ImVec4(0.22f, 0.26f, 0.32f, 0.35f);
 static const ImVec4 ROW_BG_B = ImVec4(0.22f, 0.26f, 0.32f, 0.15f);
 
@@ -74,31 +69,25 @@ static bool CaseInsensitiveFind(const std::string& haystack, const std::string& 
     return h.find(n) != std::string::npos;
 }
 
-// Draw a colored accent bar on the left side of the current row
 static void DrawAccentBar(ImVec4 color)
 {
     ImVec2 pos = ImGui::GetCursorScreenPos();
     ImGui::GetWindowDrawList()->AddRectFilled(
         ImVec2(pos.x - ACCENT_WIDTH - 2, pos.y),
         ImVec2(pos.x - 2, pos.y + ROW_HEIGHT),
-        ImGui::ColorConvertFloat4ToU32(color)
-    );
+        ImGui::ColorConvertFloat4ToU32(color));
 }
 
-// Draw alternating row background
 static void DrawRowBg(int index)
 {
     ImVec2 pos = ImGui::GetCursorScreenPos();
     float width = ImGui::GetContentRegionAvail().x;
     ImVec4 bg = (index % 2 == 0) ? ROW_BG_A : ROW_BG_B;
     ImGui::GetWindowDrawList()->AddRectFilled(
-        pos,
-        ImVec2(pos.x + width, pos.y + ROW_HEIGHT),
-        ImGui::ColorConvertFloat4ToU32(bg)
-    );
+        pos, ImVec2(pos.x + width, pos.y + ROW_HEIGHT),
+        ImGui::ColorConvertFloat4ToU32(bg));
 }
 
-// Render coin amount inline
 static void RenderCoins(Coins c, bool compact = false)
 {
     if (c.gold > 0)
@@ -114,22 +103,17 @@ static void RenderCoins(Coins c, bool compact = false)
     ImGui::TextColored(COLOR_COPPER, "%02dc", c.copper);
 }
 
-// Try to render item icon, returns true if rendered
 static bool RenderItemIcon(int itemId)
 {
     if (!APIDefs) return false;
-
     char idBuf[64];
     snprintf(idBuf, sizeof(idBuf), "MT_ICON_%d", itemId);
     Texture_t* tex = APIDefs->Textures_Get(idBuf);
-
     if (tex && tex->Resource)
     {
         ImGui::Image((ImTextureID)tex->Resource, ImVec2(ICON_SIZE, ICON_SIZE));
         return true;
     }
-
-    // Placeholder square
     ImVec2 pos = ImGui::GetCursorScreenPos();
     ImGui::GetWindowDrawList()->AddRect(pos, ImVec2(pos.x + ICON_SIZE, pos.y + ICON_SIZE),
         ImGui::ColorConvertFloat4ToU32(ImVec4(0.4f, 0.4f, 0.4f, 0.5f)));
@@ -137,18 +121,20 @@ static bool RenderItemIcon(int itemId)
     return false;
 }
 
-// Copy button with tooltip and flash feedback
-static bool RenderCopyButton(const char* id, const std::string& textToCopy)
+// Styled copy icon button — clipboard icon (right-aligned after value)
+static bool RenderCopyIcon(const char* id, const std::string& textToCopy)
 {
     ImGui::PushID(id);
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(1, 1, 1, 0.2f));
-    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.4f, 1.0f, 0.4f, 0.4f));
-    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(1, 1, 1, 0.15f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.4f, 1.0f, 0.4f, 0.3f));
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(3, 2));
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 3.0f);
 
-    bool clicked = ImGui::SmallButton("[C]");
+    // Use a clipboard-like icon: small square with lines
+    bool clicked = ImGui::SmallButton(">>"); // arrow style copy indicator
 
-    ImGui::PopStyleVar();
+    ImGui::PopStyleVar(2);
     ImGui::PopStyleColor(3);
     ImGui::PopID();
 
@@ -156,26 +142,24 @@ static bool RenderCopyButton(const char* id, const std::string& textToCopy)
         CopyToClipboard(textToCopy);
 
     if (ImGui::IsItemHovered())
-        ImGui::SetTooltip("Copy \"%s\" to clipboard", textToCopy.c_str());
+        ImGui::SetTooltip("Copy \"%s\"", textToCopy.c_str());
 
     return clicked;
 }
 
-// Section header with colored accent and item count
-static bool RenderSectionHeader(const char* label, ImVec4 accentColor, int count = -1, Coins* total = nullptr)
+// Section header — collapsed by default, with expand/collapse
+static bool RenderSectionHeader(const char* label, ImVec4 accentColor, int count = -1, Coins* total = nullptr, bool defaultOpen = false)
 {
-    // Draw accent bar for header
     ImVec2 pos = ImGui::GetCursorScreenPos();
     ImGui::GetWindowDrawList()->AddRectFilled(
         ImVec2(pos.x, pos.y),
         ImVec2(pos.x + ImGui::GetContentRegionAvail().x, pos.y + 2),
-        ImGui::ColorConvertFloat4ToU32(accentColor)
-    );
+        ImGui::ColorConvertFloat4ToU32(accentColor));
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4);
 
-    bool open = ImGui::CollapsingHeader(label, ImGuiTreeNodeFlags_DefaultOpen);
+    ImGuiTreeNodeFlags flags = defaultOpen ? ImGuiTreeNodeFlags_DefaultOpen : 0;
+    bool open = ImGui::CollapsingHeader(label, flags);
 
-    // Show count and total on same line as header
     if (count >= 0 || total)
     {
         ImGui::SameLine(ImGui::GetWindowWidth() - 200);
@@ -191,7 +175,7 @@ static bool RenderSectionHeader(const char* label, ImVec4 accentColor, int count
 }
 
 // ============================================================================
-// Row Renderers
+// Row Renderers — copy icon is to the RIGHT of the value
 // ============================================================================
 
 static void RenderFlipRow(const FlipItem& item, int index, bool compact)
@@ -200,21 +184,14 @@ static void RenderFlipRow(const FlipItem& item, int index, bool compact)
     DrawRowBg(index);
     DrawAccentBar(COLOR_FLIPS);
 
-    // Icon
     RenderItemIcon(item.id);
     ImGui::SameLine();
 
-    // Copy button
-    RenderCopyButton("cp", item.name);
-    ImGui::SameLine();
-
-    // Name with rarity color
     ImGui::TextColored(GetRarityColor(item.rarity), "%s", item.name.c_str());
 
     if (compact)
     {
-        // Compact mode: profit + ROI right-aligned
-        ImGui::SameLine(ImGui::GetWindowWidth() - 160);
+        ImGui::SameLine(ImGui::GetWindowWidth() - 180);
         RenderCoins(item.profit, true);
         ImGui::SameLine(0, 4);
         if (item.roi >= 50.0f)
@@ -223,36 +200,34 @@ static void RenderFlipRow(const FlipItem& item, int index, bool compact)
             ImGui::TextColored(ImVec4(0.8f, 1.0f, 0.0f, 1.0f), "%.0f%%", item.roi);
         else
             ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "%.0f%%", item.roi);
+        ImGui::SameLine();
+        RenderCopyIcon("cp", item.name);
     }
     else
     {
-        // Full mode: detailed row
-        ImGui::Indent(ICON_SIZE + 28);
+        ImGui::SameLine(ImGui::GetWindowWidth() - 30);
+        RenderCopyIcon("cp", item.name);
 
+        ImGui::Indent(ICON_SIZE + 8);
         ImGui::TextDisabled("Buy:");
         ImGui::SameLine();
         RenderCoins(item.buyPrice);
         ImGui::SameLine(0, 12);
-
         ImGui::TextDisabled("Sell:");
         ImGui::SameLine();
         RenderCoins(item.sellPrice);
         ImGui::SameLine(0, 12);
-
         ImGui::TextDisabled("Profit:");
         ImGui::SameLine();
         RenderCoins(item.profit);
         ImGui::SameLine(0, 4);
-
         if (item.roi >= 50.0f)
             ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.3f, 1.0f), "(%.0f%%)", item.roi);
         else
             ImGui::TextColored(ImVec4(0.8f, 1.0f, 0.0f, 1.0f), "(%.0f%%)", item.roi);
-
         ImGui::TextDisabled("S:%d  D:%d  Sold:%d  Bought:%d",
             item.supply, item.demand, item.sold, item.bought);
-
-        ImGui::Unindent(ICON_SIZE + 28);
+        ImGui::Unindent(ICON_SIZE + 8);
     }
 
     ImGui::Spacing();
@@ -267,15 +242,13 @@ static void RenderTransactionRow(const Transaction& tx, int index, ImVec4 accent
 
     RenderItemIcon(tx.itemId);
     ImGui::SameLine();
-
-    RenderCopyButton("cp", tx.name);
-    ImGui::SameLine();
-
     ImGui::TextColored(GetRarityColor(tx.rarity), "%s", tx.name.c_str());
     ImGui::SameLine();
     ImGui::TextDisabled("x%d", tx.quantity);
-    ImGui::SameLine(ImGui::GetWindowWidth() - 140);
+    ImGui::SameLine(ImGui::GetWindowWidth() - 160);
     RenderCoins(tx.price);
+    ImGui::SameLine();
+    RenderCopyIcon("cp", tx.name);
 
     ImGui::Spacing();
     ImGui::PopID();
@@ -289,22 +262,106 @@ static void RenderItemRow(const Item& item, int index, ImVec4 accent)
 
     RenderItemIcon(item.id);
     ImGui::SameLine();
-
-    RenderCopyButton("cp", item.name);
-    ImGui::SameLine();
-
     ImGui::TextColored(GetRarityColor(item.rarity), "%s", item.name.c_str());
     ImGui::SameLine();
     ImGui::TextDisabled("x%d", item.count);
-    ImGui::SameLine(ImGui::GetWindowWidth() - 140);
+    ImGui::SameLine(ImGui::GetWindowWidth() - 160);
     RenderCoins(item.totalValue);
+    ImGui::SameLine();
+    RenderCopyIcon("cp", item.name);
 
     ImGui::Spacing();
     ImGui::PopID();
 }
 
 // ============================================================================
-// FULL DASHBOARD
+// DELIVERY BOX — auto-shows, lockable, no ESC close
+// ============================================================================
+
+void RenderDeliveryBox()
+{
+    std::lock_guard<std::mutex> lock(g_DataMutex);
+
+    if (!g_Data.loaded) return;
+
+    bool hasDelivery = g_Data.tradingPost.delivery.coins.raw > 0 ||
+                       !g_Data.tradingPost.delivery.items.empty();
+
+    // Auto-show when there are delivery items
+    if (hasDelivery && !g_ShowDelivery)
+        g_ShowDelivery = true;
+
+    // Hide when nothing to deliver (unless locked)
+    if (!hasDelivery && !g_LockDelivery)
+    {
+        g_ShowDelivery = false;
+        return;
+    }
+
+    if (!g_ShowDelivery) return;
+
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(6, 2));
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.06f, 0.06f, 0.08f, 0.92f));
+
+    ImGui::SetNextWindowSize(ImVec2(340, 300), ImGuiCond_FirstUseEver);
+
+    ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse;
+    if (g_LockDelivery)
+        flags |= ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize;
+
+    // No close button — delivery is auto-managed
+    if (!ImGui::Begin("Delivery Box##DeliveryWin", nullptr, flags))
+    {
+        ImGui::End();
+        ImGui::PopStyleColor();
+        ImGui::PopStyleVar(2);
+        return;
+    }
+
+    // Header
+    ImVec2 pos = ImGui::GetCursorScreenPos();
+    ImGui::GetWindowDrawList()->AddRectFilled(
+        pos, ImVec2(pos.x + ImGui::GetContentRegionAvail().x, pos.y + 2),
+        ImGui::ColorConvertFloat4ToU32(COLOR_DELIVERY));
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4);
+
+    ImGui::Text("Delivery Box");
+    ImGui::SameLine(ImGui::GetWindowWidth() - 60);
+    if (ImGui::SmallButton(g_LockDelivery ? "Unlock" : "Lock"))
+        g_LockDelivery = !g_LockDelivery;
+
+    // Gold waiting
+    if (g_Data.tradingPost.delivery.coins.raw > 0)
+    {
+        ImGui::TextDisabled("Gold:");
+        ImGui::SameLine();
+        RenderCoins(g_Data.tradingPost.delivery.coins);
+    }
+
+    ImGui::Spacing();
+
+    // Items
+    if (!g_Data.tradingPost.delivery.items.empty())
+    {
+        ImGui::BeginChild("DeliveryScroll", ImVec2(0, 0), false);
+        int idx = 0;
+        for (auto& item : g_Data.tradingPost.delivery.items)
+            RenderItemRow(item, idx++, COLOR_DELIVERY);
+        ImGui::EndChild();
+    }
+    else
+    {
+        ImGui::TextDisabled("No items waiting");
+    }
+
+    ImGui::End();
+    ImGui::PopStyleColor();
+    ImGui::PopStyleVar(2);
+}
+
+// ============================================================================
+// FULL DASHBOARD — Delivery first, Currencies, then rest. Collapsed by default.
 // ============================================================================
 
 void RenderDashboard()
@@ -328,7 +385,7 @@ void RenderDashboard()
 
     if (!g_Data.loaded)
     {
-        ImGui::TextDisabled("Connecting to portal...");
+        ImGui::TextDisabled("Fetching data from GW2 API...");
         ImGui::End();
         ImGui::PopStyleColor();
         ImGui::PopStyleVar(2);
@@ -340,29 +397,43 @@ void RenderDashboard()
     // ---- LEFT COLUMN ----
     ImGui::BeginChild("LeftCol", ImVec2(totalWidth * 0.48f, 0), true, ImGuiWindowFlags_NoScrollbar);
     {
-        // Delivery Box
+        // 1. Delivery Box — always expanded if items waiting
+        bool hasDelivery = g_Data.tradingPost.delivery.coins.raw > 0 ||
+                           !g_Data.tradingPost.delivery.items.empty();
         int deliveryCount = (int)g_Data.tradingPost.delivery.items.size();
         if (RenderSectionHeader("Delivery Box", COLOR_DELIVERY, deliveryCount,
-            g_Data.tradingPost.delivery.coins.raw > 0 ? &g_Data.tradingPost.delivery.coins : nullptr))
+            g_Data.tradingPost.delivery.coins.raw > 0 ? &g_Data.tradingPost.delivery.coins : nullptr,
+            hasDelivery))  // auto-expand when items waiting
         {
-            static char deliverySearch[128] = "";
-            ImGui::SetNextItemWidth(-1);
-            ImGui::InputTextWithHint("##delsearch", "Search...", deliverySearch, sizeof(deliverySearch));
-
             ImGui::BeginChild("DeliveryList", ImVec2(0, 150), false);
             int idx = 0;
             for (auto& item : g_Data.tradingPost.delivery.items)
-            {
-                if (!CaseInsensitiveFind(item.name, deliverySearch)) continue;
                 RenderItemRow(item, idx++, COLOR_DELIVERY);
-            }
             if (idx == 0) ImGui::TextDisabled("Empty");
             ImGui::EndChild();
         }
 
         ImGui::Spacing();
 
-        // Selling
+        // 2. Currencies / Wallet
+        if (RenderSectionHeader("Currencies", COLOR_WALLET, -1, &g_Data.tradingPost.wallet.gold))
+        {
+            static char walletSearch[128] = "";
+            ImGui::SetNextItemWidth(-1);
+            ImGui::InputTextWithHint("##walletsearch", "Search currencies...", walletSearch, sizeof(walletSearch));
+
+            for (auto& c : g_Data.tradingPost.wallet.currencies)
+            {
+                if (!CaseInsensitiveFind(c.name, walletSearch)) continue;
+                ImGui::TextDisabled("%s:", c.name.c_str());
+                ImGui::SameLine();
+                ImGui::Text("%d", c.value);
+            }
+        }
+
+        ImGui::Spacing();
+
+        // 3. Selling (collapsed by default)
         int sellCount = (int)g_Data.tradingPost.sells.size();
         if (RenderSectionHeader("Selling", COLOR_SELLING, sellCount, &g_Data.tradingPost.sellValue))
         {
@@ -383,7 +454,7 @@ void RenderDashboard()
 
         ImGui::Spacing();
 
-        // Buying
+        // 4. Buying (collapsed by default)
         int buyCount = (int)g_Data.tradingPost.buys.size();
         if (RenderSectionHeader("Buying", COLOR_BUYING, buyCount, &g_Data.tradingPost.buyValue))
         {
@@ -401,24 +472,6 @@ void RenderDashboard()
             if (idx == 0) ImGui::TextDisabled("No active buy orders");
             ImGui::EndChild();
         }
-
-        ImGui::Spacing();
-
-        // Wallet
-        if (RenderSectionHeader("Wallet", COLOR_WALLET, -1, &g_Data.tradingPost.wallet.gold))
-        {
-            static char walletSearch[128] = "";
-            ImGui::SetNextItemWidth(-1);
-            ImGui::InputTextWithHint("##walletsearch", "Search currencies...", walletSearch, sizeof(walletSearch));
-
-            for (auto& c : g_Data.tradingPost.wallet.currencies)
-            {
-                if (!CaseInsensitiveFind(c.name, walletSearch)) continue;
-                ImGui::TextDisabled("%s:", c.name.c_str());
-                ImGui::SameLine();
-                ImGui::Text("%d", c.value);
-            }
-        }
     }
     ImGui::EndChild();
 
@@ -427,7 +480,7 @@ void RenderDashboard()
     // ---- RIGHT COLUMN ----
     ImGui::BeginChild("RightCol", ImVec2(0, 0), true, ImGuiWindowFlags_NoScrollbar);
     {
-        // Flips
+        // 5. Flips (collapsed by default)
         int flipCount = (int)g_Data.flips.size();
         if (RenderSectionHeader("Flips", COLOR_FLIPS, flipCount))
         {
@@ -448,7 +501,7 @@ void RenderDashboard()
 
         ImGui::Spacing();
 
-        // Bank
+        // 6. Bank (collapsed by default)
         int bankCount = (int)g_Data.bank.size();
         if (RenderSectionHeader("Bank", COLOR_BANK, bankCount, &g_Data.bankTotal))
         {
@@ -469,7 +522,7 @@ void RenderDashboard()
 
         ImGui::Spacing();
 
-        // Materials
+        // 7. Materials (collapsed by default)
         int matsCount = (int)g_Data.materials.size();
         if (RenderSectionHeader("Materials", COLOR_MATS, matsCount, &g_Data.matsTotal))
         {
@@ -496,7 +549,7 @@ void RenderDashboard()
 }
 
 // ============================================================================
-// FLIP COLUMN - Slim, draggable, resizable
+// FLIP COLUMN — lockable size/position, closes on ESC
 // ============================================================================
 
 void RenderFlipList()
@@ -508,7 +561,12 @@ void RenderFlipList()
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.06f, 0.06f, 0.08f, 0.92f));
 
     ImGui::SetNextWindowSize(ImVec2(340, 600), ImGuiCond_FirstUseEver);
-    if (!ImGui::Begin("Flips##FlipColumn", &g_ShowFlipList, ImGuiWindowFlags_NoCollapse))
+
+    ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse;
+    if (g_LockFlipList)
+        flags |= ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize;
+
+    if (!ImGui::Begin("Flips##FlipColumn", &g_ShowFlipList, flags))
     {
         ImGui::End();
         ImGui::PopStyleColor();
@@ -527,7 +585,7 @@ void RenderFlipList()
         return;
     }
 
-    // Header bar with accent
+    // Header
     ImVec2 pos = ImGui::GetCursorScreenPos();
     ImGui::GetWindowDrawList()->AddRectFilled(
         pos, ImVec2(pos.x + ImGui::GetContentRegionAvail().x, pos.y + 2),
@@ -535,8 +593,11 @@ void RenderFlipList()
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4);
 
     ImGui::TextColored(COLOR_FLIPS, "Profitable Flips");
-    ImGui::SameLine(ImGui::GetWindowWidth() - 60);
+    ImGui::SameLine(ImGui::GetWindowWidth() - 100);
     ImGui::TextDisabled("(%zu)", g_Data.flips.size());
+    ImGui::SameLine();
+    if (ImGui::SmallButton(g_LockFlipList ? "Unlock" : "Lock"))
+        g_LockFlipList = !g_LockFlipList;
 
     // Search
     static char search[128] = "";
@@ -562,7 +623,7 @@ void RenderFlipList()
 }
 
 // ============================================================================
-// OPTIONS - Nexus addon settings panel
+// OPTIONS
 // ============================================================================
 
 void RenderOptions()
@@ -621,9 +682,11 @@ void RenderOptions()
     ImGui::TextDisabled("Keybinds:");
     ImGui::BulletText("ALT+T - Toggle full dashboard");
     ImGui::BulletText("ALT+F - Toggle flip column");
+    ImGui::BulletText("ALT+D - Toggle delivery box");
     ImGui::Spacing();
-    ImGui::TextDisabled("Click [C] next to any item to copy its name.");
-    ImGui::TextDisabled("Drag the flip column next to the TP for quick flipping.");
+    ImGui::TextDisabled("Copy icon (>>) next to values copies item name.");
+    ImGui::TextDisabled("Lock buttons pin windows in place.");
+    ImGui::TextDisabled("Delivery auto-shows when items are waiting.");
     ImGui::Spacing();
     ImGui::TextDisabled("Data: GW2 API (direct) + GW2BLTC (flips)");
 }

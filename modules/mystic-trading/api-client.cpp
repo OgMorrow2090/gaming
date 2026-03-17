@@ -613,11 +613,32 @@ static std::string HtmlUnescape(const std::string& s)
 {
     std::string result = s;
     size_t pos;
+    // Named entities
     while ((pos = result.find("&amp;")) != std::string::npos) result.replace(pos, 5, "&");
     while ((pos = result.find("&lt;")) != std::string::npos) result.replace(pos, 4, "<");
     while ((pos = result.find("&gt;")) != std::string::npos) result.replace(pos, 4, ">");
     while ((pos = result.find("&quot;")) != std::string::npos) result.replace(pos, 6, "\"");
-    while ((pos = result.find("&#39;")) != std::string::npos) result.replace(pos, 5, "'");
+    while ((pos = result.find("&apos;")) != std::string::npos) result.replace(pos, 6, "'");
+    // Numeric entities (&#039; &#39; &#x27; etc.)
+    pos = 0;
+    while ((pos = result.find("&#", pos)) != std::string::npos)
+    {
+        size_t semi = result.find(';', pos);
+        if (semi == std::string::npos || semi - pos > 8) { pos++; continue; }
+        std::string numStr = result.substr(pos + 2, semi - pos - 2);
+        int codepoint = 0;
+        if (!numStr.empty() && (numStr[0] == 'x' || numStr[0] == 'X'))
+            codepoint = (int)strtol(numStr.c_str() + 1, nullptr, 16);
+        else
+            codepoint = atoi(numStr.c_str());
+        if (codepoint > 0 && codepoint < 128)
+        {
+            char ch = (char)codepoint;
+            result.replace(pos, semi - pos + 1, 1, ch);
+        }
+        else
+            pos = semi + 1;
+    }
     return result;
 }
 

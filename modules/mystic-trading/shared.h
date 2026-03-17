@@ -66,8 +66,11 @@ struct Item {
     std::string icon;
     Rarity rarity;
     int count;
-    Coins price;
+    Coins buyPrice;
+    Coins sellPrice;
     Coins totalValue;
+    int supply;
+    int demand;
 };
 
 // Flip item

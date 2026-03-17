@@ -241,16 +241,19 @@ static void RenderFlipRow(const FlipItem& item, int index, bool compact)
 
     if (compact)
     {
-        // Compact: buy | sell | profit | ROI | copy
+        // Compact: Buy / Sell / Profit all on one line with ROI + copy
+        ImGui::SameLine(ImGui::GetWindowWidth() - 30);
+        RenderCopyIcon("cp", item.name);
+
         ImGui::Indent(IconSize() + 8);
         ImGui::TextDisabled("B:");
         ImGui::SameLine(0, 2);
         RenderCoins(item.buyPrice, true);
-        ImGui::SameLine(0, 8);
+        ImGui::SameLine(0, 6);
         ImGui::TextDisabled("S:");
         ImGui::SameLine(0, 2);
         RenderCoins(item.sellPrice, true);
-        ImGui::SameLine(0, 8);
+        ImGui::SameLine(0, 6);
         ImGui::TextDisabled("P:");
         ImGui::SameLine(0, 2);
         RenderCoins(item.profit, true);
@@ -261,8 +264,6 @@ static void RenderFlipRow(const FlipItem& item, int index, bool compact)
             ImGui::TextColored(ImVec4(0.8f, 1.0f, 0.0f, 1.0f), "%.0f%%", item.roi);
         else
             ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "%.0f%%", item.roi);
-        ImGui::SameLine();
-        RenderCopyIcon("cp", item.name);
         ImGui::Unindent(IconSize() + 8);
     }
     else
@@ -316,8 +317,64 @@ static void RenderTransactionRow(const Transaction& tx, int index, ImVec4 accent
     ImGui::SameLine();
     RenderCopyIcon("cp", tx.name);
 
+    // Tooltip on hover
+    if (ImGui::IsItemHovered())
+    {
+        ImGui::BeginTooltip();
+        ImGui::TextColored(GetRarityColor(tx.rarity), "%s", tx.name.c_str());
+        ImGui::Separator();
+        ImGui::TextDisabled("Listed Price:");
+        ImGui::SameLine(120);
+        RenderCoins(tx.price);
+        ImGui::TextDisabled("Quantity:");
+        ImGui::SameLine(120);
+        ImGui::Text("%d", tx.quantity);
+        if (!tx.created.empty())
+        {
+            ImGui::TextDisabled("Listed:");
+            ImGui::SameLine(120);
+            ImGui::TextDisabled("%s", tx.created.c_str());
+        }
+        ImGui::EndTooltip();
+    }
+
     ImGui::Spacing();
     ImGui::PopID();
+}
+
+// Tooltip for Item rows (bank, materials, delivery)
+static void RenderItemTooltip(const Item& item)
+{
+    ImGui::BeginTooltip();
+    ImGui::TextColored(GetRarityColor(item.rarity), "%s", item.name.c_str());
+    ImGui::Separator();
+
+    ImGui::TextDisabled("Buy Price:");
+    ImGui::SameLine(120);
+    RenderCoins(item.buyPrice);
+
+    ImGui::TextDisabled("Sell Price:");
+    ImGui::SameLine(120);
+    RenderCoins(item.sellPrice);
+
+    if (item.count > 1)
+    {
+        ImGui::TextDisabled("Count:");
+        ImGui::SameLine(120);
+        ImGui::Text("%d", item.count);
+        ImGui::TextDisabled("Total Value:");
+        ImGui::SameLine(120);
+        RenderCoins(item.totalValue);
+    }
+
+    if (item.supply > 0 || item.demand > 0)
+    {
+        ImGui::Spacing();
+        ImGui::TextDisabled("Supply: %d", item.supply);
+        ImGui::TextDisabled("Demand: %d", item.demand);
+    }
+
+    ImGui::EndTooltip();
 }
 
 static void RenderItemRow(const Item& item, int index, ImVec4 accent)
@@ -335,6 +392,10 @@ static void RenderItemRow(const Item& item, int index, ImVec4 accent)
     RenderCoins(item.totalValue);
     ImGui::SameLine();
     RenderCopyIcon("cp", item.name);
+
+    // Tooltip on hover
+    if (ImGui::IsItemHovered())
+        RenderItemTooltip(item);
 
     ImGui::Spacing();
     ImGui::PopID();

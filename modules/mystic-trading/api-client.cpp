@@ -197,6 +197,8 @@ struct ItemInfo {
 struct PriceInfo {
     int buy = 0;
     int sell = 0;
+    int buy_qty = 0;
+    int sell_qty = 0;
 };
 
 // Fetch item details in batches of 200
@@ -261,6 +263,8 @@ static std::map<int, PriceInfo> FetchPrices(const std::set<int>& ids)
             std::string sellsJson = FindValue(obj, "sells");
             p.buy = ToInt(FindValue(buysJson, "unit_price"));
             p.sell = ToInt(FindValue(sellsJson, "unit_price"));
+            p.buy_qty = ToInt(FindValue(buysJson, "quantity"));
+            p.sell_qty = ToInt(FindValue(sellsJson, "quantity"));
             prices[id] = p;
         }
     }
@@ -507,7 +511,11 @@ static void RefreshBankOrMats(const std::string& apiKey, const std::string& endp
         }
         auto pit = prices.find(s.id);
         int sell = pit != prices.end() ? pit->second.sell : 0;
-        item.price = CopperToCoins(sell);
+        int buy = pit != prices.end() ? pit->second.buy : 0;
+        item.sellPrice = CopperToCoins(sell);
+        item.buyPrice = CopperToCoins(buy);
+        item.supply = pit != prices.end() ? pit->second.sell_qty : 0;
+        item.demand = pit != prices.end() ? pit->second.buy_qty : 0;
         int total = sell * s.count;
         item.totalValue = CopperToCoins(total);
         totalRaw += total;

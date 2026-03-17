@@ -191,12 +191,46 @@ static bool RenderSectionHeader(const char* label, ImVec4 accentColor, int count
 // Row Renderers — copy icon is to the RIGHT of the value
 // ============================================================================
 
+// Check if mouse is hovering over a row region (call after rendering the row)
+static bool IsRowHovered(ImVec2 rowStart, float width)
+{
+    ImVec2 mouse = ImGui::GetIO().MousePos;
+    ImVec2 rowEnd = ImVec2(rowStart.x + width, rowStart.y + RowHeight() + 4);
+    return mouse.x >= rowStart.x && mouse.x <= rowEnd.x &&
+           mouse.y >= rowStart.y && mouse.y <= rowEnd.y;
+}
+
+// Render description and stats in a tooltip
+static void RenderStatsInTooltip(const std::string& description, const std::vector<ItemStat>& stats)
+{
+    if (!stats.empty())
+    {
+        for (auto& s : stats)
+        {
+            ImGui::TextColored(ImVec4(0.4f, 0.9f, 0.4f, 1.0f), "+%d", s.modifier);
+            ImGui::SameLine(0, 4);
+            ImGui::Text("%s", s.attribute.c_str());
+        }
+    }
+    if (!description.empty())
+    {
+        ImGui::Spacing();
+        ImGui::PushTextWrapPos(300);
+        ImGui::TextDisabled("%s", description.c_str());
+        ImGui::PopTextWrapPos();
+    }
+}
+
 // Tooltip shown on hover over any flip item
 static void RenderFlipTooltip(const FlipItem& item)
 {
     ImGui::BeginTooltip();
     ImGui::TextColored(GetRarityColor(item.rarity), "%s", item.name.c_str());
     ImGui::Separator();
+
+    RenderStatsInTooltip(item.description, item.stats);
+    if (!item.stats.empty() || !item.description.empty())
+        ImGui::Spacing();
 
     ImGui::TextDisabled("Buy Price:");
     ImGui::SameLine(120);
@@ -231,6 +265,8 @@ static void RenderFlipTooltip(const FlipItem& item)
 static void RenderFlipRow(const FlipItem& item, int index, bool compact)
 {
     ImGui::PushID(item.id);
+    ImVec2 rowStart = ImGui::GetCursorScreenPos();
+    float rowWidth = ImGui::GetContentRegionAvail().x;
     DrawRowBg(index);
     DrawAccentBar(COLOR_FLIPS);
 
@@ -241,7 +277,6 @@ static void RenderFlipRow(const FlipItem& item, int index, bool compact)
 
     if (compact)
     {
-        // Compact: Buy / Sell / Profit all on one line with ROI + copy
         ImGui::SameLine(ImGui::GetWindowWidth() - 30);
         RenderCopyIcon("cp", item.name);
 
@@ -293,8 +328,7 @@ static void RenderFlipRow(const FlipItem& item, int index, bool compact)
         ImGui::Unindent(IconSize() + 8);
     }
 
-    // Tooltip on hover
-    if (ImGui::IsItemHovered())
+    if (IsRowHovered(rowStart, rowWidth))
         RenderFlipTooltip(item);
 
     ImGui::Spacing();
@@ -304,6 +338,8 @@ static void RenderFlipRow(const FlipItem& item, int index, bool compact)
 static void RenderTransactionRow(const Transaction& tx, int index, ImVec4 accent)
 {
     ImGui::PushID(tx.itemId + index * 100000);
+    ImVec2 rowStart = ImGui::GetCursorScreenPos();
+    float rowWidth = ImGui::GetContentRegionAvail().x;
     DrawRowBg(index);
     DrawAccentBar(accent);
 
@@ -317,8 +353,7 @@ static void RenderTransactionRow(const Transaction& tx, int index, ImVec4 accent
     ImGui::SameLine();
     RenderCopyIcon("cp", tx.name);
 
-    // Tooltip on hover
-    if (ImGui::IsItemHovered())
+    if (IsRowHovered(rowStart, rowWidth))
     {
         ImGui::BeginTooltip();
         ImGui::TextColored(GetRarityColor(tx.rarity), "%s", tx.name.c_str());
@@ -342,44 +377,11 @@ static void RenderTransactionRow(const Transaction& tx, int index, ImVec4 accent
     ImGui::PopID();
 }
 
-// Tooltip for Item rows (bank, materials, delivery)
-static void RenderItemTooltip(const Item& item)
-{
-    ImGui::BeginTooltip();
-    ImGui::TextColored(GetRarityColor(item.rarity), "%s", item.name.c_str());
-    ImGui::Separator();
-
-    ImGui::TextDisabled("Buy Price:");
-    ImGui::SameLine(120);
-    RenderCoins(item.buyPrice);
-
-    ImGui::TextDisabled("Sell Price:");
-    ImGui::SameLine(120);
-    RenderCoins(item.sellPrice);
-
-    if (item.count > 1)
-    {
-        ImGui::TextDisabled("Count:");
-        ImGui::SameLine(120);
-        ImGui::Text("%d", item.count);
-        ImGui::TextDisabled("Total Value:");
-        ImGui::SameLine(120);
-        RenderCoins(item.totalValue);
-    }
-
-    if (item.supply > 0 || item.demand > 0)
-    {
-        ImGui::Spacing();
-        ImGui::TextDisabled("Supply: %d", item.supply);
-        ImGui::TextDisabled("Demand: %d", item.demand);
-    }
-
-    ImGui::EndTooltip();
-}
-
 static void RenderItemRow(const Item& item, int index, ImVec4 accent)
 {
     ImGui::PushID(item.id + index * 100000);
+    ImVec2 rowStart = ImGui::GetCursorScreenPos();
+    float rowWidth = ImGui::GetContentRegionAvail().x;
     DrawRowBg(index);
     DrawAccentBar(accent);
 
@@ -393,9 +395,43 @@ static void RenderItemRow(const Item& item, int index, ImVec4 accent)
     ImGui::SameLine();
     RenderCopyIcon("cp", item.name);
 
-    // Tooltip on hover
-    if (ImGui::IsItemHovered())
-        RenderItemTooltip(item);
+    if (IsRowHovered(rowStart, rowWidth))
+    {
+        ImGui::BeginTooltip();
+        ImGui::TextColored(GetRarityColor(item.rarity), "%s", item.name.c_str());
+        ImGui::Separator();
+
+        RenderStatsInTooltip(item.description, item.stats);
+        if (!item.stats.empty() || !item.description.empty())
+            ImGui::Spacing();
+
+        ImGui::TextDisabled("Buy Price:");
+        ImGui::SameLine(120);
+        RenderCoins(item.buyPrice);
+
+        ImGui::TextDisabled("Sell Price:");
+        ImGui::SameLine(120);
+        RenderCoins(item.sellPrice);
+
+        if (item.count > 1)
+        {
+            ImGui::TextDisabled("Count:");
+            ImGui::SameLine(120);
+            ImGui::Text("%d", item.count);
+            ImGui::TextDisabled("Total Value:");
+            ImGui::SameLine(120);
+            RenderCoins(item.totalValue);
+        }
+
+        if (item.supply > 0 || item.demand > 0)
+        {
+            ImGui::Spacing();
+            ImGui::TextDisabled("Supply: %d", item.supply);
+            ImGui::TextDisabled("Demand: %d", item.demand);
+        }
+
+        ImGui::EndTooltip();
+    }
 
     ImGui::Spacing();
     ImGui::PopID();

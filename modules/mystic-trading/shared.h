@@ -59,6 +59,12 @@ enum class Rarity {
     Legendary
 };
 
+// Stat attribute on an item
+struct ItemStat {
+    std::string attribute; // Power, Precision, Healing, etc.
+    int modifier;
+};
+
 // Base item data
 struct Item {
     int id;
@@ -71,6 +77,8 @@ struct Item {
     Coins totalValue;
     int supply;
     int demand;
+    std::string description;
+    std::vector<ItemStat> stats;
 };
 
 // Flip item
@@ -87,6 +95,8 @@ struct FlipItem {
     int demand;
     int sold;
     int bought;
+    std::string description;
+    std::vector<ItemStat> stats;
 };
 
 // Transaction (buy/sell order)

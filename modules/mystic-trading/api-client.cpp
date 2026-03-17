@@ -192,6 +192,8 @@ struct ItemInfo {
     std::string icon;
     std::string rarity;
     std::string type;
+    std::string description;
+    std::vector<ItemStat> stats;
 };
 
 struct PriceInfo {
@@ -229,6 +231,42 @@ static std::map<int, ItemInfo> FetchItems(const std::set<int>& ids, const std::s
             info.icon = FindValue(obj, "icon");
             info.rarity = FindValue(obj, "rarity");
             info.type = FindValue(obj, "type");
+
+            // Extract description (strip <c=@flavor> tags)
+            std::string desc = FindValue(obj, "description");
+            while (desc.find("<c=") != std::string::npos)
+            {
+                size_t s = desc.find("<c=");
+                size_t e = desc.find(">", s);
+                if (e != std::string::npos) desc.erase(s, e - s + 1);
+                else break;
+            }
+            while (desc.find("</c>") != std::string::npos)
+                desc.erase(desc.find("</c>"), 4);
+            info.description = desc;
+
+            // Extract stat attributes from details.infix_upgrade.attributes
+            std::string details = FindValue(obj, "details");
+            if (!details.empty())
+            {
+                std::string infix = FindValue(details, "infix_upgrade");
+                if (!infix.empty())
+                {
+                    std::string attrs = FindValue(infix, "attributes");
+                    if (!attrs.empty() && attrs[0] == '[')
+                    {
+                        for (auto& attrObj : SplitArray(attrs))
+                        {
+                            ItemStat st;
+                            st.attribute = FindValue(attrObj, "attribute");
+                            st.modifier = ToInt(FindValue(attrObj, "modifier"));
+                            if (!st.attribute.empty())
+                                info.stats.push_back(st);
+                        }
+                    }
+                }
+            }
+
             items[id] = info;
         }
     }
@@ -415,6 +453,8 @@ static void RefreshTradingPost(const std::string& apiKey)
             item.name = it->second.name;
             item.icon = it->second.icon;
             item.rarity = ParseRarity(it->second.rarity);
+            item.description = it->second.description;
+            item.stats = it->second.stats;
         }
         tp.delivery.items.push_back(item);
     }
@@ -508,6 +548,8 @@ static void RefreshBankOrMats(const std::string& apiKey, const std::string& endp
             item.name = it->second.name;
             item.icon = it->second.icon;
             item.rarity = ParseRarity(it->second.rarity);
+            item.description = it->second.description;
+            item.stats = it->second.stats;
         }
         auto pit = prices.find(s.id);
         int sell = pit != prices.end() ? pit->second.sell : 0;
@@ -734,8 +776,22 @@ static void RefreshFlips()
         allFlips.insert(allFlips.end(), pageFlips.begin(), pageFlips.end());
     }
 
+    // Fetch item descriptions/stats for flip items
     if (!allFlips.empty())
     {
+        std::set<int> flipIds;
+        for (auto& f : allFlips) flipIds.insert(f.id);
+        auto flipDetails = FetchItems(flipIds, "");
+        for (auto& f : allFlips)
+        {
+            auto it = flipDetails.find(f.id);
+            if (it != flipDetails.end())
+            {
+                f.description = it->second.description;
+                f.stats = it->second.stats;
+            }
+        }
+
         std::lock_guard<std::mutex> lock(g_DataMutex);
         g_Data.flips = allFlips;
     }

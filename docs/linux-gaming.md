@@ -8,7 +8,7 @@
 | **OS** | Bazzite (Fedora-based Linux gaming distro) |
 | **IP Address** | 172.16.100.212 |
 | **VLAN** | 100 (IoT) |
-| **SSH User** | og |
+| **SSH User** | Og |
 | **SSH Key** | 1Password (same key as Pi hosts) |
 
 ## SSH Access

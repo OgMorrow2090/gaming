@@ -447,13 +447,6 @@ void RenderDeliveryBox()
 
     if (!g_Data.loaded) return;
 
-    bool hasDelivery = g_Data.tradingPost.delivery.coins.raw > 0 ||
-                       !g_Data.tradingPost.delivery.items.empty();
-
-    // Auto-show when items/gold waiting, auto-hide when collected
-    if (hasDelivery)
-        g_ShowDelivery = true;
-
     if (!g_ShowDelivery) return;
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));

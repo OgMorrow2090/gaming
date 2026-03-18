@@ -7,6 +7,24 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-03-18 — Mystic Trading
+
+### Changed
+
+- **Dashboard (Alt+T)**: Simplified to single column — Wallet, Bank, Materials only
+- **Delivery Box (Alt+D)**: Simple toggle on/off, removed auto-show logic
+- **Delivery Box**: Removed duplicate inner heading (window title bar is sufficient)
+- **Flip List (Alt+F)**: Removed duplicate "Profitable Flips" inner heading
+
+### Added
+
+- **Window transparency slider** in Options > Appearance (0.3–1.0, default 0.92)
+- **Linux gaming docs**: Added `docs/linux-gaming.md` for Bazzite desktop setup
+
+### Removed
+
+- Flips and Delivery Box sections from main dashboard (use Alt+F and Alt+D instead)
+
 ## [2.0.0] - 2026-03-15
 
 ### Changed

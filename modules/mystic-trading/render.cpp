@@ -450,13 +450,15 @@ void RenderDeliveryBox()
     bool hasDelivery = g_Data.tradingPost.delivery.coins.raw > 0 ||
                        !g_Data.tradingPost.delivery.items.empty();
 
-    // Always force show when there are items/gold to collect
-    // ALT+D toggles manually when empty
-    if (!g_ShowDelivery && !hasDelivery) return;
+    // Auto-show when items/gold waiting, auto-hide when collected
+    if (hasDelivery)
+        g_ShowDelivery = true;
+
+    if (!g_ShowDelivery) return;
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(6, 2));
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.06f, 0.06f, 0.08f, 0.92f));
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.06f, 0.06f, 0.08f, g_WindowOpacity));
 
     ImGui::SetNextWindowSize(ImVec2(340, 300), ImGuiCond_FirstUseEver);
 
@@ -464,8 +466,7 @@ void RenderDeliveryBox()
     if (g_LockDelivery)
         flags |= ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize;
 
-    // No close button — delivery is auto-managed
-    if (!ImGui::Begin("Delivery Box##DeliveryWin", nullptr, flags))
+    if (!ImGui::Begin("Delivery Box##DeliveryWin", &g_ShowDelivery, flags))
     {
         ImGui::End();
         ImGui::PopStyleColor();
@@ -474,14 +475,7 @@ void RenderDeliveryBox()
     }
     ImGui::SetWindowFontScale(g_FontScale);
 
-    // Header
-    ImVec2 pos = ImGui::GetCursorScreenPos();
-    ImGui::GetWindowDrawList()->AddRectFilled(
-        pos, ImVec2(pos.x + ImGui::GetContentRegionAvail().x, pos.y + 2),
-        ImGui::ColorConvertFloat4ToU32(COLOR_DELIVERY));
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4);
-
-    ImGui::Text("Delivery Box");
+    // Lock button in header area (no duplicate heading)
     ImGui::SameLine(ImGui::GetWindowWidth() - 60);
     if (ImGui::SmallButton(g_LockDelivery ? "Unlock" : "Lock"))
         g_LockDelivery = !g_LockDelivery;
@@ -525,9 +519,9 @@ void RenderDashboard()
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(12, 12));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8, 4));
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.08f, 0.08f, 0.10f, 0.95f));
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.08f, 0.08f, 0.10f, g_WindowOpacity));
 
-    ImGui::SetNextWindowSize(ImVec2(1200, 700), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(600, 700), ImGuiCond_FirstUseEver);
     if (!ImGui::Begin("Mystic Trading##Dashboard", &g_ShowDashboard, ImGuiWindowFlags_NoCollapse))
     {
         ImGui::End();
@@ -548,171 +542,78 @@ void RenderDashboard()
         return;
     }
 
-    float totalWidth = ImGui::GetContentRegionAvail().x;
+    // ---- Single column: Wallet, Bank, Materials ----
 
-    // ---- LEFT COLUMN ----
-    ImGui::BeginChild("LeftCol", ImVec2(totalWidth * 0.48f, 0), true, ImGuiWindowFlags_NoScrollbar);
+    // 1. Wallet — always expanded
+    RenderSectionHeader("Wallet", COLOR_WALLET, -1, &g_Data.tradingPost.wallet.gold, true);
     {
-        // 1. Delivery Box — always expanded if items waiting
-        bool hasDelivery = g_Data.tradingPost.delivery.coins.raw > 0 ||
-                           !g_Data.tradingPost.delivery.items.empty();
-        int deliveryCount = (int)g_Data.tradingPost.delivery.items.size();
-        if (RenderSectionHeader("Delivery Box", COLOR_DELIVERY, deliveryCount,
-            g_Data.tradingPost.delivery.coins.raw > 0 ? &g_Data.tradingPost.delivery.coins : nullptr,
-            hasDelivery))  // auto-expand when items waiting
+        static char walletSearch[128] = "";
+        ImGui::SetNextItemWidth(-1);
+        ImGui::InputTextWithHint("##walletsearch", "Search currencies...", walletSearch, sizeof(walletSearch));
+
+        for (auto& c : g_Data.tradingPost.wallet.currencies)
         {
-            ImGui::BeginChild("DeliveryList", ImVec2(0, 150), false);
-            int idx = 0;
-            for (auto& item : g_Data.tradingPost.delivery.items)
-                RenderItemRow(item, idx++, COLOR_DELIVERY);
-            if (idx == 0) ImGui::TextDisabled("Empty");
-            ImGui::EndChild();
-        }
+            if (!CaseInsensitiveFind(c.name, walletSearch)) continue;
 
-        ImGui::Spacing();
-
-        // 2. Wallet — always expanded (matches portal)
-        RenderSectionHeader("Wallet", COLOR_WALLET, -1, &g_Data.tradingPost.wallet.gold, true);
-        {
-            static char walletSearch[128] = "";
-            ImGui::SetNextItemWidth(-1);
-            ImGui::InputTextWithHint("##walletsearch", "Search currencies...", walletSearch, sizeof(walletSearch));
-
-            for (auto& c : g_Data.tradingPost.wallet.currencies)
+            if (!c.icon.empty())
             {
-                if (!CaseInsensitiveFind(c.name, walletSearch)) continue;
-
-                // Currency icon
-                if (!c.icon.empty())
+                char iconId[64];
+                snprintf(iconId, sizeof(iconId), "MT_CUR_%d", c.id);
+                Texture_t* tex = APIDefs ? APIDefs->Textures_Get(iconId) : nullptr;
+                if (tex && tex->Resource)
                 {
-                    char iconId[64];
-                    snprintf(iconId, sizeof(iconId), "MT_CUR_%d", c.id);
-                    Texture_t* tex = APIDefs ? APIDefs->Textures_Get(iconId) : nullptr;
-                    if (tex && tex->Resource)
-                    {
-                        ImGui::Image((ImTextureID)tex->Resource, ImVec2(IconSize() * 0.8f, IconSize() * 0.8f));
-                        ImGui::SameLine();
-                    }
+                    ImGui::Image((ImTextureID)tex->Resource, ImVec2(IconSize() * 0.8f, IconSize() * 0.8f));
+                    ImGui::SameLine();
                 }
-
-                ImGui::TextDisabled("%s:", c.name.c_str());
-                ImGui::SameLine();
-                ImGui::Text("%d", c.value);
             }
-        }
 
-        ImGui::Spacing();
-
-        // 3. Selling (collapsed by default)
-        int sellCount = (int)g_Data.tradingPost.sells.size();
-        if (RenderSectionHeader("Selling", COLOR_SELLING, sellCount, &g_Data.tradingPost.sellValue))
-        {
-            static char sellSearch[128] = "";
-            ImGui::SetNextItemWidth(-1);
-            ImGui::InputTextWithHint("##sellsearch", "Search...", sellSearch, sizeof(sellSearch));
-
-            ImGui::BeginChild("SellList", ImVec2(0, 200), false);
-            int idx = 0;
-            for (auto& tx : g_Data.tradingPost.sells)
-            {
-                if (!CaseInsensitiveFind(tx.name, sellSearch)) continue;
-                RenderTransactionRow(tx, idx++, COLOR_SELLING);
-            }
-            if (idx == 0) ImGui::TextDisabled("No active sell orders");
-            ImGui::EndChild();
-        }
-
-        ImGui::Spacing();
-
-        // 4. Buying (collapsed by default)
-        int buyCount = (int)g_Data.tradingPost.buys.size();
-        if (RenderSectionHeader("Buying", COLOR_BUYING, buyCount, &g_Data.tradingPost.buyValue))
-        {
-            static char buySearch[128] = "";
-            ImGui::SetNextItemWidth(-1);
-            ImGui::InputTextWithHint("##buysearch", "Search...", buySearch, sizeof(buySearch));
-
-            ImGui::BeginChild("BuyList", ImVec2(0, 200), false);
-            int idx = 0;
-            for (auto& tx : g_Data.tradingPost.buys)
-            {
-                if (!CaseInsensitiveFind(tx.name, buySearch)) continue;
-                RenderTransactionRow(tx, idx++, COLOR_BUYING);
-            }
-            if (idx == 0) ImGui::TextDisabled("No active buy orders");
-            ImGui::EndChild();
+            ImGui::TextDisabled("%s:", c.name.c_str());
+            ImGui::SameLine();
+            ImGui::Text("%d", c.value);
         }
     }
-    ImGui::EndChild();
 
-    ImGui::SameLine(0, SECTION_SPACING);
+    ImGui::Spacing();
 
-    // ---- RIGHT COLUMN ----
-    ImGui::BeginChild("RightCol", ImVec2(0, 0), true, ImGuiWindowFlags_NoScrollbar);
+    // 2. Bank (collapsed by default)
+    int bankCount = (int)g_Data.bank.size();
+    if (RenderSectionHeader("Bank", COLOR_BANK, bankCount, &g_Data.bankTotal))
     {
-        // 5. Flips (collapsed by default)
-        int flipCount = (int)g_Data.flips.size();
-        if (RenderSectionHeader("Flips", COLOR_FLIPS, flipCount))
+        static char bankSearch[128] = "";
+        ImGui::SetNextItemWidth(-1);
+        ImGui::InputTextWithHint("##banksearch", "Search bank...", bankSearch, sizeof(bankSearch));
+
+        ImGui::BeginChild("BankList", ImVec2(0, 250), false);
+        int idx = 0;
+        for (auto& item : g_Data.bank)
         {
-            static char flipSearch[128] = "";
-            ImGui::SetNextItemWidth(-1);
-            ImGui::InputTextWithHint("##flipsearch", "Search flips...", flipSearch, sizeof(flipSearch));
-
-            ImGui::BeginChild("FlipsList", ImVec2(0, 300), false);
-            int idx = 0;
-            for (auto& flip : g_Data.flips)
-            {
-                if (idx >= g_FlipLimit) break;
-                if (!CaseInsensitiveFind(flip.name, flipSearch)) continue;
-                RenderFlipRow(flip, idx++, false);
-            }
-            if (idx == 0) ImGui::TextDisabled("No flips found");
-            ImGui::EndChild();
+            if (!CaseInsensitiveFind(item.name, bankSearch)) continue;
+            RenderItemRow(item, idx++, COLOR_BANK);
         }
-
-        ImGui::Spacing();
-
-        // 6. Bank (collapsed by default)
-        int bankCount = (int)g_Data.bank.size();
-        if (RenderSectionHeader("Bank", COLOR_BANK, bankCount, &g_Data.bankTotal))
-        {
-            static char bankSearch[128] = "";
-            ImGui::SetNextItemWidth(-1);
-            ImGui::InputTextWithHint("##banksearch", "Search bank...", bankSearch, sizeof(bankSearch));
-
-            ImGui::BeginChild("BankList", ImVec2(0, 200), false);
-            int idx = 0;
-            for (auto& item : g_Data.bank)
-            {
-                if (!CaseInsensitiveFind(item.name, bankSearch)) continue;
-                RenderItemRow(item, idx++, COLOR_BANK);
-            }
-            if (idx == 0) ImGui::TextDisabled("No data");
-            ImGui::EndChild();
-        }
-
-        ImGui::Spacing();
-
-        // 7. Materials (collapsed by default)
-        int matsCount = (int)g_Data.materials.size();
-        if (RenderSectionHeader("Materials", COLOR_MATS, matsCount, &g_Data.matsTotal))
-        {
-            static char matsSearch[128] = "";
-            ImGui::SetNextItemWidth(-1);
-            ImGui::InputTextWithHint("##matssearch", "Search materials...", matsSearch, sizeof(matsSearch));
-
-            ImGui::BeginChild("MatsList", ImVec2(0, 200), false);
-            int idx = 0;
-            for (auto& item : g_Data.materials)
-            {
-                if (!CaseInsensitiveFind(item.name, matsSearch)) continue;
-                RenderItemRow(item, idx++, COLOR_MATS);
-            }
-            if (idx == 0) ImGui::TextDisabled("No data");
-            ImGui::EndChild();
-        }
+        if (idx == 0) ImGui::TextDisabled("No data");
+        ImGui::EndChild();
     }
-    ImGui::EndChild();
+
+    ImGui::Spacing();
+
+    // 3. Materials (collapsed by default)
+    int matsCount = (int)g_Data.materials.size();
+    if (RenderSectionHeader("Materials", COLOR_MATS, matsCount, &g_Data.matsTotal))
+    {
+        static char matsSearch[128] = "";
+        ImGui::SetNextItemWidth(-1);
+        ImGui::InputTextWithHint("##matssearch", "Search materials...", matsSearch, sizeof(matsSearch));
+
+        ImGui::BeginChild("MatsList", ImVec2(0, 250), false);
+        int idx = 0;
+        for (auto& item : g_Data.materials)
+        {
+            if (!CaseInsensitiveFind(item.name, matsSearch)) continue;
+            RenderItemRow(item, idx++, COLOR_MATS);
+        }
+        if (idx == 0) ImGui::TextDisabled("No data");
+        ImGui::EndChild();
+    }
 
     ImGui::End();
     ImGui::PopStyleColor();
@@ -729,7 +630,7 @@ void RenderFlipList()
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(6, 2));
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.06f, 0.06f, 0.08f, 0.92f));
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.06f, 0.06f, 0.08f, g_WindowOpacity));
 
     ImGui::SetNextWindowSize(ImVec2(340, 600), ImGuiCond_FirstUseEver);
 
@@ -757,14 +658,7 @@ void RenderFlipList()
         return;
     }
 
-    // Header
-    ImVec2 pos = ImGui::GetCursorScreenPos();
-    ImGui::GetWindowDrawList()->AddRectFilled(
-        pos, ImVec2(pos.x + ImGui::GetContentRegionAvail().x, pos.y + 2),
-        ImGui::ColorConvertFloat4ToU32(COLOR_FLIPS));
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4);
-
-    ImGui::TextColored(COLOR_FLIPS, "Profitable Flips");
+    // Controls in header area (no duplicate heading)
     ImGui::SameLine(ImGui::GetWindowWidth() - 150);
 
     // Flip limit dropdown right in the header
@@ -893,11 +787,14 @@ void RenderOptions()
     ImGui::SliderFloat("##mt_iconscale", &g_IconScale, 0.5f, 3.0f, "%.1f");
     ImGui::Text("Row Height");
     ImGui::SliderFloat("##mt_rowscale", &g_RowScale, 0.7f, 2.0f, "%.1f");
+    ImGui::Text("Window Transparency");
+    ImGui::SliderFloat("##mt_opacity", &g_WindowOpacity, 0.3f, 1.0f, "%.0f%%");
     if (ImGui::Button("Reset to Default"))
     {
         g_FontScale = 1.0f;
         g_IconScale = 1.0f;
         g_RowScale = 1.0f;
+        g_WindowOpacity = 0.92f;
     }
 
     ImGui::Spacing();
@@ -905,13 +802,12 @@ void RenderOptions()
     ImGui::Spacing();
 
     ImGui::TextDisabled("Keybinds:");
-    ImGui::BulletText("ALT+T - Toggle full dashboard");
-    ImGui::BulletText("ALT+F - Toggle flip column");
-    ImGui::BulletText("ALT+D - Toggle delivery box");
+    ImGui::BulletText("ALT+T - Wallet, Bank & Materials");
+    ImGui::BulletText("ALT+F - Toggle flip list");
+    ImGui::BulletText("ALT+D - Toggle delivery box (auto-shows when items waiting)");
     ImGui::Spacing();
-    ImGui::TextDisabled("Copy icon (>>) next to values copies item name.");
+    ImGui::TextDisabled("Copy icon next to values copies item name.");
     ImGui::TextDisabled("Lock buttons pin windows in place.");
-    ImGui::TextDisabled("Delivery auto-shows when items are waiting.");
     ImGui::Spacing();
     ImGui::TextDisabled("Data: GW2 API (direct) + GW2BLTC (flips)");
 }

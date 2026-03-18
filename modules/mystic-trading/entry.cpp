@@ -33,6 +33,7 @@ float g_FontScale = 1.0f;
 float g_IconScale = 1.0f;
 float g_RowScale = 1.0f;
 int g_FlipLimit = 20;
+float g_WindowOpacity = 0.92f;
 
 // Forward declarations
 void AddonLoad(AddonAPI_t* aApi);

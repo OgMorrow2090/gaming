@@ -178,3 +178,6 @@ extern float g_RowScale;       // 0.7 - 2.0, default 1.0
 
 // Flip display limit
 extern int g_FlipLimit;        // 20, 50, or 100
+
+// Window opacity (0.3 - 1.0, default 0.92)
+extern float g_WindowOpacity;

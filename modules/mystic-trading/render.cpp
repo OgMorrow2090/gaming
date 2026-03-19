@@ -697,7 +697,7 @@ void RenderFlipList()
 
 void RenderOptions()
 {
-    ImGui::Text("Mystic Trading v0.1");
+    ImGui::Text("Mystic Trading v0.4.0 (build 20260319)");
     ImGui::Separator();
 
     if (!APIDefs)

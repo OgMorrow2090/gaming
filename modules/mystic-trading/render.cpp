@@ -457,7 +457,7 @@ void RenderDeliveryBox()
 
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse;
     if (g_LockDelivery)
-        flags |= ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize;
+        flags |= ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar;
 
     if (!ImGui::Begin("Delivery Box##DeliveryWin", &g_ShowDelivery, flags))
     {
@@ -468,10 +468,13 @@ void RenderDeliveryBox()
     }
     ImGui::SetWindowFontScale(g_FontScale);
 
-    // Lock button in header area (no duplicate heading)
-    ImGui::SameLine(ImGui::GetWindowWidth() - 60);
-    if (ImGui::SmallButton(g_LockDelivery ? "Unlock" : "Lock"))
-        g_LockDelivery = !g_LockDelivery;
+    // Right-click context menu for lock/unlock
+    if (ImGui::BeginPopupContextWindow("##DeliveryCtx"))
+    {
+        if (ImGui::MenuItem(g_LockDelivery ? "Unlock" : "Lock"))
+            g_LockDelivery = !g_LockDelivery;
+        ImGui::EndPopup();
+    }
 
     // Gold waiting
     if (g_Data.tradingPost.delivery.coins.raw > 0)
@@ -629,7 +632,7 @@ void RenderFlipList()
 
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse;
     if (g_LockFlipList)
-        flags |= ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize;
+        flags |= ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar;
 
     if (!ImGui::Begin("Flips##FlipColumn", &g_ShowFlipList, flags))
     {
@@ -639,6 +642,19 @@ void RenderFlipList()
         return;
     }
     ImGui::SetWindowFontScale(g_FontScale);
+
+    // Right-click context menu for lock/unlock + flip limit
+    if (ImGui::BeginPopupContextWindow("##FlipCtx"))
+    {
+        if (ImGui::MenuItem(g_LockFlipList ? "Unlock" : "Lock"))
+            g_LockFlipList = !g_LockFlipList;
+        ImGui::Separator();
+        ImGui::TextDisabled("Show:");
+        if (ImGui::MenuItem("20 items", nullptr, g_FlipLimit == 20)) g_FlipLimit = 20;
+        if (ImGui::MenuItem("50 items", nullptr, g_FlipLimit == 50)) g_FlipLimit = 50;
+        if (ImGui::MenuItem("100 items", nullptr, g_FlipLimit == 100)) g_FlipLimit = 100;
+        ImGui::EndPopup();
+    }
 
     std::lock_guard<std::mutex> lock(g_DataMutex);
 
@@ -650,27 +666,6 @@ void RenderFlipList()
         ImGui::PopStyleVar(2);
         return;
     }
-
-    // Controls in header area (no duplicate heading)
-    ImGui::SameLine(ImGui::GetWindowWidth() - 150);
-
-    // Flip limit dropdown right in the header
-    {
-        const char* opts[] = { "20", "50", "100" };
-        int ci = 0;
-        if (g_FlipLimit == 50) ci = 1;
-        else if (g_FlipLimit == 100) ci = 2;
-        ImGui::SetNextItemWidth(50);
-        if (ImGui::Combo("##flipcnt", &ci, opts, 3))
-        {
-            if (ci == 0) g_FlipLimit = 20;
-            else if (ci == 1) g_FlipLimit = 50;
-            else g_FlipLimit = 100;
-        }
-    }
-    ImGui::SameLine();
-    if (ImGui::SmallButton(g_LockFlipList ? "Unlock" : "Lock"))
-        g_LockFlipList = !g_LockFlipList;
 
     // Search
     static char search[128] = "";
@@ -800,7 +795,7 @@ void RenderOptions()
     ImGui::BulletText("ALT+D - Toggle delivery box (auto-shows when items waiting)");
     ImGui::Spacing();
     ImGui::TextDisabled("Copy icon next to values copies item name.");
-    ImGui::TextDisabled("Lock buttons pin windows in place.");
+    ImGui::TextDisabled("Right-click windows to lock/unlock position.");
     ImGui::Spacing();
     ImGui::TextDisabled("Data: GW2 API (direct) + GW2BLTC (flips)");
 }

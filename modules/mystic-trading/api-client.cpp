@@ -1011,6 +1011,10 @@ void LoadConfig()
             g_RowScale = (float)atof(line.substr(10).c_str());
         if (line.find("flip_limit=") == 0)
             g_FlipLimit = atoi(line.substr(11).c_str());
+        if (line.find("lock_flip_list=") == 0)
+            g_LockFlipList = (atoi(line.substr(15).c_str()) != 0);
+        if (line.find("lock_delivery=") == 0)
+            g_LockDelivery = (atoi(line.substr(14).c_str()) != 0);
     }
 }
 
@@ -1035,6 +1039,8 @@ void SaveConfig()
     f << "icon_scale=" << g_IconScale << "\n";
     f << "row_scale=" << g_RowScale << "\n";
     f << "flip_limit=" << g_FlipLimit << "\n";
+    f << "lock_flip_list=" << (g_LockFlipList ? 1 : 0) << "\n";
+    f << "lock_delivery=" << (g_LockDelivery ? 1 : 0) << "\n";
     if (!existingKey.empty())
         f << "api_key=" << existingKey << "\n";
 }

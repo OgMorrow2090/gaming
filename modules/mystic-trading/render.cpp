@@ -108,22 +108,45 @@ static void RenderCoins(Coins c, bool compact = false)
     ImGui::TextColored(COLOR_COPPER, "%02dc", c.copper);
 }
 
-static bool RenderItemIcon(int itemId)
+static bool RenderItemIcon(int itemId, const std::string& name = "")
 {
     if (!APIDefs) return false;
     char idBuf[64];
     snprintf(idBuf, sizeof(idBuf), "MT_ICON_%d", itemId);
     Texture_t* tex = APIDefs->Textures_Get(idBuf);
+    ImVec2 iconPos = ImGui::GetCursorScreenPos();
     if (tex && tex->Resource)
     {
         ImGui::Image((ImTextureID)tex->Resource, ImVec2(IconSize(), IconSize()));
-        return true;
     }
-    ImVec2 pos = ImGui::GetCursorScreenPos();
-    ImGui::GetWindowDrawList()->AddRect(pos, ImVec2(pos.x + IconSize(), pos.y + IconSize()),
-        ImGui::ColorConvertFloat4ToU32(ImVec4(0.4f, 0.4f, 0.4f, 0.5f)));
-    ImGui::Dummy(ImVec2(IconSize(), IconSize()));
-    return false;
+    else
+    {
+        ImGui::GetWindowDrawList()->AddRect(iconPos, ImVec2(iconPos.x + IconSize(), iconPos.y + IconSize()),
+            ImGui::ColorConvertFloat4ToU32(ImVec4(0.4f, 0.4f, 0.4f, 0.5f)));
+        ImGui::Dummy(ImVec2(IconSize(), IconSize()));
+    }
+
+    if (!name.empty())
+    {
+        // Overlay invisible button on icon for click/right-click
+        ImGui::SetCursorScreenPos(iconPos);
+        ImGui::InvisibleButton("##iconBtn", ImVec2(IconSize(), IconSize()));
+
+        if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
+            CopyToClipboard(name);
+
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("Click to copy");
+
+        if (ImGui::BeginPopupContextItem("##iconCtx"))
+        {
+            if (ImGui::MenuItem("Wiki"))
+                OpenWiki(name);
+            ImGui::EndPopup();
+        }
+    }
+
+    return (tex && tex->Resource);
 }
 
 // Open GW2 wiki page for an item
@@ -275,7 +298,7 @@ static void RenderFlipRow(const FlipItem& item, int index, bool compact)
     DrawRowBg(index);
     DrawAccentBar(COLOR_FLIPS);
 
-    RenderItemIcon(item.id);
+    RenderItemIcon(item.id, item.name);
     ImGui::SameLine();
 
     RenderClickableName("cn", item.name, item.rarity);
@@ -342,7 +365,7 @@ static void RenderTransactionRow(const Transaction& tx, int index, ImVec4 accent
     DrawRowBg(index);
     DrawAccentBar(accent);
 
-    RenderItemIcon(tx.itemId);
+    RenderItemIcon(tx.itemId, tx.name);
     ImGui::SameLine();
     RenderClickableName("cn", tx.name, tx.rarity);
     ImGui::SameLine();
@@ -382,7 +405,7 @@ static void RenderItemRow(const Item& item, int index, ImVec4 accent)
     DrawRowBg(index);
     DrawAccentBar(accent);
 
-    RenderItemIcon(item.id);
+    RenderItemIcon(item.id, item.name);
     ImGui::SameLine();
     RenderClickableName("cn", item.name, item.rarity);
     ImGui::SameLine();

@@ -108,6 +108,15 @@ static void RenderCoins(Coins c, bool compact = false)
     ImGui::TextColored(COLOR_COPPER, "%02dc", c.copper);
 }
 
+// Open GW2 wiki page for an item
+static void OpenWiki(const std::string& itemName)
+{
+    std::string url = "https://wiki.guildwars2.com/wiki/";
+    for (char c : itemName)
+        url += (c == ' ') ? '_' : c;
+    ShellExecuteA(nullptr, "open", url.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+}
+
 static bool RenderItemIcon(int itemId, const std::string& name = "")
 {
     if (!APIDefs) return false;
@@ -147,15 +156,6 @@ static bool RenderItemIcon(int itemId, const std::string& name = "")
     }
 
     return (tex && tex->Resource);
-}
-
-// Open GW2 wiki page for an item
-static void OpenWiki(const std::string& itemName)
-{
-    std::string url = "https://wiki.guildwars2.com/wiki/";
-    for (char c : itemName)
-        url += (c == ' ') ? '_' : c;
-    ShellExecuteA(nullptr, "open", url.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
 }
 
 // Render clickable item name — left-click copies, right-click opens context menu with Wiki

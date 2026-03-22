@@ -17,6 +17,7 @@
 #include <mutex>
 #include <algorithm>
 #include <string>
+#include <shellapi.h>
 
 // ============================================================================
 // Style Constants
@@ -125,39 +126,43 @@ static bool RenderItemIcon(int itemId)
     return false;
 }
 
-// Draw a clipboard copy icon (two overlapping rectangles)
-static bool RenderCopyIcon(const char* id, const std::string& textToCopy)
+// Open GW2 wiki page for an item
+static void OpenWiki(const std::string& itemName)
+{
+    std::string url = "https://wiki.guildwars2.com/wiki/";
+    for (char c : itemName)
+        url += (c == ' ') ? '_' : c;
+    ShellExecuteA(nullptr, "open", url.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+}
+
+// Render clickable item name — left-click copies, right-click opens context menu with Wiki
+static void RenderClickableName(const char* id, const std::string& name, Rarity rarity)
 {
     ImGui::PushID(id);
 
-    float sz = 14.0f * g_IconScale;
-    ImVec2 pos = ImGui::GetCursorScreenPos();
+    ImVec2 textPos = ImGui::GetCursorScreenPos();
+    ImVec2 textSize = ImGui::CalcTextSize(name.c_str());
 
-    // Invisible button for interaction
-    bool clicked = ImGui::InvisibleButton("##copy", ImVec2(sz + 4, sz + 2));
+    ImGui::TextColored(GetRarityColor(rarity), "%s", name.c_str());
 
-    ImU32 color;
+    // Overlay invisible button for click detection
+    ImGui::SetCursorScreenPos(textPos);
+    ImGui::InvisibleButton("##nameBtn", textSize);
+
+    if (ImGui::IsItemClicked(ImGuiMouseButton_Left))
+        CopyToClipboard(name);
+
     if (ImGui::IsItemHovered())
-        color = ImGui::ColorConvertFloat4ToU32(ImVec4(1.0f, 1.0f, 1.0f, 0.9f));
-    else
-        color = ImGui::ColorConvertFloat4ToU32(ImVec4(0.6f, 0.6f, 0.6f, 0.7f));
+        ImGui::SetTooltip("Click to copy");
 
-    ImDrawList* dl = ImGui::GetWindowDrawList();
-    // Back page
-    dl->AddRect(ImVec2(pos.x + 3, pos.y), ImVec2(pos.x + sz, pos.y + sz - 3), color, 1.0f);
-    // Front page (offset)
-    dl->AddRectFilled(ImVec2(pos.x, pos.y + 3), ImVec2(pos.x + sz - 3, pos.y + sz), ImGui::ColorConvertFloat4ToU32(ImVec4(0.08f, 0.08f, 0.10f, 1.0f)));
-    dl->AddRect(ImVec2(pos.x, pos.y + 3), ImVec2(pos.x + sz - 3, pos.y + sz), color, 1.0f);
+    if (ImGui::BeginPopupContextItem("##itemCtx"))
+    {
+        if (ImGui::MenuItem("Wiki"))
+            OpenWiki(name);
+        ImGui::EndPopup();
+    }
 
     ImGui::PopID();
-
-    if (clicked)
-        CopyToClipboard(textToCopy);
-
-    if (ImGui::IsItemHovered())
-        ImGui::SetTooltip("Copy \"%s\"", textToCopy.c_str());
-
-    return clicked;
 }
 
 // Section header — collapsed by default, with expand/collapse
@@ -273,13 +278,10 @@ static void RenderFlipRow(const FlipItem& item, int index, bool compact)
     RenderItemIcon(item.id);
     ImGui::SameLine();
 
-    ImGui::TextColored(GetRarityColor(item.rarity), "%s", item.name.c_str());
+    RenderClickableName("cn", item.name, item.rarity);
 
     if (compact)
     {
-        ImGui::SameLine(ImGui::GetWindowWidth() - 30);
-        RenderCopyIcon("cp", item.name);
-
         ImGui::Indent(IconSize() + 8);
         ImGui::TextDisabled("B:");
         ImGui::SameLine(0, 2);
@@ -303,9 +305,6 @@ static void RenderFlipRow(const FlipItem& item, int index, bool compact)
     }
     else
     {
-        ImGui::SameLine(ImGui::GetWindowWidth() - 30);
-        RenderCopyIcon("cp", item.name);
-
         ImGui::Indent(IconSize() + 8);
         ImGui::TextDisabled("Buy:");
         ImGui::SameLine();
@@ -345,13 +344,11 @@ static void RenderTransactionRow(const Transaction& tx, int index, ImVec4 accent
 
     RenderItemIcon(tx.itemId);
     ImGui::SameLine();
-    ImGui::TextColored(GetRarityColor(tx.rarity), "%s", tx.name.c_str());
+    RenderClickableName("cn", tx.name, tx.rarity);
     ImGui::SameLine();
     ImGui::TextDisabled("x%d", tx.quantity);
     ImGui::SameLine(ImGui::GetWindowWidth() - 160);
     RenderCoins(tx.price);
-    ImGui::SameLine();
-    RenderCopyIcon("cp", tx.name);
 
     if (IsRowHovered(rowStart, rowWidth))
     {
@@ -387,13 +384,11 @@ static void RenderItemRow(const Item& item, int index, ImVec4 accent)
 
     RenderItemIcon(item.id);
     ImGui::SameLine();
-    ImGui::TextColored(GetRarityColor(item.rarity), "%s", item.name.c_str());
+    RenderClickableName("cn", item.name, item.rarity);
     ImGui::SameLine();
     ImGui::TextDisabled("x%d", item.count);
     ImGui::SameLine(ImGui::GetWindowWidth() - 160);
     RenderCoins(item.totalValue);
-    ImGui::SameLine();
-    RenderCopyIcon("cp", item.name);
 
     if (IsRowHovered(rowStart, rowWidth))
     {

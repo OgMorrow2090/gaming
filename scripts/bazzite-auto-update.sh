@@ -107,18 +107,16 @@ echo "=== Summary ==="
 echo -e "$summary"
 
 if $updates_applied; then
-    # Escape newlines and special chars for JSON
     json_message=$(echo -e "$summary" | sed 's/"/\\"/g' | tr '\n' ' ' | sed 's/  */ /g' | sed 's/ *$//')
     send_alert "info" "Bazzite updates applied" "$json_message"
 
     if $reboot_needed; then
         echo "[reboot] OS update staged — rebooting in 30 seconds..."
-        send_alert "info" "Bazzite rebooting" "OS update staged, rebooting now"
         sleep 30
         sudo_cmd systemctl reboot || true
     fi
 else
-    echo "No updates to apply."
+    echo "No updates to apply — skipping alert."
 fi
 
 echo "=== Update finished: $(date -Iseconds) ==="

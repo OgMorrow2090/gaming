@@ -16,6 +16,8 @@ When the user says "cleanup", "session end", or "synchronize", read and follow t
 
 **Memory merge rule**: Always write memory files to the repo `memory/` directory — never to `~/.claude/projects/*/memory/`. If local memory is found at that path, merge any unique content into the repo `memory/` directory, then delete the local copy. The repo is the single source of truth for all memory.
 
+**Never exclude memory from commits**: All `.md` files in `memory/` (MEMORY.md, chat.md, planning docs, project notes) must always be committed and pushed. These files are shared across devices — never leave them as local-only or excluded from git.
+
 ## Key Rules
 
 - Source of truth: the Git repository for all code and configurations

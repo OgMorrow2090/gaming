@@ -1,0 +1,9 @@
+[Unit]
+Description=Bazzite auto-update (OS + Flatpak) with alert reporting
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/var/home/Og/scripts/bazzite-auto-update.sh
+TimeoutStartSec=600

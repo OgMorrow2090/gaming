@@ -30,11 +30,21 @@ fi
 
 send_alert() {
     local severity="$1" title="$2" message="$3"
-    curl -s -X POST "$ALERT_URL" \
+    local payload
+    payload=$(jq -n \
+        --arg secret "$ALERT_SECRET" \
+        --arg device "$DEVICE" \
+        --arg severity "$severity" \
+        --arg title "$title" \
+        --arg message "$message" \
+        '{secret: $secret, device: $device, severity: $severity, title: $title, message: $message, alert_type: "system-update"}')
+    local result
+    result=$(curl -s -w "\n%{http_code}" -X POST "$ALERT_URL" \
         -H "Content-Type: application/json" \
-        -d "$(printf '{"secret":"%s","device":"%s","severity":"%s","title":"%s","message":"%s","alert_type":"system-update"}' \
-            "$ALERT_SECRET" "$DEVICE" "$severity" "$title" "$message")" \
-        >/dev/null 2>&1 || true
+        -d "$payload" 2>&1)
+    local http_code
+    http_code=$(echo "$result" | tail -1)
+    echo "[alert] HTTP $http_code — $title"
 }
 
 sudo_cmd() {
@@ -107,8 +117,8 @@ echo "=== Summary ==="
 echo -e "$summary"
 
 if $updates_applied; then
-    json_message=$(echo -e "$summary" | sed 's/"/\\"/g' | tr '\n' ' ' | sed 's/  */ /g' | sed 's/ *$//')
-    send_alert "info" "Bazzite updates applied" "$json_message"
+    alert_message=$(echo -e "$summary" | tr '\n' ' ' | sed 's/  */ /g; s/ *$//')
+    send_alert "info" "Bazzite updates applied" "$alert_message"
 
     if $reboot_needed; then
         echo "[reboot] OS update staged — rebooting in 30 seconds..."

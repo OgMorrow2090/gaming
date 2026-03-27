@@ -62,12 +62,14 @@ echo "$ostree_output"
 
 if echo "$ostree_output" | grep -q "No upgrade available"; then
     summary+="OS: No updates available\n"
-elif echo "$ostree_output" | grep -q "Staging deployment"; then
+elif echo "$ostree_output" | grep -qE "Staging deployment|systemctl reboot|Importing.*ostree"; then
     # Extract version info
     new_version=$(echo "$ostree_output" | grep -oP 'Version: \K[^\s]+' | tail -1 || echo "unknown")
-    # Get list of changed packages
-    changed_pkgs=$(echo "$ostree_output" | grep -E '^\s*(Upgraded|Added|Removed|Downgraded):' || echo "")
-    pkg_summary=$(echo "$ostree_output" | grep -cE '^\s*(Upgraded|Added|Removed):' || echo "0")
+    # Get list of changed packages (indented lines with ->)
+    changed_pkgs=$(echo "$ostree_output" | grep -E '^\s+\S+.*->' || echo "")
+    added_pkgs=$(echo "$ostree_output" | grep -E '^Added:' -A100 | grep -E '^\s+\S+' || echo "")
+    if [[ -n "$added_pkgs" ]]; then changed_pkgs+=$'\n'"$added_pkgs"; fi
+    pkg_summary=$(echo "$changed_pkgs" | grep -c '\S' || echo "0")
 
     summary+="OS: Updated to ${new_version} (${pkg_summary} packages changed)\n"
     if [[ -n "$changed_pkgs" ]]; then

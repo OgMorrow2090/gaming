@@ -586,6 +586,15 @@
 	},
 	{
 		"Alt": false,
+		"Code": 46,
+		"Ctrl": true,
+		"Identifier": "CAPTURE_MODE",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
 		"Code": 33,
 		"Ctrl": true,
 		"Identifier": "CAPTURE_MYSTIC_FORGE",
@@ -661,6 +670,132 @@
 		"Code": 21,
 		"Ctrl": true,
 		"Identifier": "CAPTURE_YES_DIALOG",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 82,
+		"Ctrl": true,
+		"Identifier": "CHAT_AHEAL",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 71,
+		"Ctrl": true,
+		"Identifier": "CHAT_GUILD",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 81,
+		"Ctrl": true,
+		"Identifier": "CHAT_HI",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 77,
+		"Ctrl": true,
+		"Identifier": "CHAT_MAP",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 74,
+		"Ctrl": true,
+		"Identifier": "CHAT_MINUS",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 55,
+		"Ctrl": true,
+		"Identifier": "CHAT_NO",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 80,
+		"Ctrl": true,
+		"Identifier": "CHAT_NP",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 75,
+		"Ctrl": true,
+		"Identifier": "CHAT_PARTY",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 78,
+		"Ctrl": true,
+		"Identifier": "CHAT_PLUS",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 73,
+		"Ctrl": true,
+		"Identifier": "CHAT_QHEAL",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 76,
+		"Ctrl": true,
+		"Identifier": "CHAT_SAY",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 72,
+		"Ctrl": true,
+		"Identifier": "CHAT_SQUAD",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 79,
+		"Ctrl": true,
+		"Identifier": "CHAT_TY",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 83,
+		"Ctrl": true,
+		"Identifier": "CHAT_YES",
 		"Passthrough": false,
 		"Shift": true,
 		"Type": 1
@@ -1138,132 +1273,6 @@
 		"Code": 37,
 		"Ctrl": false,
 		"Identifier": "timer-window-toggle",
-		"Passthrough": false,
-		"Shift": true,
-		"Type": 1
-	},
-	{
-		"Alt": false,
-		"Code": 79,
-		"Ctrl": true,
-		"Identifier": "CHAT_TY",
-		"Passthrough": false,
-		"Shift": true,
-		"Type": 1
-	},
-	{
-		"Alt": false,
-		"Code": 80,
-		"Ctrl": true,
-		"Identifier": "CHAT_NP",
-		"Passthrough": false,
-		"Shift": true,
-		"Type": 1
-	},
-	{
-		"Alt": false,
-		"Code": 81,
-		"Ctrl": true,
-		"Identifier": "CHAT_HI",
-		"Passthrough": false,
-		"Shift": true,
-		"Type": 1
-	},
-	{
-		"Alt": false,
-		"Code": 75,
-		"Ctrl": true,
-		"Identifier": "CHAT_PARTY",
-		"Passthrough": false,
-		"Shift": true,
-		"Type": 1
-	},
-	{
-		"Alt": false,
-		"Code": 76,
-		"Ctrl": true,
-		"Identifier": "CHAT_SAY",
-		"Passthrough": false,
-		"Shift": true,
-		"Type": 1
-	},
-	{
-		"Alt": false,
-		"Code": 77,
-		"Ctrl": true,
-		"Identifier": "CHAT_MAP",
-		"Passthrough": false,
-		"Shift": true,
-		"Type": 1
-	},
-	{
-		"Alt": false,
-		"Code": 71,
-		"Ctrl": true,
-		"Identifier": "CHAT_GUILD",
-		"Passthrough": false,
-		"Shift": true,
-		"Type": 1
-	},
-	{
-		"Alt": false,
-		"Code": 72,
-		"Ctrl": true,
-		"Identifier": "CHAT_SQUAD",
-		"Passthrough": false,
-		"Shift": true,
-		"Type": 1
-	},
-	{
-		"Alt": false,
-		"Code": 73,
-		"Ctrl": true,
-		"Identifier": "CHAT_QHEAL",
-		"Passthrough": false,
-		"Shift": true,
-		"Type": 1
-	},
-	{
-		"Alt": false,
-		"Code": 82,
-		"Ctrl": true,
-		"Identifier": "CHAT_AHEAL",
-		"Passthrough": false,
-		"Shift": true,
-		"Type": 1
-	},
-	{
-		"Alt": false,
-		"Code": 78,
-		"Ctrl": true,
-		"Identifier": "CHAT_PLUS",
-		"Passthrough": false,
-		"Shift": true,
-		"Type": 1
-	},
-	{
-		"Alt": false,
-		"Code": 74,
-		"Ctrl": true,
-		"Identifier": "CHAT_MINUS",
-		"Passthrough": false,
-		"Shift": true,
-		"Type": 1
-	},
-	{
-		"Alt": false,
-		"Code": 83,
-		"Ctrl": true,
-		"Identifier": "CHAT_YES",
-		"Passthrough": false,
-		"Shift": true,
-		"Type": 1
-	},
-	{
-		"Alt": false,
-		"Code": 55,
-		"Ctrl": true,
-		"Identifier": "CHAT_NO",
 		"Passthrough": false,
 		"Shift": true,
 		"Type": 1

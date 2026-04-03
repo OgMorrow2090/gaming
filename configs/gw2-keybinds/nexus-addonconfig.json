@@ -331,5 +331,14 @@
 		"IsPausingUpdates": false,
 		"Name": "Compass",
 		"Signature": 17
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": true,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "-",
+		"Signature": -54323
 	}
 ]

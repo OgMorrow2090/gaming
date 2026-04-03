@@ -1,0 +1,11 @@
+[Unit]
+Description=Send alert to alerts.itinyk.app on boot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/home/deck/scripts/steamdeck-reboot-notify.sh
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,9 @@
+[Unit]
+Description=Steam Deck auto-update (OS + Flatpak) with alert reporting
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/home/deck/scripts/steamdeck-auto-update.sh
+TimeoutStartSec=600

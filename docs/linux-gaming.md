@@ -23,6 +23,13 @@ Uses the 1Password SSH agent — same key used for all Pi hosts. Biometric appro
 
 **Requires**: SSH config entry in `dev-toolkit/configs/ssh_config` (already added).
 
+### SSH Hardening
+
+- Password auth disabled, key-only via 1Password
+- Passwordless sudo via `/etc/sudoers.d/nopasswd-og`
+- SSH ACL via firewalld rich rules: VLAN 10 Macs, VLAN 0/1/2/100 subnets only (no WARP — local access only)
+- `ssh` service removed from firewalld zone (blanket access disabled)
+
 ## Bazzite OS
 
 Bazzite is a Fedora-based immutable Linux distribution built for gaming. Similar to SteamOS but runs on standard desktop hardware. Ships with Steam, Proton, and gaming-optimized drivers out of the box.

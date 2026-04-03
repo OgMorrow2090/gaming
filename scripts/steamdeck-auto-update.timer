@@ -1,0 +1,9 @@
+[Unit]
+Description=Run Steam Deck auto-update daily at 1am (catches up after sleep/power off)
+
+[Timer]
+OnCalendar=*-*-* 01:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

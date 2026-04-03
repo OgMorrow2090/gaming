@@ -2,7 +2,7 @@
 {
 	"version"		"3"
 	"revision"		"2347"
-	"title"		"Guild Wars 2 - Og v14.5"
+	"title"		"Guild Wars 2 - Og v14.6"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2360,6 +2360,24 @@
 						"settings"
 						{
 							"haptic_intensity"		"2"
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+					"touch_menu_button_13"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Capture Mode, , "
+							"binding"		"key_press LEFT_SHIFT, Capture Mode, , "
+							"binding"		"key_press C, Capture Mode, , "
 						}
 					}
 				}

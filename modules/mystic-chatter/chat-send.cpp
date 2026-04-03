@@ -2,15 +2,15 @@
  * chat-send.cpp
  *
  * Chat message sending for Mystic Chatter addon.
- * Uses WndProc_SendToGameOnly (same as Mystic Clicker) for Proton compatibility.
- * Sends WM_KEYDOWN/UP for Enter, WM_CHAR for each text character.
+ * Uses clipboard paste with WndProc for Proton compatibility.
  *
  * Flow:
- *   1. Press Enter (open chat)
- *   2. Send each character via WM_CHAR
- *   3. Press Enter (send message)
- *
- * No clipboard needed — WM_CHAR types directly into the chat input.
+ *   1. Save clipboard
+ *   2. Copy message to clipboard
+ *   3. Press Enter via WndProc (open chat)
+ *   4. Ctrl+V via WndProc (paste from clipboard)
+ *   5. Press Enter via WndProc (send)
+ *   6. Restore clipboard
  *
  * Author: OgMorrow2090
  * Repository: https://github.com/OgMorrow2090/guildwars2
@@ -45,13 +45,9 @@ static void EnsureGameWindow()
 // Helper: Key Simulation via WndProc (Proton compatible)
 // =============================================================================
 
-/**
- * Build lParam for WM_KEYDOWN/WM_KEYUP
- * Bits: 0-15 repeat count, 16-23 scan code, 24 extended, 30 prev state, 31 transition
- */
 static LPARAM MakeKeyLParam(UINT scanCode, bool isUp, bool isExtended = false)
 {
-    LPARAM lParam = 1; // repeat count = 1
+    LPARAM lParam = 1;
     lParam |= (scanCode & 0xFF) << 16;
     if (isExtended) lParam |= (1 << 24);
     if (isUp) lParam |= (1 << 30) | (1 << 31);
@@ -60,42 +56,78 @@ static LPARAM MakeKeyLParam(UINT scanCode, bool isUp, bool isExtended = false)
 
 static void SendKeyDown(UINT vk, UINT scanCode)
 {
-    LPARAM lParam = MakeKeyLParam(scanCode, false);
-    APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYDOWN, vk, lParam);
+    APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYDOWN, vk, MakeKeyLParam(scanCode, false));
 }
 
 static void SendKeyUp(UINT vk, UINT scanCode)
 {
-    LPARAM lParam = MakeKeyLParam(scanCode, true);
-    APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYUP, vk, lParam);
+    APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYUP, vk, MakeKeyLParam(scanCode, true));
 }
 
 static void SendKeyStroke(UINT vk, UINT scanCode)
 {
     SendKeyDown(vk, scanCode);
-    Sleep(15);
+    Sleep(20);
     SendKeyUp(vk, scanCode);
 }
 
-static void SendChar(char c)
+// =============================================================================
+// Helper: Clipboard
+// =============================================================================
+
+static bool SetClipboardText(const char* text)
 {
-    APIDefs->WndProc_SendToGameOnly(GameWindow, WM_CHAR, (WPARAM)c, 0);
+    if (!OpenClipboard(GameWindow))
+    {
+        // Retry with nullptr
+        if (!OpenClipboard(nullptr))
+            return false;
+    }
+
+    EmptyClipboard();
+
+    size_t len = strlen(text) + 1;
+    HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, len);
+    if (hMem == nullptr)
+    {
+        CloseClipboard();
+        return false;
+    }
+
+    memcpy(GlobalLock(hMem), text, len);
+    GlobalUnlock(hMem);
+    SetClipboardData(CF_TEXT, hMem);
+    CloseClipboard();
+    return true;
+}
+
+static std::string GetClipboardText()
+{
+    std::string result;
+    if (!OpenClipboard(GameWindow))
+    {
+        if (!OpenClipboard(nullptr))
+            return result;
+    }
+
+    HANDLE hData = GetClipboardData(CF_TEXT);
+    if (hData != nullptr)
+    {
+        char* pszText = static_cast<char*>(GlobalLock(hData));
+        if (pszText != nullptr)
+        {
+            result = pszText;
+            GlobalUnlock(hData);
+        }
+    }
+    CloseClipboard();
+    return result;
 }
 
 // =============================================================================
 // SendChatMessage - Main Function
 // =============================================================================
 
-/**
- * SendChatMessage - Send text to GW2 chat
- *
- * Uses WndProc messages for Proton/Wine compatibility:
- *   WM_KEYDOWN Enter (open chat) -> WM_CHAR per character -> WM_KEYDOWN Enter (send)
- *
- * Runs on a separate thread to allow Sleep() delays without blocking.
- *
- * @param message The text to send (max 199 chars per GW2 limit)
- */
 void SendChatMessage(const char* message)
 {
     EnsureGameWindow();
@@ -114,30 +146,43 @@ void SendChatMessage(const char* message)
         return;
     }
 
-    // Copy message for the thread
     std::string msg(message);
 
-    // Run on background thread for Sleep() delays
     std::thread([msg]()
     {
         char logBuf[256];
         snprintf(logBuf, sizeof(logBuf), "Sending: %s", msg.c_str());
         APIDefs->Log(LOGL_INFO, "MysticChatter", logBuf);
 
-        // 1. Open chat — press Enter (VK_RETURN = 0x0D, scan code 0x1C)
+        // 1. Save clipboard
+        std::string prevClipboard = GetClipboardText();
+
+        // 2. Copy message to clipboard
+        if (!SetClipboardText(msg.c_str()))
+        {
+            APIDefs->Log(LOGL_WARNING, "MysticChatter", "Failed to set clipboard");
+            return;
+        }
+
+        // 3. Open chat — Enter (scan code 0x1C)
         SendKeyStroke(VK_RETURN, 0x1C);
+        Sleep(150);
+
+        // 4. Paste — Ctrl+V via WndProc
+        SendKeyDown(VK_CONTROL, 0x1D);
+        Sleep(20);
+        SendKeyStroke('V', 0x2F);
+        Sleep(20);
+        SendKeyUp(VK_CONTROL, 0x1D);
         Sleep(100);
 
-        // 2. Type each character via WM_CHAR
-        for (char c : msg)
-        {
-            SendChar(c);
-            Sleep(5);
-        }
+        // 5. Send — Enter
+        SendKeyStroke(VK_RETURN, 0x1C);
         Sleep(50);
 
-        // 3. Send — press Enter
-        SendKeyStroke(VK_RETURN, 0x1C);
+        // 6. Restore clipboard
+        if (!prevClipboard.empty())
+            SetClipboardText(prevClipboard.c_str());
 
         APIDefs->Log(LOGL_DEBUG, "MysticChatter", "Message sent");
 

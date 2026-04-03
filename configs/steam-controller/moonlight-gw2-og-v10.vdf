@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2350"
-	"title"		"Guild Wars 2 - Og v10.5"
+	"revision"		"2351"
+	"title"		"Guild Wars 2 - Og v10.6"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2634,9 +2634,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, ty, "
-							"binding"		"key_press LEFT_SHIFT, ty, "
-							"binding"		"key_press KEYPAD_1, ty, "
+							"binding"		"key_press T, ty, , "
+							"binding"		"key_press Y, ty, , "
+							"binding"		"key_press RETURN, Send, , "
 						}
 					}
 				}
@@ -2649,9 +2649,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, np, "
-							"binding"		"key_press LEFT_SHIFT, np, "
-							"binding"		"key_press KEYPAD_2, np, "
+							"binding"		"key_press N, np, , "
+							"binding"		"key_press P, np, , "
+							"binding"		"key_press RETURN, Send, , "
 						}
 					}
 				}
@@ -2664,9 +2664,10 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Hi, "
-							"binding"		"key_press LEFT_SHIFT, Hi, "
-							"binding"		"key_press KEYPAD_3, Hi, "
+							"binding"		"key_press LEFT_SHIFT, Hi, , "
+							"binding"		"key_press H, Hi, , "
+							"binding"		"key_press I, Hi, , "
+							"binding"		"key_press RETURN, Send, , "
 						}
 					}
 				}
@@ -2679,9 +2680,13 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, /party, "
-							"binding"		"key_press LEFT_SHIFT, /party, "
-							"binding"		"key_press KEYPAD_4, /party, "
+							"binding"		"key_press FORWARD_SLASH, /party, , "
+							"binding"		"key_press P, /party, , "
+							"binding"		"key_press A, /party, , "
+							"binding"		"key_press R, /party, , "
+							"binding"		"key_press T, /party, , "
+							"binding"		"key_press Y, /party, , "
+							"binding"		"key_press RETURN, Send, , "
 						}
 					}
 				}
@@ -2694,9 +2699,11 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, /say, "
-							"binding"		"key_press LEFT_SHIFT, /say, "
-							"binding"		"key_press KEYPAD_5, /say, "
+							"binding"		"key_press FORWARD_SLASH, /say, , "
+							"binding"		"key_press S, /say, , "
+							"binding"		"key_press A, /say, , "
+							"binding"		"key_press Y, /say, , "
+							"binding"		"key_press RETURN, Send, , "
 						}
 					}
 				}
@@ -2709,9 +2716,11 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, /map, "
-							"binding"		"key_press LEFT_SHIFT, /map, "
-							"binding"		"key_press KEYPAD_6, /map, "
+							"binding"		"key_press FORWARD_SLASH, /map, , "
+							"binding"		"key_press M, /map, , "
+							"binding"		"key_press A, /map, , "
+							"binding"		"key_press P, /map, , "
+							"binding"		"key_press RETURN, Send, , "
 						}
 					}
 				}
@@ -2724,9 +2733,13 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, /guild, "
-							"binding"		"key_press LEFT_SHIFT, /guild, "
-							"binding"		"key_press KEYPAD_7, /guild, "
+							"binding"		"key_press FORWARD_SLASH, /guild, , "
+							"binding"		"key_press G, /guild, , "
+							"binding"		"key_press U, /guild, , "
+							"binding"		"key_press I, /guild, , "
+							"binding"		"key_press L, /guild, , "
+							"binding"		"key_press D, /guild, , "
+							"binding"		"key_press RETURN, Send, , "
 						}
 					}
 				}
@@ -2739,9 +2752,13 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, /squad, "
-							"binding"		"key_press LEFT_SHIFT, /squad, "
-							"binding"		"key_press KEYPAD_8, /squad, "
+							"binding"		"key_press FORWARD_SLASH, /squad, , "
+							"binding"		"key_press S, /squad, , "
+							"binding"		"key_press Q, /squad, , "
+							"binding"		"key_press U, /squad, , "
+							"binding"		"key_press A, /squad, , "
+							"binding"		"key_press D, /squad, , "
+							"binding"		"key_press RETURN, Send, , "
 						}
 					}
 				}
@@ -2754,9 +2771,12 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, qheal, "
-							"binding"		"key_press LEFT_SHIFT, qheal, "
-							"binding"		"key_press KEYPAD_9, qheal, "
+							"binding"		"key_press Q, qheal, , "
+							"binding"		"key_press H, qheal, , "
+							"binding"		"key_press E, qheal, , "
+							"binding"		"key_press A, qheal, , "
+							"binding"		"key_press L, qheal, , "
+							"binding"		"key_press RETURN, Send, , "
 						}
 					}
 				}
@@ -2769,9 +2789,12 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, aheal, "
-							"binding"		"key_press LEFT_SHIFT, aheal, "
-							"binding"		"key_press KEYPAD_0, aheal, "
+							"binding"		"key_press A, aheal, , "
+							"binding"		"key_press H, aheal, , "
+							"binding"		"key_press E, aheal, , "
+							"binding"		"key_press A, aheal, , "
+							"binding"		"key_press L, aheal, , "
+							"binding"		"key_press RETURN, Send, , "
 						}
 					}
 				}
@@ -2784,9 +2807,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, +, "
-							"binding"		"key_press LEFT_SHIFT, +, "
-							"binding"		"key_press KEYPAD_PLUS, +, "
+							"binding"		"key_press LEFT_SHIFT, +, , "
+							"binding"		"key_press EQUALS, +, , "
+							"binding"		"key_press RETURN, Send, , "
 						}
 					}
 				}
@@ -2799,9 +2822,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, -, "
-							"binding"		"key_press LEFT_SHIFT, -, "
-							"binding"		"key_press KEYPAD_DASH, -, "
+							"binding"		"key_press DASH, -, , "
+							"binding"		"key_press RETURN, Send, , "
 						}
 					}
 				}
@@ -2814,9 +2836,11 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Yes, "
-							"binding"		"key_press LEFT_SHIFT, Yes, "
-							"binding"		"key_press KEYPAD_PERIOD, Yes, "
+							"binding"		"key_press LEFT_SHIFT, Yes, , "
+							"binding"		"key_press Y, Yes, , "
+							"binding"		"key_press E, Yes, , "
+							"binding"		"key_press S, Yes, , "
+							"binding"		"key_press RETURN, Send, , "
 						}
 					}
 				}
@@ -2829,9 +2853,10 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, No, "
-							"binding"		"key_press LEFT_SHIFT, No, "
-							"binding"		"key_press KEYPAD_MULTIPLY, No, "
+							"binding"		"key_press LEFT_SHIFT, No, , "
+							"binding"		"key_press N, No, , "
+							"binding"		"key_press O, No, , "
+							"binding"		"key_press RETURN, Send, , "
 						}
 					}
 				}

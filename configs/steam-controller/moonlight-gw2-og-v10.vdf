@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2348"
-	"title"		"Guild Wars 2 - Og v10.3"
+	"revision"		"2349"
+	"title"		"Guild Wars 2 - Og v10.4"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2841,6 +2841,9 @@
 		{
 			"touch_menu_button_count"		"14"
 			"touch_menu_opacity"		"100"
+			"touch_menu_scale"		"150"
+			"touch_menu_position_x"		"50"
+			"touch_menu_position_y"		"50"
 		}
 	}
 	"group"

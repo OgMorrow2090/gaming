@@ -3,6 +3,9 @@
 #include <windows.h>
 #include "Nexus.h"
 
+// ImGui forward declaration
+struct ImGuiContext;
+
 // Global API pointer - set in AddonLoad
 extern AddonAPI_t* APIDefs;
 
@@ -11,6 +14,15 @@ extern AddonDefinition_t AddonDef;
 
 // Game window handle
 extern HWND GameWindow;
+
+// ImGui context
+extern ImGuiContext* ImGuiCtx;
+
+// Capture UI
+extern bool g_ShowCaptureWindow;
+constexpr const char* CAPTURE_MODE = "CAPTURE_MODE";
+void RenderCaptureWindow();
+void ToggleCaptureWindow();
 
 // Keybind identifiers - Actions
 constexpr const char* DEPOSIT_MATERIALS = "DEPOSIT_MATERIALS";

@@ -83,6 +83,11 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     {
         SimulateTpRemoveClick();
     }
+    // === CAPTURE MODE ===
+    else if (strcmp(aIdentifier, CAPTURE_MODE) == 0)
+    {
+        ToggleCaptureWindow();
+    }
     // === CAPTURE KEYBINDS ===
     else if (strcmp(aIdentifier, CAPTURE_DEPOSIT) == 0)
     {

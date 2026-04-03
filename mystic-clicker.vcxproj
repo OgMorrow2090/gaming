@@ -103,11 +103,19 @@
     <ClCompile Include="modules\mystic-clicker\keybinds.cpp" />
     <ClCompile Include="modules\mystic-clicker\input-sim.cpp" />
     <ClCompile Include="modules\mystic-clicker\config.cpp" />
+    <ClCompile Include="modules\mystic-clicker\capture-ui.cpp" />
+    <ClCompile Include="include\imgui\imgui.cpp" />
+    <ClCompile Include="include\imgui\imgui_draw.cpp" />
+    <ClCompile Include="include\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="include\imgui\imgui_tables.cpp" />
   </ItemGroup>
 
   <ItemGroup>
     <ClInclude Include="modules\mystic-clicker\shared.h" />
     <ClInclude Include="include\Nexus.h" />
+    <ClInclude Include="include\imgui\imgui.h" />
+    <ClInclude Include="include\imgui\imgui_internal.h" />
+    <ClInclude Include="include\imgui\imconfig.h" />
   </ItemGroup>
   
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

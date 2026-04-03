@@ -9,12 +9,14 @@
  */
 
 #include "shared.h"
+#include "imgui/imgui.h"
 #include <cstring>
 
 // Global state
 AddonAPI_t* APIDefs = nullptr;
 AddonDefinition_t AddonDef{};
 HWND GameWindow = nullptr;
+ImGuiContext* ImGuiCtx = nullptr;
 
 // Forward declarations
 void AddonLoad(AddonAPI_t* aApi);
@@ -110,6 +112,19 @@ void AddonLoad(AddonAPI_t* aApi)
         APIDefs->Log(LOGL_INFO, "MysticClicker", "Game window found successfully!");
     }
     
+    // Set up ImGui context
+    ImGuiCtx = (ImGuiContext*)APIDefs->ImguiContext;
+    ImGui::SetCurrentContext(ImGuiCtx);
+    ImGui::SetAllocatorFunctions(
+        (void* (*)(size_t, void*))APIDefs->ImguiMalloc,
+        (void (*)(void*, void*))APIDefs->ImguiFree);
+
+    // Register capture window render callback
+    APIDefs->GUI_Register(RT_Render, RenderCaptureWindow);
+
+    // Capture mode keybind
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_MODE, ProcessKeybind, "CTRL+SHIFT+C");
+
     // 13 action keybinds
     APIDefs->InputBinds_RegisterWithString(DEPOSIT_MATERIALS, ProcessKeybind, "CTRL+D");
     APIDefs->InputBinds_RegisterWithString(SORT_INVENTORY, ProcessKeybind, "CTRL+S");
@@ -176,6 +191,9 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(CAPTURE_TRADING_POST);
     APIDefs->InputBinds_Deregister(CAPTURE_TP_REMOVE);
     
+    APIDefs->GUI_Deregister(RenderCaptureWindow);
+    APIDefs->InputBinds_Deregister(CAPTURE_MODE);
+
     APIDefs->Log(LOGL_INFO, "MysticClicker", "Addon unloaded.");
     APIDefs = nullptr;
     GameWindow = nullptr;

@@ -1,0 +1,58 @@
+<InputBindings>
+    <action name="Turn Left" id="4" device="None"/>
+    <action name="Turn Right" id="5" device="None"/>
+    <action name="Zoom In" id="14" device="None"/>
+    <action name="Toggle Action Camera" id="78" device="Keyboard" button="69"/>
+    <action name="Weapon Skill 1" id="18" device="None"/>
+    <action name="Healing Skill" id="23" device="Keyboard" button="81"/>
+    <action name="Elite Skill" id="27" device="Keyboard" button="49"/>
+    <action name="Profession Skill 1" id="28" device="Keyboard" button="32" mod="1"/>
+    <action name="Profession Skill 2" id="29" device="Keyboard" button="33" mod="1"/>
+    <action name="Profession Skill 3" id="30" device="Keyboard" button="34" mod="1"/>
+    <action name="Profession Skill 4" id="31" device="Keyboard" button="35" mod="1"/>
+    <action name="Profession Skill 5" id="79" device="Keyboard" button="36" mod="1"/>
+    <action name="Profession Skill 6" id="201" device="Keyboard" button="37" mod="1"/>
+    <action name="Profession Skill 7" id="202" device="Keyboard" button="38" mod="1"/>
+    <action name="Call Target" id="32" device="Keyboard" button="67" mod="1"/>
+    <action name="Nearest Enemy" id="34" device="Keyboard" button="67"/>
+    <action name="Mail Dialog" id="71" device="Keyboard" button="48" mod="1"/>
+    <action name="Wizard&apos;s Vault Dialogue" id="209" device="Keyboard" button="73" mod="1"/>
+    <action name="Chat Command" id="52" device="None"/>
+    <action name="Free Camera—Forward" id="121" device="None"/>
+    <action name="AoE Loot" id="74" device="Keyboard" button="70" mod="1"/>
+    <action name="Show Enemy Names" id="66" device="None"/>
+    <action name="Show Ally Names" id="67" device="None"/>
+    <action name="Mount Ability 1" id="130" device="Keyboard" button="49"/>
+    <action name="Raptor Mount/Dismount" id="155" device="Keyboard" button="96" mod="2"/>
+    <action name="Springer Mount/Dismount" id="156" device="Keyboard" button="97" mod="2"/>
+    <action name="Skimmer Mount/Dismount" id="157" device="Keyboard" button="98" mod="2"/>
+    <action name="Jackal Mount/Dismount" id="158" device="Keyboard" button="99" mod="2"/>
+    <action name="Griffon Mount/Dismount" id="159" device="Keyboard" button="100" mod="2"/>
+    <action name="Roller Beetle Mount/Dismount" id="161" device="Keyboard" button="101" mod="2"/>
+    <action name="Warclaw Mount/Dismount" id="169" device="Keyboard" button="102" mod="2"/>
+    <action name="Skyscale Mount/Dismount" id="170" device="Keyboard" button="103" mod="2"/>
+    <action name="Siege Turtle Mount/Dismount" id="203" device="Keyboard" button="104" mod="2"/>
+    <action name="Build Template 1" id="171" device="Keyboard" button="32" mod="4"/>
+    <action name="Build Template 2" id="172" device="Keyboard" button="33" mod="4"/>
+    <action name="Build Template 3" id="173" device="Keyboard" button="34" mod="4"/>
+    <action name="Build Template 5" id="175" device="Keyboard" button="36" mod="4"/>
+    <action name="Build Template 6" id="176" device="Keyboard" button="37" mod="4"/>
+    <action name="Build Template 7" id="177" device="Keyboard" button="38" mod="4"/>
+    <action name="Build Template 8" id="178" device="Keyboard" button="39" mod="4"/>
+    <action name="Build Template 9" id="179" device="Keyboard" button="40" mod="4"/>
+    <action name="Equipment Template 1" id="182" device="Keyboard" button="96" mod="4"/>
+    <action name="Equipment Template 2" id="183" device="Keyboard" button="97" mod="4"/>
+    <action name="Equipment Template 3" id="184" device="Keyboard" button="98" mod="4"/>
+    <action name="Equipment Template 5" id="186" device="Keyboard" button="100" mod="4"/>
+    <action name="Equipment Template 6" id="187" device="Keyboard" button="101" mod="4"/>
+    <action name="Equipment Template 7" id="188" device="Keyboard" button="102" mod="4"/>
+    <action name="Equipment Template 8" id="189" device="Keyboard" button="103" mod="4"/>
+    <action name="Equipment Template 9" id="190" device="Keyboard" button="104" mod="4"/>
+    <action name="Activate Mastery Skill" id="196" device="None"/>
+    <action name="Start Fishing" id="204" device="Keyboard" button="10"/>
+    <action name="Summon Skiff" id="205" device="Keyboard" button="13"/>
+    <action name="Set Jade Bot Waypoint" id="206" device="Keyboard" button="74"/>
+    <action name="Scan for Rift" id="207" device="Keyboard" button="8"/>
+    <action name="Skyscale Leap" id="208" device="Keyboard" button="68" mod="1"/>
+    <action name="Conjured Doorway" id="211" device="Keyboard" button="3"/>
+</InputBindings>

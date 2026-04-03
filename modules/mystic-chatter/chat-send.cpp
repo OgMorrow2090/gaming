@@ -56,12 +56,12 @@ static LPARAM MakeKeyLParam(UINT scanCode, bool isUp, bool isExtended = false)
 
 static void SendKeyDown(UINT vk, UINT scanCode)
 {
-    APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYDOWN, vk, MakeKeyLParam(scanCode, false));
+    PostMessage(GameWindow, WM_KEYDOWN, vk, MakeKeyLParam(scanCode, false));
 }
 
 static void SendKeyUp(UINT vk, UINT scanCode)
 {
-    APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYUP, vk, MakeKeyLParam(scanCode, true));
+    PostMessage(GameWindow, WM_KEYUP, vk, MakeKeyLParam(scanCode, true));
 }
 
 static void SendKeyStroke(UINT vk, UINT scanCode)
@@ -176,17 +176,14 @@ void SendChatMessage(const char* message)
         SendKeyStroke(VK_RETURN, 0x1C);
         Sleep(200);
 
-        // 4. Paste — Ctrl+V via WndProc
-        //    Hold Ctrl down, press V, release V, THEN release Ctrl
-        //    V must never be down without Ctrl or GW2 interprets it as Dodge
-        SendKeyDown(VK_CONTROL, 0x1D);
-        Sleep(50);
-        SendKeyDown('V', 0x2F);
-        Sleep(20);
-        SendKeyUp('V', 0x2F);
-        Sleep(50);
-        SendKeyUp(VK_CONTROL, 0x1D);
-        Sleep(150);
+        // 4. Type text via WM_CHAR (sent through Wine message queue via PostMessage)
+        //    WM_CHAR is how Windows text controls receive typed characters
+        for (size_t i = 0; i < msg.size(); i++)
+        {
+            PostMessage(GameWindow, WM_CHAR, (WPARAM)msg[i], 0);
+            Sleep(10);
+        }
+        Sleep(100);
 
         // 5. Send — Enter
         SendKeyStroke(VK_RETURN, 0x1C);

@@ -2834,10 +2834,54 @@
 				{
 				}
 			}
+			"touch_menu_button_12"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press FORWARD_SLASH, /party, , "
+							"binding"		"key_press P, /party, , "
+							"binding"		"key_press A, /party, , "
+							"binding"		"key_press R, /party, , "
+							"binding"		"key_press T, /party, , "
+							"binding"		"key_press Y, /party, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_13"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press FORWARD_SLASH, /squad, , "
+							"binding"		"key_press S, /squad, , "
+							"binding"		"key_press Q, /squad, , "
+							"binding"		"key_press U, /squad, , "
+							"binding"		"key_press A, /squad, , "
+							"binding"		"key_press D, /squad, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
 		}
 		"settings"
 		{
-			"touch_menu_button_count"		"11"
+			"touch_menu_button_count"		"13"
 			"touchmenu_button_fire_type"		"2"
 			"touch_menu_opacity"		"100"
 			"touch_menu_scale"		"150"

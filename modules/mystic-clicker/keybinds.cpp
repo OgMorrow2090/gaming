@@ -88,49 +88,4 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     {
         ToggleCaptureWindow();
     }
-    // === CAPTURE KEYBINDS ===
-    else if (strcmp(aIdentifier, CAPTURE_DEPOSIT) == 0)
-    {
-        CaptureDepositPosition();
-    }
-    else if (strcmp(aIdentifier, CAPTURE_SORT) == 0)
-    {
-        CaptureSortPosition();
-    }
-    else if (strcmp(aIdentifier, CAPTURE_CHEST) == 0)
-    {
-        CaptureChestPosition();
-    }
-    else if (strcmp(aIdentifier, CAPTURE_EXIT_INSTANCE) == 0)
-    {
-        CaptureExitInstancePosition();
-    }
-    else if (strcmp(aIdentifier, CAPTURE_YES_DIALOG) == 0)
-    {
-        CaptureYesDialogPosition();
-    }
-    else if (strcmp(aIdentifier, CAPTURE_MYSTIC_FORGE) == 0)
-    {
-        CaptureMysticForgePosition();
-    }
-    else if (strcmp(aIdentifier, CAPTURE_MYSTIC_REFILL) == 0)
-    {
-        CaptureMysticRefillPosition();
-    }
-    else if (strcmp(aIdentifier, CAPTURE_VENDOR_BUY) == 0)
-    {
-        CaptureVendorPosition();
-    }
-    else if (strcmp(aIdentifier, CAPTURE_SELL_JUNK) == 0)
-    {
-        CaptureSellJunkPosition();
-    }
-    else if (strcmp(aIdentifier, CAPTURE_TRADING_POST) == 0)
-    {
-        CaptureTradingPostPosition();
-    }
-    else if (strcmp(aIdentifier, CAPTURE_TP_REMOVE) == 0)
-    {
-        CaptureTpRemovePosition();
-    }
 }

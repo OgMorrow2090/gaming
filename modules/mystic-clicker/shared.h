@@ -39,18 +39,6 @@ constexpr const char* SELL_JUNK = "SELL_JUNK";
 constexpr const char* TRADING_POST = "TRADING_POST";
 constexpr const char* TP_REMOVE = "TP_REMOVE";
 
-// Keybind identifiers - Capture positions
-constexpr const char* CAPTURE_DEPOSIT = "CAPTURE_DEPOSIT";
-constexpr const char* CAPTURE_SORT = "CAPTURE_SORT";
-constexpr const char* CAPTURE_CHEST = "CAPTURE_CHEST";
-constexpr const char* CAPTURE_EXIT_INSTANCE = "CAPTURE_EXIT_INSTANCE";
-constexpr const char* CAPTURE_YES_DIALOG = "CAPTURE_YES_DIALOG";
-constexpr const char* CAPTURE_MYSTIC_FORGE = "CAPTURE_MYSTIC_FORGE";
-constexpr const char* CAPTURE_MYSTIC_REFILL = "CAPTURE_MYSTIC_REFILL";
-constexpr const char* CAPTURE_VENDOR_BUY = "CAPTURE_VENDOR_BUY";
-constexpr const char* CAPTURE_SELL_JUNK = "CAPTURE_SELL_JUNK";
-constexpr const char* CAPTURE_TRADING_POST = "CAPTURE_TRADING_POST";
-constexpr const char* CAPTURE_TP_REMOVE = "CAPTURE_TP_REMOVE";
 
 // Keybind handler
 void ProcessKeybind(const char* aIdentifier, bool aIsRelease);
@@ -73,19 +61,6 @@ void SimulateGenericClick(int slot);
 void SimulateClickAt(int x, int y);
 void SimulateRightClickAt(int x, int y);
 
-// Capture functions
-void CaptureDepositPosition();
-void CaptureSortPosition();
-void CaptureChestPosition();
-void CaptureExitInstancePosition();
-void CaptureYesDialogPosition();
-void CaptureMysticForgePosition();
-void CaptureMysticRefillPosition();
-void CaptureVendorPosition();
-void CaptureSellJunkPosition();
-void CaptureTradingPostPosition();
-void CaptureTpRemovePosition();
-void CaptureGenericPosition(int slot);
 
 // Config functions
 void SetConfigPath(const char* addonPath, const char* legacyPath);

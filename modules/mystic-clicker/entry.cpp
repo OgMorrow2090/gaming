@@ -140,20 +140,7 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(MYSTIC_FORGE_COMBO, ProcessKeybind, "CTRL+M");
     APIDefs->InputBinds_RegisterWithString(TP_REMOVE, ProcessKeybind, "CTRL+T");
     
-    // 11 capture keybinds
-    APIDefs->InputBinds_RegisterWithString(CAPTURE_DEPOSIT, ProcessKeybind, "CTRL+SHIFT+D");
-    APIDefs->InputBinds_RegisterWithString(CAPTURE_SORT, ProcessKeybind, "CTRL+SHIFT+S");
-    APIDefs->InputBinds_RegisterWithString(CAPTURE_CHEST, ProcessKeybind, "CTRL+SHIFT+B");
-    APIDefs->InputBinds_RegisterWithString(CAPTURE_EXIT_INSTANCE, ProcessKeybind, "CTRL+SHIFT+E");
-    APIDefs->InputBinds_RegisterWithString(CAPTURE_YES_DIALOG, ProcessKeybind, "CTRL+SHIFT+Y");
-    APIDefs->InputBinds_RegisterWithString(CAPTURE_MYSTIC_FORGE, ProcessKeybind, "CTRL+SHIFT+F");
-    APIDefs->InputBinds_RegisterWithString(CAPTURE_MYSTIC_REFILL, ProcessKeybind, "CTRL+SHIFT+R");
-    APIDefs->InputBinds_RegisterWithString(CAPTURE_VENDOR_BUY, ProcessKeybind, "CTRL+SHIFT+U");
-    APIDefs->InputBinds_RegisterWithString(CAPTURE_SELL_JUNK, ProcessKeybind, "CTRL+SHIFT+J");
-    APIDefs->InputBinds_RegisterWithString(CAPTURE_TRADING_POST, ProcessKeybind, "CTRL+SHIFT+O");
-    APIDefs->InputBinds_RegisterWithString(CAPTURE_TP_REMOVE, ProcessKeybind, "CTRL+SHIFT+T");
-
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Addon loaded - 24 keybinds.");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Addon loaded - 14 keybinds.");
 }
 
 /**
@@ -177,19 +164,6 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(MYSTIC_REFILL);
     APIDefs->InputBinds_Deregister(MYSTIC_FORGE_COMBO);
     APIDefs->InputBinds_Deregister(TP_REMOVE);
-    
-    // Deregister capture keybinds
-    APIDefs->InputBinds_Deregister(CAPTURE_DEPOSIT);
-    APIDefs->InputBinds_Deregister(CAPTURE_SORT);
-    APIDefs->InputBinds_Deregister(CAPTURE_CHEST);
-    APIDefs->InputBinds_Deregister(CAPTURE_EXIT_INSTANCE);
-    APIDefs->InputBinds_Deregister(CAPTURE_YES_DIALOG);
-    APIDefs->InputBinds_Deregister(CAPTURE_MYSTIC_FORGE);
-    APIDefs->InputBinds_Deregister(CAPTURE_MYSTIC_REFILL);
-    APIDefs->InputBinds_Deregister(CAPTURE_VENDOR_BUY);
-    APIDefs->InputBinds_Deregister(CAPTURE_SELL_JUNK);
-    APIDefs->InputBinds_Deregister(CAPTURE_TRADING_POST);
-    APIDefs->InputBinds_Deregister(CAPTURE_TP_REMOVE);
     
     APIDefs->GUI_Deregister(RenderCaptureWindow);
     APIDefs->InputBinds_Deregister(CAPTURE_MODE);

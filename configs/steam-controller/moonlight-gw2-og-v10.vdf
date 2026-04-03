@@ -1,9 +1,9 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2356"
-	"title"		"Guild Wars 2 - Og v10.11"
-	"description"		"Your modified layout for this game."
+	"revision"		"1"
+	"title"		"Guild Wars 2 - Og v11"
+	"description"		"Fresh build — combat, skills, trading, chat macros."
 	"creator"		"76561198025059559"
 	"progenitor"		""
 	"url"		"autosave:///home/deck/.local/share/Steam/steamapps/common/Steam Controller Configs/64793831/config/moonlight/controller_neptune.vdf"
@@ -36,122 +36,6 @@
 			"legacy_set"		"1"
 			"set_layer"		"1"
 			"parent_set_name"		"Default"
-		}
-	}
-	"localization"
-	{
-		"english"
-		{
-			"title"		"Keyboard (WASD) and Mouse"
-			"description"		"This template works great for the games on Steam that were designed with a keyboard and mouse in mind, without real gamepad support. The controller will drive the game's keyboard based events with buttons, but will make assumptions about which buttons move you around (WASD for movement, space for jump, etc.). The right pad will emulate the movement of a mouse."
-		}
-		"czech"
-		{
-			"title"		"Klávesnice (WASD) a myš"
-			"description"		"Tato šablona je pro hry ve službě Steam, které byly vytvořeny pro ovládání klávesnicí a myší bez podpory gamepadu. Ovladač nahradí hrou vyžadované klávesy svými tlačítky, avšak pouze odhadne, jaké klávesy jsou použity pro ovládání (WASD pro pohyb, mezerník pro skok, atp.). Pravý trackpad bude emulovat myš."
-		}
-		"danish"
-		{
-			"title"		"Tastatur (WASD) og mus"
-			"description"		"Denne skabelon virker godt til spil på Steam, der blev designet med tastatur og mus i tankerne og er uden egentlig gamepad-understøttelse. Controlleren vil udføre spillets tastaturbaserede handlinger med knapper, men vil lave antagelser om, hvilke knapper bevæger dig omkring (WASD til bevægelse, mellemrum til at hoppe osv.). Den højre flade vil efterligne en mus' bevægelser."
-		}
-		"dutch"
-		{
-			"title"		"Toetsenbord (WASD) en muis"
-			"description"		"Deze template werkt goed voor de spellen op Steam die zijn ontworpen voor besturing met een toetsenbord en muis, zonder echte gamepad ondersteuning. De controller bestuurt de toetsenbordgebaseerde gebeurtenissen van het spel met knoppen, maar zal aannames doen over welke knoppen je rondbewegen (WASD voor beweging, spatiebalk voor springen, etc.). De rechter-pad emuleert de beweging van een muis."
-		}
-		"finnish"
-		{
-			"title"		"Näppäimistö (WASD) ja hiiri"
-			"description"		"Tämä malli sopii hyvin peleille, jotka suunniteltiin näppäimistölle ja hiirelle ilman ohjaintukea. Ohjain omaksuu tietyt näppäimistön näppäimet yleisten toimintojen perusteella (liikkuminen WASD-näppäimillä, hyppääminen välilyönnistä jne.). Oikea ohjainlevy toimii hiirenä."
-		}
-		"french"
-		{
-			"title"		"Clavier (ZQSD) et souris"
-			"description"		"Ce modèle fonctionne particulièrement bien pour les jeux conçus pour le clavier et la souris, sans support pour la manette. Les actions normalement effectuées au clavier seront déclenchées par les touches du contrôleur. Il sera supposé que le déplacement correspond aux touches ZQSD, le saut à la touche espace, etc. Le pad droit simulera les mouvements de la souris."
-		}
-		"german"
-		{
-			"title"		"Tastatur (WASD) und Maus"
-			"description"		"Diese Vorlage ist an Steam-Spiele ohne echte Gamepad-Unterstützung angepasst, die eigentlich mithilfe von Tastatur und Maus gesteuert werden. Der Controller ist verantwortlich für die tastenbasierte Steuerung des Spiels, wird aber Annahmen treffen, welche Tasten Sie zur Fortbewegung nutzen (WASD für Bewegungen, Leertaste zum Springen usw.). Das rechte Pad wird die Mausbewegungen emulieren."
-		}
-		"hungarian"
-		{
-			"title"		"Billentyűzet (WASD) és egér"
-			"description"		"Ez a sablon remekül működik az olyan Steames játékokhoz, melyek billentyűzetet és egeret szem előtt tartva készültek, igazi gamepad-támogatás nélkül. A játékvezérlő a játék billentyűzetalapú eseményeit gombokkal fogja irányítani, de feltételezéseket fog tenni arra vonatkozóan, hogy mely gombok segítségével mozoghatsz (WASD a mozgáshoz, szóköz az ugráshoz, stb.). A jobb felület az egér mozgását fogja emulálni."
-		}
-		"italian"
-		{
-			"title"		"Tastiera (WASD) e mouse"
-		}
-		"japanese"
-		{
-			"title"		"キーボード (WASD) とマウス"
-		}
-		"koreana"
-		{
-			"title"		"키보드(WASD)와 마우스"
-			"description"		"이 설정은 게임패드가 아니라 키보드와 마우스의 사용을 염두에 두고 설계된 게임을 플레이할 때 적합합니다. 컨트롤러의 단추가 키보드 입력을 대신하지만, (이동이나 점프 등의) 동작을 할 때 (WASD키나 스페이스 바 등의) 어떤 단추를 썼는지는 예측만 할 뿐입니다. 우측 패드는 마우스 이동을 모방합니다."
-		}
-		"polish"
-		{
-			"title"		"Klawiatura (WASD) i mysz"
-			"description"		"Ten szablon świetnie działa dla gier na Steam, które zostały zaprojektowane z myślą o klawiaturze i myszce, bez wsparcia dla kontrolera. Kontroler będzie przesyłać do gry zdarzenia klawiatury za pomocą przycisków, ale będzie zgadywać użyte klawisze (WASD dla poruszania się, Spacja dla skoku itd.). Prawy pad będzie emulować poruszanie myszką."
-		}
-		"portuguese"
-		{
-			"title"		"Teclado (WASD) e rato"
-			"description"		"Este modelo é indicado para jogos no Steam concebidos com teclado e rato em mente, sem compatibilidade com comandos. O comando irá associar as ações das teclas no jogo aos seus botões, e tentará adivinhar que botões te fazem mover (WASD para te deslocares, Espaço para saltar, etc.). O pad direito irá simular o movimento de um rato."
-		}
-		"romanian"
-		{
-			"title"		"Tastatură (WASD) și Mouse"
-			"description"		"Acest şablon merge grozav cu jocurile de pe Steam care au fost dezvoltate cu o tastatură şi un mouse în minte, fără sprijin nativ pentru controller. Controller-ul va conduce evenimentele bazate pe tastatura jocului cu butoane, dar va face presupuneri bazate pe butoanele care te pun în mişcare (WASD pentru mişcare, space pentru săritură, etc.). Pad-ul din dreapta va simula mişcarea mouse-ului."
-		}
-		"russian"
-		{
-			"title"		"Клавиатура (WASD) и мышь"
-			"description"		"Этот шаблон подходит для игр в Steam, которые разрабатывались для клавиатуры и мыши без поддержки геймпада. Кнопки контроллера эмулируют клавиши клавиатуры, предугадывая их функции в игре (WASD — передвижение, пробел — прыжок и т.д.). Правый трекпад эмулирует мышь."
-		}
-		"spanish"
-		{
-			"title"		"Teclado (WASD) y ratón"
-			"description"		"Esta plantilla funciona muy bien con juegos de Steam que fueron diseñados pensando en un teclado y un ratón, sin verdadero soporte para mando. El controlador guiará con los botones los eventos basados en el uso del teclado, pero hará conjeturas acerca de qué botones te mueven (WASD para moverse, espacio para saltar, etc.). El pad derecho emulará el movimiento de un ratón."
-		}
-		"swedish"
-		{
-			"title"		"Tangentbord (WASD) och mus"
-			"description"		"Denna mall fungerar bra för spel på Steam som främst designats för tangentbord och mus, utan riktigt stöd för gamepad. Handkontrollen tar sig igenom spelets tangentbordsbaserade händelser med knappar, men kommer göra antaganden om vilka knappar som förflyttar dig (WASD för förflyttning, mellanslag för hopp, osv.). Den högra plattan emulerar musens rörelser."
-		}
-		"schinese"
-		{
-			"title"		"键盘（WASD）和鼠标"
-			"description"		"该模板非常适合 Steam 上原生支持键鼠，却不真正支持手柄的游戏。控制器会通过按键来驱动游戏基于键盘的事件，而且会假定您用哪些按键移动（WSAD 键移动、空格键跳跃等）。右触板会模拟鼠标移动。"
-		}
-		"brazilian"
-		{
-			"title"		"Teclado (WASD) e mouse"
-			"description"		"Este modelo funciona melhor em jogos Steam projetados para teclado e mouse, sem compatibilidade com controles. O controle usará botões para simular eventos do teclado e assumirá quais botões servem para quais comandos (WASD para movimentação, espaço para pular, etc.). O trackpad direito emulará o movimento de um mouse."
-		}
-		"bulgarian"
-		{
-			"title"		"Мишка и клавиатура (WASD)"
-			"description"		"Този шаблон върши добра работа при игри, които са били проектирани за мишка и клавиатура, без да имат действителна поддръжка на геймпад. Контролерът ще активира клавиатурно базираните действия чрез бутоните, но ще прави предположения относно това с кои от тях можете да се движите (WASD за движение, интервал за скок и т.н.). Десният пад ще емулира движението на мишката."
-		}
-		"greek"
-		{
-			"title"		"Πληκτρολόγιο (WASD) και ποντίκι"
-			"description"		"Το πρότυπο αυτό λειτουργεί καλά για παιχνίδια σχεδιασμένα για την χρήση πληκτρολογίου και ποντικιού, χωρίς την υποστήριξη χειριστηρίου. Το χειριστήριο θα οδηγήσει τις ενέργειες του πληκτρολογίου του παιχνιδιού με κουμπιά, αλλά θα κάνει υποθέσεις σχετικά με ποια κουμπιά θα κινείστε (WASD για μετακίνηση, κενό για άλμα, κλπ.). Η δεξιά επιφάνεια θα μιμηθεί την κίνηση του ποντικιού."
-		}
-		"turkish"
-		{
-			"title"		"Klavye (WASD) ve Fare"
-			"description"		"Bu şablon, gerçek bir kontrolcü desteği olmayan, klavye ve fare düşünülerek tasarlanan Steam'deki oyunlar için çok iyidir. Kontrolcü, oyunun klavye temelli eylemlerini butonlar ile gerçekleştirecektir ancak hangi butonların sizi hareket ettirdiği (hareket için WASD, zıplamak için boşluk, vb.) konusunda varsayımda bulunacaktır. Sağ pad, farenin hareketlerini taklit edecektir."
-		}
-		"ukrainian"
-		{
-			"title"		"Клавіатура (WASD) та миша"
-			"description"		"Цей шаблон відмінно підійде для ігор у Steam, які розроблялися для клавіатури та миші, без повної підтримки контролера. Контролер емулюватиме значення клавіатурних клавіш для гри, передбачаючи їх дії (клавіші WASD для рухів, пробіл для стрибка тощо). Правий трекпад емулюватиме рух мишею."
 		}
 	}
 	"group"
@@ -277,7 +161,6 @@
 						}
 						"settings"
 						{
-							"hold_repeats"		"1"
 							"haptic_intensity"		"3"
 						}
 					}
@@ -296,139 +179,6 @@
 	"group"
 	{
 		"id"		"1"
-		"mode"		"dpad"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-			"dpad_north"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press 1, , "
-						}
-						"settings"
-						{
-							"repeat_rate"		"99"
-							"haptic_intensity"		"1"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"dpad_south"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press 3, , "
-						}
-						"settings"
-						{
-							"repeat_rate"		"99"
-							"haptic_intensity"		"1"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"dpad_east"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press 2, , "
-						}
-						"settings"
-						{
-							"repeat_rate"		"99"
-							"haptic_intensity"		"1"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"dpad_west"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press 4, , "
-						}
-						"settings"
-						{
-							"repeat_rate"		"99"
-							"haptic_intensity"		"1"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-		"settings"
-		{
-			"edge_binding_radius"		"24996"
-		}
-	}
-	"group"
-	{
-		"id"		"2"
-		"mode"		"absolute_mouse"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-			"click"
-			{
-				"activators"
-				{
-					"Soft_Press"
-					{
-						"bindings"
-						{
-							"binding"		"mouse_button LEFT, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"1"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-		"settings"
-		{
-			"sensitivity"		"145"
-			"doubetap_max_duration"		"320"
-		}
-	}
-	"group"
-	{
-		"id"		"3"
 		"mode"		"dpad"
 		"name"		""
 		"description"		""
@@ -537,8 +287,99 @@
 		}
 		"settings"
 		{
-			"requires_click"		"0"
 			"edge_binding_radius"		"24995"
+		}
+	}
+	"group"
+	{
+		"id"		"2"
+		"mode"		"absolute_mouse"
+		"name"		""
+		"description"		""
+		"inputs"
+		{
+			"click"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"mouse_button LEFT, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+		}
+	}
+	"group"
+	{
+		"id"		"3"
+		"mode"		"radial_menu"
+		"name"		"Weapon Skills"
+		"description"		""
+		"inputs"
+		{
+			"touch_menu_button_0"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press 2, Weapon Skill 2, , "
+						}
+					}
+				}
+			}
+			"touch_menu_button_1"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press 3, Weapon Skill 3, , "
+						}
+					}
+				}
+			}
+			"touch_menu_button_2"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press 4, Weapon Skill 4, , "
+						}
+					}
+				}
+			}
+			"touch_menu_button_3"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press 5, Weapon Skill 5, , "
+						}
+					}
+				}
+			}
+		}
+		"settings"
+		{
+			"touch_menu_opacity"		"100"
 		}
 	}
 	"group"
@@ -549,7 +390,7 @@
 		"description"		""
 		"inputs"
 		{
-			"edge"
+			"threshold"
 			{
 				"activators"
 				{
@@ -557,23 +398,23 @@
 					{
 						"bindings"
 						{
-							"binding"		"mouse_button RIGHT, , "
-						}
-						"settings"
-						{
-							"repeat_rate"		"99"
-							"haptic_intensity"		"2"
+							"binding"		"mouse_button RIGHT, Camera, , "
 						}
 					}
-					"Long_Press"
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"soft_press"
+			{
+				"activators"
+				{
+					"Full_Press"
 					{
 						"bindings"
 						{
 							"binding"		"key_press N, Special Action, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"3"
 						}
 					}
 				}
@@ -591,7 +432,7 @@
 		"description"		""
 		"inputs"
 		{
-			"edge"
+			"click"
 			{
 				"activators"
 				{
@@ -601,10 +442,32 @@
 						{
 							"binding"		"mouse_button LEFT, Weapon Skill 1, , "
 						}
-						"settings"
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+		}
+	}
+	"group"
+	{
+		"id"		"6"
+		"mode"		"joystick_mouse"
+		"name"		""
+		"description"		""
+		"inputs"
+		{
+			"click"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
 						{
-							"repeat_rate"		"99"
-							"haptic_intensity"		"2"
+							"binding"		"key_press LEFT_ALT, Toggle Action Camera, , "
+							"binding"		"key_press E, Toggle Action Camera, , "
 						}
 					}
 				}
@@ -632,6 +495,10 @@
 						{
 							"binding"		"key_press LEFT_SHIFT, Wizard Vault, , "
 							"binding"		"key_press I, Wizard Vault, , "
+						}
+						"settings"
+						{
+							"haptic_intensity"		"1"
 						}
 					}
 					"Double_Press"
@@ -696,6 +563,10 @@
 							"binding"		"key_press LEFT_SHIFT, Event Timers, , "
 							"binding"		"key_press F10, Event Timers, , "
 						}
+						"settings"
+						{
+							"haptic_intensity"		"3"
+						}
 					}
 				}
 				"disabled_activators"
@@ -710,20 +581,23 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press I, , "
+							"binding"		"key_press I, Inventory, , "
+						}
+						"settings"
+						{
+							"haptic_intensity"		"1"
 						}
 					}
 					"Double_Press"
 					{
 						"bindings"
 						{
-							"binding"		"key_press S, , "
-							"binding"		"key_press U, , "
-							"binding"		"key_press M, , "
+							"binding"		"key_press S, Search Bags, , "
+							"binding"		"key_press U, Search Bags, , "
+							"binding"		"key_press M, Search Bags, , "
 						}
 						"settings"
 						{
-							"hold_repeats"		"1"
 							"haptic_intensity"		"3"
 						}
 					}
@@ -733,6 +607,10 @@
 						{
 							"binding"		"key_press LEFT_CONTROL, Deposit & Sort, , "
 							"binding"		"key_press Q, Deposit & Sort, , "
+						}
+						"settings"
+						{
+							"haptic_intensity"		"3"
 						}
 					}
 				}
@@ -763,1803 +641,12 @@
 		}
 		"settings"
 		{
-			"requires_click"		"0"
-			"haptic_intensity_override"		"0"
+			"edge_binding_radius"		"24996"
 		}
 	}
 	"group"
 	{
-		"id"		"9"
-		"mode"		"joystick_mouse"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-			"click"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_ALT, Toggle Action Camera, , "
-							"binding"		"key_press E, Toggle Action Camera, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"1"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-		"settings"
-		{
-			"output_joystick"		"2"
-			"sensitivity"		"115"
-		}
-	}
-	"group"
-	{
-		"id"		"14"
-		"mode"		"four_buttons"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-			"button_a"
-			{
-				"activators"
-				{
-					"Long_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Exit Instance, , "
-							"binding"		"key_press E, Exit Instance, , "
-						}
-					}
-					"Double_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Sudoku, , "
-							"binding"		"key_press PERIOD, Sudoku, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"button_b"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Dodge / Mount Special 2, , "
-							"binding"		"controller_action empty_binding, Dodge / Mount Special 2, , "
-						}
-					}
-					"Long_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, (disabled), , "
-							"binding"		"controller_action empty_binding, (disabled), , "
-						}
-						"settings"
-						{
-							"hold_repeats"		"1"
-							"haptic_intensity"		"0"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"button_x"
-			{
-				"activators"
-				{
-					"Double_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Vendor, , "
-							"binding"		"key_press KEYPAD_DASH, Vendor, , "
-						}
-					}
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Vendor Buy, , "
-							"binding"		"key_press U, Vendor Buy, , "
-						}
-					}
-					"Long_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Hide UI, , "
-							"binding"		"key_press J, Hide UI, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"button_y"
-			{
-				"activators"
-				{
-					"Long_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Mystic Forge Combo, , "
-							"binding"		"key_press A, Mystic Forge Combo, , "
-						}
-						"settings"
-						{
-							"hold_repeats"		"1"
-							"haptic_intensity"		"0"
-						}
-					}
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Deposit Materials, , "
-							"binding"		"key_press F, Deposit Materials, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-		"settings"
-		{
-			"layer"		"1"
-		}
-	}
-	"group"
-	{
-		"id"		"15"
-		"mode"		"trigger"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-		}
-		"settings"
-		{
-			"layer"		"1"
-		}
-	}
-	"group"
-	{
-		"id"		"16"
-		"mode"		"trigger"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-			"click"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"mouse_button LEFT, , "
-						}
-						"settings"
-						{
-							"hold_repeats"		"1"
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-		"settings"
-		{
-			"layer"		"1"
-		}
-	}
-	"group"
-	{
-		"id"		"20"
-		"mode"		"joystick_mouse"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-		}
-		"settings"
-		{
-			"layer"		"1"
-		}
-	}
-	"group"
-	{
-		"id"		"21"
-		"mode"		"radial_menu"
-		"name"		"Weapon Skills"
-		"description"		""
-		"inputs"
-		{
-			"touch_menu_button_1"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press 2, Weapon Skill 2, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_2"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press 3, Weapon Skill 3, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_3"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press 4, Weapon Skill 4, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_4"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press 5, Weapon Skill 5, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-		"settings"
-		{
-			"touch_menu_opacity"		"50"
-			"touch_menu_scale"		"50"
-		}
-	}
-	"group"
-	{
-		"id"		"23"
-		"mode"		"four_buttons"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-			"button_a"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press 2, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"button_b"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press 3, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"button_x"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press 4, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"button_y"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press 5, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-	}
-	"group"
-	{
-		"id"		"24"
-		"mode"		"2dscroll"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-		}
-	}
-	"group"
-	{
-		"id"		"25"
-		"mode"		"radial_menu"
-		"name"		"Utility Skills"
-		"description"		""
-		"inputs"
-		{
-			"touch_menu_button_0"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press 0, Heal Skill, , "
-						}
-						"settings"
-						{
-							"interruptable"		"0"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_1"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press 6, Utility Skill 1, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_2"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press 7, Utility Skill 2, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_3"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press 8, Utility Skill 3, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_4"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press 9, Elite Skill, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-		"settings"
-		{
-			"layer"		"1"
-		}
-	}
-	"group"
-	{
-		"id"		"26"
-		"mode"		"radial_menu"
-		"name"		"Pro Skills"
-		"description"		""
-		"inputs"
-		{
-			"touch_menu_button_0"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_SHIFT, , "
-							"binding"		"key_press F5, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_1"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_SHIFT, Profession Skill 1, , "
-							"binding"		"key_press F1, Profession Skill 1, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_2"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_SHIFT, Profession Skill 2, , "
-							"binding"		"key_press F2, Profession Skill 2, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_3"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_SHIFT, Profession Skill 3, , "
-							"binding"		"key_press F3, Profession Skill 3, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_4"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_SHIFT, Profession Skill 4, , "
-							"binding"		"key_press F4, Profession Skill 4, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-		"settings"
-		{
-			"touch_menu_scale"		"70"
-		}
-	}
-	"group"
-	{
-		"id"		"27"
-		"mode"		"reference"
-		"description"		""
-		"settings"
-		{
-			"referenced_mode"		"26"
-		}
-	}
-	"group"
-	{
-		"id"		"29"
-		"mode"		"dpad"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-			"click"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"controller_action empty_binding, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-		"settings"
-		{
-			"layer"		"1"
-		}
-	}
-	"group"
-	{
-		"id"		"30"
-		"mode"		"dpad"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-			"dpad_north"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_ALT, MT Delivery, , "
-							"binding"		"key_press F, MT Delivery, , "
-						}
-					}
-					"Long_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_ALT, MT Dashboard, , "
-							"binding"		"key_press T, MT Dashboard, , "
-						}
-					}
-					"Double_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_ALT, MT Fliplist, , "
-							"binding"		"key_press D, MT Fliplist, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"dpad_east"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press S, , "
-							"binding"		"key_press U, , "
-							"binding"		"key_press M, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"dpad_west"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_SHIFT, Shift+Click, , "
-							"binding"		"mouse_button LEFT, Shift+Click, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-		"settings"
-		{
-			"layer"		"1"
-		}
-	}
-	"group"
-	{
-		"id"		"32"
-		"mode"		"dpad"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-		}
-		"settings"
-		{
-			"requires_click"		"0"
-			"layout"		"0"
-			"haptic_intensity_override"		"0"
-		}
-	}
-	"group"
-	{
-		"id"		"33"
-		"mode"		"dpad"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-			"dpad_north"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press 1, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"dpad_south"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press 3, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"dpad_east"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press 4, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"dpad_west"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press 2, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-		"settings"
-		{
-			"layout"		"3"
-		}
-	}
-	"group"
-	{
-		"id"		"35"
-		"mode"		"four_buttons"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-			"button_x"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Del Item, , "
-							"binding"		"key_press O, Del Item, , "
-						}
-					}
-					"Long_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, TP Remove, , "
-							"binding"		"key_press T, TP Remove, , "
-						}
-						"settings"
-						{
-							"hold_repeats"		"1"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-		"settings"
-		{
-			"layer"		"1"
-		}
-	}
-	"group"
-	{
-		"id"		"36"
-		"mode"		"trigger"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-			"edge"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Vendor, , "
-							"binding"		"key_press V, Vendor, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-		"settings"
-		{
-			"layer"		"1"
-		}
-	}
-	"group"
-	{
-		"id"		"37"
-		"mode"		"trigger"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-		}
-		"settings"
-		{
-			"layer"		"1"
-		}
-	}
-	"group"
-	{
-		"id"		"39"
-		"mode"		"radial_menu"
-		"name"		"Mounts Wheel"
-		"description"		""
-		"inputs"
-		{
-			"touch_menu_button_1"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Springer, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press KEYPAD_2, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_2"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Roller Beetle, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press KEYPAD_6, Warclaw Mount, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_3"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Skyscale, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press KEYPAD_8, Siege Turtle Mount, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_4"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Raptor, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press KEYPAD_1, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_5"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Jackal, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press KEYPAD_4, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_6"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Griffon, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press KEYPAD_5, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_7"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Warclaw, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press KEYPAD_7, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_8"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Skimmer, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press KEYPAD_3, Jackal Mount, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_9"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Siege Turtle, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press KEYPAD_9, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-		"settings"
-		{
-			"layer"		"1"
-			"touch_menu_opacity"		"100"
-			"touch_menu_position_x"		"50"
-			"touch_menu_position_y"		"50"
-			"touch_menu_scale"		"150"
-		}
-	}
-	"group"
-	{
-		"id"		"42"
-		"mode"		"dpad"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-			"dpad_east"
-			{
-				"activators"
-				{
-					"Long_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_SHIFT, , "
-							"binding"		"mouse_button LEFT, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"3"
-							"delay_end"		"50"
-						}
-					}
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Item Details, , "
-							"binding"		"key_press COMMA, Item Details, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-		"settings"
-		{
-			"layer"		"1"
-		}
-	}
-	"group"
-	{
-		"id"		"44"
-		"mode"		"dpad"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-			"click"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press R, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-		"settings"
-		{
-			"layer"		"1"
-		}
-	}
-	"group"
-	{
-		"id"		"46"
-		"mode"		"reference"
-		"description"		""
-		"settings"
-		{
-			"referenced_mode"		"26"
-		}
-	}
-	"group"
-	{
-		"id"		"48"
-		"mode"		"scrollwheel"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-			"scroll_wheel_list_0"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"mouse_wheel SCROLL_UP, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"scroll_wheel_list_1"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"mouse_wheel SCROLL_DOWN, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-		"settings"
-		{
-			"layer"		"1"
-		}
-	}
-	"group"
-	{
-		"id"		"50"
-		"mode"		"mouse_region"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-		}
-		"settings"
-		{
-			"layer"		"1"
-			"output_joystick"		"3"
-		}
-	}
-	"group"
-	{
-		"id"		"51"
-		"mode"		"mouse_region"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-		}
-		"settings"
-		{
-			"layer"		"1"
-			"output_joystick"		"3"
-		}
-	}
-	"group"
-	{
-		"id"		"55"
-		"mode"		"reference"
-		"description"		""
-		"settings"
-		{
-			"referenced_mode"		"26"
-		}
-	}
-	"group"
-	{
-		"id"		"57"
-		"mode"		"reference"
-		"description"		""
-		"settings"
-		{
-			"referenced_mode"		"39"
-		}
-	}
-	"group"
-	{
-		"id"		"59"
-		"mode"		"dpad"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-			"touch"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press C, Nearest Enemy, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-		"settings"
-		{
-			"layer"		"1"
-			"requires_click"		"0"
-		}
-	}
-	"group"
-	{
-		"id"		"61"
-		"mode"		"joystick_mouse"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-			"touch"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press C, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-							"delay_end"		"400"
-							"interruptable"		"0"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-		"settings"
-		{
-			"layer"		"1"
-		}
-	}
-	"group"
-	{
-		"id"		"63"
-		"mode"		"radial_menu"
-		"name"		"Utility Wheel"
-		"description"		""
-		"inputs"
-		{
-			"touch_menu_button_6"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press J, Waypoint, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_10"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_BRACKET, Fishing, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_11"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press RIGHT_BRACKET, Skiff, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_12"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press EQUALS, Rift, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-		"settings"
-		{
-			"layer"		"1"
-			"touch_menu_opacity"		"100"
-			"touch_menu_position_x"		"50"
-			"touch_menu_position_y"		"50"
-			"touch_menu_scale"		"150"
-		}
-	}
-	"group"
-	{
-		"id"		"65"
-		"mode"		"reference"
-		"description"		""
-		"settings"
-		{
-			"referenced_mode"		"63"
-		}
-	}
-	"group"
-	{
-		"id"		"67"
-		"mode"		"mouse_region"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-			"click"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press F1, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-		"settings"
-		{
-			"layer"		"1"
-			"output_joystick"		"3"
-		}
-	}
-	"group"
-	{
-		"id"		"71"
-		"mode"		"reference"
-		"description"		""
-		"settings"
-		{
-			"referenced_mode"		"63"
-		}
-	}
-	"group"
-	{
-		"id"		"75"
-		"mode"		"disabled"
-		"name"		"Chats"
-		"description"		""
-		"settings"
-		{
-			"layer"		"1"
-		}
-	}
-	"group"
-	{
-		"id"		"77"
-		"mode"		"reference"
-		"description"		""
-		"settings"
-		{
-			"referenced_mode"		"25"
-		}
-	}
-	"group"
-	{
-		"id"		"78"
-		"mode"		"reference"
-		"description"		""
-		"settings"
-		{
-			"referenced_mode"		"26"
-		}
-	}
-	"group"
-	{
-		"id"		"79"
-		"mode"		"reference"
-		"description"		""
-		"settings"
-		{
-			"referenced_mode"		"21"
-		}
-	}
-	"group"
-	{
-		"id"		"80"
-		"mode"		"reference"
-		"description"		""
-		"settings"
-		{
-			"referenced_mode"		"25"
-		}
-	}
-	"group"
-	{
-		"id"		"81"
-		"mode"		"reference"
-		"description"		""
-		"settings"
-		{
-			"referenced_mode"		"26"
-		}
-	}
-	"group"
-	{
-		"id"		"83"
-		"mode"		"disabled"
-		"name"		"Templates"
-		"description"		""
-		"settings"
-		{
-			"layer"		"1"
-		}
-	}
-	"group"
-	{
-		"id"		"85"
-		"mode"		"disabled"
-		"name"		""
-		"description"		""
-		"settings"
-		{
-			"layer"		"1"
-		}
-	}
-	"group"
-	{
-		"id"		"91"
-		"mode"		"disabled"
-		"name"		""
-		"description"		""
-		"settings"
-		{
-			"layer"		"1"
-		}
-	}
-	"group"
-	{
-		"id"		"95"
-		"mode"		"reference"
-		"description"		""
-		"settings"
-		{
-			"referenced_mode"		"26"
-		}
-	}
-	"group"
-	{
-		"id"		"97"
-		"mode"		"reference"
-		"description"		""
-		"settings"
-		{
-			"referenced_mode"		"26"
-		}
-	}
-	"group"
-	{
-		"id"		"99"
-		"mode"		"reference"
-		"description"		""
-		"settings"
-		{
-			"referenced_mode"		"26"
-		}
-	}
-	"group"
-	{
-		"id"		"101"
-		"mode"		"dpad"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-		}
-		"settings"
-		{
-			"layer"		"1"
-		}
-	}
-	"group"
-	{
-		"id"		"103"
-		"mode"		"reference"
-		"description"		""
-		"settings"
-		{
-			"referenced_mode"		"39"
-		}
-	}
-	"group"
-	{
-		"id"		"104"
-		"mode"		"disabled"
-		"name"		""
-		"description"		""
-		"settings"
-		{
-			"layer"		"1"
-		}
-	}
-	"group"
-	{
-		"id"		"105"
-		"mode"		"disabled"
-		"name"		""
-		"description"		""
-		"settings"
-		{
-			"layer"		"1"
-		}
-	}
-	"group"
-	{
-		"id"		"107"
-		"mode"		"reference"
-		"description"		""
-		"settings"
-		{
-			"referenced_mode"		"39"
-		}
-	}
-	"group"
-	{
-		"id"		"108"
-		"mode"		"reference"
-		"description"		""
-		"settings"
-		{
-			"referenced_mode"		"63"
-		}
-	}
-	"group"
-	{
-		"id"		"6"
+		"id"		"8"
 		"mode"		"switches"
 		"name"		""
 		"description"		""
@@ -2574,7 +661,6 @@
 						"bindings"
 						{
 							"binding"		"key_press ESCAPE, Menu, , "
-							"binding"		"key_press E, , "
 						}
 					}
 					"Long_Press"
@@ -2583,10 +669,6 @@
 						{
 							"binding"		"key_press LEFT_ALT, Quit Game, , "
 							"binding"		"key_press F4, Quit Game, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"3"
 						}
 					}
 				}
@@ -2610,10 +692,6 @@
 						"bindings"
 						{
 							"binding"		"key_press HOME, Home Instance Portal, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"3"
 						}
 					}
 				}
@@ -2663,11 +741,21 @@
 						{
 							"binding"		"mouse_wheel SCROLL_DOWN, , "
 						}
-						"settings"
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"button_back_left_upper"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
 						{
-							"hold_repeats"		"1"
-							"repeat_rate"		"50"
-							"haptic_intensity"		"3"
+							"binding"		"mouse_wheel SCROLL_UP, , "
 						}
 					}
 				}
@@ -2694,32 +782,6 @@
 							"binding"		"key_press LEFT_CONTROL, Warclaw Mount, , "
 							"binding"		"key_press KEYPAD_6, Warclaw Mount, , "
 						}
-						"settings"
-						{
-							"haptic_intensity"		"3"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"button_back_left_upper"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"mouse_wheel SCROLL_UP, , "
-						}
-						"settings"
-						{
-							"hold_repeats"		"1"
-							"repeat_rate"		"50"
-							"haptic_intensity"		"3"
-						}
 					}
 				}
 				"disabled_activators"
@@ -2737,6 +799,13 @@
 							"binding"		"key_press X, Mount Toggle, , "
 						}
 					}
+					"Double_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press C, Nearest Enemy, , "
+						}
+					}
 					"Long_Press"
 					{
 						"bindings"
@@ -2744,17 +813,6 @@
 							"binding"		"key_press LEFT_CONTROL, Siege Turtle, , "
 							"binding"		"key_press KEYPAD_8, Siege Turtle, , "
 						}
-						"settings"
-						{
-							"haptic_intensity"		"3"
-						}
-					}
-					"Double_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press C, , "
-						}
 					}
 				}
 				"disabled_activators"
@@ -2765,27 +823,13 @@
 	}
 	"group"
 	{
-		"id"		"17"
-		"mode"		"switches"
-		"name"		""
+		"id"		"9"
+		"mode"		"radial_menu"
+		"name"		"Pro Skills"
 		"description"		""
 		"inputs"
 		{
-		}
-		"settings"
-		{
-			"layer"		"1"
-		}
-	}
-	"group"
-	{
-		"id"		"38"
-		"mode"		"switches"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-			"button_escape"
+			"touch_menu_button_0"
 			{
 				"activators"
 				{
@@ -2793,16 +837,12 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_ALT, , "
-							"binding"		"key_press F4, , "
+							"binding"		"key_press F1, Profession Skill 1, , "
 						}
 					}
-				}
-				"disabled_activators"
-				{
 				}
 			}
-			"button_menu"
+			"touch_menu_button_1"
 			{
 				"activators"
 				{
@@ -2810,15 +850,12 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press INSERT, Toggle Language, , "
+							"binding"		"key_press F2, Profession Skill 2, , "
 						}
 					}
-				}
-				"disabled_activators"
-				{
 				}
 			}
-			"button_back_left"
+			"touch_menu_button_2"
 			{
 				"activators"
 				{
@@ -2826,23 +863,259 @@
 					{
 						"bindings"
 						{
-							"binding"		"mouse_wheel SCROLL_DOWN, , "
+							"binding"		"key_press F3, Profession Skill 3, , "
 						}
 					}
 				}
-				"disabled_activators"
+			}
+			"touch_menu_button_3"
+			{
+				"activators"
 				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press F4, Profession Skill 4, , "
+						}
+					}
 				}
 			}
 		}
 		"settings"
 		{
-			"layer"		"1"
+			"touch_menu_opacity"		"50"
+			"touch_menu_scale"		"50"
 		}
 	}
 	"group"
 	{
-		"id"		"110"
+		"id"		"10"
+		"mode"		"radial_menu"
+		"name"		"Utility Skills"
+		"description"		""
+		"inputs"
+		{
+			"touch_menu_button_0"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press 0, Heal Skill, , "
+						}
+					}
+				}
+			}
+			"touch_menu_button_1"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press 6, Utility Skill 1, , "
+						}
+					}
+				}
+			}
+			"touch_menu_button_2"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press 7, Utility Skill 2, , "
+						}
+					}
+				}
+			}
+			"touch_menu_button_3"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press 8, Utility Skill 3, , "
+						}
+					}
+				}
+			}
+			"touch_menu_button_4"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press 9, Elite Skill, , "
+						}
+					}
+				}
+			}
+		}
+		"settings"
+		{
+			"touch_menu_opacity"		"100"
+			"touch_menu_scale"		"150"
+			"touch_menu_position_x"		"50"
+			"touch_menu_position_y"		"50"
+		}
+	}
+	"group"
+	{
+		"id"		"11"
+		"mode"		"radial_menu"
+		"name"		"Mounts Wheel"
+		"description"		""
+		"inputs"
+		{
+			"touch_menu_button_0"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Raptor, , "
+							"binding"		"key_press KEYPAD_0, Raptor, , "
+						}
+					}
+				}
+			}
+			"touch_menu_button_1"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Springer, , "
+							"binding"		"key_press KEYPAD_1, Springer, , "
+						}
+					}
+				}
+			}
+			"touch_menu_button_2"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Skimmer, , "
+							"binding"		"key_press KEYPAD_2, Skimmer, , "
+						}
+					}
+				}
+			}
+			"touch_menu_button_3"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Jackal, , "
+							"binding"		"key_press KEYPAD_3, Jackal, , "
+						}
+					}
+				}
+			}
+			"touch_menu_button_4"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Griffon, , "
+							"binding"		"key_press KEYPAD_4, Griffon, , "
+						}
+					}
+				}
+			}
+			"touch_menu_button_5"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Roller Beetle, , "
+							"binding"		"key_press KEYPAD_5, Roller Beetle, , "
+						}
+					}
+				}
+			}
+			"touch_menu_button_6"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Warclaw, , "
+							"binding"		"key_press KEYPAD_6, Warclaw, , "
+						}
+					}
+				}
+			}
+			"touch_menu_button_7"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Skyscale, , "
+							"binding"		"key_press KEYPAD_7, Skyscale, , "
+						}
+					}
+				}
+			}
+			"touch_menu_button_8"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Siege Turtle, , "
+							"binding"		"key_press KEYPAD_8, Siege Turtle, , "
+						}
+					}
+				}
+			}
+		}
+		"settings"
+		{
+			"touch_menu_opacity"		"100"
+			"touch_menu_scale"		"150"
+			"touch_menu_position_x"		"50"
+			"touch_menu_position_y"		"50"
+		}
+	}
+	"group"
+	{
+		"id"		"13"
 		"mode"		"radial_menu"
 		"name"		"Chat Macros"
 		"description"		""
@@ -3089,16 +1362,344 @@
 			"touch_menu_button_count"		"14"
 			"touch_menu_opacity"		"100"
 			"touch_menu_scale"		"150"
+			"touch_menu_position_x"		"50"
+			"touch_menu_position_y"		"50"
 		}
 	}
 	"group"
 	{
-		"id"		"111"
-		"mode"		"reference"
+		"id"		"20"
+		"mode"		"four_buttons"
+		"name"		""
 		"description"		""
-		"settings"
+		"inputs"
 		{
-			"referenced_mode"		"110"
+			"button_a"
+			{
+				"activators"
+				{
+					"Double_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Sudoku, , "
+							"binding"		"key_press PERIOD, Sudoku, , "
+						}
+					}
+					"Long_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Exit Instance, , "
+							"binding"		"key_press E, Exit Instance, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"button_x"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Vendor Buy, , "
+							"binding"		"key_press U, Vendor Buy, , "
+						}
+					}
+					"Double_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Vendor, , "
+							"binding"		"key_press KEYPAD_DASH, Vendor, , "
+						}
+					}
+					"Long_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Hide UI, , "
+							"binding"		"key_press J, Hide UI, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"button_y"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Deposit Materials, , "
+							"binding"		"key_press F, Deposit Materials, , "
+						}
+					}
+					"Long_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Mystic Forge Combo, , "
+							"binding"		"key_press A, Mystic Forge Combo, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+		}
+	}
+	"group"
+	{
+		"id"		"21"
+		"mode"		"dpad"
+		"name"		""
+		"description"		""
+		"inputs"
+		{
+			"dpad_north"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_ALT, MT Delivery, , "
+							"binding"		"key_press F, MT Delivery, , "
+						}
+					}
+					"Long_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_ALT, MT Dashboard, , "
+							"binding"		"key_press T, MT Dashboard, , "
+						}
+					}
+					"Double_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_ALT, MT Fliplist, , "
+							"binding"		"key_press D, MT Fliplist, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"dpad_west"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, Shift+Click, , "
+							"binding"		"mouse_button LEFT, Shift+Click, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"dpad_east"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press S, Search Bags, , "
+							"binding"		"key_press U, Search Bags, , "
+							"binding"		"key_press M, Search Bags, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+		}
+	}
+	"group"
+	{
+		"id"		"22"
+		"mode"		"trigger"
+		"name"		""
+		"description"		""
+		"inputs"
+		{
+			"click"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"mouse_button LEFT, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+		}
+	}
+	"group"
+	{
+		"id"		"30"
+		"mode"		"four_buttons"
+		"name"		""
+		"description"		""
+		"inputs"
+		{
+			"button_x"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Trading Post, , "
+							"binding"		"key_press O, Trading Post, , "
+						}
+					}
+					"Long_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, TP Remove, , "
+							"binding"		"key_press T, TP Remove, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+		}
+	}
+	"group"
+	{
+		"id"		"31"
+		"mode"		"dpad"
+		"name"		""
+		"description"		""
+		"inputs"
+		{
+			"dpad_east"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Item Details, , "
+							"binding"		"key_press COMMA, Item Details, , "
+						}
+					}
+					"Long_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, Shift+Click, , "
+							"binding"		"mouse_button LEFT, Shift+Click, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+		}
+	}
+	"group"
+	{
+		"id"		"32"
+		"mode"		"trigger"
+		"name"		""
+		"description"		""
+		"inputs"
+		{
+			"click"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Vendor, , "
+							"binding"		"key_press V, Vendor, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+		}
+	}
+	"group"
+	{
+		"id"		"33"
+		"mode"		"switches"
+		"name"		""
+		"description"		""
+		"inputs"
+		{
+			"button_menu"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press INSERT, Toggle Language, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"button_back_left"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"mouse_wheel SCROLL_DOWN, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
 		}
 	}
 	"preset"
@@ -3107,23 +1708,14 @@
 		"name"		"Default"
 		"group_source_bindings"
 		{
-			"6"		"switch active"
+			"8"		"switch active"
 			"0"		"button_diamond active"
-			"32"		"button_diamond inactive"
-			"1"		"left_trackpad inactive"
-			"26"		"left_trackpad inactive"
-			"55"		"left_trackpad active"
-			"77"		"left_trackpad inactive"
-			"2"		"right_trackpad inactive"
-			"21"		"right_trackpad active"
-			"23"		"right_trackpad inactive"
-			"24"		"right_trackpad inactive"
-			"33"		"right_trackpad inactive"
-			"3"		"joystick active"
-			"110"		"joystick inactive"
+			"9"		"left_trackpad active"
+			"3"		"right_trackpad active"
+			"1"		"joystick active"
 			"4"		"left_trigger active"
 			"5"		"right_trigger active"
-			"9"		"right_joystick active"
+			"6"		"right_joystick active"
 			"7"		"dpad active"
 		}
 	}
@@ -3133,29 +1725,11 @@
 		"name"		"Preset_1000001"
 		"group_source_bindings"
 		{
-			"17"		"switch active"
-			"14"		"button_diamond active"
-			"27"		"left_trackpad inactive"
-			"78"		"left_trackpad active"
-			"25"		"right_trackpad active"
-			"29"		"joystick inactive"
-			"101"		"joystick inactive"
-			"104"		"joystick active"
-			"15"		"left_trigger active"
-			"16"		"right_trigger active"
-			"20"		"right_joystick inactive"
-			"48"		"right_joystick inactive"
-			"50"		"right_joystick inactive"
-			"51"		"right_joystick inactive modeshift"
-			"67"		"right_joystick inactive"
-			"71"		"right_joystick inactive"
-			"85"		"right_joystick inactive modeshift"
-			"83"		"right_joystick inactive modeshift"
-			"91"		"right_joystick inactive modeshift"
-			"103"		"right_joystick inactive modeshift"
-			"105"		"right_joystick active modeshift"
-			"107"		"right_joystick active"
-			"30"		"dpad active"
+			"20"		"button_diamond active"
+			"10"		"right_trackpad active"
+			"22"		"right_trigger active"
+			"11"		"right_joystick active"
+			"21"		"dpad active"
 		}
 	}
 	"preset"
@@ -3164,32 +1738,14 @@
 		"name"		"Preset_1000002"
 		"group_source_bindings"
 		{
-			"38"		"switch active"
-			"35"		"button_diamond active"
-			"46"		"left_trackpad inactive"
-			"81"		"left_trackpad inactive"
-			"95"		"left_trackpad inactive"
-			"97"		"left_trackpad inactive"
-			"111"		"left_trackpad active"
-			"79"		"right_trackpad inactive"
-			"80"		"right_trackpad active"
-			"44"		"joystick inactive"
-			"65"		"joystick inactive"
-			"75"		"joystick active"
-			"36"		"left_trigger active"
-			"37"		"right_trigger active"
-			"39"		"right_joystick inactive"
-			"57"		"right_joystick inactive"
-			"59"		"right_joystick inactive"
-			"61"		"right_joystick inactive"
-			"63"		"right_joystick inactive"
-			"108"		"right_joystick active"
-			"42"		"dpad active"
+			"33"		"switch active"
+			"30"		"button_diamond active"
+			"13"		"left_trackpad active"
+			"32"		"left_trigger active"
+			"12"		"right_joystick active"
+			"31"		"dpad active"
 		}
 	}
-	"settings"
-	{
-		"left_trackpad_mode"		"0"
-		"right_trackpad_mode"		"0"
-	}
+	"left_trackpad_mode"		"0"
+	"right_trackpad_mode"		"0"
 }

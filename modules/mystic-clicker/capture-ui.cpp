@@ -15,9 +15,6 @@
 #include <chrono>
 #include <thread>
 
-// ImGui context
-ImGuiContext* ImGuiCtx = nullptr;
-
 // Capture window state
 bool g_ShowCaptureWindow = false;
 

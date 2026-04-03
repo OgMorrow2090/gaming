@@ -10,62 +10,134 @@ Workshop ID: `3698495579`
 
 ### Default Layer
 
-| Button | Keys | GW2 / Addon Action |
-|--------|------|-------------------|
-| A | Space | Jump |
-| B | V | Dodge / Mount Special 2 |
-| X (tap) | T | Target Take |
-| X (long) | Enter | Chat / Confirm |
-| Y (tap) | Delete | ? |
-| Y (long) | Ctrl+P | [Mystic Clicker] YES_DIALOG |
-| Left Stick | WASD | Movement |
-| Left Stick Click | R | Autorun |
-| Right Trackpad | Radial: 2,3,4,5 | Weapon Skills 2-5 |
-| Right Trigger | Mouse Left | Attack / Weapon Skill 1 |
-| Left Trigger Full | Mouse Right | Camera / Right Click |
-| Left Trigger Soft | N | Special Action |
-| R Joystick Click | Alt+E | Toggle Action Camera |
-| Start | Escape | Menu / Close |
-| Select | Alt+F4 | Quit Game |
-| L4 (back grip) | Scroll Up | Camera Zoom In |
-| L5 (back grip) | Scroll Down | Camera Zoom Out |
-| R4 (back grip) | X | Spumoni Toggle (mount) |
-| R5 (back grip) | C | Nearest Enemy |
-| D-Up | Shift+I | Wizard's Vault |
-| D-Down | Shift+0 | ? |
-| D-Left | E + End | ? |
-| D-Right | H | Hero Panel |
-| L1 (hold) | --- | Activate L1 Layer |
-| R1 (hold) | --- | Activate R1 Layer |
+#### Face Buttons
+
+| Button | Tap | Double Press | Long Press |
+|--------|-----|-------------|------------|
+| A | Space (Jump) | — | — |
+| B | V (Dodge) | T (Target Take) | Delete (?) |
+| X | F (Interact) | Ctrl+P (Yes Dialog) | Enter (Chat) |
+| Y | `` ` `` (Weapon Swap) | — | Ctrl+B (Open Chest) |
+
+#### D-Pad
+
+| Direction | Tap | Double Press | Long Press |
+|-----------|-----|-------------|------------|
+| Up | Shift+I (Wizard's Vault) | Shift+0 (?) | E+End (?) |
+| Down | H (Hero Panel) | G (Guild) | Shift+F10 (Event Timers) |
+| Right | I (Inventory) | S+U+M (?) | Ctrl+Q (Deposit & Sort) |
+| Left | Y (Contacts) | Alt+F1 (?) | Alt+E+F1 (?) |
+
+#### Triggers & Sticks
+
+| Input | Binding |
+|-------|---------|
+| Right Trigger | Mouse Left (Attack / Weapon Skill 1) |
+| Left Trigger Full | Mouse Right (Camera / Right Click) |
+| Left Trigger Soft | N (Special Action) |
+| Left Stick | WASD (Movement) |
+| Left Stick Click | R (Autorun) |
+| Right Trackpad | Radial: 2,3,4,5 (Weapon Skills 2-5) |
+| Right Joystick | Mouse (Camera) |
+| Right Joystick Click | Alt+E (Toggle Action Camera) |
+
+#### System & Back Grips
+
+| Button | Tap | Long Press |
+|--------|-----|------------|
+| Start | Escape (Menu) | Alt+F4 (Quit) |
+| Select | M (Map) | Home (?) |
+| L1 (hold) | Activate L1 Layer | — |
+| R1 (hold) | Activate R1 Layer | — |
+| L4 | Scroll Down (Zoom Out) | — |
+| L5 | Scroll Up (Zoom In) | — |
+| R4 tap | Ctrl+KP3 (?) | Ctrl+KP6 (?) |
+| R5 tap | X (Mount Toggle) | Ctrl+KP8 (?) |
+| R5 dbl | C (Nearest Enemy) | — |
 
 ### L1 Layer (hold L1)
 
-| Button | Keys | GW2 / Addon Action |
-|--------|------|-------------------|
-| A | Ctrl+E | [Mystic Clicker] EXIT_INSTANCE |
-| B | Ctrl+. | [Nexus] KB_SUDOKU |
-| X | Ctrl+KP- | ? |
-| Right Trackpad | Radial: 0,6,7,8,9 | Heal / Utility 1-3 / Elite |
-| Right Trigger | Mouse Left | Click / Confirm |
-| D-Up | Alt+F | [Mystic Trading] Delivery Box |
-| D-Down | Alt+T | [Mystic Trading] Dashboard |
-| D-Left | Alt+D | ? |
-| D-Right | S+U+M | ? |
+#### Face Buttons
+
+| Button | Tap | Double Press | Long Press |
+|--------|-----|-------------|------------|
+| A | Ctrl+KP- (?) | Ctrl+. (Sudoku) | Ctrl+E (Exit Instance) |
+| B | Ctrl (empty?) | — | Ctrl (empty?) |
+| X | Ctrl+U (Vendor Buy) | Ctrl+KP- (Vendor) | Ctrl+J (Hide UI) |
+| Y | Ctrl+F (Deposit Mats) | — | Ctrl+A (Mystic Forge Combo) |
+
+#### D-Pad
+
+| Direction | Tap | Double Press | Long Press |
+|-----------|-----|-------------|------------|
+| Up | Alt+F (MT Delivery) | Alt+D (?) | Alt+T (MT Dashboard) |
+| Left | Shift+Click | — | — |
+| Right | S+U+M (?) | — | — |
+
+#### Radial Menu (Right Trackpad)
+
+| Slot | Key | Action |
+|------|-----|--------|
+| 1 | 0 | Heal |
+| 2 | 6 | Utility Skill 1 |
+| 3 | 7 | Utility Skill 2 |
+| 4 | 8 | Utility Skill 3 |
+| 5 | 9 | Elite Skill |
+
+#### Other
+
+| Input | Binding |
+|-------|---------|
+| Right Trigger | Mouse Left (Click/Confirm) |
 
 ### R1 Layer (hold R1)
 
-| Button | Keys | GW2 / Addon Action |
-|--------|------|-------------------|
-| A | Shift+V | ? |
-| B | End | ? |
-| X | Ctrl+O | [Mystic Clicker] TRADING_POST |
-| Y | Ctrl+T | [Mystic Clicker] TP_REMOVE |
-| Left Trigger | Ctrl+V | [Mystic Clicker] VENDOR |
-| Select | Insert | Toggle Language |
-| D-Up | Alt+Click | ? |
-| D-Down | Alt+Shift+T | ? |
-| D-Left | Shift+Click | ? |
-| D-Right | Ctrl+, | [Item Detail] Show details |
+#### Face Buttons
+
+| Button | Tap | Long Press |
+|--------|-----|------------|
+| A | Shift+V (?) | — |
+| B | End (?) | — |
+| X | Ctrl+O (Trading Post) | Ctrl+T (TP Remove) |
+| Y | Period (.) | — |
+
+#### D-Pad
+
+| Direction | Tap | Long Press |
+|-----------|-----|------------|
+| Up | Alt+Click (?) | — |
+| Down | Alt+Shift+T (?) | — |
+| Left | Ctrl+Shift+X (?) | — |
+| Right | Ctrl+, (Item Details) | Shift+Click |
+
+#### System
+
+| Button | Tap |
+|--------|-----|
+| Select | Insert (Toggle Language) |
+| L4 | Scroll Down (Zoom Out) |
+
+### Unknown Bindings (11)
+
+These bindings could not be matched to GW2 or Nexus actions:
+
+| Layer | Input | Keys | Notes |
+|-------|-------|------|-------|
+| Default | B long | Delete | |
+| Default | D-Up long | E+End | |
+| Default | D-Left dbl | Alt+F1 | |
+| Default | D-Left long | Alt+E+F1 | |
+| Default | Select long | Home | |
+| Default | R4 tap/long | Ctrl+KP3 / Ctrl+KP6 | Numpad combos |
+| Default | R5 long | Ctrl+KP8 | Numpad combo |
+| L1 | A tap | Ctrl+KP- | Numpad combo |
+| L1 | D-Right | S+U+M | Three keys |
+| R1 | A | Shift+V | |
+| R1 | B | End | |
+| R1 | Y | Period | |
+| R1 | D-Up | Alt+Click | |
+| R1 | D-Down | Alt+Shift+T | |
+| R1 | D-Left | Ctrl+Shift+X | |
 
 ---
 
@@ -75,10 +147,10 @@ Workshop ID: `3698495579`
 
 | Action | Key 1 | Key 2 |
 |--------|-------|-------|
-| MoveForward | W | ArrowRight |
-| MoveBackward | S | ArrowUp |
-| MoveLeft | A | ArrowLeft |
-| MoveRight | D | ArrowDown |
+| MoveForward | W | ?31 |
+| MoveBackward | S | ?28 |
+| MoveLeft | A | ?29 |
+| MoveRight | D | ?30 |
 | MoveTurnLeft | Q | --- |
 | MoveTurnRight | E | --- |
 | MoveDodge | V | --- |
@@ -167,7 +239,7 @@ Workshop ID: `3698495579`
 
 | Action | Key 1 | Key 2 |
 |--------|-------|-------|
-| UiChatToggle | Return2 | --- |
+| UiChatToggle | ?4 | --- |
 | UiChatCommand | / | --- |
 | UiChatFocus | Enter | Enter |
 | UiChatReply | Backspace | --- |
@@ -203,23 +275,9 @@ Workshop ID: `3698495579`
 | MiscToggleFullScreen | Alt+Enter | --- |
 | MiscToggleDecorationMode | L | --- |
 
-### Mastery
-
-| Action | Key 1 | Key 2 |
-|--------|-------|-------|
-| MasteryAccess | J | --- |
-
-### Screenshots
-
-| Action | Key 1 | Key 2 |
-|--------|-------|-------|
-| ScreenshotNormal | PrintScreen | --- |
-
 ---
 
 ## Custom Keybind Overrides (v6.xml)
-
-These override the defaults above.
 
 | Action | Key |
 |--------|-----|
@@ -265,8 +323,8 @@ These override the defaults above.
 | Skyscale Leap | Shift+D |
 | Skyscale Mount/Dismount | Ctrl+KP7 |
 | Springer Mount/Dismount | Ctrl+KP1 |
-| Start Fishing | 0(numrow) |
-| Summon Skiff | \ |
+| Start Fishing | ?10 |
+| Summon Skiff | ?13 |
 | Toggle Action Camera | E |
 | Warclaw Mount/Dismount | Ctrl+KP6 |
 | Wizard's Vault Dialogue | Shift+I |
@@ -384,7 +442,7 @@ Unbound: `KEY_BOSSES_TOGGLE_NOTIFICATION`, `KEY_BOSSES_TOGGLE_RENDER`
 
 ---
 
-## Installed Nexus Addons
+## Installed Nexus Addons (34)
 
 - Addon Config Backup
 - Anti Camera Smooth
@@ -442,3 +500,4 @@ Unbound: `KEY_BOSSES_TOGGLE_NOTIFICATION`, `KEY_BOSSES_TOGGLE_RENDER`
 | Local autosave (v9.4) | `~/.steam/steam/steamapps/common/Steam Controller Configs/64793831/config/moonlight/controller_neptune.vdf` |
 | App mapping | `~/.steam/steam/steamapps/common/Steam Controller Configs/64793831/config/configset_controller_neptune.vdf` |
 | Repo backup | `configs/steam-controller/` |
+| Raw GW2 configs | `configs/gw2-keybinds/` |

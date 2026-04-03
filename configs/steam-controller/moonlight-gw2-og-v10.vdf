@@ -2,7 +2,7 @@
 {
 	"version"		"3"
 	"revision"		"2347"
-	"title"		"Guild Wars 2 - Og v14"
+	"title"		"Guild Wars 2 - Og v14.1"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2626,11 +2626,11 @@
 		"description"		""
 		"inputs"
 		{
-			"touch_menu_button_0"
+			"touch_menu_button_1"
 			{
 				"activators"
 				{
-					"Release_Press"
+					"Full_Press"
 					{
 						"bindings"
 						{
@@ -2644,11 +2644,11 @@
 				{
 				}
 			}
-			"touch_menu_button_1"
+			"touch_menu_button_2"
 			{
 				"activators"
 				{
-					"Release_Press"
+					"Full_Press"
 					{
 						"bindings"
 						{
@@ -2662,11 +2662,11 @@
 				{
 				}
 			}
-			"touch_menu_button_2"
+			"touch_menu_button_3"
 			{
 				"activators"
 				{
-					"Release_Press"
+					"Full_Press"
 					{
 						"bindings"
 						{
@@ -2680,11 +2680,11 @@
 				{
 				}
 			}
-			"touch_menu_button_3"
+			"touch_menu_button_4"
 			{
 				"activators"
 				{
-					"Release_Press"
+					"Full_Press"
 					{
 						"bindings"
 						{
@@ -2701,11 +2701,11 @@
 				{
 				}
 			}
-			"touch_menu_button_4"
+			"touch_menu_button_5"
 			{
 				"activators"
 				{
-					"Release_Press"
+					"Full_Press"
 					{
 						"bindings"
 						{
@@ -2722,11 +2722,11 @@
 				{
 				}
 			}
-			"touch_menu_button_5"
+			"touch_menu_button_6"
 			{
 				"activators"
 				{
-					"Release_Press"
+					"Full_Press"
 					{
 						"bindings"
 						{
@@ -2740,11 +2740,11 @@
 				{
 				}
 			}
-			"touch_menu_button_6"
+			"touch_menu_button_7"
 			{
 				"activators"
 				{
-					"Release_Press"
+					"Full_Press"
 					{
 						"bindings"
 						{
@@ -2757,11 +2757,11 @@
 				{
 				}
 			}
-			"touch_menu_button_7"
+			"touch_menu_button_8"
 			{
 				"activators"
 				{
-					"Release_Press"
+					"Full_Press"
 					{
 						"bindings"
 						{
@@ -2777,11 +2777,11 @@
 				{
 				}
 			}
-			"touch_menu_button_8"
+			"touch_menu_button_9"
 			{
 				"activators"
 				{
-					"Release_Press"
+					"Full_Press"
 					{
 						"bindings"
 						{
@@ -2799,7 +2799,7 @@
 		}
 		"settings"
 		{
-			"touch_menu_button_count"		"9"
+			"touch_menu_button_count"		"10"
 			"touch_menu_opacity"		"100"
 			"touch_menu_scale"		"150"
 			"touch_menu_position_x"		"50"

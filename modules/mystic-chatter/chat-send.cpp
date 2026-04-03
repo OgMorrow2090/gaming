@@ -177,10 +177,14 @@ void SendChatMessage(const char* message)
         Sleep(200);
 
         // 4. Paste — Ctrl+V via WndProc
+        //    Hold Ctrl down, press V, release V, THEN release Ctrl
+        //    V must never be down without Ctrl or GW2 interprets it as Dodge
         SendKeyDown(VK_CONTROL, 0x1D);
-        Sleep(30);
-        SendKeyStroke('V', 0x2F);
-        Sleep(30);
+        Sleep(50);
+        SendKeyDown('V', 0x2F);
+        Sleep(20);
+        SendKeyUp('V', 0x2F);
+        Sleep(50);
         SendKeyUp(VK_CONTROL, 0x1D);
         Sleep(150);
 

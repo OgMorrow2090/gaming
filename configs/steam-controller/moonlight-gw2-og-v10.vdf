@@ -2,7 +2,7 @@
 {
 	"version"		"3"
 	"revision"		"2347"
-	"title"		"Guild Wars 2 - Og v14.3"
+	"title"		"Guild Wars 2 - Og v14.5"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2670,8 +2670,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, Hi, , "
-							"binding"		"key_press H, Hi, , "
+							"binding"		"key_press H, hi, , "
+							"binding"		"key_press I, hi, , "
 							"binding"		"key_press RETURN, Send, , "
 						}
 					}
@@ -2765,10 +2765,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, Yes, , "
-							"binding"		"key_press Y, Yes, , "
-							"binding"		"key_press E, Yes, , "
-							"binding"		"key_press S, Yes, , "
+							"binding"		"key_press Y, yes, , "
+							"binding"		"key_press E, yes, , "
+							"binding"		"key_press S, yes, , "
 							"binding"		"key_press RETURN, Send, , "
 						}
 					}
@@ -2785,9 +2784,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, No, , "
-							"binding"		"key_press N, No, , "
-							"binding"		"key_press O, No, , "
+							"binding"		"key_press N, no, , "
+							"binding"		"key_press O, no, , "
 							"binding"		"key_press RETURN, Send, , "
 						}
 					}
@@ -2840,6 +2838,7 @@
 		"settings"
 		{
 			"touch_menu_button_count"		"11"
+			"touchmenu_button_fire_type"		"2"
 			"touch_menu_opacity"		"100"
 			"touch_menu_scale"		"150"
 			"touch_menu_position_x"		"50"

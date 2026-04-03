@@ -1,7 +1,7 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2343"
+	"revision"		"2344"
 	"title"		"Guild Wars 2 - Og v10"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
@@ -17,7 +17,7 @@
 	{
 		"Default"
 		{
-			"title"		"Default"
+			"title"		"Combat & Movement"
 			"legacy_set"		"1"
 		}
 	}
@@ -25,14 +25,14 @@
 	{
 		"Preset_1000001"
 		{
-			"title"		"L1"
+			"title"		"L1: Skills & Addons"
 			"legacy_set"		"1"
 			"set_layer"		"1"
 			"parent_set_name"		"Default"
 		}
 		"Preset_1000002"
 		{
-			"title"		"R1"
+			"title"		"R1: Trading & Vendor"
 			"legacy_set"		"1"
 			"set_layer"		"1"
 			"parent_set_name"		"Default"

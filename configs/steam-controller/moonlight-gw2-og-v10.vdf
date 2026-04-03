@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2351"
-	"title"		"Guild Wars 2 - Og v10.6"
+	"revision"		"2352"
+	"title"		"Guild Wars 2 - Og v10.7"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2630,7 +2630,7 @@
 			{
 				"activators"
 				{
-					"Full_Press"
+					"Release_Press"
 					{
 						"bindings"
 						{
@@ -2645,7 +2645,7 @@
 			{
 				"activators"
 				{
-					"Full_Press"
+					"Release_Press"
 					{
 						"bindings"
 						{
@@ -2660,7 +2660,7 @@
 			{
 				"activators"
 				{
-					"Full_Press"
+					"Release_Press"
 					{
 						"bindings"
 						{
@@ -2676,7 +2676,7 @@
 			{
 				"activators"
 				{
-					"Full_Press"
+					"Release_Press"
 					{
 						"bindings"
 						{
@@ -2695,7 +2695,7 @@
 			{
 				"activators"
 				{
-					"Full_Press"
+					"Release_Press"
 					{
 						"bindings"
 						{
@@ -2712,7 +2712,7 @@
 			{
 				"activators"
 				{
-					"Full_Press"
+					"Release_Press"
 					{
 						"bindings"
 						{
@@ -2729,7 +2729,7 @@
 			{
 				"activators"
 				{
-					"Full_Press"
+					"Release_Press"
 					{
 						"bindings"
 						{
@@ -2748,7 +2748,7 @@
 			{
 				"activators"
 				{
-					"Full_Press"
+					"Release_Press"
 					{
 						"bindings"
 						{
@@ -2767,7 +2767,7 @@
 			{
 				"activators"
 				{
-					"Full_Press"
+					"Release_Press"
 					{
 						"bindings"
 						{
@@ -2785,7 +2785,7 @@
 			{
 				"activators"
 				{
-					"Full_Press"
+					"Release_Press"
 					{
 						"bindings"
 						{
@@ -2803,7 +2803,7 @@
 			{
 				"activators"
 				{
-					"Full_Press"
+					"Release_Press"
 					{
 						"bindings"
 						{
@@ -2818,7 +2818,7 @@
 			{
 				"activators"
 				{
-					"Full_Press"
+					"Release_Press"
 					{
 						"bindings"
 						{
@@ -2832,7 +2832,7 @@
 			{
 				"activators"
 				{
-					"Full_Press"
+					"Release_Press"
 					{
 						"bindings"
 						{
@@ -2849,7 +2849,7 @@
 			{
 				"activators"
 				{
-					"Full_Press"
+					"Release_Press"
 					{
 						"bindings"
 						{

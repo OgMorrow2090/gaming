@@ -154,6 +154,14 @@ void SendChatMessage(const char* message)
         snprintf(logBuf, sizeof(logBuf), "Sending: %s", msg.c_str());
         APIDefs->Log(LOGL_INFO, "MysticChatter", logBuf);
 
+        // 0. Release modifier keys that may still be held from the triggering keybind
+        //    (Ctrl+Shift+KP combo — Ctrl and Shift are still down when we fire)
+        SendKeyUp(VK_CONTROL, 0x1D);
+        SendKeyUp(VK_SHIFT, 0x2A);
+        SendKeyUp(VK_LCONTROL, 0x1D);
+        SendKeyUp(VK_LSHIFT, 0x2A);
+        Sleep(100);
+
         // 1. Save clipboard
         std::string prevClipboard = GetClipboardText();
 
@@ -166,15 +174,15 @@ void SendChatMessage(const char* message)
 
         // 3. Open chat — Enter (scan code 0x1C)
         SendKeyStroke(VK_RETURN, 0x1C);
-        Sleep(150);
+        Sleep(200);
 
         // 4. Paste — Ctrl+V via WndProc
         SendKeyDown(VK_CONTROL, 0x1D);
-        Sleep(20);
+        Sleep(30);
         SendKeyStroke('V', 0x2F);
-        Sleep(20);
+        Sleep(30);
         SendKeyUp(VK_CONTROL, 0x1D);
-        Sleep(100);
+        Sleep(150);
 
         // 5. Send — Enter
         SendKeyStroke(VK_RETURN, 0x1C);

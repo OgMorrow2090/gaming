@@ -1,0 +1,913 @@
+{
+  "macros": [
+    {
+      "name": "ty",
+      "identifier": "MACRO_CHAT_TY",
+      "enabled": true,
+      "actions": [
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 20,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 20,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 21,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 21,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 0
+        }
+      ]
+    },
+    {
+      "name": "np",
+      "identifier": "MACRO_CHAT_NP",
+      "enabled": true,
+      "actions": [
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 49,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 49,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 25,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 25,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 0
+        }
+      ]
+    },
+    {
+      "name": "Hi",
+      "identifier": "MACRO_CHAT_HI",
+      "enabled": true,
+      "actions": [
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 42,
+          "delayMs": 10
+        },
+        {
+          "type": "Press",
+          "code": 35,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 35,
+          "delayMs": 30
+        },
+        {
+          "type": "Release",
+          "code": 42,
+          "delayMs": 10
+        },
+        {
+          "type": "Press",
+          "code": 23,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 23,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 0
+        }
+      ]
+    },
+    {
+      "name": "/party",
+      "identifier": "MACRO_CHAT_PARTY",
+      "enabled": true,
+      "actions": [
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 53,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 53,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 25,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 25,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 30,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 30,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 19,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 19,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 20,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 20,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 21,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 21,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 0
+        }
+      ]
+    },
+    {
+      "name": "/say",
+      "identifier": "MACRO_CHAT_SAY",
+      "enabled": true,
+      "actions": [
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 53,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 53,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 31,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 31,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 30,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 30,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 21,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 21,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 0
+        }
+      ]
+    },
+    {
+      "name": "/map",
+      "identifier": "MACRO_CHAT_MAP",
+      "enabled": true,
+      "actions": [
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 53,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 53,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 50,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 50,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 30,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 30,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 25,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 25,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 0
+        }
+      ]
+    },
+    {
+      "name": "/guild",
+      "identifier": "MACRO_CHAT_GUILD",
+      "enabled": true,
+      "actions": [
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 53,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 53,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 34,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 34,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 22,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 22,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 23,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 23,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 38,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 38,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 32,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 32,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 0
+        }
+      ]
+    },
+    {
+      "name": "/squad",
+      "identifier": "MACRO_CHAT_SQUAD",
+      "enabled": true,
+      "actions": [
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 53,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 53,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 31,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 31,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 16,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 16,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 22,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 22,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 30,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 30,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 32,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 32,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 0
+        }
+      ]
+    },
+    {
+      "name": "qheal",
+      "identifier": "MACRO_CHAT_QHEAL",
+      "enabled": true,
+      "actions": [
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 16,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 16,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 35,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 35,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 18,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 18,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 30,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 30,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 38,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 38,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 0
+        }
+      ]
+    },
+    {
+      "name": "aheal",
+      "identifier": "MACRO_CHAT_AHEAL",
+      "enabled": true,
+      "actions": [
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 30,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 30,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 35,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 35,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 18,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 18,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 30,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 30,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 38,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 38,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 0
+        }
+      ]
+    },
+    {
+      "name": "+",
+      "identifier": "MACRO_CHAT_PLUS",
+      "enabled": true,
+      "actions": [
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 42,
+          "delayMs": 10
+        },
+        {
+          "type": "Press",
+          "code": 13,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 13,
+          "delayMs": 30
+        },
+        {
+          "type": "Release",
+          "code": 42,
+          "delayMs": 10
+        },
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 0
+        }
+      ]
+    },
+    {
+      "name": "-",
+      "identifier": "MACRO_CHAT_MINUS",
+      "enabled": true,
+      "actions": [
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 12,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 12,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 0
+        }
+      ]
+    },
+    {
+      "name": "Yes",
+      "identifier": "MACRO_CHAT_YES",
+      "enabled": true,
+      "actions": [
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 42,
+          "delayMs": 10
+        },
+        {
+          "type": "Press",
+          "code": 21,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 21,
+          "delayMs": 30
+        },
+        {
+          "type": "Release",
+          "code": 42,
+          "delayMs": 10
+        },
+        {
+          "type": "Press",
+          "code": 18,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 18,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 31,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 31,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 0
+        }
+      ]
+    },
+    {
+      "name": "No",
+      "identifier": "MACRO_CHAT_NO",
+      "enabled": true,
+      "actions": [
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 42,
+          "delayMs": 10
+        },
+        {
+          "type": "Press",
+          "code": 49,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 49,
+          "delayMs": 30
+        },
+        {
+          "type": "Release",
+          "code": 42,
+          "delayMs": 10
+        },
+        {
+          "type": "Press",
+          "code": 24,
+          "delayMs": 10
+        },
+        {
+          "type": "Release",
+          "code": 24,
+          "delayMs": 30
+        },
+        {
+          "type": "Press",
+          "code": 28,
+          "delayMs": 50
+        },
+        {
+          "type": "Release",
+          "code": 28,
+          "delayMs": 0
+        }
+      ]
+    }
+  ],
+  "version": "0.1.4"
+}

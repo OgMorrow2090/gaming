@@ -2,7 +2,7 @@
 {
 	"version"		"3"
 	"revision"		"2347"
-	"title"		"Guild Wars 2 - Og v14.1"
+	"title"		"Guild Wars 2 - Og v14.3"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2796,10 +2796,50 @@
 				{
 				}
 			}
+			"touch_menu_button_10"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press FORWARD_SLASH, /map, , "
+							"binding"		"key_press M, /map, , "
+							"binding"		"key_press A, /map, , "
+							"binding"		"key_press P, /map, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_11"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press FORWARD_SLASH, /say, , "
+							"binding"		"key_press S, /say, , "
+							"binding"		"key_press A, /say, , "
+							"binding"		"key_press Y, /say, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
 		}
 		"settings"
 		{
-			"touch_menu_button_count"		"10"
+			"touch_menu_button_count"		"11"
 			"touch_menu_opacity"		"100"
 			"touch_menu_scale"		"150"
 			"touch_menu_position_x"		"50"

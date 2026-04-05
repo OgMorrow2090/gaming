@@ -1,9 +1,9 @@
-rule family="ipv4" source address="172.16.100.0/24" port port="22" protocol="tcp" accept
-rule family="ipv4" source address="172.16.10.5" port port="22" protocol="tcp" accept
-rule family="ipv4" source address="172.16.10.2" port port="22" protocol="tcp" accept
-rule family="ipv4" source address="172.16.10.7" port port="22" protocol="tcp" accept
-rule family="ipv4" source address="172.16.10.6" port port="22" protocol="tcp" accept
-rule family="ipv4" source address="172.16.10.1" port port="22" protocol="tcp" accept
 rule family="ipv4" source address="172.16.2.0/24" port port="22" protocol="tcp" accept
 rule family="ipv4" source address="172.16.1.0/24" port port="22" protocol="tcp" accept
+rule family="ipv4" source address="172.16.100.0/24" port port="22" protocol="tcp" accept
+rule family="ipv4" source address="172.16.10.6" port port="22" protocol="tcp" accept
+rule family="ipv4" source address="172.16.10.2" port port="22" protocol="tcp" accept
+rule family="ipv4" source address="172.16.10.7" port port="22" protocol="tcp" accept
 rule family="ipv4" source address="172.16.0.0/24" port port="22" protocol="tcp" accept
+rule family="ipv4" source address="172.16.10.1" port port="22" protocol="tcp" accept
+rule family="ipv4" source address="172.16.10.5" port port="22" protocol="tcp" accept

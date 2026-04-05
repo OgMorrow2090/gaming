@@ -317,7 +317,7 @@
 	{
 		"AllowPrereleases": false,
 		"IsDisabledUntilUpdate": false,
-		"IsFavorite": false,
+		"IsFavorite": true,
 		"IsLoaded": true,
 		"IsPausingUpdates": false,
 		"Name": "Hoard & Seek",

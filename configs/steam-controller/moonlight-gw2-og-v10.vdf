@@ -2,7 +2,7 @@
 {
 	"version"		"3"
 	"revision"		"2347"
-	"title"		"Guild Wars 2 - Og v15"
+	"title"		"Guild Wars 2 - Og v15.1"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2305,7 +2305,7 @@
 		"description"		""
 		"inputs"
 		{
-			"touch_menu_button_6"
+			"touch_menu_button_1"
 			{
 				"activators"
 				{
@@ -2325,7 +2325,7 @@
 				{
 				}
 			}
-			"touch_menu_button_10"
+			"touch_menu_button_2"
 			{
 				"activators"
 				{
@@ -2345,7 +2345,7 @@
 				{
 				}
 			}
-			"touch_menu_button_11"
+			"touch_menu_button_3"
 			{
 				"activators"
 				{
@@ -2365,7 +2365,7 @@
 				{
 				}
 			}
-			"touch_menu_button_12"
+			"touch_menu_button_4"
 			{
 				"activators"
 				{
@@ -2385,7 +2385,7 @@
 				{
 				}
 			}
-					"touch_menu_button_13"
+			"touch_menu_button_5"
 			{
 				"activators"
 				{
@@ -2397,13 +2397,17 @@
 							"binding"		"key_press LEFT_SHIFT, Capture Mode, , "
 							"binding"		"key_press C, Capture Mode, , "
 						}
+						"settings"
+						{
+							"haptic_intensity"		"2"
+						}
 					}
 				}
 				"disabled_activators"
 				{
 				}
 			}
-					"touch_menu_button_14"
+			"touch_menu_button_6"
 			{
 				"activators"
 				{
@@ -2415,23 +2419,9 @@
 							"binding"		"key_press LEFT_ALT, Toggle Paths, , "
 							"binding"		"key_press F3, Toggle Paths, , "
 						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_15"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
+						"settings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Crafty Legend, , "
-							"binding"		"key_press LEFT_SHIFT, Crafty Legend, , "
-							"binding"		"key_press SEMICOLON, Crafty Legend, , "
+							"haptic_intensity"		"2"
 						}
 					}
 				}
@@ -2439,25 +2429,7 @@
 				{
 				}
 			}
-			"touch_menu_button_16"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_ALT, ArcDPS, , "
-							"binding"		"key_press LEFT_SHIFT, ArcDPS, , "
-							"binding"		"key_press T, ArcDPS, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-						"touch_menu_button_17"
+			"touch_menu_button_7"
 			{
 				"activators"
 				{
@@ -2469,13 +2441,17 @@
 							"binding"		"key_press LEFT_ALT, TaimiHUD, , "
 							"binding"		"key_press M, TaimiHUD, , "
 						}
+						"settings"
+						{
+							"haptic_intensity"		"2"
+						}
 					}
 				}
 				"disabled_activators"
 				{
 				}
 			}
-			"touch_menu_button_18"
+			"touch_menu_button_8"
 			{
 				"activators"
 				{
@@ -2487,24 +2463,9 @@
 							"binding"		"key_press LEFT_ALT, Pathing Window, , "
 							"binding"		"key_press N, Pathing Window, , "
 						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-
-					"touch_menu_button_14"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
+						"settings"
 						{
-							"binding"		"key_press LEFT_SHIFT, Toggle Paths, , "
-							"binding"		"key_press LEFT_ALT, Toggle Paths, , "
-							"binding"		"key_press F3, Toggle Paths, , "
+							"haptic_intensity"		"2"
 						}
 					}
 				}
@@ -2512,25 +2473,7 @@
 				{
 				}
 			}
-			"touch_menu_button_15"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Crafty Legend, , "
-							"binding"		"key_press LEFT_SHIFT, Crafty Legend, , "
-							"binding"		"key_press SEMICOLON, Crafty Legend, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_16"
+			"touch_menu_button_9"
 			{
 				"activators"
 				{
@@ -2542,23 +2485,9 @@
 							"binding"		"key_press LEFT_SHIFT, ArcDPS, , "
 							"binding"		"key_press T, ArcDPS, , "
 						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_17"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
+						"settings"
 						{
-							"binding"		"key_press LEFT_SHIFT, Map Paths, , "
-							"binding"		"key_press LEFT_ALT, Map Paths, , "
-							"binding"		"key_press F2, Map Paths, , "
+							"haptic_intensity"		"2"
 						}
 					}
 				}
@@ -2566,7 +2495,29 @@
 				{
 				}
 			}
-					"touch_menu_button_19"
+			"touch_menu_button_10"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Crafty Legend, , "
+							"binding"		"key_press LEFT_SHIFT, Crafty Legend, , "
+							"binding"		"key_press SEMICOLON, Crafty Legend, , "
+						}
+						"settings"
+						{
+							"haptic_intensity"		"2"
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_11"
 			{
 				"activators"
 				{
@@ -2584,7 +2535,7 @@
 				{
 				}
 			}
-			"touch_menu_button_20"
+			"touch_menu_button_12"
 			{
 				"activators"
 				{
@@ -2602,7 +2553,7 @@
 				{
 				}
 			}
-			"touch_menu_button_21"
+			"touch_menu_button_13"
 			{
 				"activators"
 				{
@@ -2620,7 +2571,79 @@
 				{
 				}
 			}
-			"touch_menu_button_22"
+			"touch_menu_button_14"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press Y, yes, , "
+							"binding"		"key_press E, yes, , "
+							"binding"		"key_press S, yes, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_15"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press N, no, , "
+							"binding"		"key_press O, no, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_16"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, +, , "
+							"binding"		"key_press EQUALS, +, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_17"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press DASH, -, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_18"
 			{
 				"activators"
 				{
@@ -2641,7 +2664,7 @@
 				{
 				}
 			}
-			"touch_menu_button_23"
+			"touch_menu_button_19"
 			{
 				"activators"
 				{
@@ -2654,78 +2677,6 @@
 							"binding"		"key_press E, aheal, , "
 							"binding"		"key_press A, aheal, , "
 							"binding"		"key_press L, aheal, , "
-							"binding"		"key_press RETURN, Send, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_24"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_SHIFT, +, , "
-							"binding"		"key_press EQUALS, +, , "
-							"binding"		"key_press RETURN, Send, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_25"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press DASH, -, , "
-							"binding"		"key_press RETURN, Send, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_26"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press Y, yes, , "
-							"binding"		"key_press E, yes, , "
-							"binding"		"key_press S, yes, , "
-							"binding"		"key_press RETURN, Send, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_27"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press N, no, , "
-							"binding"		"key_press O, no, , "
 							"binding"		"key_press RETURN, Send, , "
 						}
 					}

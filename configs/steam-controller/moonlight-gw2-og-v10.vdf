@@ -2,7 +2,7 @@
 {
 	"version"		"3"
 	"revision"		"2347"
-	"title"		"Guild Wars 2 - Og v15.4"
+	"title"		"Guild Wars 2 - Og v15.5"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2046,14 +2046,53 @@
 				}
 			}
 
+		
+			"touch_menu_button_12"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press FORWARD_SLASH, /party, , "
+							"binding"		"key_press P, /party, , "
+							"binding"		"key_press A, /party, , "
+							"binding"		"key_press R, /party, , "
+							"binding"		"key_press T, /party, , "
+							"binding"		"key_press Y, /party, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_13"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press FORWARD_SLASH, /say, , "
+							"binding"		"key_press S, /say, , "
+							"binding"		"key_press A, /say, , "
+							"binding"		"key_press Y, /say, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
 		}
 		"settings"
 		{
 			"layer"		"1"
-			"touch_menu_opacity"		"100"
-			"touch_menu_position_x"		"50"
-			"touch_menu_position_y"		"50"
-			"touch_menu_scale"		"300"
 		}
 	}
 	"group"
@@ -2516,7 +2555,7 @@
 				{
 				}
 			}
-			"touch_menu_button_12"
+			"touch_menu_button_10"
 			{
 				"activators"
 				{
@@ -2534,7 +2573,7 @@
 				{
 				}
 			}
-			"touch_menu_button_13"
+			"touch_menu_button_11"
 			{
 				"activators"
 				{
@@ -2552,7 +2591,7 @@
 				{
 				}
 			}
-			"touch_menu_button_14"
+			"touch_menu_button_12"
 			{
 				"activators"
 				{
@@ -2570,7 +2609,7 @@
 				{
 				}
 			}
-			"touch_menu_button_15"
+			"touch_menu_button_13"
 			{
 				"activators"
 				{
@@ -2588,7 +2627,7 @@
 				{
 				}
 			}
-			"touch_menu_button_16"
+			"touch_menu_button_14"
 			{
 				"activators"
 				{
@@ -2606,7 +2645,7 @@
 				{
 				}
 			}
-			"touch_menu_button_17"
+			"touch_menu_button_15"
 			{
 				"activators"
 				{
@@ -2622,7 +2661,7 @@
 				{
 				}
 			}
-			"touch_menu_button_18"
+			"touch_menu_button_16"
 			{
 				"activators"
 				{
@@ -2638,7 +2677,7 @@
 				{
 				}
 			}
-			"touch_menu_button_19"
+			"touch_menu_button_17"
 			{
 				"activators"
 				{
@@ -2654,7 +2693,7 @@
 				{
 				}
 			}
-			"touch_menu_button_20"
+			"touch_menu_button_18"
 			{
 				"activators"
 				{
@@ -2670,7 +2709,7 @@
 				{
 				}
 			}
-			"touch_menu_button_21"
+			"touch_menu_button_19"
 			{
 				"activators"
 				{

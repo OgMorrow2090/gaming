@@ -2,7 +2,7 @@
 {
 	"version"		"3"
 	"revision"		"2347"
-	"title"		"Guild Wars 2 - Og v14.7"
+	"title"		"Guild Wars 2 - Og v14.8"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2411,9 +2411,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, Pathing, , "
-							"binding"		"key_press LEFT_ALT, Pathing, , "
-							"binding"		"key_press N, Pathing, , "
+							"binding"		"key_press LEFT_SHIFT, Minimap Paths, , "
+							"binding"		"key_press LEFT_ALT, Minimap Paths, , "
+							"binding"		"key_press F1, Minimap Paths, , "
 						}
 					}
 				}
@@ -2465,9 +2465,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, Markers, , "
-							"binding"		"key_press LEFT_ALT, Markers, , "
-							"binding"		"key_press SEMICOLON, Markers, , "
+							"binding"		"key_press LEFT_SHIFT, Map Paths, , "
+							"binding"		"key_press LEFT_ALT, Map Paths, , "
+							"binding"		"key_press F2, Map Paths, , "
 						}
 					}
 				}
@@ -2475,6 +2475,43 @@
 				{
 				}
 			}
+			"touch_menu_button_18"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, TaimiHUD, , "
+							"binding"		"key_press LEFT_ALT, TaimiHUD, , "
+							"binding"		"key_press M, TaimiHUD, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_19"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, Pathing Window, , "
+							"binding"		"key_press LEFT_ALT, Pathing Window, , "
+							"binding"		"key_press N, Pathing Window, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+
 					"touch_menu_button_14"
 			{
 				"activators"
@@ -2483,9 +2520,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, Pathing, , "
-							"binding"		"key_press LEFT_ALT, Pathing, , "
-							"binding"		"key_press N, Pathing, , "
+							"binding"		"key_press LEFT_SHIFT, Minimap Paths, , "
+							"binding"		"key_press LEFT_ALT, Minimap Paths, , "
+							"binding"		"key_press F1, Minimap Paths, , "
 						}
 					}
 				}
@@ -2537,9 +2574,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, Markers, , "
-							"binding"		"key_press LEFT_ALT, Markers, , "
-							"binding"		"key_press SEMICOLON, Markers, , "
+							"binding"		"key_press LEFT_SHIFT, Map Paths, , "
+							"binding"		"key_press LEFT_ALT, Map Paths, , "
+							"binding"		"key_press F2, Map Paths, , "
 						}
 					}
 				}

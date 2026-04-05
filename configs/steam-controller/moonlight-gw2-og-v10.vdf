@@ -2,7 +2,7 @@
 {
 	"version"		"3"
 	"revision"		"2347"
-	"title"		"Guild Wars 2 - Og v15.6"
+	"title"		"Guild Wars 2 - Og v16"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2050,6 +2050,10 @@
 					}
 		"settings"
 		{
+			"touch_menu_scale"		"300"
+			"touch_menu_opacity"		"100"
+			"touch_menu_position_x"		"50"
+			"touch_menu_position_y"		"50"
 			"layer"		"1"
 		}
 	}
@@ -2345,218 +2349,7 @@
 		"description"		""
 		"inputs"
 		{
-			"touch_menu_button_1"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press T, ty, , "
-							"binding"		"key_press Y, ty, , "
-							"binding"		"key_press RETURN, Send, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_2"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press N, np, , "
-							"binding"		"key_press P, np, , "
-							"binding"		"key_press RETURN, Send, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_3"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press H, hi, , "
-							"binding"		"key_press I, hi, , "
-							"binding"		"key_press RETURN, Send, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_4"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press Y, yes, , "
-							"binding"		"key_press E, yes, , "
-							"binding"		"key_press S, yes, , "
-							"binding"		"key_press RETURN, Send, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_5"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press N, no, , "
-							"binding"		"key_press O, no, , "
-							"binding"		"key_press RETURN, Send, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_6"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_SHIFT, +, , "
-							"binding"		"key_press EQUALS, +, , "
-							"binding"		"key_press RETURN, Send, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_7"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press DASH, -, , "
-							"binding"		"key_press RETURN, Send, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_8"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press Q, qheal, , "
-							"binding"		"key_press H, qheal, , "
-							"binding"		"key_press E, qheal, , "
-							"binding"		"key_press A, qheal, , "
-							"binding"		"key_press L, qheal, , "
-							"binding"		"key_press RETURN, Send, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_9"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press A, aheal, , "
-							"binding"		"key_press H, aheal, , "
-							"binding"		"key_press E, aheal, , "
-							"binding"		"key_press A, aheal, , "
-							"binding"		"key_press L, aheal, , "
-							"binding"		"key_press RETURN, Send, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_10"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press FORWARD_SLASH, /party, , "
-							"binding"		"key_press P, /party, , "
-							"binding"		"key_press A, /party, , "
-							"binding"		"key_press R, /party, , "
-							"binding"		"key_press T, /party, , "
-							"binding"		"key_press Y, /party, , "
-							"binding"		"key_press RETURN, Send, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_11"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press FORWARD_SLASH, /say, , "
-							"binding"		"key_press S, /say, , "
-							"binding"		"key_press A, /say, , "
-							"binding"		"key_press Y, /say, , "
-							"binding"		"key_press RETURN, Send, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-
-			"touch_menu_button_12"
+						"touch_menu_button_1"
 			{
 				"activators"
 				{
@@ -2574,7 +2367,7 @@
 				{
 				}
 			}
-			"touch_menu_button_13"
+			"touch_menu_button_2"
 			{
 				"activators"
 				{
@@ -2592,7 +2385,7 @@
 				{
 				}
 			}
-			"touch_menu_button_14"
+			"touch_menu_button_3"
 			{
 				"activators"
 				{
@@ -2610,7 +2403,7 @@
 				{
 				}
 			}
-			"touch_menu_button_15"
+			"touch_menu_button_4"
 			{
 				"activators"
 				{
@@ -2628,7 +2421,7 @@
 				{
 				}
 			}
-			"touch_menu_button_16"
+			"touch_menu_button_5"
 			{
 				"activators"
 				{
@@ -2646,7 +2439,7 @@
 				{
 				}
 			}
-			"touch_menu_button_17"
+			"touch_menu_button_6"
 			{
 				"activators"
 				{
@@ -2662,7 +2455,7 @@
 				{
 				}
 			}
-			"touch_menu_button_18"
+			"touch_menu_button_7"
 			{
 				"activators"
 				{
@@ -2678,7 +2471,7 @@
 				{
 				}
 			}
-			"touch_menu_button_19"
+			"touch_menu_button_8"
 			{
 				"activators"
 				{
@@ -2694,7 +2487,7 @@
 				{
 				}
 			}
-			"touch_menu_button_20"
+			"touch_menu_button_9"
 			{
 				"activators"
 				{
@@ -2710,7 +2503,7 @@
 				{
 				}
 			}
-			"touch_menu_button_21"
+			"touch_menu_button_10"
 			{
 				"activators"
 				{
@@ -2731,6 +2524,10 @@
 		}
 		"settings"
 		{
+			"touch_menu_scale"		"300"
+			"touch_menu_opacity"		"100"
+			"touch_menu_position_x"		"50"
+			"touch_menu_position_y"		"50"
 			"layer"		"1"
 			"touch_menu_opacity"		"100"
 			"touch_menu_position_x"		"50"
@@ -3196,6 +2993,299 @@
 			"layer"		"1"
 		}
 	}
+	"group"
+	{
+		"id"		"120"
+		"mode"		"radial_menu"
+		"name"		"Commands"
+		"description"		""
+		"inputs"
+		{
+			"touch_menu_button_1"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press T, ty, , "
+							"binding"		"key_press Y, ty, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_2"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press N, np, , "
+							"binding"		"key_press P, np, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_3"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press H, hi, , "
+							"binding"		"key_press I, hi, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_4"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press Y, yes, , "
+							"binding"		"key_press E, yes, , "
+							"binding"		"key_press S, yes, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_5"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press N, no, , "
+							"binding"		"key_press O, no, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_6"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, +, , "
+							"binding"		"key_press EQUALS, +, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_7"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press DASH, -, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_8"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press Q, qheal, , "
+							"binding"		"key_press H, qheal, , "
+							"binding"		"key_press E, qheal, , "
+							"binding"		"key_press A, qheal, , "
+							"binding"		"key_press L, qheal, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_9"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press A, aheal, , "
+							"binding"		"key_press H, aheal, , "
+							"binding"		"key_press E, aheal, , "
+							"binding"		"key_press A, aheal, , "
+							"binding"		"key_press L, aheal, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_10"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press FORWARD_SLASH, /party, , "
+							"binding"		"key_press P, /party, , "
+							"binding"		"key_press A, /party, , "
+							"binding"		"key_press R, /party, , "
+							"binding"		"key_press T, /party, , "
+							"binding"		"key_press Y, /party, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_11"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press FORWARD_SLASH, /say, , "
+							"binding"		"key_press S, /say, , "
+							"binding"		"key_press A, /say, , "
+							"binding"		"key_press Y, /say, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_12"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press FORWARD_SLASH, /map, , "
+							"binding"		"key_press M, /map, , "
+							"binding"		"key_press A, /map, , "
+							"binding"		"key_press P, /map, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_13"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press FORWARD_SLASH, /guild, , "
+							"binding"		"key_press G, /guild, , "
+							"binding"		"key_press U, /guild, , "
+							"binding"		"key_press I, /guild, , "
+							"binding"		"key_press L, /guild, , "
+							"binding"		"key_press D, /guild, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_14"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press FORWARD_SLASH, /squad, , "
+							"binding"		"key_press S, /squad, , "
+							"binding"		"key_press Q, /squad, , "
+							"binding"		"key_press U, /squad, , "
+							"binding"		"key_press A, /squad, , "
+							"binding"		"key_press D, /squad, , "
+							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+		}
+		"settings"
+		{
+			"touch_menu_button_count"		"14"
+			"touchmenu_button_fire_type"		"2"
+			"touch_menu_scale"		"300"
+			"touch_menu_opacity"		"100"
+			"touch_menu_position_x"		"50"
+			"touch_menu_position_y"		"50"
+		}
+	}
 	"preset"
 	{
 		"id"		"0"
@@ -3227,6 +3317,7 @@
 		"name"		"Preset_1000001"
 		"group_source_bindings"
 		{
+			"120"		"joystick active"
 			"17"		"switch active"
 			"14"		"button_diamond active"
 			"27"		"left_trackpad inactive"

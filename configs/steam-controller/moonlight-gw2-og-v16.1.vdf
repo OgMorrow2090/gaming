@@ -679,7 +679,7 @@
 							"haptic_intensity"		"1"
 						}
 					}
-					"Double_Press"
+					"Long_Press"
 					{
 						"bindings"
 						{
@@ -688,14 +688,6 @@
 						"settings"
 						{
 							"haptic_intensity"		"3"
-						}
-					}
-					"Long_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_SHIFT, Event Timers, "
-							"binding"		"key_press F10, Event Timers, "
 						}
 					}
 				}
@@ -2488,6 +2480,23 @@
 							"binding"		"key_press LEFT_SHIFT, Hoard & Seek, , "
 							"binding"		"key_press LEFT_ALT, Hoard & Seek, , "
 							"binding"		"key_press K, Hoard & Seek, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_12"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, Event Timers, , "
+							"binding"		"key_press F10, Event Timers, , "
 						}
 					}
 				}

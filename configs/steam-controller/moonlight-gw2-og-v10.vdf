@@ -2,7 +2,7 @@
 {
 	"version"		"3"
 	"revision"		"2347"
-	"title"		"Guild Wars 2 - Og v14.8"
+	"title"		"Guild Wars 2 - Og v14.9"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2411,9 +2411,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, Minimap Paths, , "
-							"binding"		"key_press LEFT_ALT, Minimap Paths, , "
-							"binding"		"key_press F1, Minimap Paths, , "
+							"binding"		"key_press LEFT_SHIFT, Toggle Paths, , "
+							"binding"		"key_press LEFT_ALT, Toggle Paths, , "
+							"binding"		"key_press F3, Toggle Paths, , "
 						}
 					}
 				}
@@ -2457,25 +2457,7 @@
 				{
 				}
 			}
-			"touch_menu_button_17"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_SHIFT, Map Paths, , "
-							"binding"		"key_press LEFT_ALT, Map Paths, , "
-							"binding"		"key_press F2, Map Paths, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_18"
+						"touch_menu_button_17"
 			{
 				"activators"
 				{
@@ -2493,7 +2475,7 @@
 				{
 				}
 			}
-			"touch_menu_button_19"
+			"touch_menu_button_18"
 			{
 				"activators"
 				{
@@ -2520,9 +2502,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, Minimap Paths, , "
-							"binding"		"key_press LEFT_ALT, Minimap Paths, , "
-							"binding"		"key_press F1, Minimap Paths, , "
+							"binding"		"key_press LEFT_SHIFT, Toggle Paths, , "
+							"binding"		"key_press LEFT_ALT, Toggle Paths, , "
+							"binding"		"key_press F3, Toggle Paths, , "
 						}
 					}
 				}

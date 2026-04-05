@@ -2,7 +2,7 @@
 {
 	"version"		"3"
 	"revision"		"2347"
-	"title"		"Guild Wars 2 - Og v15.1"
+	"title"		"Guild Wars 2 - Og v15.2"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2010,7 +2010,7 @@
 			"touch_menu_opacity"		"100"
 			"touch_menu_position_x"		"50"
 			"touch_menu_position_y"		"50"
-			"touch_menu_scale"		"150"
+			"touch_menu_scale"		"200"
 		}
 	}
 	"group"
@@ -2313,218 +2313,6 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press J, Waypoint, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_2"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_BRACKET, Fishing, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_3"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press RIGHT_BRACKET, Skiff, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_4"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press EQUALS, Rift, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_5"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Capture Mode, , "
-							"binding"		"key_press LEFT_SHIFT, Capture Mode, , "
-							"binding"		"key_press C, Capture Mode, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_6"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_SHIFT, Toggle Paths, , "
-							"binding"		"key_press LEFT_ALT, Toggle Paths, , "
-							"binding"		"key_press F3, Toggle Paths, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_7"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_SHIFT, TaimiHUD, , "
-							"binding"		"key_press LEFT_ALT, TaimiHUD, , "
-							"binding"		"key_press M, TaimiHUD, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_8"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_SHIFT, Pathing Window, , "
-							"binding"		"key_press LEFT_ALT, Pathing Window, , "
-							"binding"		"key_press N, Pathing Window, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_9"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_ALT, ArcDPS, , "
-							"binding"		"key_press LEFT_SHIFT, ArcDPS, , "
-							"binding"		"key_press T, ArcDPS, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_10"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Crafty Legend, , "
-							"binding"		"key_press LEFT_SHIFT, Crafty Legend, , "
-							"binding"		"key_press SEMICOLON, Crafty Legend, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"2"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_11"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
 							"binding"		"key_press T, ty, , "
 							"binding"		"key_press Y, ty, , "
 							"binding"		"key_press RETURN, Send, , "
@@ -2535,7 +2323,7 @@
 				{
 				}
 			}
-			"touch_menu_button_12"
+			"touch_menu_button_2"
 			{
 				"activators"
 				{
@@ -2553,7 +2341,7 @@
 				{
 				}
 			}
-			"touch_menu_button_13"
+			"touch_menu_button_3"
 			{
 				"activators"
 				{
@@ -2571,7 +2359,7 @@
 				{
 				}
 			}
-			"touch_menu_button_14"
+			"touch_menu_button_4"
 			{
 				"activators"
 				{
@@ -2590,7 +2378,7 @@
 				{
 				}
 			}
-			"touch_menu_button_15"
+			"touch_menu_button_5"
 			{
 				"activators"
 				{
@@ -2608,7 +2396,7 @@
 				{
 				}
 			}
-			"touch_menu_button_16"
+			"touch_menu_button_6"
 			{
 				"activators"
 				{
@@ -2626,7 +2414,7 @@
 				{
 				}
 			}
-			"touch_menu_button_17"
+			"touch_menu_button_7"
 			{
 				"activators"
 				{
@@ -2643,7 +2431,7 @@
 				{
 				}
 			}
-			"touch_menu_button_18"
+			"touch_menu_button_8"
 			{
 				"activators"
 				{
@@ -2664,7 +2452,7 @@
 				{
 				}
 			}
-			"touch_menu_button_19"
+			"touch_menu_button_9"
 			{
 				"activators"
 				{
@@ -2678,6 +2466,178 @@
 							"binding"		"key_press A, aheal, , "
 							"binding"		"key_press L, aheal, , "
 							"binding"		"key_press RETURN, Send, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_10"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, Toggle Paths, , "
+							"binding"		"key_press LEFT_ALT, Toggle Paths, , "
+							"binding"		"key_press F3, Toggle Paths, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_11"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, TaimiHUD, , "
+							"binding"		"key_press LEFT_ALT, TaimiHUD, , "
+							"binding"		"key_press M, TaimiHUD, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_12"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, Pathing Window, , "
+							"binding"		"key_press LEFT_ALT, Pathing Window, , "
+							"binding"		"key_press N, Pathing Window, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_13"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_ALT, ArcDPS, , "
+							"binding"		"key_press LEFT_SHIFT, ArcDPS, , "
+							"binding"		"key_press T, ArcDPS, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_14"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Crafty Legend, , "
+							"binding"		"key_press LEFT_SHIFT, Crafty Legend, , "
+							"binding"		"key_press SEMICOLON, Crafty Legend, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_15"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press J, Waypoint, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_16"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_BRACKET, Fishing, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_17"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press RIGHT_BRACKET, Skiff, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_18"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press EQUALS, Rift, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_19"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Capture Mode, , "
+							"binding"		"key_press LEFT_SHIFT, Capture Mode, , "
+							"binding"		"key_press C, Capture Mode, , "
 						}
 					}
 				}

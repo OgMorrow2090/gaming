@@ -2,7 +2,7 @@
 {
 	"version"		"3"
 	"revision"		"2347"
-	"title"		"Guild Wars 2 - Og v14.6"
+	"title"		"Guild Wars 2 - Og v14.7"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -1637,6 +1637,24 @@
 			{
 				"activators"
 				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_ALT, Personal Marker, , "
+							"binding"		"mouse_button LEFT, Personal Marker, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+
+			"button_y"
+			{
+				"activators"
+				{
 
 				}
 				"disabled_activators"
@@ -2378,6 +2396,150 @@
 							"binding"		"key_press LEFT_CONTROL, Capture Mode, , "
 							"binding"		"key_press LEFT_SHIFT, Capture Mode, , "
 							"binding"		"key_press C, Capture Mode, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+					"touch_menu_button_14"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, Pathing, , "
+							"binding"		"key_press LEFT_ALT, Pathing, , "
+							"binding"		"key_press N, Pathing, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_15"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Crafty Legend, , "
+							"binding"		"key_press LEFT_SHIFT, Crafty Legend, , "
+							"binding"		"key_press SEMICOLON, Crafty Legend, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_16"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_ALT, ArcDPS, , "
+							"binding"		"key_press LEFT_SHIFT, ArcDPS, , "
+							"binding"		"key_press T, ArcDPS, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_17"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, Markers, , "
+							"binding"		"key_press LEFT_ALT, Markers, , "
+							"binding"		"key_press SEMICOLON, Markers, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+					"touch_menu_button_14"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, Pathing, , "
+							"binding"		"key_press LEFT_ALT, Pathing, , "
+							"binding"		"key_press N, Pathing, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_15"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Crafty Legend, , "
+							"binding"		"key_press LEFT_SHIFT, Crafty Legend, , "
+							"binding"		"key_press SEMICOLON, Crafty Legend, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_16"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_ALT, ArcDPS, , "
+							"binding"		"key_press LEFT_SHIFT, ArcDPS, , "
+							"binding"		"key_press T, ArcDPS, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_17"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, Markers, , "
+							"binding"		"key_press LEFT_ALT, Markers, , "
+							"binding"		"key_press SEMICOLON, Markers, , "
 						}
 					}
 				}

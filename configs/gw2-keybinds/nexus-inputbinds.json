@@ -1,1298 +1,1298 @@
 [
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/barbecue",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/beckon",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/bless",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/bloodstoneboogie",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/blowkiss",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/bow",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/breakdance",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/channel",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/cheer",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/cower",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/crabdance",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/crossarms",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/cry",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/dance",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/drink",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/facepalm",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/geargrind",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/gg",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/heroic",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/hiss",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/kneel",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/laugh",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/magicjuggle",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/magictrick",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/no",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/paper",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/petalthrow",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/playdead",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/point",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/ponder",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/posecover",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/posehigh",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/poselow",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/posetwist",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/possessed",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/readbook",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/rock",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/rockout",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/sad",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/salute",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/scissors",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/serve",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/shiver",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/shiverplus",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/shocked",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/shrug",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/shuffle",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/sipcoffee",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/sit",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/sleep",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/step",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/stretch",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/surprised",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/talk",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/thank",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/threaten",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/thumbsdown",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/thumbsup",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/unleash",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/wave",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "/yes",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": true,
-    "Code": 76,
-    "Ctrl": false,
-    "Identifier": "0xFC56DD9F_ToggleLFG",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 48,
-    "Ctrl": true,
-    "Identifier": "CAPTURE_CHEST",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 32,
-    "Ctrl": true,
-    "Identifier": "CAPTURE_DEPOSIT",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 18,
-    "Ctrl": true,
-    "Identifier": "CAPTURE_EXIT_INSTANCE",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 67,
-    "Ctrl": true,
-    "Identifier": "CAPTURE_MODE",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 33,
-    "Ctrl": true,
-    "Identifier": "CAPTURE_MYSTIC_FORGE",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 19,
-    "Ctrl": true,
-    "Identifier": "CAPTURE_MYSTIC_REFILL",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 36,
-    "Ctrl": true,
-    "Identifier": "CAPTURE_SELL_JUNK",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 31,
-    "Ctrl": true,
-    "Identifier": "CAPTURE_SORT",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 20,
-    "Ctrl": true,
-    "Identifier": "CAPTURE_TP_REMOVE",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 24,
-    "Ctrl": true,
-    "Identifier": "CAPTURE_TRADING_POST",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 47,
-    "Ctrl": true,
-    "Identifier": "CAPTURE_VENDOR",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 22,
-    "Ctrl": true,
-    "Identifier": "CAPTURE_VENDOR_BUY",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 21,
-    "Ctrl": true,
-    "Identifier": "CAPTURE_YES_DIALOG",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 82,
-    "Ctrl": true,
-    "Identifier": "CHAT_AHEAL",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 71,
-    "Ctrl": true,
-    "Identifier": "CHAT_GUILD",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 81,
-    "Ctrl": true,
-    "Identifier": "CHAT_HI",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 77,
-    "Ctrl": true,
-    "Identifier": "CHAT_MAP",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 74,
-    "Ctrl": true,
-    "Identifier": "CHAT_MINUS",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 55,
-    "Ctrl": true,
-    "Identifier": "CHAT_NO",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 80,
-    "Ctrl": true,
-    "Identifier": "CHAT_NP",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 75,
-    "Ctrl": true,
-    "Identifier": "CHAT_PARTY",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 78,
-    "Ctrl": true,
-    "Identifier": "CHAT_PLUS",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 73,
-    "Ctrl": true,
-    "Identifier": "CHAT_QHEAL",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 76,
-    "Ctrl": true,
-    "Identifier": "CHAT_SAY",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 72,
-    "Ctrl": true,
-    "Identifier": "CHAT_SQUAD",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 79,
-    "Ctrl": true,
-    "Identifier": "CHAT_TY",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 83,
-    "Ctrl": true,
-    "Identifier": "CHAT_YES",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 37,
-    "Ctrl": true,
-    "Identifier": "Copy KP ID to clipboard",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "CursorAnchor.Center",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 16,
-    "Ctrl": true,
-    "Identifier": "DEPOSIT_AND_SORT",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 32,
-    "Ctrl": true,
-    "Identifier": "DEPOSIT_MATERIALS",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 18,
-    "Ctrl": true,
-    "Identifier": "EXIT_INSTANCE",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 57423,
-    "Ctrl": false,
-    "Identifier": "FASTSWAP_TOGGLE",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "KB_ADDONS",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "KB_COMPASS_TOGGLEVIS",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 186,
-    "Ctrl": true,
-    "Identifier": "KB_CRAFTY_TOGGLE",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "KB_DEBUG",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": true,
-    "Code": 75,
-    "Ctrl": false,
-    "Identifier": "KB_HOARD_TOGGLE",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "KB_LOG",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "KB_MENU",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "KB_MUMBLEOVERLAY",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "KB_OPTIONS",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "KB_RI_TOGGLEVISIBLE",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 52,
-    "Ctrl": true,
-    "Identifier": "KB_SUDOKU",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 35,
-    "Ctrl": true,
-    "Identifier": "KB_TOGGLEHIDEUI",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "KB_TOGGLE_GW2_RotaHelper",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "KEY_BOSSES_TOGGLE_NOTIFICATION",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "KEY_BOSSES_TOGGLE_RENDER",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": true,
-    "Code": 20,
-    "Ctrl": false,
-    "Identifier": "MT_TOGGLE_DASHBOARD",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 1
-  },
-  {
-    "Alt": true,
-    "Code": 32,
-    "Ctrl": false,
-    "Identifier": "MT_TOGGLE_DELIVERY",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 1
-  },
-  {
-    "Alt": true,
-    "Code": 33,
-    "Ctrl": false,
-    "Identifier": "MT_TOGGLE_FLIPLIST",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 33,
-    "Ctrl": true,
-    "Identifier": "MYSTIC_FORGE",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 30,
-    "Ctrl": true,
-    "Identifier": "MYSTIC_FORGE_COMBO",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 19,
-    "Ctrl": true,
-    "Identifier": "MYSTIC_REFILL",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 1
-  },
-  {
-    "Alt": true,
-    "Code": 87,
-    "Ctrl": false,
-    "Identifier": "NexusGameWiki.Toggle",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 48,
-    "Ctrl": true,
-    "Identifier": "OPEN_CHEST",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 1
-  },
-  {
-    "Alt": true,
-    "Code": 79,
-    "Ctrl": false,
-    "Identifier": "ORG_KEYBIND",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "Open search",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 36,
-    "Ctrl": true,
-    "Identifier": "SELL_JUNK",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 1
-  },
-  {
-    "Alt": true,
-    "Code": 46,
-    "Ctrl": true,
-    "Identifier": "SORT_INVENTORY",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 51,
-    "Ctrl": true,
-    "Identifier": "Show details of a hovered item",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 20,
-    "Ctrl": true,
-    "Identifier": "TP_REMOVE",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 24,
-    "Ctrl": true,
-    "Identifier": "TRADING_POST",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 121,
-    "Ctrl": false,
-    "Identifier": "Toggle Event Timers",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "Toggle Toast Notifications",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "Toggle Upcoming Panel",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 47,
-    "Ctrl": true,
-    "Identifier": "VENDOR",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 22,
-    "Ctrl": true,
-    "Identifier": "VENDOR_BUY",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 25,
-    "Ctrl": true,
-    "Identifier": "YES_DIALOG",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "marker-window-toggle",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": true,
-    "Code": 60,
-    "Ctrl": false,
-    "Identifier": "pathing-render-map-toggle",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": true,
-    "Code": 59,
-    "Ctrl": false,
-    "Identifier": "pathing-render-minimap-toggle",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": true,
-    "Code": 114,
-    "Ctrl": false,
-    "Identifier": "pathing-render-toggle",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": true,
-    "Code": 49,
-    "Ctrl": false,
-    "Identifier": "pathing-window-toggle",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": true,
-    "Code": 77,
-    "Ctrl": false,
-    "Identifier": "primary-window-toggle",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "timer-key-reset",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "timer-key-trigger-0",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "timer-key-trigger-1",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "timer-key-trigger-2",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "timer-key-trigger-3",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": false,
-    "Code": 0,
-    "Ctrl": false,
-    "Identifier": "timer-key-trigger-4",
-    "Passthrough": false,
-    "Shift": false,
-    "Type": 0
-  },
-  {
-    "Alt": true,
-    "Code": 37,
-    "Ctrl": false,
-    "Identifier": "timer-window-toggle",
-    "Passthrough": false,
-    "Shift": true,
-    "Type": 1
-  }
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/barbecue",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/beckon",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/bless",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/bloodstoneboogie",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/blowkiss",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/bow",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/breakdance",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/channel",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/cheer",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/cower",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/crabdance",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/crossarms",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/cry",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/dance",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/drink",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/facepalm",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/geargrind",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/gg",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/heroic",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/hiss",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/kneel",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/laugh",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/magicjuggle",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/magictrick",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/no",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/paper",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/petalthrow",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/playdead",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/point",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/ponder",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/posecover",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/posehigh",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/poselow",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/posetwist",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/possessed",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/readbook",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/rock",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/rockout",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/sad",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/salute",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/scissors",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/serve",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/shiver",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/shiverplus",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/shocked",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/shrug",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/shuffle",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/sipcoffee",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/sit",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/sleep",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/step",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/stretch",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/surprised",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/talk",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/thank",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/threaten",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/thumbsdown",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/thumbsup",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/unleash",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/wave",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/yes",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 65,
+		"Ctrl": true,
+		"Identifier": "0xFC56DD9F_ToggleLFG",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 48,
+		"Ctrl": true,
+		"Identifier": "CAPTURE_CHEST",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 32,
+		"Ctrl": true,
+		"Identifier": "CAPTURE_DEPOSIT",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 18,
+		"Ctrl": true,
+		"Identifier": "CAPTURE_EXIT_INSTANCE",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 64,
+		"Ctrl": true,
+		"Identifier": "CAPTURE_MODE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 33,
+		"Ctrl": true,
+		"Identifier": "CAPTURE_MYSTIC_FORGE",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 19,
+		"Ctrl": true,
+		"Identifier": "CAPTURE_MYSTIC_REFILL",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 36,
+		"Ctrl": true,
+		"Identifier": "CAPTURE_SELL_JUNK",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 31,
+		"Ctrl": true,
+		"Identifier": "CAPTURE_SORT",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 20,
+		"Ctrl": true,
+		"Identifier": "CAPTURE_TP_REMOVE",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 24,
+		"Ctrl": true,
+		"Identifier": "CAPTURE_TRADING_POST",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 47,
+		"Ctrl": true,
+		"Identifier": "CAPTURE_VENDOR",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 22,
+		"Ctrl": true,
+		"Identifier": "CAPTURE_VENDOR_BUY",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 21,
+		"Ctrl": true,
+		"Identifier": "CAPTURE_YES_DIALOG",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 82,
+		"Ctrl": true,
+		"Identifier": "CHAT_AHEAL",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 71,
+		"Ctrl": true,
+		"Identifier": "CHAT_GUILD",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 81,
+		"Ctrl": true,
+		"Identifier": "CHAT_HI",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 77,
+		"Ctrl": true,
+		"Identifier": "CHAT_MAP",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 74,
+		"Ctrl": true,
+		"Identifier": "CHAT_MINUS",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 55,
+		"Ctrl": true,
+		"Identifier": "CHAT_NO",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 80,
+		"Ctrl": true,
+		"Identifier": "CHAT_NP",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 75,
+		"Ctrl": true,
+		"Identifier": "CHAT_PARTY",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 78,
+		"Ctrl": true,
+		"Identifier": "CHAT_PLUS",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 73,
+		"Ctrl": true,
+		"Identifier": "CHAT_QHEAL",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 76,
+		"Ctrl": true,
+		"Identifier": "CHAT_SAY",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 72,
+		"Ctrl": true,
+		"Identifier": "CHAT_SQUAD",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 79,
+		"Ctrl": true,
+		"Identifier": "CHAT_TY",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 83,
+		"Ctrl": true,
+		"Identifier": "CHAT_YES",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 37,
+		"Ctrl": true,
+		"Identifier": "Copy KP ID to clipboard",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CursorAnchor.Center",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 16,
+		"Ctrl": true,
+		"Identifier": "DEPOSIT_AND_SORT",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 32,
+		"Ctrl": true,
+		"Identifier": "DEPOSIT_MATERIALS",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 18,
+		"Ctrl": true,
+		"Identifier": "EXIT_INSTANCE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 57423,
+		"Ctrl": false,
+		"Identifier": "FASTSWAP_TOGGLE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "KB_ADDONS",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "KB_COMPASS_TOGGLEVIS",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 87,
+		"Ctrl": true,
+		"Identifier": "KB_CRAFTY_TOGGLE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "KB_DEBUG",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 66,
+		"Ctrl": true,
+		"Identifier": "KB_HOARD_TOGGLE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "KB_LOG",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "KB_MENU",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "KB_MUMBLEOVERLAY",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "KB_OPTIONS",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "KB_RI_TOGGLEVISIBLE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 52,
+		"Ctrl": true,
+		"Identifier": "KB_SUDOKU",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 35,
+		"Ctrl": true,
+		"Identifier": "KB_TOGGLEHIDEUI",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "KB_TOGGLE_GW2_RotaHelper",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "KEY_BOSSES_TOGGLE_NOTIFICATION",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "KEY_BOSSES_TOGGLE_RENDER",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": true,
+		"Code": 20,
+		"Ctrl": false,
+		"Identifier": "MT_TOGGLE_DASHBOARD",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": true,
+		"Code": 32,
+		"Ctrl": false,
+		"Identifier": "MT_TOGGLE_DELIVERY",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": true,
+		"Code": 33,
+		"Ctrl": false,
+		"Identifier": "MT_TOGGLE_FLIPLIST",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 33,
+		"Ctrl": true,
+		"Identifier": "MYSTIC_FORGE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 30,
+		"Ctrl": true,
+		"Identifier": "MYSTIC_FORGE_COMBO",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 19,
+		"Ctrl": true,
+		"Identifier": "MYSTIC_REFILL",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 88,
+		"Ctrl": true,
+		"Identifier": "NexusGameWiki.Toggle",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 48,
+		"Ctrl": true,
+		"Identifier": "OPEN_CHEST",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 67,
+		"Ctrl": true,
+		"Identifier": "ORG_KEYBIND",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "Open search",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 36,
+		"Ctrl": true,
+		"Identifier": "SELL_JUNK",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": true,
+		"Code": 46,
+		"Ctrl": true,
+		"Identifier": "SORT_INVENTORY",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 51,
+		"Ctrl": true,
+		"Identifier": "Show details of a hovered item",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 20,
+		"Ctrl": true,
+		"Identifier": "TP_REMOVE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 24,
+		"Ctrl": true,
+		"Identifier": "TRADING_POST",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 68,
+		"Ctrl": true,
+		"Identifier": "Toggle Event Timers",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "Toggle Toast Notifications",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "Toggle Upcoming Panel",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 47,
+		"Ctrl": true,
+		"Identifier": "VENDOR",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 22,
+		"Ctrl": true,
+		"Identifier": "VENDOR_BUY",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 25,
+		"Ctrl": true,
+		"Identifier": "YES_DIALOG",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "marker-window-toggle",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": true,
+		"Code": 60,
+		"Ctrl": false,
+		"Identifier": "pathing-render-map-toggle",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": true,
+		"Code": 59,
+		"Ctrl": false,
+		"Identifier": "pathing-render-minimap-toggle",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 61,
+		"Ctrl": true,
+		"Identifier": "pathing-render-toggle",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": true,
+		"Code": 49,
+		"Ctrl": false,
+		"Identifier": "pathing-window-toggle",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 115,
+		"Ctrl": false,
+		"Identifier": "primary-window-toggle",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "timer-key-reset",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "timer-key-trigger-0",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "timer-key-trigger-1",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "timer-key-trigger-2",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "timer-key-trigger-3",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "timer-key-trigger-4",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": true,
+		"Code": 37,
+		"Ctrl": false,
+		"Identifier": "timer-window-toggle",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	}
 ]

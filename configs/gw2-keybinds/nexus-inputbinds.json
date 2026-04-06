@@ -550,7 +550,7 @@
   },
   {
     "Alt": true,
-    "Code": 38,
+    "Code": 76,
     "Ctrl": false,
     "Identifier": "0xFC56DD9F_ToggleLFG",
     "Passthrough": false,
@@ -586,7 +586,7 @@
   },
   {
     "Alt": false,
-    "Code": 46,
+    "Code": 67,
     "Ctrl": true,
     "Identifier": "CAPTURE_MODE",
     "Passthrough": false,
@@ -874,7 +874,7 @@
   },
   {
     "Alt": false,
-    "Code": 38,
+    "Code": 186,
     "Ctrl": true,
     "Identifier": "KB_CRAFTY_TOGGLE",
     "Passthrough": false,
@@ -1044,12 +1044,30 @@
     "Type": 1
   },
   {
+    "Alt": true,
+    "Code": 87,
+    "Ctrl": false,
+    "Identifier": "NexusGameWiki.Toggle",
+    "Passthrough": false,
+    "Shift": true,
+    "Type": 1
+  },
+  {
     "Alt": false,
     "Code": 48,
     "Ctrl": true,
     "Identifier": "OPEN_CHEST",
     "Passthrough": false,
     "Shift": false,
+    "Type": 1
+  },
+  {
+    "Alt": true,
+    "Code": 79,
+    "Ctrl": false,
+    "Identifier": "ORG_KEYBIND",
+    "Passthrough": false,
+    "Shift": true,
     "Type": 1
   },
   {
@@ -1108,7 +1126,7 @@
   },
   {
     "Alt": false,
-    "Code": 68,
+    "Code": 121,
     "Ctrl": false,
     "Identifier": "Toggle Event Timers",
     "Passthrough": false,
@@ -1189,7 +1207,7 @@
   },
   {
     "Alt": true,
-    "Code": 61,
+    "Code": 114,
     "Ctrl": false,
     "Identifier": "pathing-render-toggle",
     "Passthrough": false,
@@ -1207,7 +1225,7 @@
   },
   {
     "Alt": true,
-    "Code": 50,
+    "Code": 77,
     "Ctrl": false,
     "Identifier": "primary-window-toggle",
     "Passthrough": false,

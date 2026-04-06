@@ -2504,6 +2504,42 @@
 				{
 				}
 			}
+			"touch_menu_button_13"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, Organizer, , "
+							"binding"		"key_press LEFT_ALT, Organizer, , "
+							"binding"		"key_press O, Organizer, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_14"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, Game Wiki, , "
+							"binding"		"key_press LEFT_ALT, Game Wiki, , "
+							"binding"		"key_press W, Game Wiki, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
 		}
 		"settings"
 		{

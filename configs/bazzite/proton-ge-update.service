@@ -1,0 +1,6 @@
+[Unit]
+Description=Proton GE Auto-Updater
+
+[Service]
+Type=oneshot
+ExecStart=/var/home/Og/scripts/proton-ge-update.sh

@@ -1,0 +1,12 @@
+[Unit]
+Description=Power button reboot override
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/power-button-reboot.sh
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

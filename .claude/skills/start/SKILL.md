@@ -1,3 +1,9 @@
+---
+name: start
+description: Start a session for the guildwars2 project — syncs repos, reads context, checks permissions
+disable-model-invocation: true
+---
+
 Start a session for the **guildwars2** project.
 
 - Project: Guild Wars 2 configs, Bazzite gaming PC scripts, Sunshine/Moonlight setup

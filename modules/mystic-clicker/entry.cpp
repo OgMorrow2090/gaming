@@ -56,7 +56,7 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     // Addon metadata
     AddonDef.Name = "Mystic Clicker";
     AddonDef.Version.Major = 2;
-    AddonDef.Version.Minor = 0;
+    AddonDef.Version.Minor = 1;
     AddonDef.Version.Build = 0;
     AddonDef.Version.Revision = 0;
     AddonDef.Author = "OgMorrow2090";
@@ -139,8 +139,12 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(MYSTIC_REFILL, ProcessKeybind, "CTRL+R");
     APIDefs->InputBinds_RegisterWithString(MYSTIC_FORGE_COMBO, ProcessKeybind, "CTRL+M");
     APIDefs->InputBinds_RegisterWithString(TP_REMOVE, ProcessKeybind, "CTRL+T");
-    
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Addon loaded - 14 keybinds.");
+    APIDefs->InputBinds_RegisterWithString(CRAFT, ProcessKeybind, "CTRL+I");
+    APIDefs->InputBinds_RegisterWithString(CRAFT_ALL, ProcessKeybind, "CTRL+L");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_CRAFT, ProcessKeybind, "CTRL+SHIFT+I");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_CRAFT_ALL, ProcessKeybind, "CTRL+SHIFT+L");
+
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Addon loaded - 18 keybinds.");
 }
 
 /**
@@ -164,7 +168,11 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(MYSTIC_REFILL);
     APIDefs->InputBinds_Deregister(MYSTIC_FORGE_COMBO);
     APIDefs->InputBinds_Deregister(TP_REMOVE);
-    
+    APIDefs->InputBinds_Deregister(CRAFT);
+    APIDefs->InputBinds_Deregister(CRAFT_ALL);
+    APIDefs->InputBinds_Deregister(CAPTURE_CRAFT);
+    APIDefs->InputBinds_Deregister(CAPTURE_CRAFT_ALL);
+
     APIDefs->GUI_Deregister(RenderCaptureWindow);
     APIDefs->InputBinds_Deregister(CAPTURE_MODE);
 

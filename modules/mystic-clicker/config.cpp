@@ -51,6 +51,10 @@ int g_TradingPostX = 0;
 int g_TradingPostY = 0;
 int g_TpRemoveX = 0;
 int g_TpRemoveY = 0;
+int g_CraftX = 0;
+int g_CraftY = 0;
+int g_CraftAllX = 0;
+int g_CraftAllY = 0;
 
 // Resolution tracking
 static int g_CurrentResWidth = 0;
@@ -261,10 +265,18 @@ void LoadButtonPositions()
             g_TpRemoveX = std::stoi(line.substr(10));
         else if (line.find("TpRemoveY=") == 0)
             g_TpRemoveY = std::stoi(line.substr(10));
+        else if (line.find("CraftX=") == 0)
+            g_CraftX = std::stoi(line.substr(7));
+        else if (line.find("CraftY=") == 0)
+            g_CraftY = std::stoi(line.substr(7));
+        else if (line.find("CraftAllX=") == 0)
+            g_CraftAllX = std::stoi(line.substr(10));
+        else if (line.find("CraftAllY=") == 0)
+            g_CraftAllY = std::stoi(line.substr(10));
     }
-    
+
     file.close();
-    
+
     char buffer[256];
     sprintf_s(buffer, "Loaded [%dx%d]: Deposit(%d,%d) Sort(%d,%d) Chest(%d,%d)", 
               g_CurrentResWidth, g_CurrentResHeight,
@@ -325,7 +337,11 @@ void SaveButtonPositions()
     file << "TradingPostY=" << g_TradingPostY << "\n";
     file << "TpRemoveX=" << g_TpRemoveX << "\n";
     file << "TpRemoveY=" << g_TpRemoveY << "\n";
-    
+    file << "CraftX=" << g_CraftX << "\n";
+    file << "CraftY=" << g_CraftY << "\n";
+    file << "CraftAllX=" << g_CraftAllX << "\n";
+    file << "CraftAllY=" << g_CraftAllY << "\n";
+
     file.close();
     
     char buffer[256];
@@ -384,7 +400,11 @@ void CheckResolutionChange()
         g_TradingPostY = 0;
         g_TpRemoveX = 0;
         g_TpRemoveY = 0;
-        
+        g_CraftX = 0;
+        g_CraftY = 0;
+        g_CraftAllX = 0;
+        g_CraftAllY = 0;
+
         // Load config for new resolution (if exists)
         g_CurrentResWidth = width;
         g_CurrentResHeight = height;
@@ -461,9 +481,17 @@ void CheckResolutionChange()
                     g_TpRemoveX = std::stoi(line.substr(10));
                 else if (line.find("TpRemoveY=") == 0)
                     g_TpRemoveY = std::stoi(line.substr(10));
+                else if (line.find("CraftX=") == 0)
+                    g_CraftX = std::stoi(line.substr(7));
+                else if (line.find("CraftY=") == 0)
+                    g_CraftY = std::stoi(line.substr(7));
+                else if (line.find("CraftAllX=") == 0)
+                    g_CraftAllX = std::stoi(line.substr(10));
+                else if (line.find("CraftAllY=") == 0)
+                    g_CraftAllY = std::stoi(line.substr(10));
             }
             file.close();
-            
+
             sprintf_s(buffer, "Loaded config for %dx%d", width, height);
             APIDefs->Log(LOGL_INFO, "MysticClicker", buffer);
             APIDefs->GUI_SendAlert(buffer);

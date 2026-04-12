@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2348"
-	"title"		"Guild Wars 2 - Og v16.4"
+	"revision"		"2352"
+	"title"		"Guild Wars 2 - Og v16.5"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -1590,7 +1590,22 @@
 			{
 				"activators"
 				{
-
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Craft, , "
+							"binding"		"key_press I, Craft, , "
+						}
+					}
+					"Long_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Craft All, , "
+							"binding"		"key_press L, Craft All, , "
+						}
+					}
 				}
 				"disabled_activators"
 				{
@@ -2305,8 +2320,6 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, Toggle Paths, , "
-							"binding"		"key_press LEFT_ALT, Toggle Paths, , "
 							"binding"		"key_press F3, Toggle Paths, , "
 						}
 					}
@@ -2359,9 +2372,7 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Crafty Legend, , "
-							"binding"		"key_press LEFT_SHIFT, Crafty Legend, , "
-							"binding"		"key_press SEMICOLON, Crafty Legend, , "
+							"binding"		"key_press F11, Crafty Legend, , "
 						}
 					}
 				}
@@ -2441,9 +2452,7 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Capture Mode, , "
-							"binding"		"key_press LEFT_SHIFT, Capture Mode, , "
-							"binding"		"key_press C, Capture Mode, , "
+							"binding"		"key_press F6, Capture Mode, , "
 						}
 					}
 				}
@@ -2459,9 +2468,7 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, Community LFG, , "
-							"binding"		"key_press LEFT_ALT, Community LFG, , "
-							"binding"		"key_press L, Community LFG, , "
+							"binding"		"key_press F7, Community LFG, , "
 						}
 					}
 				}
@@ -2477,9 +2484,7 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, Hoard & Seek, , "
-							"binding"		"key_press LEFT_ALT, Hoard & Seek, , "
-							"binding"		"key_press K, Hoard & Seek, , "
+							"binding"		"key_press F8, Hoard & Seek, , "
 						}
 					}
 				}
@@ -2495,7 +2500,6 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, Event Timers, , "
 							"binding"		"key_press F10, Event Timers, , "
 						}
 					}
@@ -2512,9 +2516,7 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, Organizer, , "
-							"binding"		"key_press LEFT_ALT, Organizer, , "
-							"binding"		"key_press O, Organizer, , "
+							"binding"		"key_press F9, Organizer, , "
 						}
 					}
 				}
@@ -2530,9 +2532,7 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, Game Wiki, , "
-							"binding"		"key_press LEFT_ALT, Game Wiki, , "
-							"binding"		"key_press W, Game Wiki, , "
+							"binding"		"key_press F12, Game Wiki, , "
 						}
 					}
 				}
@@ -2548,9 +2548,7 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Nexus, , "
-							"binding"		"key_press LEFT_SHIFT, Nexus, , "
-							"binding"		"key_press N, Nexus, , "
+							"binding"		"key_press F5, Nexus, , "
 						}
 					}
 				}

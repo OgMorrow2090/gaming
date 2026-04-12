@@ -38,7 +38,12 @@ constexpr const char* VENDOR_BUY = "VENDOR_BUY";
 constexpr const char* SELL_JUNK = "SELL_JUNK";
 constexpr const char* TRADING_POST = "TRADING_POST";
 constexpr const char* TP_REMOVE = "TP_REMOVE";
+constexpr const char* CRAFT = "CRAFT";
+constexpr const char* CRAFT_ALL = "CRAFT_ALL";
 
+// Capture keybind identifiers
+constexpr const char* CAPTURE_CRAFT = "CAPTURE_CRAFT";
+constexpr const char* CAPTURE_CRAFT_ALL = "CAPTURE_CRAFT_ALL";
 
 // Keybind handler
 void ProcessKeybind(const char* aIdentifier, bool aIsRelease);
@@ -57,6 +62,8 @@ void SimulateVendorClick();
 void SimulateSellJunkClick();
 void SimulateTradingPostClick();
 void SimulateTpRemoveClick();
+void SimulateCraftClick();
+void SimulateCraftAllClick();
 void SimulateGenericClick(int slot);
 void SimulateClickAt(int x, int y);
 void SimulateRightClickAt(int x, int y);
@@ -101,3 +108,7 @@ extern int g_TradingPostX;
 extern int g_TradingPostY;
 extern int g_TpRemoveX;
 extern int g_TpRemoveY;
+extern int g_CraftX;
+extern int g_CraftY;
+extern int g_CraftAllX;
+extern int g_CraftAllY;

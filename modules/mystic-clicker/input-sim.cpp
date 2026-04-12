@@ -262,6 +262,28 @@ void SimulateTpRemoveClick()
     SimulateClickAt(g_TpRemoveX, g_TpRemoveY);
 }
 
+void SimulateCraftClick()
+{
+    if (g_CraftX == 0 && g_CraftY == 0)
+    {
+        APIDefs->GUI_SendAlert("Craft position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Craft");
+    SimulateClickAt(g_CraftX, g_CraftY);
+}
+
+void SimulateCraftAllClick()
+{
+    if (g_CraftAllX == 0 && g_CraftAllY == 0)
+    {
+        APIDefs->GUI_SendAlert("Craft All position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Craft All");
+    SimulateClickAt(g_CraftAllX, g_CraftAllY);
+}
+
 void SimulateMysticForgeCombo()
 {
     // Check both positions are set

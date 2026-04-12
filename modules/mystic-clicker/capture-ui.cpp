@@ -50,6 +50,8 @@ static CaptureTarget s_Targets[] = {
     {"Sell Junk",         "Sell junk to vendor",          &g_SellJunkX,     &g_SellJunkY},
     {"Trading Post",      "TP collect button",            &g_TradingPostX,  &g_TradingPostY},
     {"TP Remove",         "Cancel TP listing",            &g_TpRemoveX,     &g_TpRemoveY},
+    {"Craft",             "Craft single item button",     &g_CraftX,        &g_CraftY},
+    {"Craft All",         "Craft all items button",       &g_CraftAllX,     &g_CraftAllY},
 };
 static constexpr int NUM_TARGETS = sizeof(s_Targets) / sizeof(s_Targets[0]);
 

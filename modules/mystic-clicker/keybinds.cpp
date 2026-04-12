@@ -83,6 +83,14 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     {
         SimulateTpRemoveClick();
     }
+    else if (strcmp(aIdentifier, CRAFT) == 0)
+    {
+        SimulateCraftClick();
+    }
+    else if (strcmp(aIdentifier, CRAFT_ALL) == 0)
+    {
+        SimulateCraftAllClick();
+    }
     // === CAPTURE MODE ===
     else if (strcmp(aIdentifier, CAPTURE_MODE) == 0)
     {

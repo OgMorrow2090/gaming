@@ -568,6 +568,24 @@
   },
   {
     "Alt": false,
+    "Code": 23,
+    "Ctrl": true,
+    "Identifier": "CAPTURE_CRAFT",
+    "Passthrough": false,
+    "Shift": true,
+    "Type": 1
+  },
+  {
+    "Alt": false,
+    "Code": 38,
+    "Ctrl": true,
+    "Identifier": "CAPTURE_CRAFT_ALL",
+    "Passthrough": false,
+    "Shift": true,
+    "Type": 1
+  },
+  {
+    "Alt": false,
     "Code": 32,
     "Ctrl": true,
     "Identifier": "CAPTURE_DEPOSIT",
@@ -802,6 +820,24 @@
   },
   {
     "Alt": false,
+    "Code": 59,
+    "Ctrl": true,
+    "Identifier": "CRAFT",
+    "Passthrough": false,
+    "Shift": false,
+    "Type": 1
+  },
+  {
+    "Alt": false,
+    "Code": 60,
+    "Ctrl": true,
+    "Identifier": "CRAFT_ALL",
+    "Passthrough": false,
+    "Shift": false,
+    "Type": 1
+  },
+  {
+    "Alt": false,
     "Code": 37,
     "Ctrl": true,
     "Identifier": "Copy KP ID to clipboard",
@@ -910,12 +946,12 @@
   },
   {
     "Alt": false,
-    "Code": 78,
+    "Code": 63,
     "Ctrl": true,
     "Identifier": "KB_MENU",
     "Passthrough": false,
-    "Shift": true,
-    "Type": 0
+    "Shift": false,
+    "Type": 1
   },
   {
     "Alt": false,

@@ -1,7 +1,7 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2352"
+	"revision"		"2353"
 	"title"		"Guild Wars 2 - Og v16.5"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
@@ -1594,16 +1594,14 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Craft, , "
-							"binding"		"key_press I, Craft, , "
+							"binding"		"key_press F1, Craft, , "
 						}
 					}
 					"Long_Press"
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Craft All, , "
-							"binding"		"key_press L, Craft All, , "
+							"binding"		"key_press F2, Craft All, , "
 						}
 					}
 				}

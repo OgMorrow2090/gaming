@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2347"
-	"title"		"Guild Wars 2 - Og v16"
+	"revision"		"2348"
+	"title"		"Guild Wars 2 - Og v16.4"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2533,6 +2533,24 @@
 							"binding"		"key_press LEFT_SHIFT, Game Wiki, , "
 							"binding"		"key_press LEFT_ALT, Game Wiki, , "
 							"binding"		"key_press W, Game Wiki, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_15"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Nexus, , "
+							"binding"		"key_press LEFT_SHIFT, Nexus, , "
+							"binding"		"key_press N, Nexus, , "
 						}
 					}
 				}

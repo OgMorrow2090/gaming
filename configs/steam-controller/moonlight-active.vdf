@@ -1,18 +1,18 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"10004"
-	"title"		"Guild Wars 2 - Og v16.3"
-	"description"		"#SettingsController_AutosaveDescription"
+	"revision"		"2348"
+	"title"		"Guild Wars 2 - Og v16.4"
+	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
-	"progenitor"		"usercloud://moonlight/controller_neptune"
-	"url"		"usercloud://moonlight/controller_neptune"
+	"progenitor"		""
+	"url"		"autosave:///home/deck/.local/share/Steam/steamapps/common/Steam Controller Configs/64793831/config/moonlight/controller_neptune.vdf"
 	"export_type"		"personal_local"
 	"controller_type"		"controller_neptune"
 	"controller_caps"		"23117823"
 	"major_revision"		"0"
 	"minor_revision"		"0"
-	"Timestamp"		"0"
+	"Timestamp"		"-535820289"
 	"actions"
 	{
 		"Default"
@@ -208,6 +208,7 @@
 							"haptic_intensity"		"3"
 						}
 					}
+
 				}
 				"disabled_activators"
 				{
@@ -243,8 +244,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Yes Dialog, , "
-							"binding"		"key_press P, Yes Dialog, , "
+							"binding"		"key_press LEFT_CONTROL, Yes Dialog, "
+							"binding"		"key_press P, Yes Dialog, "
 						}
 					}
 				}
@@ -272,8 +273,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Open Chest, , "
-							"binding"		"key_press B, Open Chest, , "
+							"binding"		"key_press LEFT_CONTROL, Open Chest, "
+							"binding"		"key_press B, Open Chest, "
 						}
 						"settings"
 						{
@@ -630,16 +631,16 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, Wizard Vault, , "
-							"binding"		"key_press I, Wizard Vault, , "
+							"binding"		"key_press LEFT_SHIFT, Wizard Vault, "
+							"binding"		"key_press I, Wizard Vault, "
 						}
 					}
 					"Double_Press"
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, Shift+0, , "
-							"binding"		"key_press 0, Shift+0, , "
+							"binding"		"key_press LEFT_SHIFT, Shift+0, "
+							"binding"		"key_press 0, Shift+0, "
 						}
 						"settings"
 						{
@@ -650,8 +651,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press E, Action Cam, , "
-							"binding"		"key_press END, Char Switch, , "
+							"binding"		"key_press E, Action Cam, "
+							"binding"		"key_press END, Char Switch, "
 						}
 						"settings"
 						{
@@ -723,8 +724,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Deposit & Sort, , "
-							"binding"		"key_press Q, Deposit & Sort, , "
+							"binding"		"key_press LEFT_CONTROL, Deposit & Sort, "
+							"binding"		"key_press Q, Deposit & Sort, "
 						}
 					}
 				}
@@ -811,18 +812,19 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Exit Instance, , "
-							"binding"		"key_press E, Exit Instance, , "
+							"binding"		"key_press LEFT_CONTROL, Exit Instance, "
+							"binding"		"key_press E, Exit Instance, "
 						}
 					}
 					"Double_Press"
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Sudoku, , "
-							"binding"		"key_press PERIOD, Sudoku, , "
+							"binding"		"key_press LEFT_CONTROL, Sudoku, "
+							"binding"		"key_press PERIOD, Sudoku, "
 						}
 					}
+
 				}
 				"disabled_activators"
 				{
@@ -836,16 +838,16 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, , "
-							"binding"		"controller_action empty_binding, , "
+							"binding"		"key_press LEFT_CONTROL, , , "
+							"binding"		"controller_action empty_binding, , , "
 						}
 					}
 					"Long_Press"
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, (disabled), , "
-							"binding"		"controller_action empty_binding, (disabled), , "
+							"binding"		"key_press LEFT_CONTROL, (disabled), "
+							"binding"		"controller_action empty_binding, (disabled), "
 						}
 						"settings"
 						{
@@ -874,16 +876,16 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Vendor Buy, , "
-							"binding"		"key_press U, Vendor Buy, , "
+							"binding"		"key_press LEFT_CONTROL, Vendor Buy, "
+							"binding"		"key_press U, Vendor Buy, "
 						}
 					}
 					"Long_Press"
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Hide UI, , "
-							"binding"		"key_press J, Hide UI, , "
+							"binding"		"key_press LEFT_CONTROL, Hide UI, "
+							"binding"		"key_press J, Hide UI, "
 						}
 					}
 				}
@@ -899,8 +901,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Mystic Forge Combo, , "
-							"binding"		"key_press A, Mystic Forge Combo, , "
+							"binding"		"key_press LEFT_CONTROL, Mystic Forge Combo, "
+							"binding"		"key_press A, Mystic Forge Combo, "
 						}
 						"settings"
 						{
@@ -912,8 +914,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Deposit Materials, , "
-							"binding"		"key_press F, Deposit Materials, , "
+							"binding"		"key_press LEFT_CONTROL, Deposit Materials, "
+							"binding"		"key_press F, Deposit Materials, "
 						}
 					}
 				}
@@ -1169,7 +1171,7 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press 0, Heal Skill, , "
+							"binding"		"key_press 0, Heal Skill, "
 						}
 						"settings"
 						{
@@ -1406,24 +1408,24 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_ALT, MT Delivery, , "
-							"binding"		"key_press F, MT Delivery, , "
+							"binding"		"key_press LEFT_ALT, MT Delivery, "
+							"binding"		"key_press F, MT Delivery, "
 						}
 					}
 					"Long_Press"
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_ALT, MT Dashboard, , "
-							"binding"		"key_press T, MT Dashboard, , "
+							"binding"		"key_press LEFT_ALT, MT Dashboard, "
+							"binding"		"key_press T, MT Dashboard, "
 						}
 					}
 					"Double_Press"
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_ALT, MT Fliplist, , "
-							"binding"		"key_press D, MT Fliplist, , "
+							"binding"		"key_press LEFT_ALT, MT Fliplist, "
+							"binding"		"key_press D, MT Fliplist, "
 						}
 					}
 				}
@@ -1457,8 +1459,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, Shift+Click, , "
-							"binding"		"mouse_button LEFT, Shift+Click, , "
+							"binding"		"key_press LEFT_SHIFT, Shift+Click, "
+							"binding"		"mouse_button LEFT, Shift+Click, "
 						}
 					}
 				}
@@ -1574,6 +1576,26 @@
 		"description"		""
 		"inputs"
 		{
+			"button_a"
+			{
+				"activators"
+				{
+
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"button_b"
+			{
+				"activators"
+				{
+
+				}
+				"disabled_activators"
+				{
+				}
+			}
 			"button_x"
 			{
 				"activators"
@@ -1590,8 +1612,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, TP Remove, , "
-							"binding"		"key_press T, TP Remove, , "
+							"binding"		"key_press LEFT_CONTROL, TP Remove, "
+							"binding"		"key_press T, TP Remove, "
 						}
 						"settings"
 						{
@@ -1611,16 +1633,21 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_ALT, Weapon Swap, , "
+							"binding"		"key_press LEFT_ALT, Personal Marker, , "
+							"binding"		"mouse_button LEFT, Personal Marker, , "
 						}
 					}
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"mouse_button LEFT, , "
-						}
-					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+
+			"button_y"
+			{
+				"activators"
+				{
+
 				}
 				"disabled_activators"
 				{
@@ -1648,8 +1675,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Vendor, , "
-							"binding"		"key_press V, Vendor, , "
+							"binding"		"key_press LEFT_CONTROL, Vendor, "
+							"binding"		"key_press V, Vendor, "
 						}
 						"settings"
 						{
@@ -1971,11 +1998,11 @@
 		}
 		"settings"
 		{
-			"layer"		"1"
+			"touch_menu_scale"		"300"
 			"touch_menu_opacity"		"100"
 			"touch_menu_position_x"		"50"
 			"touch_menu_position_y"		"50"
-			"touch_menu_scale"		"300"
+			"layer"		"1"
 		}
 	}
 	"group"
@@ -1986,6 +2013,25 @@
 		"description"		""
 		"inputs"
 		{
+			"dpad_north"
+			{
+				"activators"
+				{
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"dpad_south"
+			{
+				"activators"
+				{
+
+				}
+				"disabled_activators"
+				{
+				}
+			}
 			"dpad_east"
 			{
 				"activators"
@@ -2007,10 +2053,20 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Item Details, , "
-							"binding"		"key_press COMMA, Item Details, , "
+							"binding"		"key_press LEFT_CONTROL, Item Details, "
+							"binding"		"key_press COMMA, Item Details, "
 						}
 					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"dpad_west"
+			{
+				"activators"
+				{
+
 				}
 				"disabled_activators"
 				{
@@ -2241,7 +2297,7 @@
 		"description"		""
 		"inputs"
 		{
-			"touch_menu_button_1"
+						"touch_menu_button_1"
 			{
 				"activators"
 				{
@@ -2249,7 +2305,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Toggle Paths, , "
+							"binding"		"key_press LEFT_SHIFT, Toggle Paths, , "
+							"binding"		"key_press LEFT_ALT, Toggle Paths, , "
 							"binding"		"key_press F3, Toggle Paths, , "
 						}
 					}
@@ -2266,9 +2323,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, ArcDPS, , "
-							"binding"		"key_press LEFT_ALT, ArcDPS, , "
-							"binding"		"key_press T, ArcDPS, , "
+							"binding"		"key_press LEFT_SHIFT, TaimiHUD, , "
+							"binding"		"key_press LEFT_ALT, TaimiHUD, , "
+							"binding"		"key_press M, TaimiHUD, , "
 						}
 					}
 				}
@@ -2284,8 +2341,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Crafty Legend, , "
-							"binding"		"key_press F11, Crafty Legend, , "
+							"binding"		"key_press LEFT_ALT, ArcDPS, , "
+							"binding"		"key_press LEFT_SHIFT, ArcDPS, , "
+							"binding"		"key_press T, ArcDPS, , "
 						}
 					}
 				}
@@ -2301,7 +2359,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press J, Waypoint, , "
+							"binding"		"key_press LEFT_CONTROL, Crafty Legend, , "
+							"binding"		"key_press LEFT_SHIFT, Crafty Legend, , "
+							"binding"		"key_press SEMICOLON, Crafty Legend, , "
 						}
 					}
 				}
@@ -2317,7 +2377,7 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_BRACKET, Fishing, , "
+							"binding"		"key_press J, Waypoint, , "
 						}
 					}
 				}
@@ -2333,7 +2393,7 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press RIGHT_BRACKET, Skiff, , "
+							"binding"		"key_press LEFT_BRACKET, Fishing, , "
 						}
 					}
 				}
@@ -2349,7 +2409,7 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press EQUALS, Rift, , "
+							"binding"		"key_press RIGHT_BRACKET, Skiff, , "
 						}
 					}
 				}
@@ -2365,8 +2425,7 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Capture Mode, , "
-							"binding"		"key_press F6, Capture Mode, , "
+							"binding"		"key_press EQUALS, Rift, , "
 						}
 					}
 				}
@@ -2382,8 +2441,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Community LFG, , "
-							"binding"		"key_press F7, Community LFG, , "
+							"binding"		"key_press LEFT_CONTROL, Capture Mode, , "
+							"binding"		"key_press LEFT_SHIFT, Capture Mode, , "
+							"binding"		"key_press C, Capture Mode, , "
 						}
 					}
 				}
@@ -2399,8 +2459,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Hoard & Seek, , "
-							"binding"		"key_press F8, Hoard & Seek, , "
+							"binding"		"key_press LEFT_SHIFT, Community LFG, , "
+							"binding"		"key_press LEFT_ALT, Community LFG, , "
+							"binding"		"key_press L, Community LFG, , "
 						}
 					}
 				}
@@ -2416,8 +2477,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Event Timers, , "
-							"binding"		"key_press F10, Event Timers, , "
+							"binding"		"key_press LEFT_SHIFT, Hoard & Seek, , "
+							"binding"		"key_press LEFT_ALT, Hoard & Seek, , "
+							"binding"		"key_press K, Hoard & Seek, , "
 						}
 					}
 				}
@@ -2433,8 +2495,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Organizer, , "
-							"binding"		"key_press F9, Organizer, , "
+							"binding"		"key_press LEFT_SHIFT, Event Timers, , "
+							"binding"		"key_press F10, Event Timers, , "
 						}
 					}
 				}
@@ -2450,8 +2512,45 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Game Wiki, , "
-							"binding"		"key_press F12, Game Wiki, , "
+							"binding"		"key_press LEFT_SHIFT, Organizer, , "
+							"binding"		"key_press LEFT_ALT, Organizer, , "
+							"binding"		"key_press O, Organizer, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_14"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, Game Wiki, , "
+							"binding"		"key_press LEFT_ALT, Game Wiki, , "
+							"binding"		"key_press W, Game Wiki, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_15"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Nexus, , "
+							"binding"		"key_press LEFT_SHIFT, Nexus, , "
+							"binding"		"key_press N, Nexus, , "
 						}
 					}
 				}
@@ -2462,11 +2561,11 @@
 		}
 		"settings"
 		{
-			"layer"		"1"
+			"touch_menu_scale"		"300"
 			"touch_menu_opacity"		"100"
 			"touch_menu_position_x"		"50"
 			"touch_menu_position_y"		"50"
-			"touch_menu_scale"		"300"
+			"layer"		"1"
 		}
 	}
 	"group"
@@ -2520,7 +2619,7 @@
 			"referenced_mode"		"63"
 		}
 	}
-	"group"
+		"group"
 	{
 		"id"		"77"
 		"mode"		"reference"
@@ -2570,7 +2669,7 @@
 			"referenced_mode"		"26"
 		}
 	}
-	"group"
+				"group"
 	{
 		"id"		"95"
 		"mode"		"reference"
@@ -2624,7 +2723,7 @@
 			"referenced_mode"		"39"
 		}
 	}
-	"group"
+			"group"
 	{
 		"id"		"107"
 		"mode"		"reference"
@@ -2642,6 +2741,289 @@
 		"settings"
 		{
 			"referenced_mode"		"63"
+		}
+	}
+		"group"
+	{
+		"id"		"6"
+		"mode"		"switches"
+		"name"		""
+		"description"		""
+		"inputs"
+		{
+			"button_escape"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press ESCAPE, Menu, , "
+							"binding"		"key_press E, , "
+						}
+					}
+					"Long_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_ALT, Quit Game, "
+							"binding"		"key_press F4, Quit Game, "
+						}
+						"settings"
+						{
+							"haptic_intensity"		"3"
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"button_menu"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press M, Map, , "
+						}
+					}
+					"Long_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press HOME, Home Instance Portal, , "
+						}
+						"settings"
+						{
+							"haptic_intensity"		"3"
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"left_bumper"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"controller_action hold_layer 2 1 1, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"right_bumper"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"controller_action hold_layer 3 1 1, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"button_back_left"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"mouse_wheel SCROLL_DOWN, , "
+						}
+						"settings"
+						{
+							"hold_repeats"		"1"
+							"repeat_rate"		"50"
+							"haptic_intensity"		"3"
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"button_back_right"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Jackal Mount, "
+							"binding"		"key_press KEYPAD_3, Jackal Mount, "
+						}
+					}
+					"Long_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Warclaw Mount, "
+							"binding"		"key_press KEYPAD_6, Warclaw Mount, "
+						}
+						"settings"
+						{
+							"haptic_intensity"		"3"
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"button_back_left_upper"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"mouse_wheel SCROLL_UP, , "
+						}
+						"settings"
+						{
+							"hold_repeats"		"1"
+							"repeat_rate"		"50"
+							"haptic_intensity"		"3"
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"button_back_right_upper"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press X, Mount Toggle, , "
+						}
+					}
+					"Long_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Siege Turtle, "
+							"binding"		"key_press KEYPAD_8, Siege Turtle, "
+						}
+						"settings"
+						{
+							"haptic_intensity"		"3"
+						}
+					}
+					"Double_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press C, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+		}
+	}
+	"group"
+	{
+		"id"		"17"
+		"mode"		"switches"
+		"name"		""
+		"description"		""
+		"inputs"
+		{
+		}
+		"settings"
+		{
+			"layer"		"1"
+		}
+	}
+	"group"
+	{
+		"id"		"38"
+		"mode"		"switches"
+		"name"		""
+		"description"		""
+		"inputs"
+		{
+			"button_escape"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_ALT, , "
+							"binding"		"key_press F4, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"button_menu"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press INSERT, Toggle Language, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"button_back_left"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"mouse_wheel SCROLL_DOWN, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+		}
+		"settings"
+		{
+			"layer"		"1"
 		}
 	}
 	"group"
@@ -2929,295 +3311,12 @@
 		}
 		"settings"
 		{
-			"layer"		"1"
 			"touch_menu_button_count"		"14"
+			"touchmenu_button_fire_type"		"2"
+			"touch_menu_scale"		"300"
 			"touch_menu_opacity"		"100"
 			"touch_menu_position_x"		"50"
 			"touch_menu_position_y"		"50"
-			"touch_menu_scale"		"300"
-		}
-	}
-	"group"
-	{
-		"id"		"6"
-		"mode"		"switches"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-			"button_escape"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press ESCAPE, Menu, , "
-							"binding"		"key_press E, , "
-						}
-					}
-					"Long_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_ALT, Quit Game, , "
-							"binding"		"key_press F4, Quit Game, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"3"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"button_menu"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press M, Map, , "
-						}
-					}
-					"Long_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press HOME, Home Instance Portal, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"3"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"left_bumper"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"controller_action hold_layer 2 1 1, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"right_bumper"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"controller_action hold_layer 3 1 1, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"button_back_left"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"mouse_wheel SCROLL_DOWN, , "
-						}
-						"settings"
-						{
-							"hold_repeats"		"1"
-							"repeat_rate"		"50"
-							"haptic_intensity"		"3"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"button_back_right"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Jackal Mount, , "
-							"binding"		"key_press KEYPAD_3, Jackal Mount, , "
-						}
-					}
-					"Long_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Warclaw Mount, , "
-							"binding"		"key_press KEYPAD_6, Warclaw Mount, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"3"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"button_back_left_upper"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"mouse_wheel SCROLL_UP, , "
-						}
-						"settings"
-						{
-							"hold_repeats"		"1"
-							"repeat_rate"		"50"
-							"haptic_intensity"		"3"
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"button_back_right_upper"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press X, Mount Toggle, , "
-						}
-					}
-					"Long_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Siege Turtle, , "
-							"binding"		"key_press KEYPAD_8, Siege Turtle, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"3"
-						}
-					}
-					"Double_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press C, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-	}
-	"group"
-	{
-		"id"		"17"
-		"mode"		"switches"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-		}
-		"settings"
-		{
-			"layer"		"1"
-		}
-	}
-	"group"
-	{
-		"id"		"38"
-		"mode"		"switches"
-		"name"		""
-		"description"		""
-		"inputs"
-		{
-			"button_escape"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_ALT, , "
-							"binding"		"key_press F4, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"button_menu"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press INSERT, Toggle Language, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"button_back_left"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"mouse_wheel SCROLL_DOWN, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-		}
-		"settings"
-		{
-			"layer"		"1"
 		}
 	}
 	"preset"
@@ -3251,12 +3350,12 @@
 		"name"		"Preset_1000001"
 		"group_source_bindings"
 		{
+			"120"		"joystick active"
 			"17"		"switch active"
 			"14"		"button_diamond active"
 			"27"		"left_trackpad inactive"
 			"78"		"left_trackpad active"
 			"25"		"right_trackpad active"
-			"120"		"joystick active"
 			"29"		"joystick inactive"
 			"101"		"joystick inactive"
 			"15"		"left_trigger active"

@@ -1,7 +1,7 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2353"
+	"revision"		"2354"
 	"title"		"Guild Wars 2 - Og v16.5"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
@@ -1594,6 +1594,7 @@
 					{
 						"bindings"
 						{
+							"binding"		"key_press LEFT_CONTROL, Craft, , "
 							"binding"		"key_press F1, Craft, , "
 						}
 					}
@@ -1601,6 +1602,7 @@
 					{
 						"bindings"
 						{
+							"binding"		"key_press LEFT_CONTROL, Craft All, , "
 							"binding"		"key_press F2, Craft All, , "
 						}
 					}
@@ -2318,6 +2320,7 @@
 					{
 						"bindings"
 						{
+							"binding"		"key_press LEFT_CONTROL, Toggle Paths, , "
 							"binding"		"key_press F3, Toggle Paths, , "
 						}
 					}
@@ -2370,6 +2373,7 @@
 					{
 						"bindings"
 						{
+							"binding"		"key_press LEFT_CONTROL, Crafty Legend, , "
 							"binding"		"key_press F11, Crafty Legend, , "
 						}
 					}
@@ -2450,6 +2454,7 @@
 					{
 						"bindings"
 						{
+							"binding"		"key_press LEFT_CONTROL, Capture Mode, , "
 							"binding"		"key_press F6, Capture Mode, , "
 						}
 					}
@@ -2466,6 +2471,7 @@
 					{
 						"bindings"
 						{
+							"binding"		"key_press LEFT_CONTROL, Community LFG, , "
 							"binding"		"key_press F7, Community LFG, , "
 						}
 					}
@@ -2482,6 +2488,7 @@
 					{
 						"bindings"
 						{
+							"binding"		"key_press LEFT_CONTROL, Hoard & Seek, , "
 							"binding"		"key_press F8, Hoard & Seek, , "
 						}
 					}
@@ -2498,6 +2505,7 @@
 					{
 						"bindings"
 						{
+							"binding"		"key_press LEFT_CONTROL, Event Timers, , "
 							"binding"		"key_press F10, Event Timers, , "
 						}
 					}
@@ -2514,6 +2522,7 @@
 					{
 						"bindings"
 						{
+							"binding"		"key_press LEFT_CONTROL, Organizer, , "
 							"binding"		"key_press F9, Organizer, , "
 						}
 					}
@@ -2530,6 +2539,7 @@
 					{
 						"bindings"
 						{
+							"binding"		"key_press LEFT_CONTROL, Game Wiki, , "
 							"binding"		"key_press F12, Game Wiki, , "
 						}
 					}
@@ -2546,6 +2556,7 @@
 					{
 						"bindings"
 						{
+							"binding"		"key_press LEFT_CONTROL, Nexus, , "
 							"binding"		"key_press F5, Nexus, , "
 						}
 					}

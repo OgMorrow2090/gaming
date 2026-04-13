@@ -1,0 +1,1 @@
+ostree=/ostree/boot.0/default/8f8600f5bcce5f27e51e3d12f323293d8a48b460b28d54c53241adbb04cc5557/0 rhgb quiet root=UUID=fda00fbb-887a-4e32-8184-502d1b798d3f vconsole.keymap=gb rootflags=subvol=root rw bluetooth.disable_ertm=1 nvidia-drm.modeset=1 firmware_class.path=/usr/local/lib/firmware drm.edid_firmware=HDMI-A-2:edid.bin video=HDMI-A-2:e

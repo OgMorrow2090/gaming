@@ -1,0 +1,13 @@
+[    0.000000] Command line: BOOT_IMAGE=(hd1,gpt2)/ostree/default-8f8600f5bcce5f27e51e3d12f323293d8a48b460b28d54c53241adbb04cc5557/vmlinuz-6.17.7-ba29.fc43.x86_64 ostree=/ostree/boot.0/default/8f8600f5bcce5f27e51e3d12f323293d8a48b460b28d54c53241adbb04cc5557/0 rhgb quiet root=UUID=fda00fbb-887a-4e32-8184-502d1b798d3f vconsole.keymap=gb rootflags=subvol=root rw bluetooth.disable_ertm=1 nvidia-drm.modeset=1 firmware_class.path=/usr/local/lib/firmware drm.edid_firmware=HDMI-A-2:edid.bin video=HDMI-A-2:e
+[    0.095133] Kernel command line: BOOT_IMAGE=(hd1,gpt2)/ostree/default-8f8600f5bcce5f27e51e3d12f323293d8a48b460b28d54c53241adbb04cc5557/vmlinuz-6.17.7-ba29.fc43.x86_64 ostree=/ostree/boot.0/default/8f8600f5bcce5f27e51e3d12f323293d8a48b460b28d54c53241adbb04cc5557/0 rhgb quiet root=UUID=fda00fbb-887a-4e32-8184-502d1b798d3f vconsole.keymap=gb rootflags=subvol=root rw bluetooth.disable_ertm=1 nvidia-drm.modeset=1 firmware_class.path=/usr/local/lib/firmware drm.edid_firmware=HDMI-A-2:edid.bin video=HDMI-A-2:e
+[    8.081289] nvidia: loading out-of-tree module taints kernel.
+[    8.242645] NVRM: loading NVIDIA UNIX Open Kernel Module for x86_64  595.58.03  Release Build  (builder@dbdfa680a27e)  Wed Mar 25 09:03:45 UTC 2026
+[    8.327030] nvidia-modeset: Loading NVIDIA UNIX Open Kernel Mode Setting Driver for x86_64  595.58.03  Release Build  (builder@dbdfa680a27e)  Wed Mar 25 09:02:17 UTC 2026
+[    8.334228] [drm] [nvidia-drm] [GPU ID 0x00000100] Loading driver
+[    9.754407] nvidia 0000:01:00.0: Direct firmware load for edid.bin failed with error -2
+[    9.754410] nvidia 0000:01:00.0: [drm] *ERROR* [CONNECTOR:139:HDMI-A-2] Requesting EDID firmware "edid.bin" failed (err=-2)
+[    9.756338] nvidia-modeset: WARNING: GPU:0: Unable to read EDID for display device HDMI-1
+[    9.759767] nvidia 0000:01:00.0: Direct firmware load for edid.bin failed with error -2
+[    9.759769] nvidia 0000:01:00.0: [drm] *ERROR* [CONNECTOR:139:HDMI-A-2] Requesting EDID firmware "edid.bin" failed (err=-2)
+[    9.761672] nvidia-modeset: WARNING: GPU:0: Unable to read EDID for display device HDMI-1
+[   36.473986] nvidia-modeset: WARNING: GPU:0: HDMI FRL link training failed.

@@ -1,0 +1,1 @@
+/usr/bin/gamescope --custom-refresh-rates 60,90,120,144 --hdr-enabled --hdr-itm-enable --prefer-output *,eDP-1 --xwayland-count 2 --default-touch-mode 4 --hide-cursor-delay 3000 --fade-out-duration 200 --steam -R /run/user/1000/gamescope.Yia4jKj/startup.socket -T /run/user/1000/gamescope.Yia4jKj/stats.pipe

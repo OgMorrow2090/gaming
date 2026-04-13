@@ -68,6 +68,12 @@ void SimulateClickAt(int x, int y)
  * Uses SendInput so the click is delivered through the real Windows input
  * pipeline — this means it's seen by Nexus addon overlays (ImGui windows),
  * not just the GW2 game window. Cursor is restored after.
+ *
+ * IMPORTANT: ImGui detects clicks by observing button state changes across
+ * frames. At 60fps a frame is ~17ms, so we need a meaningful sleep between
+ * the LEFTDOWN and LEFTUP events or ImGui will never see the "held" state
+ * and the click won't register — the cursor hovers (highlight visible) but
+ * nothing fires.
  */
 void SimulateRealClickAt(int x, int y)
 {
@@ -89,19 +95,32 @@ void SimulateRealClickAt(int x, int y)
     // Move cursor to target
     SetCursorPos(target.x, target.y);
 
-    // Tiny settle delay so the OS/overlay sees the move before the click
-    Sleep(10);
+    // Also fire a MOUSEEVENTF_MOVE so any listeners tracking raw input see it
+    INPUT move = {};
+    move.type = INPUT_MOUSE;
+    move.mi.dwFlags = MOUSEEVENTF_MOVE;
+    SendInput(1, &move, sizeof(INPUT));
 
-    // Send left button down + up via SendInput (real input pipeline)
-    INPUT inputs[2] = {};
-    inputs[0].type = INPUT_MOUSE;
-    inputs[0].mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
-    inputs[1].type = INPUT_MOUSE;
-    inputs[1].mi.dwFlags = MOUSEEVENTF_LEFTUP;
-    SendInput(2, inputs, sizeof(INPUT));
+    // Let ImGui catch up on the hover state — needs multiple frames
+    Sleep(60);
 
-    // Small delay before restoring cursor so the click registers
-    Sleep(20);
+    // Button down
+    INPUT down = {};
+    down.type = INPUT_MOUSE;
+    down.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+    SendInput(1, &down, sizeof(INPUT));
+
+    // Hold long enough for at least 3–4 frames so ImGui registers the press
+    Sleep(60);
+
+    // Button up
+    INPUT up = {};
+    up.type = INPUT_MOUSE;
+    up.mi.dwFlags = MOUSEEVENTF_LEFTUP;
+    SendInput(1, &up, sizeof(INPUT));
+
+    // Let the release propagate
+    Sleep(30);
 
     // Restore original cursor position
     SetCursorPos(savedCursor.x, savedCursor.y);

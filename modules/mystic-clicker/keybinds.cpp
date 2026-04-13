@@ -99,6 +99,10 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     {
         SimulateCharSwapClick();
     }
+    else if (strcmp(aIdentifier, TP_BUY_SELL) == 0)
+    {
+        SimulateTpBuySellClick();
+    }
     // === CAPTURE MODE ===
     else if (strcmp(aIdentifier, CAPTURE_MODE) == 0)
     {

@@ -64,6 +64,50 @@ void SimulateClickAt(int x, int y)
 }
 
 /**
+ * SimulateRealClickAt - Send a REAL OS-level left click at client coordinates.
+ * Uses SendInput so the click is delivered through the real Windows input
+ * pipeline — this means it's seen by Nexus addon overlays (ImGui windows),
+ * not just the GW2 game window. Cursor is restored after.
+ */
+void SimulateRealClickAt(int x, int y)
+{
+    EnsureGameWindow();
+    if (GameWindow == nullptr)
+    {
+        APIDefs->Log(LOGL_WARNING, "MysticClicker", "Game window not available for real click");
+        return;
+    }
+
+    // Save current cursor position so we can restore it after
+    POINT savedCursor;
+    GetCursorPos(&savedCursor);
+
+    // Convert client (game-window-relative) coords to screen coords
+    POINT target = { x, y };
+    ClientToScreen(GameWindow, &target);
+
+    // Move cursor to target
+    SetCursorPos(target.x, target.y);
+
+    // Tiny settle delay so the OS/overlay sees the move before the click
+    Sleep(10);
+
+    // Send left button down + up via SendInput (real input pipeline)
+    INPUT inputs[2] = {};
+    inputs[0].type = INPUT_MOUSE;
+    inputs[0].mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+    inputs[1].type = INPUT_MOUSE;
+    inputs[1].mi.dwFlags = MOUSEEVENTF_LEFTUP;
+    SendInput(2, inputs, sizeof(INPUT));
+
+    // Small delay before restoring cursor so the click registers
+    Sleep(20);
+
+    // Restore original cursor position
+    SetCursorPos(savedCursor.x, savedCursor.y);
+}
+
+/**
  * SimulateRightClickAt - Send RIGHT mouse click at coordinates
  */
 void SimulateRightClickAt(int x, int y)
@@ -302,8 +346,21 @@ void SimulateCharSwapClick()
         APIDefs->GUI_SendAlert("Char Swap position not set! Capture first");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Char Swap");
-    SimulateClickAt(g_CharSwapX, g_CharSwapY);
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Char Swap (real click for overlay)");
+    // Real click via SendInput — Char Swap is a Nexus addon overlay,
+    // not the game window, so WndProc messages won't reach it.
+    SimulateRealClickAt(g_CharSwapX, g_CharSwapY);
+}
+
+void SimulateTpBuySellClick()
+{
+    if (g_TpBuySellX == 0 && g_TpBuySellY == 0)
+    {
+        APIDefs->GUI_SendAlert("TP Buy/Sell position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking TP Buy/Sell");
+    SimulateClickAt(g_TpBuySellX, g_TpBuySellY);
 }
 
 void SimulateMysticForgeCombo()

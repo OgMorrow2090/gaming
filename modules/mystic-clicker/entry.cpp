@@ -56,7 +56,7 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     // Addon metadata
     AddonDef.Name = "Mystic Clicker";
     AddonDef.Version.Major = 2;
-    AddonDef.Version.Minor = 2;
+    AddonDef.Version.Minor = 3;
     AddonDef.Version.Build = 0;
     AddonDef.Version.Revision = 0;
     AddonDef.Author = "OgMorrow2090";
@@ -143,12 +143,14 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(CRAFT_ALL, ProcessKeybind, "CTRL+F2");
     APIDefs->InputBinds_RegisterWithString(WIZARD_VAULT, ProcessKeybind, "CTRL+F4");
     APIDefs->InputBinds_RegisterWithString(CHAR_SWAP, ProcessKeybind, "CTRL+SHIFT+F4");
+    APIDefs->InputBinds_RegisterWithString(TP_BUY_SELL, ProcessKeybind, "CTRL+SHIFT+F1");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_CRAFT, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_CRAFT_ALL, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_WIZARD_VAULT, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_CHAR_SWAP, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_TP_BUY_SELL, ProcessKeybind, "(null)");
 
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Addon loaded - 22 keybinds.");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Addon loaded - 24 keybinds.");
 }
 
 /**
@@ -176,10 +178,12 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(CRAFT_ALL);
     APIDefs->InputBinds_Deregister(WIZARD_VAULT);
     APIDefs->InputBinds_Deregister(CHAR_SWAP);
+    APIDefs->InputBinds_Deregister(TP_BUY_SELL);
     APIDefs->InputBinds_Deregister(CAPTURE_CRAFT);
     APIDefs->InputBinds_Deregister(CAPTURE_CRAFT_ALL);
     APIDefs->InputBinds_Deregister(CAPTURE_WIZARD_VAULT);
     APIDefs->InputBinds_Deregister(CAPTURE_CHAR_SWAP);
+    APIDefs->InputBinds_Deregister(CAPTURE_TP_BUY_SELL);
 
     APIDefs->GUI_Deregister(RenderCaptureWindow);
     APIDefs->InputBinds_Deregister(CAPTURE_MODE);

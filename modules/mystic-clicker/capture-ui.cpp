@@ -53,7 +53,8 @@ static CaptureTarget s_Targets[] = {
     {"Craft",             "Craft single item button",     &g_CraftX,        &g_CraftY},
     {"Craft All",         "Craft all items button",       &g_CraftAllX,     &g_CraftAllY},
     {"Wizard Vault",      "Wizard Vault collect button",  &g_WizardVaultX,  &g_WizardVaultY},
-    {"Char Swap",         "Character swap button",        &g_CharSwapX,     &g_CharSwapY},
+    {"Char Swap",         "Char Swap addon (overlay)",    &g_CharSwapX,     &g_CharSwapY},
+    {"TP Buy/Sell",       "Trading Post buy/sell button", &g_TpBuySellX,    &g_TpBuySellY},
 };
 static constexpr int NUM_TARGETS = sizeof(s_Targets) / sizeof(s_Targets[0]);
 

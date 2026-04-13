@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2355"
-	"title"		"Guild Wars 2 - Og v16.7"
+	"revision"		"2356"
+	"title"		"Guild Wars 2 - Og v16.8"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -1621,6 +1621,15 @@
 						{
 							"binding"		"key_press LEFT_CONTROL, Trading Post, , "
 							"binding"		"key_press O, Trading Post, , "
+						}
+					}
+					"Double_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, TP Buy/Sell, , "
+							"binding"		"key_press LEFT_SHIFT, TP Buy/Sell, , "
+							"binding"		"key_press F1, TP Buy/Sell, , "
 						}
 					}
 					"Long_Press"

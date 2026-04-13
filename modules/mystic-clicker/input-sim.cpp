@@ -284,6 +284,28 @@ void SimulateCraftAllClick()
     SimulateClickAt(g_CraftAllX, g_CraftAllY);
 }
 
+void SimulateWizardVaultClick()
+{
+    if (g_WizardVaultX == 0 && g_WizardVaultY == 0)
+    {
+        APIDefs->GUI_SendAlert("Wizard Vault position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Wizard Vault Collect");
+    SimulateClickAt(g_WizardVaultX, g_WizardVaultY);
+}
+
+void SimulateCharSwapClick()
+{
+    if (g_CharSwapX == 0 && g_CharSwapY == 0)
+    {
+        APIDefs->GUI_SendAlert("Char Swap position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Char Swap");
+    SimulateClickAt(g_CharSwapX, g_CharSwapY);
+}
+
 void SimulateMysticForgeCombo()
 {
     // Check both positions are set

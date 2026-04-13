@@ -91,6 +91,14 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     {
         SimulateCraftAllClick();
     }
+    else if (strcmp(aIdentifier, WIZARD_VAULT) == 0)
+    {
+        SimulateWizardVaultClick();
+    }
+    else if (strcmp(aIdentifier, CHAR_SWAP) == 0)
+    {
+        SimulateCharSwapClick();
+    }
     // === CAPTURE MODE ===
     else if (strcmp(aIdentifier, CAPTURE_MODE) == 0)
     {

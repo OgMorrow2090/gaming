@@ -52,6 +52,8 @@ static CaptureTarget s_Targets[] = {
     {"TP Remove",         "Cancel TP listing",            &g_TpRemoveX,     &g_TpRemoveY},
     {"Craft",             "Craft single item button",     &g_CraftX,        &g_CraftY},
     {"Craft All",         "Craft all items button",       &g_CraftAllX,     &g_CraftAllY},
+    {"Wizard Vault",      "Wizard Vault collect button",  &g_WizardVaultX,  &g_WizardVaultY},
+    {"Char Swap",         "Character swap button",        &g_CharSwapX,     &g_CharSwapY},
 };
 static constexpr int NUM_TARGETS = sizeof(s_Targets) / sizeof(s_Targets[0]);
 

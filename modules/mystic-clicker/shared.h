@@ -40,10 +40,14 @@ constexpr const char* TRADING_POST = "TRADING_POST";
 constexpr const char* TP_REMOVE = "TP_REMOVE";
 constexpr const char* CRAFT = "CRAFT";
 constexpr const char* CRAFT_ALL = "CRAFT_ALL";
+constexpr const char* WIZARD_VAULT = "WIZARD_VAULT";
+constexpr const char* CHAR_SWAP = "CHAR_SWAP";
 
 // Capture keybind identifiers
 constexpr const char* CAPTURE_CRAFT = "CAPTURE_CRAFT";
 constexpr const char* CAPTURE_CRAFT_ALL = "CAPTURE_CRAFT_ALL";
+constexpr const char* CAPTURE_WIZARD_VAULT = "CAPTURE_WIZARD_VAULT";
+constexpr const char* CAPTURE_CHAR_SWAP = "CAPTURE_CHAR_SWAP";
 
 // Keybind handler
 void ProcessKeybind(const char* aIdentifier, bool aIsRelease);
@@ -64,6 +68,8 @@ void SimulateTradingPostClick();
 void SimulateTpRemoveClick();
 void SimulateCraftClick();
 void SimulateCraftAllClick();
+void SimulateWizardVaultClick();
+void SimulateCharSwapClick();
 void SimulateGenericClick(int slot);
 void SimulateClickAt(int x, int y);
 void SimulateRightClickAt(int x, int y);
@@ -112,3 +118,7 @@ extern int g_CraftX;
 extern int g_CraftY;
 extern int g_CraftAllX;
 extern int g_CraftAllY;
+extern int g_WizardVaultX;
+extern int g_WizardVaultY;
+extern int g_CharSwapX;
+extern int g_CharSwapY;

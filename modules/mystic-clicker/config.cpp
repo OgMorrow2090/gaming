@@ -55,6 +55,10 @@ int g_CraftX = 0;
 int g_CraftY = 0;
 int g_CraftAllX = 0;
 int g_CraftAllY = 0;
+int g_WizardVaultX = 0;
+int g_WizardVaultY = 0;
+int g_CharSwapX = 0;
+int g_CharSwapY = 0;
 
 // Resolution tracking
 static int g_CurrentResWidth = 0;
@@ -273,6 +277,14 @@ void LoadButtonPositions()
             g_CraftAllX = std::stoi(line.substr(10));
         else if (line.find("CraftAllY=") == 0)
             g_CraftAllY = std::stoi(line.substr(10));
+        else if (line.find("WizardVaultX=") == 0)
+            g_WizardVaultX = std::stoi(line.substr(13));
+        else if (line.find("WizardVaultY=") == 0)
+            g_WizardVaultY = std::stoi(line.substr(13));
+        else if (line.find("CharSwapX=") == 0)
+            g_CharSwapX = std::stoi(line.substr(10));
+        else if (line.find("CharSwapY=") == 0)
+            g_CharSwapY = std::stoi(line.substr(10));
     }
 
     file.close();
@@ -341,6 +353,10 @@ void SaveButtonPositions()
     file << "CraftY=" << g_CraftY << "\n";
     file << "CraftAllX=" << g_CraftAllX << "\n";
     file << "CraftAllY=" << g_CraftAllY << "\n";
+    file << "WizardVaultX=" << g_WizardVaultX << "\n";
+    file << "WizardVaultY=" << g_WizardVaultY << "\n";
+    file << "CharSwapX=" << g_CharSwapX << "\n";
+    file << "CharSwapY=" << g_CharSwapY << "\n";
 
     file.close();
     
@@ -404,6 +420,10 @@ void CheckResolutionChange()
         g_CraftY = 0;
         g_CraftAllX = 0;
         g_CraftAllY = 0;
+        g_WizardVaultX = 0;
+        g_WizardVaultY = 0;
+        g_CharSwapX = 0;
+        g_CharSwapY = 0;
 
         // Load config for new resolution (if exists)
         g_CurrentResWidth = width;
@@ -489,6 +509,14 @@ void CheckResolutionChange()
                     g_CraftAllX = std::stoi(line.substr(10));
                 else if (line.find("CraftAllY=") == 0)
                     g_CraftAllY = std::stoi(line.substr(10));
+                else if (line.find("WizardVaultX=") == 0)
+                    g_WizardVaultX = std::stoi(line.substr(13));
+                else if (line.find("WizardVaultY=") == 0)
+                    g_WizardVaultY = std::stoi(line.substr(13));
+                else if (line.find("CharSwapX=") == 0)
+                    g_CharSwapX = std::stoi(line.substr(10));
+                else if (line.find("CharSwapY=") == 0)
+                    g_CharSwapY = std::stoi(line.substr(10));
             }
             file.close();
 

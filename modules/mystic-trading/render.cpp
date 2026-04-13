@@ -558,8 +558,8 @@ void RenderDashboard()
 
     // ---- Single column: Wallet, Bank, Materials ----
 
-    // 1. Wallet — always expanded
-    RenderSectionHeader("Wallet", COLOR_WALLET, -1, &g_Data.tradingPost.wallet.gold, true);
+    // 1. Wallet — expanded by default, collapsible
+    if (RenderSectionHeader("Wallet", COLOR_WALLET, -1, &g_Data.tradingPost.wallet.gold, true))
     {
         static char walletSearch[128] = "";
         ImGui::SetNextItemWidth(-1);

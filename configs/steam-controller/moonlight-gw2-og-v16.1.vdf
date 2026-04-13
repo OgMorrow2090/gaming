@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2354"
-	"title"		"Guild Wars 2 - Og v16.6"
+	"revision"		"2355"
+	"title"		"Guild Wars 2 - Og v16.7"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2032,6 +2032,23 @@
 			{
 				"activators"
 				{
+					"Double_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Wizard Vault, , "
+							"binding"		"key_press F4, Wizard Vault, , "
+						}
+					}
+					"Long_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Char Swap, , "
+							"binding"		"key_press LEFT_SHIFT, Char Swap, , "
+							"binding"		"key_press F4, Char Swap, , "
+						}
+					}
 				}
 				"disabled_activators"
 				{

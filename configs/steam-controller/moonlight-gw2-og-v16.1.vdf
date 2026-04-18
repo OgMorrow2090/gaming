@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2362"
-	"title"		"Guild Wars 2 - Og v16.14"
+	"revision"		"2363"
+	"title"		"Guild Wars 2 - Og v16.15"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -869,17 +869,17 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Accept, , "
-							"binding"		"key_press LEFT_SHIFT, Accept, , "
-							"binding"		"key_press F3, Accept, , "
+							"binding"		"key_press LEFT_CONTROL, Vendor Buy, "
+							"binding"		"key_press U, Vendor Buy, "
 						}
 					}
 					"Full_Press"
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Vendor Buy, "
-							"binding"		"key_press U, Vendor Buy, "
+							"binding"		"key_press LEFT_CONTROL, Accept, , "
+							"binding"		"key_press LEFT_SHIFT, Accept, , "
+							"binding"		"key_press F3, Accept, , "
 						}
 					}
 					"Long_Press"

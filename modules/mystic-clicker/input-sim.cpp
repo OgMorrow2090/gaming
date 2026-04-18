@@ -479,13 +479,15 @@ void SimulateGuildHallCombo()
     APIDefs->Log(LOGL_INFO, "MysticClicker", "Guild Hall Combo: Press G");
     SimulateKeyPress(0x47);  // VK code for 'G'
 
-    // Guild panel animation can take up to ~800ms before buttons are clickable.
-    Sleep(800);
+    // Guild panel animation can take up to ~1s before buttons are clickable.
+    Sleep(1000);
 
     char buf[96];
     sprintf_s(buf, "Guild Hall Combo: Click at (%d,%d)", g_GuildHallX, g_GuildHallY);
     APIDefs->Log(LOGL_INFO, "MysticClicker", buf);
-    SimulateClickAt(g_GuildHallX, g_GuildHallY);
+    // Use real cursor move + SendInput click. WM_LBUTTONDOWN/UP sent via
+    // WndProc doesn't reliably register on the Guild panel — real clicks do.
+    SimulateRealClickAt(g_GuildHallX, g_GuildHallY);
 }
 
 void SimulateMysticForgeCombo()

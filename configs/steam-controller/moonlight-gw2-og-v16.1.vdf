@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2361"
-	"title"		"Guild Wars 2 - Og v16.13"
+	"revision"		"2362"
+	"title"		"Guild Wars 2 - Og v16.14"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -631,8 +631,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, Wizard Vault, "
-							"binding"		"key_press I, Wizard Vault, "
+							"binding"		"key_press LEFT_CONTROL, Wizard Vault Combo, , "
+							"binding"		"key_press LEFT_SHIFT, Wizard Vault Combo, , "
+							"binding"		"key_press F2, Wizard Vault Combo, , "
 						}
 					}
 					"Double_Press"

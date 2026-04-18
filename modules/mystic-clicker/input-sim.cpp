@@ -424,17 +424,36 @@ void SimulateWizardVaultCompleteClick()
 
 void SimulateWizardVaultCombo()
 {
-    // Wizard Vault → delay → Wizard Vault Complete (same timing as Mystic Forge combo)
+    // Always open the WV panel first — Shift+I runs regardless of capture state.
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Open panel (Shift+I)");
+    EnsureGameWindow();
+    if (GameWindow != nullptr)
+    {
+        // Send Shift+I: Shift down, I down+up, Shift up
+        LPARAM downParam = 0x00000001;
+        LPARAM upParam   = 0xC0000001;
+        APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYDOWN, VK_SHIFT, downParam);
+        Sleep(20);
+        APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYDOWN, 0x49, downParam);  // 'I'
+        Sleep(30);
+        APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYUP,   0x49, upParam);
+        Sleep(20);
+        APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYUP,   VK_SHIFT, upParam);
+    }
+
     if (g_WizardVaultX == 0 && g_WizardVaultY == 0)
     {
-        APIDefs->GUI_SendAlert("Wizard Vault position not set! Capture first");
+        APIDefs->GUI_SendAlert("WV Collect position not set — panel opened, clicks skipped. Capture via Ctrl+Shift+C");
         return;
     }
     if (g_WizardVaultCompleteX == 0 && g_WizardVaultCompleteY == 0)
     {
-        APIDefs->GUI_SendAlert("Wizard Vault Complete position not set! Capture first");
+        APIDefs->GUI_SendAlert("WV Complete position not set — panel opened, clicks skipped. Capture via Ctrl+Shift+C");
         return;
     }
+
+    // Wait for panel animation before clicking
+    Sleep(1000);
 
     APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Collect");
     SimulateClickAt(g_WizardVaultX, g_WizardVaultY);
@@ -469,15 +488,16 @@ void SimulateGuildHallClick()
 
 void SimulateGuildHallCombo()
 {
-    // Press G to open Guild panel → wait for panel → click Guild Hall button
-    if (g_GuildHallX == 0 && g_GuildHallY == 0)
-    {
-        APIDefs->GUI_SendAlert("Guild Hall position not set! Capture first");
-        return;
-    }
-
+    // Always open the Guild panel first — G press runs regardless of whether
+    // the Guild Hall button position is captured yet.
     APIDefs->Log(LOGL_INFO, "MysticClicker", "Guild Hall Combo: Press G");
     SimulateKeyPress(0x47);  // VK code for 'G'
+
+    if (g_GuildHallX == 0 && g_GuildHallY == 0)
+    {
+        APIDefs->GUI_SendAlert("Guild Hall position not set — panel opened, click skipped. Capture via Ctrl+Shift+C");
+        return;
+    }
 
     // Guild panel animation can take up to ~1s before buttons are clickable.
     Sleep(1000);
@@ -485,8 +505,6 @@ void SimulateGuildHallCombo()
     char buf[96];
     sprintf_s(buf, "Guild Hall Combo: Click at (%d,%d)", g_GuildHallX, g_GuildHallY);
     APIDefs->Log(LOGL_INFO, "MysticClicker", buf);
-    // Use real cursor move + SendInput click. WM_LBUTTONDOWN/UP sent via
-    // WndProc doesn't reliably register on the Guild panel — real clicks do.
     SimulateRealClickAt(g_GuildHallX, g_GuildHallY);
 }
 

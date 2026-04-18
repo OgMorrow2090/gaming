@@ -502,11 +502,22 @@ void SimulateAcceptClick()
 {
     if (g_AcceptX == 0 && g_AcceptY == 0)
     {
-        APIDefs->GUI_SendAlert("Accept position not set! Capture first");
+        APIDefs->GUI_SendAlert("Chest Accept position not set! Capture first");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Chest Accept");
     SimulateClickAt(g_AcceptX, g_AcceptY);
+}
+
+void SimulateGeneralAcceptClick()
+{
+    if (g_GeneralAcceptX == 0 && g_GeneralAcceptY == 0)
+    {
+        APIDefs->GUI_SendAlert("General Accept position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking General Accept");
+    SimulateClickAt(g_GeneralAcceptX, g_GeneralAcceptY);
 }
 
 void SimulateGuildHallClick()

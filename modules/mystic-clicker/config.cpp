@@ -65,6 +65,8 @@ int g_WizardVaultCompleteX = 0;
 int g_WizardVaultCompleteY = 0;
 int g_AcceptX = 0;
 int g_AcceptY = 0;
+int g_GeneralAcceptX = 0;
+int g_GeneralAcceptY = 0;
 int g_GuildHallX = 0;
 int g_GuildHallY = 0;
 
@@ -305,6 +307,10 @@ void LoadButtonPositions()
             g_AcceptX = std::stoi(line.substr(8));
         else if (line.find("AcceptY=") == 0)
             g_AcceptY = std::stoi(line.substr(8));
+        else if (line.find("GeneralAcceptX=") == 0)
+            g_GeneralAcceptX = std::stoi(line.substr(15));
+        else if (line.find("GeneralAcceptY=") == 0)
+            g_GeneralAcceptY = std::stoi(line.substr(15));
         else if (line.find("GuildHallX=") == 0)
             g_GuildHallX = std::stoi(line.substr(11));
         else if (line.find("GuildHallY=") == 0)
@@ -387,6 +393,8 @@ void SaveButtonPositions()
     file << "WizardVaultCompleteY=" << g_WizardVaultCompleteY << "\n";
     file << "AcceptX=" << g_AcceptX << "\n";
     file << "AcceptY=" << g_AcceptY << "\n";
+    file << "GeneralAcceptX=" << g_GeneralAcceptX << "\n";
+    file << "GeneralAcceptY=" << g_GeneralAcceptY << "\n";
     file << "GuildHallX=" << g_GuildHallX << "\n";
     file << "GuildHallY=" << g_GuildHallY << "\n";
 
@@ -462,6 +470,8 @@ void CheckResolutionChange()
         g_WizardVaultCompleteY = 0;
         g_AcceptX = 0;
         g_AcceptY = 0;
+        g_GeneralAcceptX = 0;
+        g_GeneralAcceptY = 0;
         g_GuildHallX = 0;
         g_GuildHallY = 0;
 
@@ -569,6 +579,10 @@ void CheckResolutionChange()
                     g_AcceptX = std::stoi(line.substr(8));
                 else if (line.find("AcceptY=") == 0)
                     g_AcceptY = std::stoi(line.substr(8));
+                else if (line.find("GeneralAcceptX=") == 0)
+                    g_GeneralAcceptX = std::stoi(line.substr(15));
+                else if (line.find("GeneralAcceptY=") == 0)
+                    g_GeneralAcceptY = std::stoi(line.substr(15));
                 else if (line.find("GuildHallX=") == 0)
                     g_GuildHallX = std::stoi(line.substr(11));
                 else if (line.find("GuildHallY=") == 0)

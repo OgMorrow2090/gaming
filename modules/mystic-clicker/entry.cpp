@@ -56,8 +56,8 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     // Addon metadata
     AddonDef.Name = "Mystic Clicker";
     AddonDef.Version.Major = 2;
-    AddonDef.Version.Minor = 4;
-    AddonDef.Version.Build = 7;
+    AddonDef.Version.Minor = 5;
+    AddonDef.Version.Build = 0;
     AddonDef.Version.Revision = 0;
     AddonDef.Author = "OgMorrow2090";
     AddonDef.Description = "One-click hotkeys for inventory, vendors, trading post, Mystic Forge, and more.";
@@ -147,6 +147,7 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(WIZARD_VAULT_COMPLETE, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(WIZARD_VAULT_COMBO, ProcessKeybind, "CTRL+SHIFT+F2");
     APIDefs->InputBinds_RegisterWithString(ACCEPT, ProcessKeybind, "CTRL+SHIFT+F3");
+    APIDefs->InputBinds_RegisterWithString(GENERAL_ACCEPT, ProcessKeybind, "CTRL+SHIFT+F6");
     APIDefs->InputBinds_RegisterWithString(GUILD_HALL, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(GUILD_HALL_COMBO, ProcessKeybind, "CTRL+SHIFT+F5");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_CRAFT, ProcessKeybind, "(null)");
@@ -156,6 +157,7 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(CAPTURE_TP_BUY_SELL, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_WIZARD_VAULT_COMPLETE, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_GENERAL_ACCEPT, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_GUILD_HALL, ProcessKeybind, "(null)");
 
     APIDefs->Log(LOGL_INFO, "MysticClicker", "Addon loaded - 32 keybinds.");
@@ -190,6 +192,7 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(WIZARD_VAULT_COMPLETE);
     APIDefs->InputBinds_Deregister(WIZARD_VAULT_COMBO);
     APIDefs->InputBinds_Deregister(ACCEPT);
+    APIDefs->InputBinds_Deregister(GENERAL_ACCEPT);
     APIDefs->InputBinds_Deregister(GUILD_HALL);
     APIDefs->InputBinds_Deregister(GUILD_HALL_COMBO);
     APIDefs->InputBinds_Deregister(CAPTURE_CRAFT);
@@ -199,6 +202,7 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(CAPTURE_TP_BUY_SELL);
     APIDefs->InputBinds_Deregister(CAPTURE_WIZARD_VAULT_COMPLETE);
     APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT);
+    APIDefs->InputBinds_Deregister(CAPTURE_GENERAL_ACCEPT);
     APIDefs->InputBinds_Deregister(CAPTURE_GUILD_HALL);
 
     APIDefs->GUI_Deregister(RenderCaptureWindow);

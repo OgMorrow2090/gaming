@@ -45,7 +45,8 @@ constexpr const char* CHAR_SWAP = "CHAR_SWAP";
 constexpr const char* TP_BUY_SELL = "TP_BUY_SELL";
 constexpr const char* WIZARD_VAULT_COMPLETE = "WIZARD_VAULT_COMPLETE";
 constexpr const char* WIZARD_VAULT_COMBO = "WIZARD_VAULT_COMBO";
-constexpr const char* ACCEPT = "ACCEPT";
+constexpr const char* ACCEPT = "ACCEPT";                    // "Chest Accept" — post-chest dialog
+constexpr const char* GENERAL_ACCEPT = "GENERAL_ACCEPT";    // Generic Accept dialog
 constexpr const char* GUILD_HALL = "GUILD_HALL";
 constexpr const char* GUILD_HALL_COMBO = "GUILD_HALL_COMBO";
 
@@ -57,6 +58,7 @@ constexpr const char* CAPTURE_CHAR_SWAP = "CAPTURE_CHAR_SWAP";
 constexpr const char* CAPTURE_TP_BUY_SELL = "CAPTURE_TP_BUY_SELL";
 constexpr const char* CAPTURE_WIZARD_VAULT_COMPLETE = "CAPTURE_WIZARD_VAULT_COMPLETE";
 constexpr const char* CAPTURE_ACCEPT = "CAPTURE_ACCEPT";
+constexpr const char* CAPTURE_GENERAL_ACCEPT = "CAPTURE_GENERAL_ACCEPT";
 constexpr const char* CAPTURE_GUILD_HALL = "CAPTURE_GUILD_HALL";
 
 // Keybind handler
@@ -84,6 +86,7 @@ void SimulateTpBuySellClick();
 void SimulateWizardVaultCompleteClick();
 void SimulateWizardVaultCombo();  // Wizard Vault → delay → Wizard Vault Complete
 void SimulateAcceptClick();
+void SimulateGeneralAcceptClick();
 void SimulateGuildHallClick();
 void SimulateGuildHallCombo();    // Press G → delay → click Guild Hall button
 void SimulateGenericClick(int slot);
@@ -146,5 +149,7 @@ extern int g_WizardVaultCompleteX;
 extern int g_WizardVaultCompleteY;
 extern int g_AcceptX;
 extern int g_AcceptY;
+extern int g_GeneralAcceptX;
+extern int g_GeneralAcceptY;
 extern int g_GuildHallX;
 extern int g_GuildHallY;

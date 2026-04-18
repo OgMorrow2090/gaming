@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2366"
-	"title"		"Guild Wars 2 - Og v16.18"
+	"revision"		"2367"
+	"title"		"Guild Wars 2 - Og v16.19"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -820,6 +820,15 @@
 			{
 				"activators"
 				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, General Accept, , "
+							"binding"		"key_press LEFT_SHIFT, General Accept, , "
+							"binding"		"key_press F6, General Accept, , "
+						}
+					}
 					"Long_Press"
 					{
 						"bindings"

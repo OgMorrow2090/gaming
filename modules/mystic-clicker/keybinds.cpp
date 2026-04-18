@@ -115,6 +115,10 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     {
         SimulateAcceptClick();
     }
+    else if (strcmp(aIdentifier, GENERAL_ACCEPT) == 0)
+    {
+        SimulateGeneralAcceptClick();
+    }
     else if (strcmp(aIdentifier, GUILD_HALL) == 0)
     {
         SimulateGuildHallClick();

@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2365"
-	"title"		"Guild Wars 2 - Og v16.17"
+	"revision"		"2366"
+	"title"		"Guild Wars 2 - Og v16.18"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2943,8 +2943,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Griffon Mount, , "
-							"binding"		"key_press KEYPAD_5, Griffon Mount, , "
+							"binding"		"key_press LEFT_CONTROL, Springer Mount, , "
+							"binding"		"key_press KEYPAD_2, Springer Mount, , "
 						}
 					}
 				}
@@ -3001,8 +3001,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Springer Mount, , "
-							"binding"		"key_press KEYPAD_2, Springer Mount, , "
+							"binding"		"key_press LEFT_CONTROL, Griffon Mount, , "
+							"binding"		"key_press KEYPAD_5, Griffon Mount, , "
 						}
 					}
 				}

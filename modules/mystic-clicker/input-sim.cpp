@@ -425,16 +425,21 @@ void SimulateWizardVaultCombo()
     EnsureGameWindow();
     if (GameWindow != nullptr)
     {
-        // Send Shift+I: Shift down, I down+up, Shift up
-        LPARAM downParam = 0x00000001;
-        LPARAM upParam   = 0xC0000001;
-        APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYDOWN, VK_SHIFT, downParam);
+        // Scan codes required — GW2 drops WM_KEYDOWN without them.
+        UINT shiftScan = MapVirtualKey(VK_SHIFT, MAPVK_VK_TO_VSC);
+        UINT iScan     = MapVirtualKey(0x49, MAPVK_VK_TO_VSC);
+        LPARAM shiftDown = (LPARAM)((shiftScan << 16) | 0x00000001);
+        LPARAM shiftUp   = (LPARAM)((shiftScan << 16) | 0xC0000001);
+        LPARAM iDown     = (LPARAM)((iScan     << 16) | 0x00000001);
+        LPARAM iUp       = (LPARAM)((iScan     << 16) | 0xC0000001);
+
+        APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYDOWN, VK_SHIFT, shiftDown);
         Sleep(20);
-        APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYDOWN, 0x49, downParam);  // 'I'
+        APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYDOWN, 0x49, iDown);       // 'I'
         Sleep(30);
-        APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYUP,   0x49, upParam);
+        APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYUP,   0x49, iUp);
         Sleep(20);
-        APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYUP,   VK_SHIFT, upParam);
+        APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYUP,   VK_SHIFT, shiftUp);
     }
 
     if (g_WizardVaultX == 0 && g_WizardVaultY == 0)

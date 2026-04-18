@@ -421,26 +421,35 @@ void SimulateWizardVaultCompleteClick()
 void SimulateWizardVaultCombo()
 {
     // Always open the WV panel first — Shift+I runs regardless of capture state.
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Open panel (Shift+I)");
-    EnsureGameWindow();
-    if (GameWindow != nullptr)
-    {
-        // Scan codes required — GW2 drops WM_KEYDOWN without them.
-        UINT shiftScan = MapVirtualKey(VK_SHIFT, MAPVK_VK_TO_VSC);
-        UINT iScan     = MapVirtualKey(0x49, MAPVK_VK_TO_VSC);
-        LPARAM shiftDown = (LPARAM)((shiftScan << 16) | 0x00000001);
-        LPARAM shiftUp   = (LPARAM)((shiftScan << 16) | 0xC0000001);
-        LPARAM iDown     = (LPARAM)((iScan     << 16) | 0x00000001);
-        LPARAM iUp       = (LPARAM)((iScan     << 16) | 0xC0000001);
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Open panel (Shift+I via SendInput)");
+    // SendInput actually sets OS keyboard state so GW2's GetKeyState(VK_SHIFT)
+    // returns true when it processes the 'I' keypress — that's the difference
+    // that makes WM_KEYDOWN unreliable for modifier chords.
+    INPUT inputs[4] = {};
+    WORD shiftScan = (WORD)MapVirtualKey(VK_LSHIFT, MAPVK_VK_TO_VSC);
+    WORD iScan     = (WORD)MapVirtualKey(0x49, MAPVK_VK_TO_VSC);
 
-        APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYDOWN, VK_SHIFT, shiftDown);
-        Sleep(20);
-        APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYDOWN, 0x49, iDown);       // 'I'
-        Sleep(30);
-        APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYUP,   0x49, iUp);
-        Sleep(20);
-        APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYUP,   VK_SHIFT, shiftUp);
-    }
+    inputs[0].type = INPUT_KEYBOARD;
+    inputs[0].ki.wVk = VK_LSHIFT;
+    inputs[0].ki.wScan = shiftScan;
+    inputs[0].ki.dwFlags = KEYEVENTF_SCANCODE;
+
+    inputs[1].type = INPUT_KEYBOARD;
+    inputs[1].ki.wVk = 0x49;
+    inputs[1].ki.wScan = iScan;
+    inputs[1].ki.dwFlags = KEYEVENTF_SCANCODE;
+
+    inputs[2].type = INPUT_KEYBOARD;
+    inputs[2].ki.wVk = 0x49;
+    inputs[2].ki.wScan = iScan;
+    inputs[2].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
+
+    inputs[3].type = INPUT_KEYBOARD;
+    inputs[3].ki.wVk = VK_LSHIFT;
+    inputs[3].ki.wScan = shiftScan;
+    inputs[3].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
+
+    SendInput(4, inputs, sizeof(INPUT));
 
     if (g_WizardVaultX == 0 && g_WizardVaultY == 0)
     {

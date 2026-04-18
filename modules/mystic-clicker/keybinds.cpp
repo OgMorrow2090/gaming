@@ -103,6 +103,26 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     {
         SimulateTpBuySellClick();
     }
+    else if (strcmp(aIdentifier, WIZARD_VAULT_COMPLETE) == 0)
+    {
+        SimulateWizardVaultCompleteClick();
+    }
+    else if (strcmp(aIdentifier, WIZARD_VAULT_COMBO) == 0)
+    {
+        SimulateWizardVaultCombo();
+    }
+    else if (strcmp(aIdentifier, ACCEPT) == 0)
+    {
+        SimulateAcceptClick();
+    }
+    else if (strcmp(aIdentifier, GUILD_HALL) == 0)
+    {
+        SimulateGuildHallClick();
+    }
+    else if (strcmp(aIdentifier, GUILD_HALL_COMBO) == 0)
+    {
+        SimulateGuildHallCombo();
+    }
     // === CAPTURE MODE ===
     else if (strcmp(aIdentifier, CAPTURE_MODE) == 0)
     {

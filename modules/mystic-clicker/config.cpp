@@ -61,6 +61,12 @@ int g_CharSwapX = 0;
 int g_CharSwapY = 0;
 int g_TpBuySellX = 0;
 int g_TpBuySellY = 0;
+int g_WizardVaultCompleteX = 0;
+int g_WizardVaultCompleteY = 0;
+int g_AcceptX = 0;
+int g_AcceptY = 0;
+int g_GuildHallX = 0;
+int g_GuildHallY = 0;
 
 // Resolution tracking
 static int g_CurrentResWidth = 0;
@@ -291,6 +297,18 @@ void LoadButtonPositions()
             g_TpBuySellX = std::stoi(line.substr(11));
         else if (line.find("TpBuySellY=") == 0)
             g_TpBuySellY = std::stoi(line.substr(11));
+        else if (line.find("WizardVaultCompleteX=") == 0)
+            g_WizardVaultCompleteX = std::stoi(line.substr(21));
+        else if (line.find("WizardVaultCompleteY=") == 0)
+            g_WizardVaultCompleteY = std::stoi(line.substr(21));
+        else if (line.find("AcceptX=") == 0)
+            g_AcceptX = std::stoi(line.substr(8));
+        else if (line.find("AcceptY=") == 0)
+            g_AcceptY = std::stoi(line.substr(8));
+        else if (line.find("GuildHallX=") == 0)
+            g_GuildHallX = std::stoi(line.substr(11));
+        else if (line.find("GuildHallY=") == 0)
+            g_GuildHallY = std::stoi(line.substr(11));
     }
 
     file.close();
@@ -365,6 +383,12 @@ void SaveButtonPositions()
     file << "CharSwapY=" << g_CharSwapY << "\n";
     file << "TpBuySellX=" << g_TpBuySellX << "\n";
     file << "TpBuySellY=" << g_TpBuySellY << "\n";
+    file << "WizardVaultCompleteX=" << g_WizardVaultCompleteX << "\n";
+    file << "WizardVaultCompleteY=" << g_WizardVaultCompleteY << "\n";
+    file << "AcceptX=" << g_AcceptX << "\n";
+    file << "AcceptY=" << g_AcceptY << "\n";
+    file << "GuildHallX=" << g_GuildHallX << "\n";
+    file << "GuildHallY=" << g_GuildHallY << "\n";
 
     file.close();
     
@@ -434,6 +458,12 @@ void CheckResolutionChange()
         g_CharSwapY = 0;
         g_TpBuySellX = 0;
         g_TpBuySellY = 0;
+        g_WizardVaultCompleteX = 0;
+        g_WizardVaultCompleteY = 0;
+        g_AcceptX = 0;
+        g_AcceptY = 0;
+        g_GuildHallX = 0;
+        g_GuildHallY = 0;
 
         // Load config for new resolution (if exists)
         g_CurrentResWidth = width;
@@ -531,6 +561,18 @@ void CheckResolutionChange()
                     g_TpBuySellX = std::stoi(line.substr(11));
                 else if (line.find("TpBuySellY=") == 0)
                     g_TpBuySellY = std::stoi(line.substr(11));
+                else if (line.find("WizardVaultCompleteX=") == 0)
+                    g_WizardVaultCompleteX = std::stoi(line.substr(21));
+                else if (line.find("WizardVaultCompleteY=") == 0)
+                    g_WizardVaultCompleteY = std::stoi(line.substr(21));
+                else if (line.find("AcceptX=") == 0)
+                    g_AcceptX = std::stoi(line.substr(8));
+                else if (line.find("AcceptY=") == 0)
+                    g_AcceptY = std::stoi(line.substr(8));
+                else if (line.find("GuildHallX=") == 0)
+                    g_GuildHallX = std::stoi(line.substr(11));
+                else if (line.find("GuildHallY=") == 0)
+                    g_GuildHallY = std::stoi(line.substr(11));
             }
             file.close();
 

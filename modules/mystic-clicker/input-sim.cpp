@@ -127,6 +127,35 @@ void SimulateRealClickAt(int x, int y)
 }
 
 /**
+ * SimulateKeyPress - Send a single key press (down + up) to the game window.
+ * Used by combo actions that need to press a keyboard key (e.g. Guild panel
+ * opens via G) in addition to mouse clicks.
+ */
+void SimulateKeyPress(WPARAM vkCode)
+{
+    EnsureGameWindow();
+    if (GameWindow == nullptr)
+    {
+        APIDefs->Log(LOGL_WARNING, "MysticClicker", "Game window not available for key press");
+        return;
+    }
+
+    // lParam encoding for WM_KEYDOWN/WM_KEYUP:
+    //   bits 0-15:  repeat count (1)
+    //   bits 16-23: OEM scan code (0 is acceptable)
+    //   bit  24:    extended-key flag (0 for normal keys)
+    //   bit  29:    context code (0 for WM_KEYDOWN)
+    //   bit  30:    previous state (0 for WM_KEYDOWN, 1 for WM_KEYUP)
+    //   bit  31:    transition state (0 for WM_KEYDOWN, 1 for WM_KEYUP)
+    LPARAM downParam = 0x00000001;              // repeat count 1, no scan code, pressed now
+    LPARAM upParam   = 0xC0000001;              // repeat count 1, previously down + transition up
+
+    APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYDOWN, vkCode, downParam);
+    Sleep(30);
+    APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYUP,   vkCode, upParam);
+}
+
+/**
  * SimulateRightClickAt - Send RIGHT mouse click at coordinates
  */
 void SimulateRightClickAt(int x, int y)
@@ -380,6 +409,81 @@ void SimulateTpBuySellClick()
     }
     APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking TP Buy/Sell");
     SimulateClickAt(g_TpBuySellX, g_TpBuySellY);
+}
+
+void SimulateWizardVaultCompleteClick()
+{
+    if (g_WizardVaultCompleteX == 0 && g_WizardVaultCompleteY == 0)
+    {
+        APIDefs->GUI_SendAlert("Wizard Vault Complete position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Wizard Vault Complete");
+    SimulateClickAt(g_WizardVaultCompleteX, g_WizardVaultCompleteY);
+}
+
+void SimulateWizardVaultCombo()
+{
+    // Wizard Vault → delay → Wizard Vault Complete (same timing as Mystic Forge combo)
+    if (g_WizardVaultX == 0 && g_WizardVaultY == 0)
+    {
+        APIDefs->GUI_SendAlert("Wizard Vault position not set! Capture first");
+        return;
+    }
+    if (g_WizardVaultCompleteX == 0 && g_WizardVaultCompleteY == 0)
+    {
+        APIDefs->GUI_SendAlert("Wizard Vault Complete position not set! Capture first");
+        return;
+    }
+
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Collect");
+    SimulateClickAt(g_WizardVaultX, g_WizardVaultY);
+
+    Sleep(100);
+
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Complete");
+    SimulateClickAt(g_WizardVaultCompleteX, g_WizardVaultCompleteY);
+}
+
+void SimulateAcceptClick()
+{
+    if (g_AcceptX == 0 && g_AcceptY == 0)
+    {
+        APIDefs->GUI_SendAlert("Accept position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept");
+    SimulateClickAt(g_AcceptX, g_AcceptY);
+}
+
+void SimulateGuildHallClick()
+{
+    if (g_GuildHallX == 0 && g_GuildHallY == 0)
+    {
+        APIDefs->GUI_SendAlert("Guild Hall position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Guild Hall");
+    SimulateClickAt(g_GuildHallX, g_GuildHallY);
+}
+
+void SimulateGuildHallCombo()
+{
+    // Press G to open Guild panel → wait for panel → click Guild Hall button
+    if (g_GuildHallX == 0 && g_GuildHallY == 0)
+    {
+        APIDefs->GUI_SendAlert("Guild Hall position not set! Capture first");
+        return;
+    }
+
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Guild Hall Combo: Press G");
+    SimulateKeyPress(0x47);  // VK code for 'G'
+
+    // Guild panel takes ~300-400ms to open/animate. Use 400ms to be safe.
+    Sleep(400);
+
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Guild Hall Combo: Click Guild Hall button");
+    SimulateClickAt(g_GuildHallX, g_GuildHallY);
 }
 
 void SimulateMysticForgeCombo()

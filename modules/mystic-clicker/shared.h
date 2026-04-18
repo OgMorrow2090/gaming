@@ -43,6 +43,11 @@ constexpr const char* CRAFT_ALL = "CRAFT_ALL";
 constexpr const char* WIZARD_VAULT = "WIZARD_VAULT";
 constexpr const char* CHAR_SWAP = "CHAR_SWAP";
 constexpr const char* TP_BUY_SELL = "TP_BUY_SELL";
+constexpr const char* WIZARD_VAULT_COMPLETE = "WIZARD_VAULT_COMPLETE";
+constexpr const char* WIZARD_VAULT_COMBO = "WIZARD_VAULT_COMBO";
+constexpr const char* ACCEPT = "ACCEPT";
+constexpr const char* GUILD_HALL = "GUILD_HALL";
+constexpr const char* GUILD_HALL_COMBO = "GUILD_HALL_COMBO";
 
 // Capture keybind identifiers
 constexpr const char* CAPTURE_CRAFT = "CAPTURE_CRAFT";
@@ -50,6 +55,9 @@ constexpr const char* CAPTURE_CRAFT_ALL = "CAPTURE_CRAFT_ALL";
 constexpr const char* CAPTURE_WIZARD_VAULT = "CAPTURE_WIZARD_VAULT";
 constexpr const char* CAPTURE_CHAR_SWAP = "CAPTURE_CHAR_SWAP";
 constexpr const char* CAPTURE_TP_BUY_SELL = "CAPTURE_TP_BUY_SELL";
+constexpr const char* CAPTURE_WIZARD_VAULT_COMPLETE = "CAPTURE_WIZARD_VAULT_COMPLETE";
+constexpr const char* CAPTURE_ACCEPT = "CAPTURE_ACCEPT";
+constexpr const char* CAPTURE_GUILD_HALL = "CAPTURE_GUILD_HALL";
 
 // Keybind handler
 void ProcessKeybind(const char* aIdentifier, bool aIsRelease);
@@ -73,10 +81,16 @@ void SimulateCraftAllClick();
 void SimulateWizardVaultClick();
 void SimulateCharSwapClick();
 void SimulateTpBuySellClick();
+void SimulateWizardVaultCompleteClick();
+void SimulateWizardVaultCombo();  // Wizard Vault → delay → Wizard Vault Complete
+void SimulateAcceptClick();
+void SimulateGuildHallClick();
+void SimulateGuildHallCombo();    // Press G → delay → click Guild Hall button
 void SimulateGenericClick(int slot);
 void SimulateClickAt(int x, int y);
 void SimulateRightClickAt(int x, int y);
 void SimulateRealClickAt(int x, int y);  // SendInput-based — works on Nexus overlays
+void SimulateKeyPress(WPARAM vkCode);    // Send a single keypress (WM_KEYDOWN+KEYUP) to the game
 
 
 // Config functions
@@ -128,3 +142,9 @@ extern int g_CharSwapX;
 extern int g_CharSwapY;
 extern int g_TpBuySellX;
 extern int g_TpBuySellY;
+extern int g_WizardVaultCompleteX;
+extern int g_WizardVaultCompleteY;
+extern int g_AcceptX;
+extern int g_AcceptY;
+extern int g_GuildHallX;
+extern int g_GuildHallY;

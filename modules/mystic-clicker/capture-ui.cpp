@@ -55,6 +55,9 @@ static CaptureTarget s_Targets[] = {
     {"Wizard Vault",      "Wizard Vault collect button",  &g_WizardVaultX,  &g_WizardVaultY},
     {"Char Swap",         "Char Swap addon (overlay)",    &g_CharSwapX,     &g_CharSwapY},
     {"TP Buy/Sell",       "Trading Post buy/sell button", &g_TpBuySellX,    &g_TpBuySellY},
+    {"Wizard Vault Complete", "Wizard Vault Complete button (combo 2nd click)", &g_WizardVaultCompleteX, &g_WizardVaultCompleteY},
+    {"Accept",            "Accept dialog/confirm button", &g_AcceptX,       &g_AcceptY},
+    {"Guild Hall",        "Guild Hall button in Guild panel", &g_GuildHallX,    &g_GuildHallY},
 };
 static constexpr int NUM_TARGETS = sizeof(s_Targets) / sizeof(s_Targets[0]);
 

@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2356"
-	"title"		"Guild Wars 2 - Og v16.8"
+	"revision"		"2360"
+	"title"		"Guild Wars 2 - Og v16.12"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -838,16 +838,14 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, , , "
-							"binding"		"controller_action empty_binding, , , "
+							"binding"		"key_press C, Nearest Enemy, , "
 						}
 					}
 					"Long_Press"
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, (disabled), "
-							"binding"		"controller_action empty_binding, (disabled), "
+							"binding"		"key_press T, Target Take, , "
 						}
 						"settings"
 						{
@@ -868,8 +866,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Vendor, , "
-							"binding"		"key_press KEYPAD_DASH, Vendor, , "
+							"binding"		"key_press LEFT_CONTROL, Accept, , "
+							"binding"		"key_press LEFT_SHIFT, Accept, , "
+							"binding"		"key_press F3, Accept, , "
 						}
 					}
 					"Full_Press"
@@ -1426,6 +1425,24 @@
 						{
 							"binding"		"key_press LEFT_ALT, MT Fliplist, "
 							"binding"		"key_press D, MT Fliplist, "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"dpad_south"
+			{
+				"activators"
+				{
+					"Long_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Guild Hall, , "
+							"binding"		"key_press LEFT_SHIFT, Guild Hall, , "
+							"binding"		"key_press F5, Guild Hall, , "
 						}
 					}
 				}
@@ -2041,12 +2058,13 @@
 			{
 				"activators"
 				{
-					"Double_Press"
+					"Full_Press"
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Wizard Vault, , "
-							"binding"		"key_press F4, Wizard Vault, , "
+							"binding"		"key_press LEFT_CONTROL, Wizard Vault Combo, , "
+							"binding"		"key_press LEFT_SHIFT, Wizard Vault Combo, , "
+							"binding"		"key_press F2, Wizard Vault Combo, , "
 						}
 					}
 					"Long_Press"
@@ -2918,6 +2936,14 @@
 							"haptic_intensity"		"3"
 						}
 					}
+					"Double_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Griffon Mount, , "
+							"binding"		"key_press KEYPAD_4, Griffon Mount, , "
+						}
+					}
 				}
 				"disabled_activators"
 				{
@@ -2972,7 +2998,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press C, , "
+							"binding"		"key_press LEFT_CONTROL, Springer Mount, , "
+							"binding"		"key_press KEYPAD_1, Springer Mount, , "
 						}
 					}
 				}

@@ -421,35 +421,59 @@ void SimulateWizardVaultCompleteClick()
 void SimulateWizardVaultCombo()
 {
     // Always open the WV panel first — Shift+I runs regardless of capture state.
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Open panel (Shift+I via SendInput)");
-    // SendInput actually sets OS keyboard state so GW2's GetKeyState(VK_SHIFT)
-    // returns true when it processes the 'I' keypress — that's the difference
-    // that makes WM_KEYDOWN unreliable for modifier chords.
-    INPUT inputs[4] = {};
-    WORD shiftScan = (WORD)MapVirtualKey(VK_LSHIFT, MAPVK_VK_TO_VSC);
-    WORD iScan     = (WORD)MapVirtualKey(0x49, MAPVK_VK_TO_VSC);
+    {
+        // Log held-modifier state so we can tell if the Nexus chord is still active
+        bool ctrlHeld  = (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0;
+        bool shiftHeld = (GetAsyncKeyState(VK_SHIFT)   & 0x8000) != 0;
+        char sbuf[96];
+        sprintf_s(sbuf, "WV Combo: key state at start — Ctrl=%d Shift=%d", ctrlHeld, shiftHeld);
+        APIDefs->Log(LOGL_INFO, "MysticClicker", sbuf);
 
-    inputs[0].type = INPUT_KEYBOARD;
-    inputs[0].ki.wVk = VK_LSHIFT;
-    inputs[0].ki.wScan = shiftScan;
-    inputs[0].ki.dwFlags = KEYEVENTF_SCANCODE;
+        // Release any physically-held modifiers (from the Nexus keybind chord)
+        // so GW2 sees a clean Shift+I when we send it.
+        INPUT clear[4] = {};
+        clear[0].type = INPUT_KEYBOARD;
+        clear[0].ki.wVk = VK_LCONTROL;
+        clear[0].ki.dwFlags = KEYEVENTF_KEYUP;
+        clear[1].type = INPUT_KEYBOARD;
+        clear[1].ki.wVk = VK_RCONTROL;
+        clear[1].ki.dwFlags = KEYEVENTF_KEYUP;
+        clear[2].type = INPUT_KEYBOARD;
+        clear[2].ki.wVk = VK_LSHIFT;
+        clear[2].ki.dwFlags = KEYEVENTF_KEYUP;
+        clear[3].type = INPUT_KEYBOARD;
+        clear[3].ki.wVk = VK_RSHIFT;
+        clear[3].ki.dwFlags = KEYEVENTF_KEYUP;
+        SendInput(4, clear, sizeof(INPUT));
+        Sleep(50);
 
-    inputs[1].type = INPUT_KEYBOARD;
-    inputs[1].ki.wVk = 0x49;
-    inputs[1].ki.wScan = iScan;
-    inputs[1].ki.dwFlags = KEYEVENTF_SCANCODE;
+        APIDefs->Log(LOGL_INFO, "MysticClicker", "WV Combo: sending Shift+I via SendInput");
+        INPUT inputs[4] = {};
+        WORD shiftScan = (WORD)MapVirtualKey(VK_LSHIFT, MAPVK_VK_TO_VSC);
+        WORD iScan     = (WORD)MapVirtualKey(0x49, MAPVK_VK_TO_VSC);
 
-    inputs[2].type = INPUT_KEYBOARD;
-    inputs[2].ki.wVk = 0x49;
-    inputs[2].ki.wScan = iScan;
-    inputs[2].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
+        inputs[0].type = INPUT_KEYBOARD;
+        inputs[0].ki.wVk = VK_LSHIFT;
+        inputs[0].ki.wScan = shiftScan;
+        inputs[0].ki.dwFlags = KEYEVENTF_SCANCODE;
 
-    inputs[3].type = INPUT_KEYBOARD;
-    inputs[3].ki.wVk = VK_LSHIFT;
-    inputs[3].ki.wScan = shiftScan;
-    inputs[3].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
+        inputs[1].type = INPUT_KEYBOARD;
+        inputs[1].ki.wVk = 0x49;
+        inputs[1].ki.wScan = iScan;
+        inputs[1].ki.dwFlags = KEYEVENTF_SCANCODE;
 
-    SendInput(4, inputs, sizeof(INPUT));
+        inputs[2].type = INPUT_KEYBOARD;
+        inputs[2].ki.wVk = 0x49;
+        inputs[2].ki.wScan = iScan;
+        inputs[2].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
+
+        inputs[3].type = INPUT_KEYBOARD;
+        inputs[3].ki.wVk = VK_LSHIFT;
+        inputs[3].ki.wScan = shiftScan;
+        inputs[3].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
+
+        SendInput(4, inputs, sizeof(INPUT));
+    }
 
     if (g_WizardVaultX == 0 && g_WizardVaultY == 0)
     {

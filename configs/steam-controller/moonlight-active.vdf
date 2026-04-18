@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2360"
-	"title"		"Guild Wars 2 - Og v16.12"
+	"revision"		"2366"
+	"title"		"Guild Wars 2 - Og v16.18"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -280,6 +280,15 @@
 						{
 							"hold_repeats"		"1"
 							"haptic_intensity"		"3"
+						}
+					}
+					"Double_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Accept, , "
+							"binding"		"key_press LEFT_SHIFT, Accept, , "
+							"binding"		"key_press F3, Accept, , "
 						}
 					}
 				}
@@ -631,8 +640,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, Wizard Vault, "
-							"binding"		"key_press I, Wizard Vault, "
+							"binding"		"key_press LEFT_CONTROL, Wizard Vault Combo, , "
+							"binding"		"key_press LEFT_SHIFT, Wizard Vault Combo, , "
+							"binding"		"key_press F2, Wizard Vault Combo, , "
 						}
 					}
 					"Double_Press"
@@ -683,7 +693,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press G, Guild Panel, , "
+							"binding"		"key_press LEFT_CONTROL, Guild Hall Combo, , "
+							"binding"		"key_press LEFT_SHIFT, Guild Hall Combo, , "
+							"binding"		"key_press F5, Guild Hall Combo, , "
 						}
 						"settings"
 						{
@@ -866,17 +878,17 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Accept, , "
-							"binding"		"key_press LEFT_SHIFT, Accept, , "
-							"binding"		"key_press F3, Accept, , "
+							"binding"		"key_press LEFT_CONTROL, Vendor Buy, "
+							"binding"		"key_press U, Vendor Buy, "
 						}
 					}
 					"Full_Press"
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Vendor Buy, "
-							"binding"		"key_press U, Vendor Buy, "
+							"binding"		"key_press LEFT_CONTROL, Accept, , "
+							"binding"		"key_press LEFT_SHIFT, Accept, , "
+							"binding"		"key_press F3, Accept, , "
 						}
 					}
 					"Long_Press"
@@ -1436,15 +1448,6 @@
 			{
 				"activators"
 				{
-					"Long_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Guild Hall, , "
-							"binding"		"key_press LEFT_SHIFT, Guild Hall, , "
-							"binding"		"key_press F5, Guild Hall, , "
-						}
-					}
 				}
 				"disabled_activators"
 				{
@@ -2940,8 +2943,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Griffon Mount, , "
-							"binding"		"key_press KEYPAD_4, Griffon Mount, , "
+							"binding"		"key_press LEFT_CONTROL, Springer Mount, , "
+							"binding"		"key_press KEYPAD_2, Springer Mount, , "
 						}
 					}
 				}
@@ -2998,8 +3001,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Springer Mount, , "
-							"binding"		"key_press KEYPAD_1, Springer Mount, , "
+							"binding"		"key_press LEFT_CONTROL, Griffon Mount, , "
+							"binding"		"key_press KEYPAD_5, Griffon Mount, , "
 						}
 					}
 				}

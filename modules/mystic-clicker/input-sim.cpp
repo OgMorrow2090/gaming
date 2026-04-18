@@ -479,10 +479,12 @@ void SimulateGuildHallCombo()
     APIDefs->Log(LOGL_INFO, "MysticClicker", "Guild Hall Combo: Press G");
     SimulateKeyPress(0x47);  // VK code for 'G'
 
-    // Guild panel takes ~300-400ms to open/animate. Use 400ms to be safe.
-    Sleep(400);
+    // Guild panel animation can take up to ~800ms before buttons are clickable.
+    Sleep(800);
 
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Guild Hall Combo: Click Guild Hall button");
+    char buf[96];
+    sprintf_s(buf, "Guild Hall Combo: Click at (%d,%d)", g_GuildHallX, g_GuildHallY);
+    APIDefs->Log(LOGL_INFO, "MysticClicker", buf);
     SimulateClickAt(g_GuildHallX, g_GuildHallY);
 }
 

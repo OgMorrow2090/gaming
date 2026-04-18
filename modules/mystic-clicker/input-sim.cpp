@@ -140,15 +140,11 @@ void SimulateKeyPress(WPARAM vkCode)
         return;
     }
 
-    // lParam encoding for WM_KEYDOWN/WM_KEYUP:
-    //   bits 0-15:  repeat count (1)
-    //   bits 16-23: OEM scan code (0 is acceptable)
-    //   bit  24:    extended-key flag (0 for normal keys)
-    //   bit  29:    context code (0 for WM_KEYDOWN)
-    //   bit  30:    previous state (0 for WM_KEYDOWN, 1 for WM_KEYUP)
-    //   bit  31:    transition state (0 for WM_KEYDOWN, 1 for WM_KEYUP)
-    LPARAM downParam = 0x00000001;              // repeat count 1, no scan code, pressed now
-    LPARAM upParam   = 0xC0000001;              // repeat count 1, previously down + transition up
+    // Encode scan code in lParam (bits 16-23). GW2 requires it for some keys
+    // (e.g. G for Guild panel) — WM_KEYDOWN without scan code silently dropped.
+    UINT scanCode = MapVirtualKey((UINT)vkCode, MAPVK_VK_TO_VSC);
+    LPARAM downParam = (LPARAM)((scanCode << 16) | 0x00000001);
+    LPARAM upParam   = (LPARAM)((scanCode << 16) | 0xC0000001);
 
     APIDefs->WndProc_SendToGameOnly(GameWindow, WM_KEYDOWN, vkCode, downParam);
     Sleep(30);

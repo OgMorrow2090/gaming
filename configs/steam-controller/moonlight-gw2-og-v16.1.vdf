@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2369"
-	"title"		"Guild Wars 2 - Og v16.21"
+	"revision"		"2370"
+	"title"		"Guild Wars 2 - Og v16.22"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2397,24 +2397,6 @@
 						{
 							"binding"		"key_press LEFT_CONTROL, Toggle Paths, , "
 							"binding"		"key_press F3, Toggle Paths, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_2"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_SHIFT, TaimiHUD, , "
-							"binding"		"key_press LEFT_ALT, TaimiHUD, , "
-							"binding"		"key_press M, TaimiHUD, , "
 						}
 					}
 				}

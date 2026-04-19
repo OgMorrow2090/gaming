@@ -69,6 +69,10 @@ int g_GeneralAcceptX = 0;
 int g_GeneralAcceptY = 0;
 int g_GeneralAccept2X = 0;
 int g_GeneralAccept2Y = 0;
+int g_GeneralAccept3X = 0;
+int g_GeneralAccept3Y = 0;
+int g_GeneralAccept4X = 0;
+int g_GeneralAccept4Y = 0;
 int g_MailTakeAllX = 0;
 int g_MailTakeAllY = 0;
 int g_CraftFilterX = 0;
@@ -325,6 +329,14 @@ void LoadButtonPositions()
             g_GeneralAccept2X = std::stoi(line.substr(16));
         else if (line.find("GeneralAccept2Y=") == 0)
             g_GeneralAccept2Y = std::stoi(line.substr(16));
+        else if (line.find("GeneralAccept3X=") == 0)
+            g_GeneralAccept3X = std::stoi(line.substr(16));
+        else if (line.find("GeneralAccept3Y=") == 0)
+            g_GeneralAccept3Y = std::stoi(line.substr(16));
+        else if (line.find("GeneralAccept4X=") == 0)
+            g_GeneralAccept4X = std::stoi(line.substr(16));
+        else if (line.find("GeneralAccept4Y=") == 0)
+            g_GeneralAccept4Y = std::stoi(line.substr(16));
         else if (line.find("MailTakeAllX=") == 0)
             g_MailTakeAllX = std::stoi(line.substr(13));
         else if (line.find("MailTakeAllY=") == 0)
@@ -427,6 +439,10 @@ void SaveButtonPositions()
     file << "GeneralAcceptY=" << g_GeneralAcceptY << "\n";
     file << "GeneralAccept2X=" << g_GeneralAccept2X << "\n";
     file << "GeneralAccept2Y=" << g_GeneralAccept2Y << "\n";
+    file << "GeneralAccept3X=" << g_GeneralAccept3X << "\n";
+    file << "GeneralAccept3Y=" << g_GeneralAccept3Y << "\n";
+    file << "GeneralAccept4X=" << g_GeneralAccept4X << "\n";
+    file << "GeneralAccept4Y=" << g_GeneralAccept4Y << "\n";
     file << "MailTakeAllX=" << g_MailTakeAllX << "\n";
     file << "MailTakeAllY=" << g_MailTakeAllY << "\n";
     file << "CraftFilterX=" << g_CraftFilterX << "\n";
@@ -514,6 +530,10 @@ void CheckResolutionChange()
         g_GeneralAcceptY = 0;
         g_GeneralAccept2X = 0;
         g_GeneralAccept2Y = 0;
+        g_GeneralAccept3X = 0;
+        g_GeneralAccept3Y = 0;
+        g_GeneralAccept4X = 0;
+        g_GeneralAccept4Y = 0;
         g_MailTakeAllX = 0;
         g_MailTakeAllY = 0;
         g_CraftFilterX = 0;
@@ -637,6 +657,14 @@ void CheckResolutionChange()
                     g_GeneralAccept2X = std::stoi(line.substr(16));
                 else if (line.find("GeneralAccept2Y=") == 0)
                     g_GeneralAccept2Y = std::stoi(line.substr(16));
+                else if (line.find("GeneralAccept3X=") == 0)
+                    g_GeneralAccept3X = std::stoi(line.substr(16));
+                else if (line.find("GeneralAccept3Y=") == 0)
+                    g_GeneralAccept3Y = std::stoi(line.substr(16));
+                else if (line.find("GeneralAccept4X=") == 0)
+                    g_GeneralAccept4X = std::stoi(line.substr(16));
+                else if (line.find("GeneralAccept4Y=") == 0)
+                    g_GeneralAccept4Y = std::stoi(line.substr(16));
                 else if (line.find("MailTakeAllX=") == 0)
                     g_MailTakeAllX = std::stoi(line.substr(13));
                 else if (line.find("MailTakeAllY=") == 0)

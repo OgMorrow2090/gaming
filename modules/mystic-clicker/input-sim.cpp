@@ -531,6 +531,67 @@ void SimulateGeneralAccept2Click()
     SimulateClickAt(g_GeneralAccept2X, g_GeneralAccept2Y);
 }
 
+void SimulateGeneralAccept3Click()
+{
+    if (g_GeneralAccept3X == 0 && g_GeneralAccept3Y == 0)
+    {
+        APIDefs->GUI_SendAlert("General Accept 3 position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking General Accept 3");
+    SimulateClickAt(g_GeneralAccept3X, g_GeneralAccept3Y);
+}
+
+void SimulateGeneralAccept4Click()
+{
+    if (g_GeneralAccept4X == 0 && g_GeneralAccept4Y == 0)
+    {
+        APIDefs->GUI_SendAlert("General Accept 4 position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking General Accept 4");
+    SimulateClickAt(g_GeneralAccept4X, g_GeneralAccept4Y);
+}
+
+void SimulateGeneralAcceptCombo()
+{
+    // Click GA1 → GA2 → GA3 → GA4 in sequence. Skip any position that
+    // hasn't been captured (so user can use fewer than 4 slots).
+    // 300ms between clicks allows each Accept dialog to close/next to appear.
+    int fired = 0;
+    if (g_GeneralAcceptX != 0 || g_GeneralAcceptY != 0)
+    {
+        APIDefs->Log(LOGL_INFO, "MysticClicker", "GA Combo: 1");
+        SimulateClickAt(g_GeneralAcceptX, g_GeneralAcceptY);
+        fired++;
+        Sleep(300);
+    }
+    if (g_GeneralAccept2X != 0 || g_GeneralAccept2Y != 0)
+    {
+        APIDefs->Log(LOGL_INFO, "MysticClicker", "GA Combo: 2");
+        SimulateClickAt(g_GeneralAccept2X, g_GeneralAccept2Y);
+        fired++;
+        Sleep(300);
+    }
+    if (g_GeneralAccept3X != 0 || g_GeneralAccept3Y != 0)
+    {
+        APIDefs->Log(LOGL_INFO, "MysticClicker", "GA Combo: 3");
+        SimulateClickAt(g_GeneralAccept3X, g_GeneralAccept3Y);
+        fired++;
+        Sleep(300);
+    }
+    if (g_GeneralAccept4X != 0 || g_GeneralAccept4Y != 0)
+    {
+        APIDefs->Log(LOGL_INFO, "MysticClicker", "GA Combo: 4");
+        SimulateClickAt(g_GeneralAccept4X, g_GeneralAccept4Y);
+        fired++;
+    }
+    if (fired == 0)
+    {
+        APIDefs->GUI_SendAlert("No General Accept positions captured! Capture at least one via Ctrl+Shift+C");
+    }
+}
+
 void SimulateMailCombo()
 {
     // Open Mail via Shift+0 → wait for panel → click Take All

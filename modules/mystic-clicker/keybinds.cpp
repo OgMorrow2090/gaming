@@ -123,6 +123,18 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     {
         SimulateGeneralAccept2Click();
     }
+    else if (strcmp(aIdentifier, GENERAL_ACCEPT_3) == 0)
+    {
+        SimulateGeneralAccept3Click();
+    }
+    else if (strcmp(aIdentifier, GENERAL_ACCEPT_4) == 0)
+    {
+        SimulateGeneralAccept4Click();
+    }
+    else if (strcmp(aIdentifier, GENERAL_ACCEPT_COMBO) == 0)
+    {
+        SimulateGeneralAcceptCombo();
+    }
     else if (strcmp(aIdentifier, MAIL_COMBO) == 0)
     {
         SimulateMailCombo();

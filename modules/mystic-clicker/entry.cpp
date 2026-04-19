@@ -56,7 +56,7 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     // Addon metadata
     AddonDef.Name = "Mystic Clicker";
     AddonDef.Version.Major = 2;
-    AddonDef.Version.Minor = 6;
+    AddonDef.Version.Minor = 7;
     AddonDef.Version.Build = 0;
     AddonDef.Version.Revision = 0;
     AddonDef.Author = "OgMorrow2090";
@@ -149,6 +149,9 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(ACCEPT, ProcessKeybind, "CTRL+SHIFT+F3");
     APIDefs->InputBinds_RegisterWithString(GENERAL_ACCEPT, ProcessKeybind, "CTRL+SHIFT+F6");
     APIDefs->InputBinds_RegisterWithString(GENERAL_ACCEPT_2, ProcessKeybind, "CTRL+SHIFT+F7");
+    APIDefs->InputBinds_RegisterWithString(GENERAL_ACCEPT_3, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(GENERAL_ACCEPT_4, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(GENERAL_ACCEPT_COMBO, ProcessKeybind, "CTRL+SHIFT+F11");
     APIDefs->InputBinds_RegisterWithString(MAIL_COMBO, ProcessKeybind, "CTRL+SHIFT+F8");
     APIDefs->InputBinds_RegisterWithString(CRAFT_CLOSE, ProcessKeybind, "CTRL+SHIFT+F9");
     APIDefs->InputBinds_RegisterWithString(CRAFT_COLLAPSE_COMBO, ProcessKeybind, "CTRL+SHIFT+F10");
@@ -163,6 +166,8 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_GENERAL_ACCEPT, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_GENERAL_ACCEPT_2, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_GENERAL_ACCEPT_3, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_GENERAL_ACCEPT_4, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_MAIL_TAKE_ALL, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_CRAFT_FILTER, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_CRAFT_COLLAPSE, ProcessKeybind, "(null)");
@@ -203,6 +208,9 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(ACCEPT);
     APIDefs->InputBinds_Deregister(GENERAL_ACCEPT);
     APIDefs->InputBinds_Deregister(GENERAL_ACCEPT_2);
+    APIDefs->InputBinds_Deregister(GENERAL_ACCEPT_3);
+    APIDefs->InputBinds_Deregister(GENERAL_ACCEPT_4);
+    APIDefs->InputBinds_Deregister(GENERAL_ACCEPT_COMBO);
     APIDefs->InputBinds_Deregister(MAIL_COMBO);
     APIDefs->InputBinds_Deregister(CRAFT_CLOSE);
     APIDefs->InputBinds_Deregister(CRAFT_COLLAPSE_COMBO);
@@ -217,6 +225,8 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT);
     APIDefs->InputBinds_Deregister(CAPTURE_GENERAL_ACCEPT);
     APIDefs->InputBinds_Deregister(CAPTURE_GENERAL_ACCEPT_2);
+    APIDefs->InputBinds_Deregister(CAPTURE_GENERAL_ACCEPT_3);
+    APIDefs->InputBinds_Deregister(CAPTURE_GENERAL_ACCEPT_4);
     APIDefs->InputBinds_Deregister(CAPTURE_MAIL_TAKE_ALL);
     APIDefs->InputBinds_Deregister(CAPTURE_CRAFT_FILTER);
     APIDefs->InputBinds_Deregister(CAPTURE_CRAFT_COLLAPSE);

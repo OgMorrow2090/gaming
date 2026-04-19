@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2366"
-	"title"		"Guild Wars 2 - Og v16.18"
+	"revision"		"2369"
+	"title"		"Guild Wars 2 - Og v16.21"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -649,8 +649,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, Shift+0, "
-							"binding"		"key_press 0, Shift+0, "
+							"binding"		"key_press LEFT_CONTROL, Mail Combo, , "
+							"binding"		"key_press LEFT_SHIFT, Mail Combo, , "
+							"binding"		"key_press F8, Mail Combo, , "
 						}
 						"settings"
 						{
@@ -820,6 +821,15 @@
 			{
 				"activators"
 				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, General Accept 2, , "
+							"binding"		"key_press LEFT_SHIFT, General Accept 2, , "
+							"binding"		"key_press F7, General Accept 2, , "
+						}
+					}
 					"Long_Press"
 					{
 						"bindings"
@@ -853,6 +863,15 @@
 							"binding"		"key_press C, Nearest Enemy, , "
 						}
 					}
+					"Double_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Craft Collapse Combo, , "
+							"binding"		"key_press LEFT_SHIFT, Craft Collapse Combo, , "
+							"binding"		"key_press F10, Craft Collapse Combo, , "
+						}
+					}
 					"Long_Press"
 					{
 						"bindings"
@@ -878,25 +897,25 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Vendor Buy, "
-							"binding"		"key_press U, Vendor Buy, "
+							"binding"		"key_press LEFT_CONTROL, General Accept 1, , "
+							"binding"		"key_press LEFT_SHIFT, General Accept 1, , "
+							"binding"		"key_press F6, General Accept 1, , "
 						}
 					}
 					"Full_Press"
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Accept, , "
-							"binding"		"key_press LEFT_SHIFT, Accept, , "
-							"binding"		"key_press F3, Accept, , "
+							"binding"		"key_press LEFT_CONTROL, Vendor Buy, "
+							"binding"		"key_press U, Vendor Buy, "
 						}
 					}
 					"Long_Press"
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Hide UI, "
-							"binding"		"key_press J, Hide UI, "
+							"binding"		"key_press LEFT_CONTROL, Sell Junk, "
+							"binding"		"key_press J, Sell Junk, "
 						}
 					}
 				}
@@ -1624,6 +1643,15 @@
 						{
 							"binding"		"key_press LEFT_CONTROL, Craft All, , "
 							"binding"		"key_press F2, Craft All, , "
+						}
+					}
+					"Double_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Close Crafting, , "
+							"binding"		"key_press LEFT_SHIFT, Close Crafting, , "
+							"binding"		"key_press F9, Close Crafting, , "
 						}
 					}
 				}

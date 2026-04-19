@@ -67,6 +67,16 @@ int g_AcceptX = 0;
 int g_AcceptY = 0;
 int g_GeneralAcceptX = 0;
 int g_GeneralAcceptY = 0;
+int g_GeneralAccept2X = 0;
+int g_GeneralAccept2Y = 0;
+int g_MailTakeAllX = 0;
+int g_MailTakeAllY = 0;
+int g_CraftFilterX = 0;
+int g_CraftFilterY = 0;
+int g_CraftCollapseX = 0;
+int g_CraftCollapseY = 0;
+int g_CraftCloseX = 0;
+int g_CraftCloseY = 0;
 int g_GuildHallX = 0;
 int g_GuildHallY = 0;
 
@@ -311,6 +321,26 @@ void LoadButtonPositions()
             g_GeneralAcceptX = std::stoi(line.substr(15));
         else if (line.find("GeneralAcceptY=") == 0)
             g_GeneralAcceptY = std::stoi(line.substr(15));
+        else if (line.find("GeneralAccept2X=") == 0)
+            g_GeneralAccept2X = std::stoi(line.substr(16));
+        else if (line.find("GeneralAccept2Y=") == 0)
+            g_GeneralAccept2Y = std::stoi(line.substr(16));
+        else if (line.find("MailTakeAllX=") == 0)
+            g_MailTakeAllX = std::stoi(line.substr(13));
+        else if (line.find("MailTakeAllY=") == 0)
+            g_MailTakeAllY = std::stoi(line.substr(13));
+        else if (line.find("CraftFilterX=") == 0)
+            g_CraftFilterX = std::stoi(line.substr(13));
+        else if (line.find("CraftFilterY=") == 0)
+            g_CraftFilterY = std::stoi(line.substr(13));
+        else if (line.find("CraftCollapseX=") == 0)
+            g_CraftCollapseX = std::stoi(line.substr(15));
+        else if (line.find("CraftCollapseY=") == 0)
+            g_CraftCollapseY = std::stoi(line.substr(15));
+        else if (line.find("CraftCloseX=") == 0)
+            g_CraftCloseX = std::stoi(line.substr(12));
+        else if (line.find("CraftCloseY=") == 0)
+            g_CraftCloseY = std::stoi(line.substr(12));
         else if (line.find("GuildHallX=") == 0)
             g_GuildHallX = std::stoi(line.substr(11));
         else if (line.find("GuildHallY=") == 0)
@@ -395,6 +425,16 @@ void SaveButtonPositions()
     file << "AcceptY=" << g_AcceptY << "\n";
     file << "GeneralAcceptX=" << g_GeneralAcceptX << "\n";
     file << "GeneralAcceptY=" << g_GeneralAcceptY << "\n";
+    file << "GeneralAccept2X=" << g_GeneralAccept2X << "\n";
+    file << "GeneralAccept2Y=" << g_GeneralAccept2Y << "\n";
+    file << "MailTakeAllX=" << g_MailTakeAllX << "\n";
+    file << "MailTakeAllY=" << g_MailTakeAllY << "\n";
+    file << "CraftFilterX=" << g_CraftFilterX << "\n";
+    file << "CraftFilterY=" << g_CraftFilterY << "\n";
+    file << "CraftCollapseX=" << g_CraftCollapseX << "\n";
+    file << "CraftCollapseY=" << g_CraftCollapseY << "\n";
+    file << "CraftCloseX=" << g_CraftCloseX << "\n";
+    file << "CraftCloseY=" << g_CraftCloseY << "\n";
     file << "GuildHallX=" << g_GuildHallX << "\n";
     file << "GuildHallY=" << g_GuildHallY << "\n";
 
@@ -472,6 +512,16 @@ void CheckResolutionChange()
         g_AcceptY = 0;
         g_GeneralAcceptX = 0;
         g_GeneralAcceptY = 0;
+        g_GeneralAccept2X = 0;
+        g_GeneralAccept2Y = 0;
+        g_MailTakeAllX = 0;
+        g_MailTakeAllY = 0;
+        g_CraftFilterX = 0;
+        g_CraftFilterY = 0;
+        g_CraftCollapseX = 0;
+        g_CraftCollapseY = 0;
+        g_CraftCloseX = 0;
+        g_CraftCloseY = 0;
         g_GuildHallX = 0;
         g_GuildHallY = 0;
 
@@ -583,6 +633,26 @@ void CheckResolutionChange()
                     g_GeneralAcceptX = std::stoi(line.substr(15));
                 else if (line.find("GeneralAcceptY=") == 0)
                     g_GeneralAcceptY = std::stoi(line.substr(15));
+                else if (line.find("GeneralAccept2X=") == 0)
+                    g_GeneralAccept2X = std::stoi(line.substr(16));
+                else if (line.find("GeneralAccept2Y=") == 0)
+                    g_GeneralAccept2Y = std::stoi(line.substr(16));
+                else if (line.find("MailTakeAllX=") == 0)
+                    g_MailTakeAllX = std::stoi(line.substr(13));
+                else if (line.find("MailTakeAllY=") == 0)
+                    g_MailTakeAllY = std::stoi(line.substr(13));
+                else if (line.find("CraftFilterX=") == 0)
+                    g_CraftFilterX = std::stoi(line.substr(13));
+                else if (line.find("CraftFilterY=") == 0)
+                    g_CraftFilterY = std::stoi(line.substr(13));
+                else if (line.find("CraftCollapseX=") == 0)
+                    g_CraftCollapseX = std::stoi(line.substr(15));
+                else if (line.find("CraftCollapseY=") == 0)
+                    g_CraftCollapseY = std::stoi(line.substr(15));
+                else if (line.find("CraftCloseX=") == 0)
+                    g_CraftCloseX = std::stoi(line.substr(12));
+                else if (line.find("CraftCloseY=") == 0)
+                    g_CraftCloseY = std::stoi(line.substr(12));
                 else if (line.find("GuildHallX=") == 0)
                     g_GuildHallX = std::stoi(line.substr(11));
                 else if (line.find("GuildHallY=") == 0)

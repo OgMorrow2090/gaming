@@ -57,7 +57,12 @@ static CaptureTarget s_Targets[] = {
     {"TP Buy/Sell",       "Trading Post buy/sell button", &g_TpBuySellX,    &g_TpBuySellY},
     {"Wizard Vault Complete", "Wizard Vault Complete button (combo 2nd click)", &g_WizardVaultCompleteX, &g_WizardVaultCompleteY},
     {"Chest Accept",      "Accept dialog that follows opening a chest", &g_AcceptX,       &g_AcceptY},
-    {"General Accept",    "Generic Accept dialog (not chest)", &g_GeneralAcceptX, &g_GeneralAcceptY},
+    {"General Accept 1",  "Generic Accept dialog (slot 1)", &g_GeneralAcceptX, &g_GeneralAcceptY},
+    {"General Accept 2",  "Generic Accept dialog (slot 2)", &g_GeneralAccept2X, &g_GeneralAccept2Y},
+    {"Mail Take All",     "Take All button in Mail panel (combo 2nd click)", &g_MailTakeAllX, &g_MailTakeAllY},
+    {"Craft Filter",      "Crafting filter button (combo 1st click)", &g_CraftFilterX, &g_CraftFilterY},
+    {"Craft Collapse",    "Crafting collapse-all button (combo 2nd click)", &g_CraftCollapseX, &g_CraftCollapseY},
+    {"Craft Close",       "Close button on Crafting window", &g_CraftCloseX, &g_CraftCloseY},
     {"Guild Hall",        "Guild Hall button in Guild panel", &g_GuildHallX,    &g_GuildHallY},
 };
 static constexpr int NUM_TARGETS = sizeof(s_Targets) / sizeof(s_Targets[0]);

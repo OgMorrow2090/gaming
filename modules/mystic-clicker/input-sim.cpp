@@ -513,11 +513,108 @@ void SimulateGeneralAcceptClick()
 {
     if (g_GeneralAcceptX == 0 && g_GeneralAcceptY == 0)
     {
-        APIDefs->GUI_SendAlert("General Accept position not set! Capture first");
+        APIDefs->GUI_SendAlert("General Accept 1 position not set! Capture first");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking General Accept");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking General Accept 1");
     SimulateClickAt(g_GeneralAcceptX, g_GeneralAcceptY);
+}
+
+void SimulateGeneralAccept2Click()
+{
+    if (g_GeneralAccept2X == 0 && g_GeneralAccept2Y == 0)
+    {
+        APIDefs->GUI_SendAlert("General Accept 2 position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking General Accept 2");
+    SimulateClickAt(g_GeneralAccept2X, g_GeneralAccept2Y);
+}
+
+void SimulateMailCombo()
+{
+    // Open Mail via Shift+0 → wait for panel → click Take All
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Mail Combo: Open panel (Shift+0 via SendInput)");
+    EnsureGameWindow();
+
+    // Release any physically-held modifiers from the Nexus chord
+    INPUT clear[4] = {};
+    clear[0].type = INPUT_KEYBOARD; clear[0].ki.wVk = VK_LCONTROL; clear[0].ki.dwFlags = KEYEVENTF_KEYUP;
+    clear[1].type = INPUT_KEYBOARD; clear[1].ki.wVk = VK_RCONTROL; clear[1].ki.dwFlags = KEYEVENTF_KEYUP;
+    clear[2].type = INPUT_KEYBOARD; clear[2].ki.wVk = VK_LSHIFT;   clear[2].ki.dwFlags = KEYEVENTF_KEYUP;
+    clear[3].type = INPUT_KEYBOARD; clear[3].ki.wVk = VK_RSHIFT;   clear[3].ki.dwFlags = KEYEVENTF_KEYUP;
+    SendInput(4, clear, sizeof(INPUT));
+    Sleep(50);
+
+    // Shift+0 (main keyboard 0, VK 0x30)
+    INPUT inputs[4] = {};
+    WORD shiftScan = (WORD)MapVirtualKey(VK_LSHIFT, MAPVK_VK_TO_VSC);
+    WORD zeroScan  = (WORD)MapVirtualKey(0x30, MAPVK_VK_TO_VSC);
+
+    inputs[0].type = INPUT_KEYBOARD;
+    inputs[0].ki.wVk = VK_LSHIFT;
+    inputs[0].ki.wScan = shiftScan;
+    inputs[0].ki.dwFlags = KEYEVENTF_SCANCODE;
+
+    inputs[1].type = INPUT_KEYBOARD;
+    inputs[1].ki.wVk = 0x30;
+    inputs[1].ki.wScan = zeroScan;
+    inputs[1].ki.dwFlags = KEYEVENTF_SCANCODE;
+
+    inputs[2].type = INPUT_KEYBOARD;
+    inputs[2].ki.wVk = 0x30;
+    inputs[2].ki.wScan = zeroScan;
+    inputs[2].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
+
+    inputs[3].type = INPUT_KEYBOARD;
+    inputs[3].ki.wVk = VK_LSHIFT;
+    inputs[3].ki.wScan = shiftScan;
+    inputs[3].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
+
+    SendInput(4, inputs, sizeof(INPUT));
+
+    if (g_MailTakeAllX == 0 && g_MailTakeAllY == 0)
+    {
+        APIDefs->GUI_SendAlert("Mail Take All position not set — panel opened, click skipped. Capture via Ctrl+Shift+C");
+        return;
+    }
+
+    Sleep(1000);
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Mail Combo: Click Take All");
+    SimulateClickAt(g_MailTakeAllX, g_MailTakeAllY);
+}
+
+void SimulateCraftCollapseCombo()
+{
+    if (g_CraftFilterX == 0 && g_CraftFilterY == 0)
+    {
+        APIDefs->GUI_SendAlert("Craft Filter position not set! Capture first");
+        return;
+    }
+    if (g_CraftCollapseX == 0 && g_CraftCollapseY == 0)
+    {
+        APIDefs->GUI_SendAlert("Craft Collapse position not set! Capture first");
+        return;
+    }
+
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Craft Collapse Combo: Filter");
+    SimulateClickAt(g_CraftFilterX, g_CraftFilterY);
+
+    Sleep(100);
+
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Craft Collapse Combo: Collapse");
+    SimulateClickAt(g_CraftCollapseX, g_CraftCollapseY);
+}
+
+void SimulateCraftCloseClick()
+{
+    if (g_CraftCloseX == 0 && g_CraftCloseY == 0)
+    {
+        APIDefs->GUI_SendAlert("Craft Close position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Craft Close");
+    SimulateClickAt(g_CraftCloseX, g_CraftCloseY);
 }
 
 void SimulateGuildHallClick()

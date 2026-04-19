@@ -46,9 +46,16 @@ constexpr const char* TP_BUY_SELL = "TP_BUY_SELL";
 constexpr const char* WIZARD_VAULT_COMPLETE = "WIZARD_VAULT_COMPLETE";
 constexpr const char* WIZARD_VAULT_COMBO = "WIZARD_VAULT_COMBO";
 constexpr const char* ACCEPT = "ACCEPT";                    // "Chest Accept" — post-chest dialog
-constexpr const char* GENERAL_ACCEPT = "GENERAL_ACCEPT";    // Generic Accept dialog
+constexpr const char* GENERAL_ACCEPT = "GENERAL_ACCEPT";    // "General Accept 1"
+constexpr const char* GENERAL_ACCEPT_2 = "GENERAL_ACCEPT_2";
 constexpr const char* GUILD_HALL = "GUILD_HALL";
 constexpr const char* GUILD_HALL_COMBO = "GUILD_HALL_COMBO";
+constexpr const char* MAIL_TAKE_ALL = "MAIL_TAKE_ALL";      // capture only (position)
+constexpr const char* MAIL_COMBO = "MAIL_COMBO";            // Shift+0 → click Take All
+constexpr const char* CRAFT_FILTER = "CRAFT_FILTER";        // capture only
+constexpr const char* CRAFT_COLLAPSE = "CRAFT_COLLAPSE";    // capture only
+constexpr const char* CRAFT_COLLAPSE_COMBO = "CRAFT_COLLAPSE_COMBO"; // click Filter → click Collapse
+constexpr const char* CRAFT_CLOSE = "CRAFT_CLOSE";          // single click to close crafting
 
 // Capture keybind identifiers
 constexpr const char* CAPTURE_CRAFT = "CAPTURE_CRAFT";
@@ -59,7 +66,12 @@ constexpr const char* CAPTURE_TP_BUY_SELL = "CAPTURE_TP_BUY_SELL";
 constexpr const char* CAPTURE_WIZARD_VAULT_COMPLETE = "CAPTURE_WIZARD_VAULT_COMPLETE";
 constexpr const char* CAPTURE_ACCEPT = "CAPTURE_ACCEPT";
 constexpr const char* CAPTURE_GENERAL_ACCEPT = "CAPTURE_GENERAL_ACCEPT";
+constexpr const char* CAPTURE_GENERAL_ACCEPT_2 = "CAPTURE_GENERAL_ACCEPT_2";
 constexpr const char* CAPTURE_GUILD_HALL = "CAPTURE_GUILD_HALL";
+constexpr const char* CAPTURE_MAIL_TAKE_ALL = "CAPTURE_MAIL_TAKE_ALL";
+constexpr const char* CAPTURE_CRAFT_FILTER = "CAPTURE_CRAFT_FILTER";
+constexpr const char* CAPTURE_CRAFT_COLLAPSE = "CAPTURE_CRAFT_COLLAPSE";
+constexpr const char* CAPTURE_CRAFT_CLOSE = "CAPTURE_CRAFT_CLOSE";
 
 // Keybind handler
 void ProcessKeybind(const char* aIdentifier, bool aIsRelease);
@@ -87,6 +99,10 @@ void SimulateWizardVaultCompleteClick();
 void SimulateWizardVaultCombo();  // Wizard Vault → delay → Wizard Vault Complete
 void SimulateAcceptClick();
 void SimulateGeneralAcceptClick();
+void SimulateGeneralAccept2Click();
+void SimulateMailCombo();               // Shift+0 (open Mail) → delay → click Take All
+void SimulateCraftCollapseCombo();      // click Filter → delay → click Collapse
+void SimulateCraftCloseClick();
 void SimulateGuildHallClick();
 void SimulateGuildHallCombo();    // Press G → delay → click Guild Hall button
 void SimulateGenericClick(int slot);
@@ -151,5 +167,15 @@ extern int g_AcceptX;
 extern int g_AcceptY;
 extern int g_GeneralAcceptX;
 extern int g_GeneralAcceptY;
+extern int g_GeneralAccept2X;
+extern int g_GeneralAccept2Y;
+extern int g_MailTakeAllX;
+extern int g_MailTakeAllY;
+extern int g_CraftFilterX;
+extern int g_CraftFilterY;
+extern int g_CraftCollapseX;
+extern int g_CraftCollapseY;
+extern int g_CraftCloseX;
+extern int g_CraftCloseY;
 extern int g_GuildHallX;
 extern int g_GuildHallY;

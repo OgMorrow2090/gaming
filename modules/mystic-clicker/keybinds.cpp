@@ -119,6 +119,22 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     {
         SimulateGeneralAcceptClick();
     }
+    else if (strcmp(aIdentifier, GENERAL_ACCEPT_2) == 0)
+    {
+        SimulateGeneralAccept2Click();
+    }
+    else if (strcmp(aIdentifier, MAIL_COMBO) == 0)
+    {
+        SimulateMailCombo();
+    }
+    else if (strcmp(aIdentifier, CRAFT_COLLAPSE_COMBO) == 0)
+    {
+        SimulateCraftCollapseCombo();
+    }
+    else if (strcmp(aIdentifier, CRAFT_CLOSE) == 0)
+    {
+        SimulateCraftCloseClick();
+    }
     else if (strcmp(aIdentifier, GUILD_HALL) == 0)
     {
         SimulateGuildHallClick();

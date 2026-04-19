@@ -56,7 +56,7 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     // Addon metadata
     AddonDef.Name = "Mystic Clicker";
     AddonDef.Version.Major = 2;
-    AddonDef.Version.Minor = 5;
+    AddonDef.Version.Minor = 6;
     AddonDef.Version.Build = 0;
     AddonDef.Version.Revision = 0;
     AddonDef.Author = "OgMorrow2090";
@@ -148,6 +148,10 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(WIZARD_VAULT_COMBO, ProcessKeybind, "CTRL+SHIFT+F2");
     APIDefs->InputBinds_RegisterWithString(ACCEPT, ProcessKeybind, "CTRL+SHIFT+F3");
     APIDefs->InputBinds_RegisterWithString(GENERAL_ACCEPT, ProcessKeybind, "CTRL+SHIFT+F6");
+    APIDefs->InputBinds_RegisterWithString(GENERAL_ACCEPT_2, ProcessKeybind, "CTRL+SHIFT+F7");
+    APIDefs->InputBinds_RegisterWithString(MAIL_COMBO, ProcessKeybind, "CTRL+SHIFT+F8");
+    APIDefs->InputBinds_RegisterWithString(CRAFT_CLOSE, ProcessKeybind, "CTRL+SHIFT+F9");
+    APIDefs->InputBinds_RegisterWithString(CRAFT_COLLAPSE_COMBO, ProcessKeybind, "CTRL+SHIFT+F10");
     APIDefs->InputBinds_RegisterWithString(GUILD_HALL, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(GUILD_HALL_COMBO, ProcessKeybind, "CTRL+SHIFT+F5");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_CRAFT, ProcessKeybind, "(null)");
@@ -158,6 +162,11 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(CAPTURE_WIZARD_VAULT_COMPLETE, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_GENERAL_ACCEPT, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_GENERAL_ACCEPT_2, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_MAIL_TAKE_ALL, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_CRAFT_FILTER, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_CRAFT_COLLAPSE, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_CRAFT_CLOSE, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_GUILD_HALL, ProcessKeybind, "(null)");
 
     APIDefs->Log(LOGL_INFO, "MysticClicker", "Addon loaded - 32 keybinds.");
@@ -193,6 +202,10 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(WIZARD_VAULT_COMBO);
     APIDefs->InputBinds_Deregister(ACCEPT);
     APIDefs->InputBinds_Deregister(GENERAL_ACCEPT);
+    APIDefs->InputBinds_Deregister(GENERAL_ACCEPT_2);
+    APIDefs->InputBinds_Deregister(MAIL_COMBO);
+    APIDefs->InputBinds_Deregister(CRAFT_CLOSE);
+    APIDefs->InputBinds_Deregister(CRAFT_COLLAPSE_COMBO);
     APIDefs->InputBinds_Deregister(GUILD_HALL);
     APIDefs->InputBinds_Deregister(GUILD_HALL_COMBO);
     APIDefs->InputBinds_Deregister(CAPTURE_CRAFT);
@@ -203,6 +216,11 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(CAPTURE_WIZARD_VAULT_COMPLETE);
     APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT);
     APIDefs->InputBinds_Deregister(CAPTURE_GENERAL_ACCEPT);
+    APIDefs->InputBinds_Deregister(CAPTURE_GENERAL_ACCEPT_2);
+    APIDefs->InputBinds_Deregister(CAPTURE_MAIL_TAKE_ALL);
+    APIDefs->InputBinds_Deregister(CAPTURE_CRAFT_FILTER);
+    APIDefs->InputBinds_Deregister(CAPTURE_CRAFT_COLLAPSE);
+    APIDefs->InputBinds_Deregister(CAPTURE_CRAFT_CLOSE);
     APIDefs->InputBinds_Deregister(CAPTURE_GUILD_HALL);
 
     APIDefs->GUI_Deregister(RenderCaptureWindow);

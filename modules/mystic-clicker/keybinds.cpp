@@ -43,6 +43,10 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     {
         SimulateOpenChestClick();
     }
+    else if (strcmp(aIdentifier, OPEN_CHEST_COMBO) == 0)
+    {
+        SimulateOpenChestCombo();
+    }
     else if (strcmp(aIdentifier, DEPOSIT_AND_SORT) == 0)
     {
         SimulateDepositAndSort();

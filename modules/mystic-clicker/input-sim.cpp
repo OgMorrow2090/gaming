@@ -214,6 +214,31 @@ void SimulateOpenChestClick()
     SimulateRightClickAt(g_ChestX, g_ChestY);
 }
 
+void SimulateOpenChestCombo()
+{
+    // Right-click the chest (opens it) → wait for dialog → click Accept 1 if present.
+    // Safe if the chest doesn't produce an Accept dialog: the trailing click lands
+    // at the captured Accept 1 spot which is typically an empty UI area at that time.
+    if (g_ChestX == 0 && g_ChestY == 0)
+    {
+        APIDefs->GUI_SendAlert("Chest position not set! Use Ctrl+Shift+B to capture");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Open Chest Combo: right-click chest");
+    SimulateRightClickAt(g_ChestX, g_ChestY);
+
+    // Dialog animates in — give it time before clicking Accept
+    Sleep(500);
+
+    if (g_AcceptX == 0 && g_AcceptY == 0)
+    {
+        APIDefs->Log(LOGL_INFO, "MysticClicker", "Open Chest Combo: Accept 1 not captured, skipping accept step");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Open Chest Combo: click Accept 1");
+    SimulateClickAt(g_AcceptX, g_AcceptY);
+}
+
 void SimulateDepositAndSort()
 {
     APIDefs->Log(LOGL_INFO, "MysticClicker", "Combo: Deposit + Sort");

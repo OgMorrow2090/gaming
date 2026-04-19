@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2374"
-	"title"		"Guild Wars 2 - Og v16.26"
+	"revision"		"2375"
+	"title"		"Guild Wars 2 - Og v16.27"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -274,8 +274,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Open Chest, "
-							"binding"		"key_press B, Open Chest, "
+							"binding"		"key_press LEFT_CONTROL, Open Chest Combo, , "
+							"binding"		"key_press LEFT_SHIFT, Open Chest Combo, , "
+							"binding"		"key_press F12, Open Chest Combo, , "
 						}
 						"settings"
 						{

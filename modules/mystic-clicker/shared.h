@@ -28,6 +28,7 @@ void ToggleCaptureWindow();
 constexpr const char* DEPOSIT_MATERIALS = "DEPOSIT_MATERIALS";
 constexpr const char* SORT_INVENTORY = "SORT_INVENTORY";
 constexpr const char* OPEN_CHEST = "OPEN_CHEST";
+constexpr const char* OPEN_CHEST_COMBO = "OPEN_CHEST_COMBO";   // right-click chest → click Accept 1
 constexpr const char* DEPOSIT_AND_SORT = "DEPOSIT_AND_SORT";
 constexpr const char* EXIT_INSTANCE = "EXIT_INSTANCE";
 constexpr const char* YES_DIALOG = "YES_DIALOG";
@@ -89,6 +90,7 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease);
 void SimulateDepositMaterialsClick();
 void SimulateSortInventoryClick();
 void SimulateOpenChestClick();
+void SimulateOpenChestCombo();       // right-click chest → delay → click Accept 1
 void SimulateDepositAndSort();
 void SimulateExitInstanceClick();
 void SimulateYesDialogClick();

@@ -277,10 +277,10 @@ void SimulateYesDialogClick()
 {
     if (g_YesDialogX == 0 && g_YesDialogY == 0)
     {
-        APIDefs->GUI_SendAlert("Yes Dialog position not set! Capture first");
+        APIDefs->GUI_SendAlert("Accept 2 (Yes) position not set! Capture first");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Yes Dialog");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept 2 (Yes)");
     SimulateClickAt(g_YesDialogX, g_YesDialogY);
 }
 
@@ -502,10 +502,10 @@ void SimulateAcceptClick()
 {
     if (g_AcceptX == 0 && g_AcceptY == 0)
     {
-        APIDefs->GUI_SendAlert("Chest Accept position not set! Capture first");
+        APIDefs->GUI_SendAlert("Accept 1 position not set! Capture first");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Chest Accept");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept 1");
     SimulateClickAt(g_AcceptX, g_AcceptY);
 }
 
@@ -513,10 +513,10 @@ void SimulateGeneralAcceptClick()
 {
     if (g_GeneralAcceptX == 0 && g_GeneralAcceptY == 0)
     {
-        APIDefs->GUI_SendAlert("General Accept 1 position not set! Capture first");
+        APIDefs->GUI_SendAlert("Accept 3 position not set! Capture first");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking General Accept 1");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept 3");
     SimulateClickAt(g_GeneralAcceptX, g_GeneralAcceptY);
 }
 
@@ -524,10 +524,10 @@ void SimulateGeneralAccept2Click()
 {
     if (g_GeneralAccept2X == 0 && g_GeneralAccept2Y == 0)
     {
-        APIDefs->GUI_SendAlert("General Accept 2 position not set! Capture first");
+        APIDefs->GUI_SendAlert("Accept 4 position not set! Capture first");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking General Accept 2");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept 4");
     SimulateClickAt(g_GeneralAccept2X, g_GeneralAccept2Y);
 }
 
@@ -535,10 +535,10 @@ void SimulateGeneralAccept3Click()
 {
     if (g_GeneralAccept3X == 0 && g_GeneralAccept3Y == 0)
     {
-        APIDefs->GUI_SendAlert("General Accept 3 position not set! Capture first");
+        APIDefs->GUI_SendAlert("Accept 5 position not set! Capture first");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking General Accept 3");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept 5");
     SimulateClickAt(g_GeneralAccept3X, g_GeneralAccept3Y);
 }
 
@@ -546,49 +546,75 @@ void SimulateGeneralAccept4Click()
 {
     if (g_GeneralAccept4X == 0 && g_GeneralAccept4Y == 0)
     {
-        APIDefs->GUI_SendAlert("General Accept 4 position not set! Capture first");
+        APIDefs->GUI_SendAlert("Accept 6 position not set! Capture first");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking General Accept 4");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept 6");
     SimulateClickAt(g_GeneralAccept4X, g_GeneralAccept4Y);
+}
+
+void SimulateAccept7Click()
+{
+    if (g_Accept7X == 0 && g_Accept7Y == 0)
+    {
+        APIDefs->GUI_SendAlert("Accept 7 position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept 7");
+    SimulateClickAt(g_Accept7X, g_Accept7Y);
+}
+
+void SimulateAccept8Click()
+{
+    if (g_Accept8X == 0 && g_Accept8Y == 0)
+    {
+        APIDefs->GUI_SendAlert("Accept 8 position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept 8");
+    SimulateClickAt(g_Accept8X, g_Accept8Y);
 }
 
 void SimulateGeneralAcceptCombo()
 {
-    // Click GA1 → GA2 → GA3 → GA4 in sequence. Skip any position that
-    // hasn't been captured (so user can use fewer than 4 slots).
-    // 300ms between clicks allows each Accept dialog to close/next to appear.
+    // "Accept Combo" — clicks Accept 1 → 8 in sequence. Skip any position
+    // that hasn't been captured. 300ms between clicks allows each Accept
+    // dialog to close before the next one is triggered.
+    //
+    // Slot mapping (internal identifier -> displayed label):
+    //   1 = ACCEPT (Chest Accept position)    g_AcceptX/Y
+    //   2 = YES_DIALOG                        g_YesDialogX/Y
+    //   3 = GENERAL_ACCEPT                    g_GeneralAcceptX/Y
+    //   4 = GENERAL_ACCEPT_2                  g_GeneralAccept2X/Y
+    //   5 = GENERAL_ACCEPT_3                  g_GeneralAccept3X/Y
+    //   6 = GENERAL_ACCEPT_4                  g_GeneralAccept4X/Y
+    //   7 = ACCEPT_7                          g_Accept7X/Y
+    //   8 = ACCEPT_8                          g_Accept8X/Y
+    struct Slot { int x; int y; const char* name; };
+    Slot slots[8] = {
+        { g_AcceptX,          g_AcceptY,          "Accept Combo: 1 (Chest)" },
+        { g_YesDialogX,       g_YesDialogY,       "Accept Combo: 2 (Yes)" },
+        { g_GeneralAcceptX,   g_GeneralAcceptY,   "Accept Combo: 3" },
+        { g_GeneralAccept2X,  g_GeneralAccept2Y,  "Accept Combo: 4" },
+        { g_GeneralAccept3X,  g_GeneralAccept3Y,  "Accept Combo: 5" },
+        { g_GeneralAccept4X,  g_GeneralAccept4Y,  "Accept Combo: 6" },
+        { g_Accept7X,         g_Accept7Y,         "Accept Combo: 7" },
+        { g_Accept8X,         g_Accept8Y,         "Accept Combo: 8" },
+    };
+
     int fired = 0;
-    if (g_GeneralAcceptX != 0 || g_GeneralAcceptY != 0)
+    for (int i = 0; i < 8; ++i)
     {
-        APIDefs->Log(LOGL_INFO, "MysticClicker", "GA Combo: 1");
-        SimulateClickAt(g_GeneralAcceptX, g_GeneralAcceptY);
+        if (slots[i].x == 0 && slots[i].y == 0) continue;
+        APIDefs->Log(LOGL_INFO, "MysticClicker", slots[i].name);
+        SimulateClickAt(slots[i].x, slots[i].y);
         fired++;
-        Sleep(300);
+        if (i < 7) Sleep(300);
     }
-    if (g_GeneralAccept2X != 0 || g_GeneralAccept2Y != 0)
-    {
-        APIDefs->Log(LOGL_INFO, "MysticClicker", "GA Combo: 2");
-        SimulateClickAt(g_GeneralAccept2X, g_GeneralAccept2Y);
-        fired++;
-        Sleep(300);
-    }
-    if (g_GeneralAccept3X != 0 || g_GeneralAccept3Y != 0)
-    {
-        APIDefs->Log(LOGL_INFO, "MysticClicker", "GA Combo: 3");
-        SimulateClickAt(g_GeneralAccept3X, g_GeneralAccept3Y);
-        fired++;
-        Sleep(300);
-    }
-    if (g_GeneralAccept4X != 0 || g_GeneralAccept4Y != 0)
-    {
-        APIDefs->Log(LOGL_INFO, "MysticClicker", "GA Combo: 4");
-        SimulateClickAt(g_GeneralAccept4X, g_GeneralAccept4Y);
-        fired++;
-    }
+
     if (fired == 0)
     {
-        APIDefs->GUI_SendAlert("No General Accept positions captured! Capture at least one via Ctrl+Shift+C");
+        APIDefs->GUI_SendAlert("No Accept positions captured! Capture at least one via Ctrl+Shift+C");
     }
 }
 

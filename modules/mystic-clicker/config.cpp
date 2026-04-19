@@ -73,6 +73,10 @@ int g_GeneralAccept3X = 0;
 int g_GeneralAccept3Y = 0;
 int g_GeneralAccept4X = 0;
 int g_GeneralAccept4Y = 0;
+int g_Accept7X = 0;
+int g_Accept7Y = 0;
+int g_Accept8X = 0;
+int g_Accept8Y = 0;
 int g_MailTakeAllX = 0;
 int g_MailTakeAllY = 0;
 int g_CraftFilterX = 0;
@@ -337,6 +341,14 @@ void LoadButtonPositions()
             g_GeneralAccept4X = std::stoi(line.substr(16));
         else if (line.find("GeneralAccept4Y=") == 0)
             g_GeneralAccept4Y = std::stoi(line.substr(16));
+        else if (line.find("Accept7X=") == 0)
+            g_Accept7X = std::stoi(line.substr(9));
+        else if (line.find("Accept7Y=") == 0)
+            g_Accept7Y = std::stoi(line.substr(9));
+        else if (line.find("Accept8X=") == 0)
+            g_Accept8X = std::stoi(line.substr(9));
+        else if (line.find("Accept8Y=") == 0)
+            g_Accept8Y = std::stoi(line.substr(9));
         else if (line.find("MailTakeAllX=") == 0)
             g_MailTakeAllX = std::stoi(line.substr(13));
         else if (line.find("MailTakeAllY=") == 0)
@@ -443,6 +455,10 @@ void SaveButtonPositions()
     file << "GeneralAccept3Y=" << g_GeneralAccept3Y << "\n";
     file << "GeneralAccept4X=" << g_GeneralAccept4X << "\n";
     file << "GeneralAccept4Y=" << g_GeneralAccept4Y << "\n";
+    file << "Accept7X=" << g_Accept7X << "\n";
+    file << "Accept7Y=" << g_Accept7Y << "\n";
+    file << "Accept8X=" << g_Accept8X << "\n";
+    file << "Accept8Y=" << g_Accept8Y << "\n";
     file << "MailTakeAllX=" << g_MailTakeAllX << "\n";
     file << "MailTakeAllY=" << g_MailTakeAllY << "\n";
     file << "CraftFilterX=" << g_CraftFilterX << "\n";
@@ -534,6 +550,10 @@ void CheckResolutionChange()
         g_GeneralAccept3Y = 0;
         g_GeneralAccept4X = 0;
         g_GeneralAccept4Y = 0;
+        g_Accept7X = 0;
+        g_Accept7Y = 0;
+        g_Accept8X = 0;
+        g_Accept8Y = 0;
         g_MailTakeAllX = 0;
         g_MailTakeAllY = 0;
         g_CraftFilterX = 0;
@@ -665,6 +685,14 @@ void CheckResolutionChange()
                     g_GeneralAccept4X = std::stoi(line.substr(16));
                 else if (line.find("GeneralAccept4Y=") == 0)
                     g_GeneralAccept4Y = std::stoi(line.substr(16));
+                else if (line.find("Accept7X=") == 0)
+                    g_Accept7X = std::stoi(line.substr(9));
+                else if (line.find("Accept7Y=") == 0)
+                    g_Accept7Y = std::stoi(line.substr(9));
+                else if (line.find("Accept8X=") == 0)
+                    g_Accept8X = std::stoi(line.substr(9));
+                else if (line.find("Accept8Y=") == 0)
+                    g_Accept8Y = std::stoi(line.substr(9));
                 else if (line.find("MailTakeAllX=") == 0)
                     g_MailTakeAllX = std::stoi(line.substr(13));
                 else if (line.find("MailTakeAllY=") == 0)

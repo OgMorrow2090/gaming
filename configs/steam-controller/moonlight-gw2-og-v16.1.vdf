@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2373"
-	"title"		"Guild Wars 2 - Og v16.25"
+	"revision"		"2374"
+	"title"		"Guild Wars 2 - Og v16.26"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -244,8 +244,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Yes Dialog, "
-							"binding"		"key_press P, Yes Dialog, "
+							"binding"		"key_press LEFT_CONTROL, Accept Combo, , "
+							"binding"		"key_press LEFT_SHIFT, Accept Combo, , "
+							"binding"		"key_press F11, Accept Combo, , "
 						}
 					}
 				}

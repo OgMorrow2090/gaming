@@ -27,6 +27,8 @@ int g_ChestX = 0;
 int g_ChestY = 0;
 int g_BouncyAcceptX = 0;
 int g_BouncyAcceptY = 0;
+int g_BouncyMetaCompleteX = 0;
+int g_BouncyMetaCompleteY = 0;
 int g_ExitInstanceX = 0;
 int g_ExitInstanceY = 0;
 int g_Generic1X = 0;
@@ -79,6 +81,10 @@ int g_Accept7X = 0;
 int g_Accept7Y = 0;
 int g_Accept8X = 0;
 int g_Accept8Y = 0;
+int g_Accept9X = 0;
+int g_Accept9Y = 0;
+int g_Accept10X = 0;
+int g_Accept10Y = 0;
 int g_MailTakeAllX = 0;
 int g_MailTakeAllY = 0;
 int g_CraftFilterX = 0;
@@ -355,6 +361,18 @@ void LoadButtonPositions()
             g_Accept8X = std::stoi(line.substr(9));
         else if (line.find("Accept8Y=") == 0)
             g_Accept8Y = std::stoi(line.substr(9));
+        else if (line.find("Accept9X=") == 0)
+            g_Accept9X = std::stoi(line.substr(9));
+        else if (line.find("Accept9Y=") == 0)
+            g_Accept9Y = std::stoi(line.substr(9));
+        else if (line.find("Accept10X=") == 0)
+            g_Accept10X = std::stoi(line.substr(10));
+        else if (line.find("Accept10Y=") == 0)
+            g_Accept10Y = std::stoi(line.substr(10));
+        else if (line.find("BouncyMetaCompleteX=") == 0)
+            g_BouncyMetaCompleteX = std::stoi(line.substr(20));
+        else if (line.find("BouncyMetaCompleteY=") == 0)
+            g_BouncyMetaCompleteY = std::stoi(line.substr(20));
         else if (line.find("MailTakeAllX=") == 0)
             g_MailTakeAllX = std::stoi(line.substr(13));
         else if (line.find("MailTakeAllY=") == 0)
@@ -467,6 +485,12 @@ void SaveButtonPositions()
     file << "Accept7Y=" << g_Accept7Y << "\n";
     file << "Accept8X=" << g_Accept8X << "\n";
     file << "Accept8Y=" << g_Accept8Y << "\n";
+    file << "Accept9X=" << g_Accept9X << "\n";
+    file << "Accept9Y=" << g_Accept9Y << "\n";
+    file << "Accept10X=" << g_Accept10X << "\n";
+    file << "Accept10Y=" << g_Accept10Y << "\n";
+    file << "BouncyMetaCompleteX=" << g_BouncyMetaCompleteX << "\n";
+    file << "BouncyMetaCompleteY=" << g_BouncyMetaCompleteY << "\n";
     file << "MailTakeAllX=" << g_MailTakeAllX << "\n";
     file << "MailTakeAllY=" << g_MailTakeAllY << "\n";
     file << "CraftFilterX=" << g_CraftFilterX << "\n";
@@ -564,6 +588,12 @@ void CheckResolutionChange()
         g_Accept7Y = 0;
         g_Accept8X = 0;
         g_Accept8Y = 0;
+        g_Accept9X = 0;
+        g_Accept9Y = 0;
+        g_Accept10X = 0;
+        g_Accept10Y = 0;
+        g_BouncyMetaCompleteX = 0;
+        g_BouncyMetaCompleteY = 0;
         g_MailTakeAllX = 0;
         g_MailTakeAllY = 0;
         g_CraftFilterX = 0;
@@ -707,6 +737,18 @@ void CheckResolutionChange()
                     g_Accept8X = std::stoi(line.substr(9));
                 else if (line.find("Accept8Y=") == 0)
                     g_Accept8Y = std::stoi(line.substr(9));
+                else if (line.find("Accept9X=") == 0)
+                    g_Accept9X = std::stoi(line.substr(9));
+                else if (line.find("Accept9Y=") == 0)
+                    g_Accept9Y = std::stoi(line.substr(9));
+                else if (line.find("Accept10X=") == 0)
+                    g_Accept10X = std::stoi(line.substr(10));
+                else if (line.find("Accept10Y=") == 0)
+                    g_Accept10Y = std::stoi(line.substr(10));
+                else if (line.find("BouncyMetaCompleteX=") == 0)
+                    g_BouncyMetaCompleteX = std::stoi(line.substr(20));
+                else if (line.find("BouncyMetaCompleteY=") == 0)
+                    g_BouncyMetaCompleteY = std::stoi(line.substr(20));
                 else if (line.find("MailTakeAllX=") == 0)
                     g_MailTakeAllX = std::stoi(line.substr(13));
                 else if (line.find("MailTakeAllY=") == 0)

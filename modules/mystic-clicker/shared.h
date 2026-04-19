@@ -28,8 +28,9 @@ void ToggleCaptureWindow();
 constexpr const char* DEPOSIT_MATERIALS = "DEPOSIT_MATERIALS";
 constexpr const char* SORT_INVENTORY = "SORT_INVENTORY";
 constexpr const char* OPEN_CHEST = "OPEN_CHEST";
-constexpr const char* BOUNCY_ACCEPT = "BOUNCY_ACCEPT";         // dedicated Accept click for chest dialog
-constexpr const char* OPEN_CHEST_COMBO = "OPEN_CHEST_COMBO";   // right-click chest → click Bouncy Accept
+constexpr const char* BOUNCY_ACCEPT = "BOUNCY_ACCEPT";               // dedicated Accept click for chest dialog
+constexpr const char* BOUNCY_META_COMPLETE = "BOUNCY_META_COMPLETE"; // additional Accept for meta completion dialog
+constexpr const char* OPEN_CHEST_COMBO = "OPEN_CHEST_COMBO";         // right-click chest → Bouncy Accept → Bouncy Meta Complete
 constexpr const char* DEPOSIT_AND_SORT = "DEPOSIT_AND_SORT";
 constexpr const char* EXIT_INSTANCE = "EXIT_INSTANCE";
 constexpr const char* YES_DIALOG = "YES_DIALOG";
@@ -54,6 +55,8 @@ constexpr const char* GENERAL_ACCEPT_3 = "GENERAL_ACCEPT_3";
 constexpr const char* GENERAL_ACCEPT_4 = "GENERAL_ACCEPT_4";
 constexpr const char* ACCEPT_7 = "ACCEPT_7";
 constexpr const char* ACCEPT_8 = "ACCEPT_8";
+constexpr const char* ACCEPT_9 = "ACCEPT_9";
+constexpr const char* ACCEPT_10 = "ACCEPT_10";
 constexpr const char* GENERAL_ACCEPT_COMBO = "GENERAL_ACCEPT_COMBO"; // "Accept Combo" — clicks Accept 1 → 8
 constexpr const char* GUILD_HALL = "GUILD_HALL";
 constexpr const char* GUILD_HALL_COMBO = "GUILD_HALL_COMBO";
@@ -78,7 +81,10 @@ constexpr const char* CAPTURE_GENERAL_ACCEPT_3 = "CAPTURE_GENERAL_ACCEPT_3";
 constexpr const char* CAPTURE_GENERAL_ACCEPT_4 = "CAPTURE_GENERAL_ACCEPT_4";
 constexpr const char* CAPTURE_ACCEPT_7 = "CAPTURE_ACCEPT_7";
 constexpr const char* CAPTURE_ACCEPT_8 = "CAPTURE_ACCEPT_8";
+constexpr const char* CAPTURE_ACCEPT_9 = "CAPTURE_ACCEPT_9";
+constexpr const char* CAPTURE_ACCEPT_10 = "CAPTURE_ACCEPT_10";
 constexpr const char* CAPTURE_BOUNCY_ACCEPT = "CAPTURE_BOUNCY_ACCEPT";
+constexpr const char* CAPTURE_BOUNCY_META_COMPLETE = "CAPTURE_BOUNCY_META_COMPLETE";
 constexpr const char* CAPTURE_GUILD_HALL = "CAPTURE_GUILD_HALL";
 constexpr const char* CAPTURE_MAIL_TAKE_ALL = "CAPTURE_MAIL_TAKE_ALL";
 constexpr const char* CAPTURE_CRAFT_FILTER = "CAPTURE_CRAFT_FILTER";
@@ -118,6 +124,9 @@ void SimulateGeneralAccept3Click();
 void SimulateGeneralAccept4Click();
 void SimulateAccept7Click();
 void SimulateAccept8Click();
+void SimulateAccept9Click();
+void SimulateAccept10Click();
+void SimulateBouncyMetaCompleteClick();
 void SimulateGeneralAcceptCombo();       // "Accept Combo" — click Accept 1..8 in sequence
 void SimulateMailCombo();               // Shift+0 (open Mail) → delay → click Take All
 void SimulateCraftCollapseCombo();      // click Filter → delay → click Collapse
@@ -146,6 +155,8 @@ extern int g_ChestX;
 extern int g_ChestY;
 extern int g_BouncyAcceptX;
 extern int g_BouncyAcceptY;
+extern int g_BouncyMetaCompleteX;
+extern int g_BouncyMetaCompleteY;
 extern int g_ExitInstanceX;
 extern int g_ExitInstanceY;
 extern int g_Generic1X;
@@ -198,6 +209,10 @@ extern int g_Accept7X;
 extern int g_Accept7Y;
 extern int g_Accept8X;
 extern int g_Accept8Y;
+extern int g_Accept9X;
+extern int g_Accept9Y;
+extern int g_Accept10X;
+extern int g_Accept10Y;
 extern int g_MailTakeAllX;
 extern int g_MailTakeAllY;
 extern int g_CraftFilterX;

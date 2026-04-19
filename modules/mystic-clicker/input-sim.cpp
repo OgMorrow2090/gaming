@@ -227,9 +227,11 @@ void SimulateBouncyAcceptClick()
 
 void SimulateOpenChestCombo()
 {
-    // Right-click chest (opens it) → wait for dialog → left-click Bouncy Accept.
-    // If Bouncy Accept isn't captured, the Accept step is skipped — combo still
-    // opens the chest (useful when not all chests prompt for Accept).
+    // Right-click chest (opens it) → wait for dialog → click Bouncy Accept →
+    // click Bouncy Meta Complete. Both Accept clicks are optional; whichever
+    // positions are captured will fire. Handles regular chests (no dialog),
+    // bouncy chests (Bouncy Accept dialog), and meta completion chests
+    // (Bouncy Meta Complete dialog, slightly offset).
     if (g_ChestX == 0 && g_ChestY == 0)
     {
         APIDefs->GUI_SendAlert("Bouncy Open position not set! Use Ctrl+Shift+B to capture");
@@ -241,13 +243,18 @@ void SimulateOpenChestCombo()
     // Dialog animates in — give it time before clicking Accept
     Sleep(500);
 
-    if (g_BouncyAcceptX == 0 && g_BouncyAcceptY == 0)
+    if (g_BouncyAcceptX != 0 || g_BouncyAcceptY != 0)
     {
-        APIDefs->Log(LOGL_INFO, "MysticClicker", "Bouncy Combo: Bouncy Accept not captured, skipping");
-        return;
+        APIDefs->Log(LOGL_INFO, "MysticClicker", "Bouncy Combo: click Bouncy Accept");
+        SimulateClickAt(g_BouncyAcceptX, g_BouncyAcceptY);
     }
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Bouncy Combo: click Bouncy Accept");
-    SimulateClickAt(g_BouncyAcceptX, g_BouncyAcceptY);
+
+    if (g_BouncyMetaCompleteX != 0 || g_BouncyMetaCompleteY != 0)
+    {
+        Sleep(200);
+        APIDefs->Log(LOGL_INFO, "MysticClicker", "Bouncy Combo: click Bouncy Meta Complete");
+        SimulateClickAt(g_BouncyMetaCompleteX, g_BouncyMetaCompleteY);
+    }
 }
 
 void SimulateDepositAndSort()
@@ -611,23 +618,46 @@ void SimulateAccept8Click()
     SimulateClickAt(g_Accept8X, g_Accept8Y);
 }
 
+void SimulateAccept9Click()
+{
+    if (g_Accept9X == 0 && g_Accept9Y == 0)
+    {
+        APIDefs->GUI_SendAlert("Accept 9 position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept 9");
+    SimulateClickAt(g_Accept9X, g_Accept9Y);
+}
+
+void SimulateAccept10Click()
+{
+    if (g_Accept10X == 0 && g_Accept10Y == 0)
+    {
+        APIDefs->GUI_SendAlert("Accept 10 position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept 10");
+    SimulateClickAt(g_Accept10X, g_Accept10Y);
+}
+
+void SimulateBouncyMetaCompleteClick()
+{
+    if (g_BouncyMetaCompleteX == 0 && g_BouncyMetaCompleteY == 0)
+    {
+        APIDefs->GUI_SendAlert("Bouncy Meta Complete position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Bouncy Meta Complete");
+    SimulateClickAt(g_BouncyMetaCompleteX, g_BouncyMetaCompleteY);
+}
+
 void SimulateGeneralAcceptCombo()
 {
-    // "Accept Combo" — clicks Accept 1 → 8 in sequence. Skip any position
+    // "Accept Combo" — clicks Accept 1 → 10 in sequence. Skip any position
     // that hasn't been captured. 300ms between clicks allows each Accept
     // dialog to close before the next one is triggered.
-    //
-    // Slot mapping (internal identifier -> displayed label):
-    //   1 = ACCEPT (Chest Accept position)    g_AcceptX/Y
-    //   2 = YES_DIALOG                        g_YesDialogX/Y
-    //   3 = GENERAL_ACCEPT                    g_GeneralAcceptX/Y
-    //   4 = GENERAL_ACCEPT_2                  g_GeneralAccept2X/Y
-    //   5 = GENERAL_ACCEPT_3                  g_GeneralAccept3X/Y
-    //   6 = GENERAL_ACCEPT_4                  g_GeneralAccept4X/Y
-    //   7 = ACCEPT_7                          g_Accept7X/Y
-    //   8 = ACCEPT_8                          g_Accept8X/Y
     struct Slot { int x; int y; const char* name; };
-    Slot slots[8] = {
+    Slot slots[10] = {
         { g_AcceptX,          g_AcceptY,          "Accept Combo: 1 (Chest)" },
         { g_YesDialogX,       g_YesDialogY,       "Accept Combo: 2 (Yes)" },
         { g_GeneralAcceptX,   g_GeneralAcceptY,   "Accept Combo: 3" },
@@ -636,16 +666,18 @@ void SimulateGeneralAcceptCombo()
         { g_GeneralAccept4X,  g_GeneralAccept4Y,  "Accept Combo: 6" },
         { g_Accept7X,         g_Accept7Y,         "Accept Combo: 7" },
         { g_Accept8X,         g_Accept8Y,         "Accept Combo: 8" },
+        { g_Accept9X,         g_Accept9Y,         "Accept Combo: 9" },
+        { g_Accept10X,        g_Accept10Y,        "Accept Combo: 10" },
     };
 
     int fired = 0;
-    for (int i = 0; i < 8; ++i)
+    for (int i = 0; i < 10; ++i)
     {
         if (slots[i].x == 0 && slots[i].y == 0) continue;
         APIDefs->Log(LOGL_INFO, "MysticClicker", slots[i].name);
         SimulateClickAt(slots[i].x, slots[i].y);
         fired++;
-        if (i < 7) Sleep(300);
+        if (i < 9) Sleep(300);
     }
 
     if (fired == 0)

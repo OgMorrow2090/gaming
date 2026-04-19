@@ -55,8 +55,8 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     
     // Addon metadata
     AddonDef.Name = "Mystic Clicker";
-    AddonDef.Version.Major = 2;
-    AddonDef.Version.Minor = 11;
+    AddonDef.Version.Major = 3;
+    AddonDef.Version.Minor = 0;
     AddonDef.Version.Build = 0;
     AddonDef.Version.Revision = 0;
     AddonDef.Author = "OgMorrow2090";

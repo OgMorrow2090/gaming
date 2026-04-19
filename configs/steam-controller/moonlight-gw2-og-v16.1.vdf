@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2368"
-	"title"		"Guild Wars 2 - Og v16.20"
+	"revision"		"2369"
+	"title"		"Guild Wars 2 - Og v16.21"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -867,9 +867,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Close Crafting, , "
-							"binding"		"key_press LEFT_SHIFT, Close Crafting, , "
-							"binding"		"key_press F9, Close Crafting, , "
+							"binding"		"key_press LEFT_CONTROL, Craft Collapse Combo, , "
+							"binding"		"key_press LEFT_SHIFT, Craft Collapse Combo, , "
+							"binding"		"key_press F10, Craft Collapse Combo, , "
 						}
 					}
 					"Long_Press"
@@ -1649,9 +1649,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Craft Collapse Combo, , "
-							"binding"		"key_press LEFT_SHIFT, Craft Collapse Combo, , "
-							"binding"		"key_press F10, Craft Collapse Combo, , "
+							"binding"		"key_press LEFT_CONTROL, Close Crafting, , "
+							"binding"		"key_press LEFT_SHIFT, Close Crafting, , "
+							"binding"		"key_press F9, Close Crafting, , "
 						}
 					}
 				}

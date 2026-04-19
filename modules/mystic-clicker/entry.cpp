@@ -56,7 +56,7 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     // Addon metadata
     AddonDef.Name = "Mystic Clicker";
     AddonDef.Version.Major = 2;
-    AddonDef.Version.Minor = 9;
+    AddonDef.Version.Minor = 10;
     AddonDef.Version.Build = 0;
     AddonDef.Version.Revision = 0;
     AddonDef.Author = "OgMorrow2090";
@@ -129,6 +129,7 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(DEPOSIT_MATERIALS, ProcessKeybind, "CTRL+D");
     APIDefs->InputBinds_RegisterWithString(SORT_INVENTORY, ProcessKeybind, "CTRL+S");
     APIDefs->InputBinds_RegisterWithString(OPEN_CHEST, ProcessKeybind, "CTRL+B");
+    APIDefs->InputBinds_RegisterWithString(BOUNCY_ACCEPT, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(OPEN_CHEST_COMBO, ProcessKeybind, "CTRL+SHIFT+F12");
     APIDefs->InputBinds_RegisterWithString(DEPOSIT_AND_SORT, ProcessKeybind, "CTRL+Q");
     APIDefs->InputBinds_RegisterWithString(SELL_JUNK, ProcessKeybind, "CTRL+J");
@@ -173,6 +174,7 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(CAPTURE_GENERAL_ACCEPT_4, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT_7, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT_8, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_BOUNCY_ACCEPT, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_MAIL_TAKE_ALL, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_CRAFT_FILTER, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_CRAFT_COLLAPSE, ProcessKeybind, "(null)");
@@ -193,6 +195,7 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(DEPOSIT_MATERIALS);
     APIDefs->InputBinds_Deregister(SORT_INVENTORY);
     APIDefs->InputBinds_Deregister(OPEN_CHEST);
+    APIDefs->InputBinds_Deregister(BOUNCY_ACCEPT);
     APIDefs->InputBinds_Deregister(OPEN_CHEST_COMBO);
     APIDefs->InputBinds_Deregister(DEPOSIT_AND_SORT);
     APIDefs->InputBinds_Deregister(SELL_JUNK);
@@ -237,6 +240,7 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(CAPTURE_GENERAL_ACCEPT_4);
     APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT_7);
     APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT_8);
+    APIDefs->InputBinds_Deregister(CAPTURE_BOUNCY_ACCEPT);
     APIDefs->InputBinds_Deregister(CAPTURE_MAIL_TAKE_ALL);
     APIDefs->InputBinds_Deregister(CAPTURE_CRAFT_FILTER);
     APIDefs->InputBinds_Deregister(CAPTURE_CRAFT_COLLAPSE);

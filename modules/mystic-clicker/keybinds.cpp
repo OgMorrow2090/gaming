@@ -47,6 +47,10 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     {
         SimulateOpenChestCombo();
     }
+    else if (strcmp(aIdentifier, BOUNCY_ACCEPT) == 0)
+    {
+        SimulateBouncyAcceptClick();
+    }
     else if (strcmp(aIdentifier, DEPOSIT_AND_SORT) == 0)
     {
         SimulateDepositAndSort();

@@ -25,6 +25,8 @@ int g_SortX = 0;
 int g_SortY = 0;
 int g_ChestX = 0;
 int g_ChestY = 0;
+int g_BouncyAcceptX = 0;
+int g_BouncyAcceptY = 0;
 int g_ExitInstanceX = 0;
 int g_ExitInstanceY = 0;
 int g_Generic1X = 0;
@@ -245,6 +247,10 @@ void LoadButtonPositions()
             g_ChestX = std::stoi(line.substr(7));
         else if (line.find("ChestY=") == 0)
             g_ChestY = std::stoi(line.substr(7));
+        else if (line.find("BouncyAcceptX=") == 0)
+            g_BouncyAcceptX = std::stoi(line.substr(14));
+        else if (line.find("BouncyAcceptY=") == 0)
+            g_BouncyAcceptY = std::stoi(line.substr(14));
         else if (line.find("ExitInstanceX=") == 0)
             g_ExitInstanceX = std::stoi(line.substr(14));
         else if (line.find("ExitInstanceY=") == 0)
@@ -407,6 +413,8 @@ void SaveButtonPositions()
     file << "SortY=" << g_SortY << "\n";
     file << "ChestX=" << g_ChestX << "\n";
     file << "ChestY=" << g_ChestY << "\n";
+    file << "BouncyAcceptX=" << g_BouncyAcceptX << "\n";
+    file << "BouncyAcceptY=" << g_BouncyAcceptY << "\n";
     file << "ExitInstanceX=" << g_ExitInstanceX << "\n";
     file << "ExitInstanceY=" << g_ExitInstanceY << "\n";
     file << "Generic1X=" << g_Generic1X << "\n";
@@ -502,6 +510,8 @@ void CheckResolutionChange()
         g_SortY = 0;
         g_ChestX = 0;
         g_ChestY = 0;
+        g_BouncyAcceptX = 0;
+        g_BouncyAcceptY = 0;
         g_ExitInstanceX = 0;
         g_ExitInstanceY = 0;
         g_Generic1X = 0;
@@ -589,6 +599,10 @@ void CheckResolutionChange()
                     g_ChestX = std::stoi(line.substr(7));
                 else if (line.find("ChestY=") == 0)
                     g_ChestY = std::stoi(line.substr(7));
+                else if (line.find("BouncyAcceptX=") == 0)
+                    g_BouncyAcceptX = std::stoi(line.substr(14));
+                else if (line.find("BouncyAcceptY=") == 0)
+                    g_BouncyAcceptY = std::stoi(line.substr(14));
                 else if (line.find("ExitInstanceX=") == 0)
                     g_ExitInstanceX = std::stoi(line.substr(14));
                 else if (line.find("ExitInstanceY=") == 0)

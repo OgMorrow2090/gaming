@@ -214,29 +214,40 @@ void SimulateOpenChestClick()
     SimulateRightClickAt(g_ChestX, g_ChestY);
 }
 
-void SimulateOpenChestCombo()
+void SimulateBouncyAcceptClick()
 {
-    // Right-click the chest (opens it) → wait for dialog → click Accept 1 if present.
-    // Safe if the chest doesn't produce an Accept dialog: the trailing click lands
-    // at the captured Accept 1 spot which is typically an empty UI area at that time.
-    if (g_ChestX == 0 && g_ChestY == 0)
+    if (g_BouncyAcceptX == 0 && g_BouncyAcceptY == 0)
     {
-        APIDefs->GUI_SendAlert("Chest position not set! Use Ctrl+Shift+B to capture");
+        APIDefs->GUI_SendAlert("Bouncy Accept position not set! Capture first");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Open Chest Combo: right-click chest");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Bouncy Accept");
+    SimulateClickAt(g_BouncyAcceptX, g_BouncyAcceptY);
+}
+
+void SimulateOpenChestCombo()
+{
+    // Right-click chest (opens it) → wait for dialog → left-click Bouncy Accept.
+    // If Bouncy Accept isn't captured, the Accept step is skipped — combo still
+    // opens the chest (useful when not all chests prompt for Accept).
+    if (g_ChestX == 0 && g_ChestY == 0)
+    {
+        APIDefs->GUI_SendAlert("Bouncy Open position not set! Use Ctrl+Shift+B to capture");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Bouncy Combo: right-click Bouncy Open");
     SimulateRightClickAt(g_ChestX, g_ChestY);
 
     // Dialog animates in — give it time before clicking Accept
     Sleep(500);
 
-    if (g_AcceptX == 0 && g_AcceptY == 0)
+    if (g_BouncyAcceptX == 0 && g_BouncyAcceptY == 0)
     {
-        APIDefs->Log(LOGL_INFO, "MysticClicker", "Open Chest Combo: Accept 1 not captured, skipping accept step");
+        APIDefs->Log(LOGL_INFO, "MysticClicker", "Bouncy Combo: Bouncy Accept not captured, skipping");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Open Chest Combo: click Accept 1");
-    SimulateClickAt(g_AcceptX, g_AcceptY);
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Bouncy Combo: click Bouncy Accept");
+    SimulateClickAt(g_BouncyAcceptX, g_BouncyAcceptY);
 }
 
 void SimulateDepositAndSort()

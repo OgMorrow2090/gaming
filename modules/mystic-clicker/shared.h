@@ -28,7 +28,8 @@ void ToggleCaptureWindow();
 constexpr const char* DEPOSIT_MATERIALS = "DEPOSIT_MATERIALS";
 constexpr const char* SORT_INVENTORY = "SORT_INVENTORY";
 constexpr const char* OPEN_CHEST = "OPEN_CHEST";
-constexpr const char* OPEN_CHEST_COMBO = "OPEN_CHEST_COMBO";   // right-click chest → click Accept 1
+constexpr const char* BOUNCY_ACCEPT = "BOUNCY_ACCEPT";         // dedicated Accept click for chest dialog
+constexpr const char* OPEN_CHEST_COMBO = "OPEN_CHEST_COMBO";   // right-click chest → click Bouncy Accept
 constexpr const char* DEPOSIT_AND_SORT = "DEPOSIT_AND_SORT";
 constexpr const char* EXIT_INSTANCE = "EXIT_INSTANCE";
 constexpr const char* YES_DIALOG = "YES_DIALOG";
@@ -77,6 +78,7 @@ constexpr const char* CAPTURE_GENERAL_ACCEPT_3 = "CAPTURE_GENERAL_ACCEPT_3";
 constexpr const char* CAPTURE_GENERAL_ACCEPT_4 = "CAPTURE_GENERAL_ACCEPT_4";
 constexpr const char* CAPTURE_ACCEPT_7 = "CAPTURE_ACCEPT_7";
 constexpr const char* CAPTURE_ACCEPT_8 = "CAPTURE_ACCEPT_8";
+constexpr const char* CAPTURE_BOUNCY_ACCEPT = "CAPTURE_BOUNCY_ACCEPT";
 constexpr const char* CAPTURE_GUILD_HALL = "CAPTURE_GUILD_HALL";
 constexpr const char* CAPTURE_MAIL_TAKE_ALL = "CAPTURE_MAIL_TAKE_ALL";
 constexpr const char* CAPTURE_CRAFT_FILTER = "CAPTURE_CRAFT_FILTER";
@@ -90,7 +92,8 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease);
 void SimulateDepositMaterialsClick();
 void SimulateSortInventoryClick();
 void SimulateOpenChestClick();
-void SimulateOpenChestCombo();       // right-click chest → delay → click Accept 1
+void SimulateBouncyAcceptClick();
+void SimulateOpenChestCombo();       // right-click chest → delay → click Bouncy Accept
 void SimulateDepositAndSort();
 void SimulateExitInstanceClick();
 void SimulateYesDialogClick();
@@ -141,6 +144,8 @@ extern int g_SortX;
 extern int g_SortY;
 extern int g_ChestX;
 extern int g_ChestY;
+extern int g_BouncyAcceptX;
+extern int g_BouncyAcceptY;
 extern int g_ExitInstanceX;
 extern int g_ExitInstanceY;
 extern int g_Generic1X;

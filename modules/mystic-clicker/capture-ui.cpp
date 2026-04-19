@@ -41,7 +41,8 @@ struct CaptureTarget {
 static CaptureTarget s_Targets[] = {
     {"Deposit Materials", "Inventory deposit button",     &g_DepositX,      &g_DepositY},
     {"Sort/Compact",      "Inventory sort button",        &g_SortX,         &g_SortY},
-    {"Bouncy Chest",      "Right-click to open",          &g_ChestX,        &g_ChestY},
+    {"Bouncy Open",       "Right-click bouncy chest (combo step 1)", &g_ChestX, &g_ChestY},
+    {"Bouncy Accept",     "Click Accept dialog for bouncy chest (combo step 2)", &g_BouncyAcceptX, &g_BouncyAcceptY},
     {"Exit Instance",     "Leave instance button",        &g_ExitInstanceX, &g_ExitInstanceY},
     {"Accept 2",          "Accept combo slot 2 (originally Yes Dialog)", &g_YesDialogX, &g_YesDialogY},
     {"Mystic Forge",      "Forge throw button",           &g_MysticForgeX,  &g_MysticForgeY},
@@ -228,8 +229,20 @@ void RenderCaptureWindow()
                     APIDefs->Log(LOGL_INFO, "MysticClicker", logBuf);
                 }
 
+                // Right-click clears the captured position for this target.
+                if (ImGui::IsItemClicked(ImGuiMouseButton_Right) && (*t.posX != 0 || *t.posY != 0))
+                {
+                    *t.posX = 0;
+                    *t.posY = 0;
+                    SaveButtonPositions();
+                    sprintf_s(s_ConfirmMessage, "%s cleared", t.name);
+                    APIDefs->Log(LOGL_INFO, "MysticClicker", s_ConfirmMessage);
+                    s_ShowConfirmation = true;
+                    s_ConfirmStart = std::chrono::steady_clock::now();
+                }
+
                 if (ImGui::IsItemHovered())
-                    ImGui::SetTooltip("%s", t.description);
+                    ImGui::SetTooltip("%s\n(right-click to clear)", t.description);
             }
         }
 

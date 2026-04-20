@@ -13,6 +13,7 @@
 #include "shared.h"
 #include "imgui/imgui.h"
 #include <cstdio>
+#include <cstring>
 #include <chrono>
 
 // Capture window state
@@ -200,9 +201,34 @@ void RenderCaptureWindow()
             ImGui::Spacing();
         }
 
-        // Target buttons — always visible, disabled during countdown
-        for (int i = 0; i < NUM_TARGETS; i++)
+        // Build sorted display order: uncaptured first, then captured; within each
+        // group A-Z by name. Rebuilt every frame — NUM_TARGETS is small so the
+        // insertion sort cost is negligible.
+        int order[NUM_TARGETS];
+        for (int i = 0; i < NUM_TARGETS; ++i) order[i] = i;
+        for (int i = 1; i < NUM_TARGETS; ++i)
         {
+            int cur = order[i];
+            bool curSet = (*s_Targets[cur].posX != 0 || *s_Targets[cur].posY != 0);
+            int j = i - 1;
+            while (j >= 0)
+            {
+                int prev = order[j];
+                bool prevSet = (*s_Targets[prev].posX != 0 || *s_Targets[prev].posY != 0);
+                bool swap = false;
+                if (!curSet && prevSet) swap = true;
+                else if (curSet == prevSet && strcmp(s_Targets[cur].name, s_Targets[prev].name) < 0) swap = true;
+                if (!swap) break;
+                order[j + 1] = prev;
+                --j;
+            }
+            order[j + 1] = cur;
+        }
+
+        // Target buttons — always visible, disabled during countdown
+        for (int idx = 0; idx < NUM_TARGETS; idx++)
+        {
+            int i = order[idx];
             CaptureTarget& t = s_Targets[i];
 
             char label[128];

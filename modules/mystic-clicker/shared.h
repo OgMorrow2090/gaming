@@ -73,6 +73,9 @@ constexpr const char* ACCEPT_14 = "ACCEPT_14";
 constexpr const char* ACCEPT_15 = "ACCEPT_15";
 constexpr const char* GENERAL_ACCEPT_COMBO = "GENERAL_ACCEPT_COMBO"; // "Accept Combo" — clicks Accept 1 → 15
 constexpr const char* LFG_COMBO = "LFG_COMBO";                      // press Y (open LFG) → click Search tab
+constexpr const char* TELEPORT_FRIEND_COMBO = "TELEPORT_FRIEND_COMBO"; // press I → double-click captured portal icon
+constexpr const char* TRADING_POST_COMBO_KEY = "TRADING_POST_COMBO";   // press I → double-click captured portable TP icon
+constexpr const char* BANK_COMBO = "BANK_COMBO";                       // press I → double-click captured portable Bank icon
 constexpr const char* WIZARD_VAULT_DAILY_TAB = "WIZARD_VAULT_DAILY_TAB";     // capture only
 constexpr const char* WIZARD_VAULT_WEEKLY_TAB = "WIZARD_VAULT_WEEKLY_TAB";   // capture only
 constexpr const char* WIZARD_VAULT_SPECIAL_TAB = "WIZARD_VAULT_SPECIAL_TAB"; // capture only
@@ -110,6 +113,9 @@ constexpr const char* CAPTURE_WIZARD_VAULT_DAILY_TAB = "CAPTURE_WIZARD_VAULT_DAI
 constexpr const char* CAPTURE_WIZARD_VAULT_WEEKLY_TAB = "CAPTURE_WIZARD_VAULT_WEEKLY_TAB";
 constexpr const char* CAPTURE_WIZARD_VAULT_SPECIAL_TAB = "CAPTURE_WIZARD_VAULT_SPECIAL_TAB";
 constexpr const char* CAPTURE_LFG_SEARCH = "CAPTURE_LFG_SEARCH";
+constexpr const char* CAPTURE_TELEPORT_FRIEND = "CAPTURE_TELEPORT_FRIEND";
+constexpr const char* CAPTURE_TRADING_POST_ICON = "CAPTURE_TRADING_POST_ICON";
+constexpr const char* CAPTURE_BANK_ICON = "CAPTURE_BANK_ICON";
 constexpr const char* CAPTURE_BOUNCY_ACCEPT = "CAPTURE_BOUNCY_ACCEPT";
 constexpr const char* CAPTURE_BOUNCY_META_COMPLETE = "CAPTURE_BOUNCY_META_COMPLETE";
 constexpr const char* CAPTURE_GUILD_HALL = "CAPTURE_GUILD_HALL";
@@ -161,6 +167,10 @@ void SimulateAccept15Click();
 void SimulateBouncyMetaCompleteClick();
 void SimulateGeneralAcceptCombo();       // "Accept Combo" — click Accept 1..15 in sequence
 void SimulateLfgCombo();                // press Y (open LFG) → delay → click Search tab
+void SimulateTeleportFriendCombo();     // press I (open inventory) → delay → double-click Teleport to Friend
+void SimulateTradingPostCombo();        // press I (open inventory) → delay → double-click portable TP
+void SimulateBankCombo();               // press I (open inventory) → delay → double-click portable Bank
+void SimulateDoubleClickAt(int x, int y);
 void SimulateMailCombo();               // Shift+0 (open Mail) → delay → click Take All
 void SimulateCraftCollapseCombo();      // click Filter → delay → click Collapse
 void SimulateCraftCloseClick();
@@ -264,6 +274,12 @@ extern int g_WizardVaultSpecialTabX;
 extern int g_WizardVaultSpecialTabY;
 extern int g_LfgSearchX;
 extern int g_LfgSearchY;
+extern int g_TeleportFriendX;
+extern int g_TeleportFriendY;
+extern int g_TradingPostIconX;
+extern int g_TradingPostIconY;
+extern int g_BankIconX;
+extern int g_BankIconY;
 extern int g_MailTakeAllX;
 extern int g_MailTakeAllY;
 extern int g_CraftFilterX;

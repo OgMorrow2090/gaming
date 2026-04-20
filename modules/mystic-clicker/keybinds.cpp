@@ -179,6 +179,18 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     {
         SimulateLfgCombo();
     }
+    else if (strcmp(aIdentifier, TELEPORT_FRIEND_COMBO) == 0)
+    {
+        SimulateTeleportFriendCombo();
+    }
+    else if (strcmp(aIdentifier, TRADING_POST_COMBO_KEY) == 0)
+    {
+        SimulateTradingPostCombo();
+    }
+    else if (strcmp(aIdentifier, BANK_COMBO) == 0)
+    {
+        SimulateBankCombo();
+    }
     else if (strcmp(aIdentifier, BOUNCY_META_COMPLETE) == 0)
     {
         SimulateBouncyMetaCompleteClick();

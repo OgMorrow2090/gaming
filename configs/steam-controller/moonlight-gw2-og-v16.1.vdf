@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2380"
-	"title"		"Guild Wars 2 - Og v17.2"
+	"revision"		"2381"
+	"title"		"Guild Wars 2 - Og v17.3"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -1724,17 +1724,6 @@
 				{
 				}
 			}
-
-			"button_y"
-			{
-				"activators"
-				{
-
-				}
-				"disabled_activators"
-				{
-				}
-			}
 		}
 		"settings"
 		{
@@ -2136,25 +2125,31 @@
 			{
 				"activators"
 				{
-					"Long_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_SHIFT, , "
-							"binding"		"mouse_button LEFT, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"3"
-							"delay_end"		"50"
-						}
-					}
 					"Full_Press"
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Item Details, "
-							"binding"		"key_press COMMA, Item Details, "
+							"binding"		"key_press LEFT_CONTROL, Teleport to Friend, , "
+							"binding"		"key_press LEFT_ALT, Teleport to Friend, , "
+							"binding"		"key_press F1, Teleport to Friend, , "
+						}
+					}
+					"Double_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Trading Post Combo, , "
+							"binding"		"key_press LEFT_ALT, Trading Post Combo, , "
+							"binding"		"key_press F2, Trading Post Combo, , "
+						}
+					}
+					"Long_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Bank Combo, , "
+							"binding"		"key_press LEFT_ALT, Bank Combo, , "
+							"binding"		"key_press F3, Bank Combo, , "
 						}
 					}
 				}

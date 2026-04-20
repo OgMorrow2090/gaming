@@ -103,6 +103,12 @@ int g_WizardVaultSpecialTabX = 0;
 int g_WizardVaultSpecialTabY = 0;
 int g_LfgSearchX = 0;
 int g_LfgSearchY = 0;
+int g_TeleportFriendX = 0;
+int g_TeleportFriendY = 0;
+int g_TradingPostIconX = 0;
+int g_TradingPostIconY = 0;
+int g_BankIconX = 0;
+int g_BankIconY = 0;
 int g_MailTakeAllX = 0;
 int g_MailTakeAllY = 0;
 int g_CraftFilterX = 0;
@@ -430,6 +436,18 @@ void LoadButtonPositions()
             g_LfgSearchX = std::stoi(line.substr(11));
         else if (line.find("LfgSearchY=") == 0)
             g_LfgSearchY = std::stoi(line.substr(11));
+        else if (line.find("TeleportFriendX=") == 0)
+            g_TeleportFriendX = std::stoi(line.substr(16));
+        else if (line.find("TeleportFriendY=") == 0)
+            g_TeleportFriendY = std::stoi(line.substr(16));
+        else if (line.find("TradingPostIconX=") == 0)
+            g_TradingPostIconX = std::stoi(line.substr(17));
+        else if (line.find("TradingPostIconY=") == 0)
+            g_TradingPostIconY = std::stoi(line.substr(17));
+        else if (line.find("BankIconX=") == 0)
+            g_BankIconX = std::stoi(line.substr(10));
+        else if (line.find("BankIconY=") == 0)
+            g_BankIconY = std::stoi(line.substr(10));
         else if (line.find("BouncyMetaCompleteX=") == 0)
             g_BouncyMetaCompleteX = std::stoi(line.substr(20));
         else if (line.find("BouncyMetaCompleteY=") == 0)
@@ -576,6 +594,12 @@ void SaveButtonPositions()
     file << "WizardVaultSpecialTabY=" << g_WizardVaultSpecialTabY << "\n";
     file << "LfgSearchX=" << g_LfgSearchX << "\n";
     file << "LfgSearchY=" << g_LfgSearchY << "\n";
+    file << "TeleportFriendX=" << g_TeleportFriendX << "\n";
+    file << "TeleportFriendY=" << g_TeleportFriendY << "\n";
+    file << "TradingPostIconX=" << g_TradingPostIconX << "\n";
+    file << "TradingPostIconY=" << g_TradingPostIconY << "\n";
+    file << "BankIconX=" << g_BankIconX << "\n";
+    file << "BankIconY=" << g_BankIconY << "\n";
     file << "BouncyMetaCompleteX=" << g_BouncyMetaCompleteX << "\n";
     file << "BouncyMetaCompleteY=" << g_BouncyMetaCompleteY << "\n";
     file << "MailTakeAllX=" << g_MailTakeAllX << "\n";
@@ -701,6 +725,12 @@ void CheckResolutionChange()
         g_WizardVaultSpecialTabY = 0;
         g_LfgSearchX = 0;
         g_LfgSearchY = 0;
+        g_TeleportFriendX = 0;
+        g_TeleportFriendY = 0;
+        g_TradingPostIconX = 0;
+        g_TradingPostIconY = 0;
+        g_BankIconX = 0;
+        g_BankIconY = 0;
         g_BouncyMetaCompleteX = 0;
         g_BouncyMetaCompleteY = 0;
         g_MailTakeAllX = 0;

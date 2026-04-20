@@ -152,6 +152,44 @@ void SimulateKeyPress(WPARAM vkCode)
 }
 
 /**
+ * SimulateDoubleClickAt - Send a left double-click at client coordinates.
+ * Mirrors Windows' real double-click sequence: DOWN, UP, DBLCLK, UP.
+ * GW2 honors WM_LBUTTONDBLCLK for inventory item use (Portable Trading Post, etc.).
+ */
+void SimulateDoubleClickAt(int x, int y)
+{
+    EnsureGameWindow();
+    if (GameWindow == nullptr)
+    {
+        APIDefs->Log(LOGL_WARNING, "MysticClicker", "Game window not available for double-click");
+        return;
+    }
+
+    LPARAM lParam = MAKELPARAM(x, y);
+
+    APIDefs->WndProc_SendToGameOnly(GameWindow, WM_LBUTTONDOWN,   MK_LBUTTON, lParam);
+    APIDefs->WndProc_SendToGameOnly(GameWindow, WM_LBUTTONUP,     0,          lParam);
+    Sleep(30);
+    APIDefs->WndProc_SendToGameOnly(GameWindow, WM_LBUTTONDBLCLK, MK_LBUTTON, lParam);
+    APIDefs->WndProc_SendToGameOnly(GameWindow, WM_LBUTTONUP,     0,          lParam);
+}
+
+// Release any physically-held chord modifiers (Ctrl/Shift/Alt) so subsequent
+// clicks/keypresses aren't treated as Ctrl+Click / Alt+Click etc.
+static void ReleaseChordModifiers()
+{
+    INPUT clear[6] = {};
+    clear[0].type = INPUT_KEYBOARD; clear[0].ki.wVk = VK_LCONTROL; clear[0].ki.dwFlags = KEYEVENTF_KEYUP;
+    clear[1].type = INPUT_KEYBOARD; clear[1].ki.wVk = VK_RCONTROL; clear[1].ki.dwFlags = KEYEVENTF_KEYUP;
+    clear[2].type = INPUT_KEYBOARD; clear[2].ki.wVk = VK_LSHIFT;   clear[2].ki.dwFlags = KEYEVENTF_KEYUP;
+    clear[3].type = INPUT_KEYBOARD; clear[3].ki.wVk = VK_RSHIFT;   clear[3].ki.dwFlags = KEYEVENTF_KEYUP;
+    clear[4].type = INPUT_KEYBOARD; clear[4].ki.wVk = VK_LMENU;    clear[4].ki.dwFlags = KEYEVENTF_KEYUP;
+    clear[5].type = INPUT_KEYBOARD; clear[5].ki.wVk = VK_RMENU;    clear[5].ki.dwFlags = KEYEVENTF_KEYUP;
+    SendInput(6, clear, sizeof(INPUT));
+    Sleep(50);
+}
+
+/**
  * SimulateRightClickAt - Send RIGHT mouse click at coordinates
  */
 void SimulateRightClickAt(int x, int y)
@@ -583,6 +621,56 @@ void SimulateWizardVaultCombo()
         APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Return to Daily tab");
         SimulateClickAt(g_WizardVaultDailyTabX, g_WizardVaultDailyTabY);
     }
+}
+
+// Shared "open inventory and double-click a captured icon" flow.
+// Used by Teleport to Friend / Trading Post / Bank portable-item combos.
+static void OpenInventoryAndDoubleClick(int x, int y, const char* label)
+{
+    if (x == 0 && y == 0)
+    {
+        char buf[128];
+        sprintf_s(buf, "%s position not set! Capture first", label);
+        APIDefs->GUI_SendAlert(buf);
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", label);
+
+    // Release chord modifiers so I isn't read as Ctrl+I etc.
+    ReleaseChordModifiers();
+
+    // Send I via SendInput (scan code) — opens/toggles inventory in GW2 default binds.
+    INPUT inputs[2] = {};
+    WORD iScan = (WORD)MapVirtualKey(0x49, MAPVK_VK_TO_VSC);
+    inputs[0].type = INPUT_KEYBOARD;
+    inputs[0].ki.wVk = 0x49;
+    inputs[0].ki.wScan = iScan;
+    inputs[0].ki.dwFlags = KEYEVENTF_SCANCODE;
+    inputs[1].type = INPUT_KEYBOARD;
+    inputs[1].ki.wVk = 0x49;
+    inputs[1].ki.wScan = iScan;
+    inputs[1].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
+    SendInput(2, inputs, sizeof(INPUT));
+
+    // Inventory panel animation — wait before clicking.
+    Sleep(600);
+
+    SimulateDoubleClickAt(x, y);
+}
+
+void SimulateTeleportFriendCombo()
+{
+    OpenInventoryAndDoubleClick(g_TeleportFriendX, g_TeleportFriendY, "Teleport Friend Combo: open inventory + double-click");
+}
+
+void SimulateTradingPostCombo()
+{
+    OpenInventoryAndDoubleClick(g_TradingPostIconX, g_TradingPostIconY, "Trading Post Combo: open inventory + double-click");
+}
+
+void SimulateBankCombo()
+{
+    OpenInventoryAndDoubleClick(g_BankIconX, g_BankIconY, "Bank Combo: open inventory + double-click");
 }
 
 void SimulateLfgCombo()

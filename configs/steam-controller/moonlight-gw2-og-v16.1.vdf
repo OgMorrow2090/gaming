@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2383"
-	"title"		"Guild Wars 2 - Og v17.3.2"
+	"revision"		"2384"
+	"title"		"Guild Wars 2 - Og v17.3.3"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2131,7 +2131,8 @@
 						{
 							"binding"		"key_press LEFT_CONTROL, Teleport to Friend, , "
 							"binding"		"key_press LEFT_SHIFT, Teleport to Friend, , "
-							"binding"		"key_press PAGE_UP, Teleport to Friend, , "
+							"binding"		"key_press LEFT_ALT, Teleport to Friend, , "
+							"binding"		"key_press F1, Teleport to Friend, , "
 						}
 					}
 					"Double_Press"
@@ -2140,7 +2141,8 @@
 						{
 							"binding"		"key_press LEFT_CONTROL, Trading Post Combo, , "
 							"binding"		"key_press LEFT_SHIFT, Trading Post Combo, , "
-							"binding"		"key_press PAGE_DOWN, Trading Post Combo, , "
+							"binding"		"key_press LEFT_ALT, Trading Post Combo, , "
+							"binding"		"key_press F2, Trading Post Combo, , "
 						}
 					}
 					"Long_Press"
@@ -2149,7 +2151,8 @@
 						{
 							"binding"		"key_press LEFT_CONTROL, Bank Combo, , "
 							"binding"		"key_press LEFT_SHIFT, Bank Combo, , "
-							"binding"		"key_press INSERT, Bank Combo, , "
+							"binding"		"key_press LEFT_ALT, Bank Combo, , "
+							"binding"		"key_press F3, Bank Combo, , "
 						}
 					}
 				}

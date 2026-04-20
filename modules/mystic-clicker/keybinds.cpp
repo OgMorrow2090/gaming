@@ -10,6 +10,7 @@
 
 #include "shared.h"
 #include <cstring>
+#include <cstdio>
 
 /**
  * ProcessKeybind - Keybind callback handler

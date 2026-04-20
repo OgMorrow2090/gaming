@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2379"
-	"title"		"Guild Wars 2 - Og v17.1"
+	"revision"		"2380"
+	"title"		"Guild Wars 2 - Og v17.2"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2407,6 +2407,24 @@
 						{
 							"binding"		"key_press LEFT_CONTROL, Toggle Paths, , "
 							"binding"		"key_press F3, Toggle Paths, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_2"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Reset Windows, , "
+							"binding"		"key_press LEFT_SHIFT, Reset Windows, , "
+							"binding"		"key_press HOME, Reset Windows, , "
 						}
 					}
 				}

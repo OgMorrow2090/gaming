@@ -57,7 +57,14 @@ constexpr const char* ACCEPT_7 = "ACCEPT_7";
 constexpr const char* ACCEPT_8 = "ACCEPT_8";
 constexpr const char* ACCEPT_9 = "ACCEPT_9";
 constexpr const char* ACCEPT_10 = "ACCEPT_10";
-constexpr const char* GENERAL_ACCEPT_COMBO = "GENERAL_ACCEPT_COMBO"; // "Accept Combo" — clicks Accept 1 → 8
+constexpr const char* ACCEPT_11 = "ACCEPT_11";
+constexpr const char* ACCEPT_12 = "ACCEPT_12";
+constexpr const char* ACCEPT_13 = "ACCEPT_13";
+constexpr const char* ACCEPT_14 = "ACCEPT_14";
+constexpr const char* ACCEPT_15 = "ACCEPT_15";
+constexpr const char* GENERAL_ACCEPT_COMBO = "GENERAL_ACCEPT_COMBO"; // "Accept Combo" — clicks Accept 1 → 15
+constexpr const char* LFG_COMBO = "LFG_COMBO";                      // press Y (open LFG) → click Search tab
+constexpr const char* WIZARD_VAULT_WEEKLY_TAB = "WIZARD_VAULT_WEEKLY_TAB"; // capture only
 constexpr const char* GUILD_HALL = "GUILD_HALL";
 constexpr const char* GUILD_HALL_COMBO = "GUILD_HALL_COMBO";
 constexpr const char* MAIL_TAKE_ALL = "MAIL_TAKE_ALL";      // capture only (position)
@@ -83,6 +90,13 @@ constexpr const char* CAPTURE_ACCEPT_7 = "CAPTURE_ACCEPT_7";
 constexpr const char* CAPTURE_ACCEPT_8 = "CAPTURE_ACCEPT_8";
 constexpr const char* CAPTURE_ACCEPT_9 = "CAPTURE_ACCEPT_9";
 constexpr const char* CAPTURE_ACCEPT_10 = "CAPTURE_ACCEPT_10";
+constexpr const char* CAPTURE_ACCEPT_11 = "CAPTURE_ACCEPT_11";
+constexpr const char* CAPTURE_ACCEPT_12 = "CAPTURE_ACCEPT_12";
+constexpr const char* CAPTURE_ACCEPT_13 = "CAPTURE_ACCEPT_13";
+constexpr const char* CAPTURE_ACCEPT_14 = "CAPTURE_ACCEPT_14";
+constexpr const char* CAPTURE_ACCEPT_15 = "CAPTURE_ACCEPT_15";
+constexpr const char* CAPTURE_WIZARD_VAULT_WEEKLY_TAB = "CAPTURE_WIZARD_VAULT_WEEKLY_TAB";
+constexpr const char* CAPTURE_LFG_SEARCH = "CAPTURE_LFG_SEARCH";
 constexpr const char* CAPTURE_BOUNCY_ACCEPT = "CAPTURE_BOUNCY_ACCEPT";
 constexpr const char* CAPTURE_BOUNCY_META_COMPLETE = "CAPTURE_BOUNCY_META_COMPLETE";
 constexpr const char* CAPTURE_GUILD_HALL = "CAPTURE_GUILD_HALL";
@@ -126,8 +140,14 @@ void SimulateAccept7Click();
 void SimulateAccept8Click();
 void SimulateAccept9Click();
 void SimulateAccept10Click();
+void SimulateAccept11Click();
+void SimulateAccept12Click();
+void SimulateAccept13Click();
+void SimulateAccept14Click();
+void SimulateAccept15Click();
 void SimulateBouncyMetaCompleteClick();
-void SimulateGeneralAcceptCombo();       // "Accept Combo" — click Accept 1..8 in sequence
+void SimulateGeneralAcceptCombo();       // "Accept Combo" — click Accept 1..15 in sequence
+void SimulateLfgCombo();                // press Y (open LFG) → delay → click Search tab
 void SimulateMailCombo();               // Shift+0 (open Mail) → delay → click Take All
 void SimulateCraftCollapseCombo();      // click Filter → delay → click Collapse
 void SimulateCraftCloseClick();
@@ -213,6 +233,20 @@ extern int g_Accept9X;
 extern int g_Accept9Y;
 extern int g_Accept10X;
 extern int g_Accept10Y;
+extern int g_Accept11X;
+extern int g_Accept11Y;
+extern int g_Accept12X;
+extern int g_Accept12Y;
+extern int g_Accept13X;
+extern int g_Accept13Y;
+extern int g_Accept14X;
+extern int g_Accept14Y;
+extern int g_Accept15X;
+extern int g_Accept15Y;
+extern int g_WizardVaultWeeklyTabX;
+extern int g_WizardVaultWeeklyTabY;
+extern int g_LfgSearchX;
+extern int g_LfgSearchY;
 extern int g_MailTakeAllX;
 extern int g_MailTakeAllY;
 extern int g_CraftFilterX;

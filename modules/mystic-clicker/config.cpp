@@ -85,6 +85,20 @@ int g_Accept9X = 0;
 int g_Accept9Y = 0;
 int g_Accept10X = 0;
 int g_Accept10Y = 0;
+int g_Accept11X = 0;
+int g_Accept11Y = 0;
+int g_Accept12X = 0;
+int g_Accept12Y = 0;
+int g_Accept13X = 0;
+int g_Accept13Y = 0;
+int g_Accept14X = 0;
+int g_Accept14Y = 0;
+int g_Accept15X = 0;
+int g_Accept15Y = 0;
+int g_WizardVaultWeeklyTabX = 0;
+int g_WizardVaultWeeklyTabY = 0;
+int g_LfgSearchX = 0;
+int g_LfgSearchY = 0;
 int g_MailTakeAllX = 0;
 int g_MailTakeAllY = 0;
 int g_CraftFilterX = 0;
@@ -369,6 +383,34 @@ void LoadButtonPositions()
             g_Accept10X = std::stoi(line.substr(10));
         else if (line.find("Accept10Y=") == 0)
             g_Accept10Y = std::stoi(line.substr(10));
+        else if (line.find("Accept11X=") == 0)
+            g_Accept11X = std::stoi(line.substr(10));
+        else if (line.find("Accept11Y=") == 0)
+            g_Accept11Y = std::stoi(line.substr(10));
+        else if (line.find("Accept12X=") == 0)
+            g_Accept12X = std::stoi(line.substr(10));
+        else if (line.find("Accept12Y=") == 0)
+            g_Accept12Y = std::stoi(line.substr(10));
+        else if (line.find("Accept13X=") == 0)
+            g_Accept13X = std::stoi(line.substr(10));
+        else if (line.find("Accept13Y=") == 0)
+            g_Accept13Y = std::stoi(line.substr(10));
+        else if (line.find("Accept14X=") == 0)
+            g_Accept14X = std::stoi(line.substr(10));
+        else if (line.find("Accept14Y=") == 0)
+            g_Accept14Y = std::stoi(line.substr(10));
+        else if (line.find("Accept15X=") == 0)
+            g_Accept15X = std::stoi(line.substr(10));
+        else if (line.find("Accept15Y=") == 0)
+            g_Accept15Y = std::stoi(line.substr(10));
+        else if (line.find("WizardVaultWeeklyTabX=") == 0)
+            g_WizardVaultWeeklyTabX = std::stoi(line.substr(22));
+        else if (line.find("WizardVaultWeeklyTabY=") == 0)
+            g_WizardVaultWeeklyTabY = std::stoi(line.substr(22));
+        else if (line.find("LfgSearchX=") == 0)
+            g_LfgSearchX = std::stoi(line.substr(11));
+        else if (line.find("LfgSearchY=") == 0)
+            g_LfgSearchY = std::stoi(line.substr(11));
         else if (line.find("BouncyMetaCompleteX=") == 0)
             g_BouncyMetaCompleteX = std::stoi(line.substr(20));
         else if (line.find("BouncyMetaCompleteY=") == 0)
@@ -489,6 +531,20 @@ void SaveButtonPositions()
     file << "Accept9Y=" << g_Accept9Y << "\n";
     file << "Accept10X=" << g_Accept10X << "\n";
     file << "Accept10Y=" << g_Accept10Y << "\n";
+    file << "Accept11X=" << g_Accept11X << "\n";
+    file << "Accept11Y=" << g_Accept11Y << "\n";
+    file << "Accept12X=" << g_Accept12X << "\n";
+    file << "Accept12Y=" << g_Accept12Y << "\n";
+    file << "Accept13X=" << g_Accept13X << "\n";
+    file << "Accept13Y=" << g_Accept13Y << "\n";
+    file << "Accept14X=" << g_Accept14X << "\n";
+    file << "Accept14Y=" << g_Accept14Y << "\n";
+    file << "Accept15X=" << g_Accept15X << "\n";
+    file << "Accept15Y=" << g_Accept15Y << "\n";
+    file << "WizardVaultWeeklyTabX=" << g_WizardVaultWeeklyTabX << "\n";
+    file << "WizardVaultWeeklyTabY=" << g_WizardVaultWeeklyTabY << "\n";
+    file << "LfgSearchX=" << g_LfgSearchX << "\n";
+    file << "LfgSearchY=" << g_LfgSearchY << "\n";
     file << "BouncyMetaCompleteX=" << g_BouncyMetaCompleteX << "\n";
     file << "BouncyMetaCompleteY=" << g_BouncyMetaCompleteY << "\n";
     file << "MailTakeAllX=" << g_MailTakeAllX << "\n";
@@ -592,6 +648,20 @@ void CheckResolutionChange()
         g_Accept9Y = 0;
         g_Accept10X = 0;
         g_Accept10Y = 0;
+        g_Accept11X = 0;
+        g_Accept11Y = 0;
+        g_Accept12X = 0;
+        g_Accept12Y = 0;
+        g_Accept13X = 0;
+        g_Accept13Y = 0;
+        g_Accept14X = 0;
+        g_Accept14Y = 0;
+        g_Accept15X = 0;
+        g_Accept15Y = 0;
+        g_WizardVaultWeeklyTabX = 0;
+        g_WizardVaultWeeklyTabY = 0;
+        g_LfgSearchX = 0;
+        g_LfgSearchY = 0;
         g_BouncyMetaCompleteX = 0;
         g_BouncyMetaCompleteY = 0;
         g_MailTakeAllX = 0;
@@ -745,6 +815,34 @@ void CheckResolutionChange()
                     g_Accept10X = std::stoi(line.substr(10));
                 else if (line.find("Accept10Y=") == 0)
                     g_Accept10Y = std::stoi(line.substr(10));
+                else if (line.find("Accept11X=") == 0)
+                    g_Accept11X = std::stoi(line.substr(10));
+                else if (line.find("Accept11Y=") == 0)
+                    g_Accept11Y = std::stoi(line.substr(10));
+                else if (line.find("Accept12X=") == 0)
+                    g_Accept12X = std::stoi(line.substr(10));
+                else if (line.find("Accept12Y=") == 0)
+                    g_Accept12Y = std::stoi(line.substr(10));
+                else if (line.find("Accept13X=") == 0)
+                    g_Accept13X = std::stoi(line.substr(10));
+                else if (line.find("Accept13Y=") == 0)
+                    g_Accept13Y = std::stoi(line.substr(10));
+                else if (line.find("Accept14X=") == 0)
+                    g_Accept14X = std::stoi(line.substr(10));
+                else if (line.find("Accept14Y=") == 0)
+                    g_Accept14Y = std::stoi(line.substr(10));
+                else if (line.find("Accept15X=") == 0)
+                    g_Accept15X = std::stoi(line.substr(10));
+                else if (line.find("Accept15Y=") == 0)
+                    g_Accept15Y = std::stoi(line.substr(10));
+                else if (line.find("WizardVaultWeeklyTabX=") == 0)
+                    g_WizardVaultWeeklyTabX = std::stoi(line.substr(22));
+                else if (line.find("WizardVaultWeeklyTabY=") == 0)
+                    g_WizardVaultWeeklyTabY = std::stoi(line.substr(22));
+                else if (line.find("LfgSearchX=") == 0)
+                    g_LfgSearchX = std::stoi(line.substr(11));
+                else if (line.find("LfgSearchY=") == 0)
+                    g_LfgSearchY = std::stoi(line.substr(11));
                 else if (line.find("BouncyMetaCompleteX=") == 0)
                     g_BouncyMetaCompleteX = std::stoi(line.substr(20));
                 else if (line.find("BouncyMetaCompleteY=") == 0)

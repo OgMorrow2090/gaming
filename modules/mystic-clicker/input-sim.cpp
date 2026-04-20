@@ -251,7 +251,7 @@ void SimulateOpenChestCombo()
 
     if (g_BouncyMetaCompleteX != 0 || g_BouncyMetaCompleteY != 0)
     {
-        Sleep(200);
+        Sleep(100);
         APIDefs->Log(LOGL_INFO, "MysticClicker", "Bouncy Combo: click Bouncy Meta Complete");
         SimulateClickAt(g_BouncyMetaCompleteX, g_BouncyMetaCompleteY);
     }
@@ -532,13 +532,72 @@ void SimulateWizardVaultCombo()
     // Wait for panel animation before clicking
     Sleep(1000);
 
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Collect");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Daily Collect");
     SimulateClickAt(g_WizardVaultX, g_WizardVaultY);
 
     Sleep(100);
 
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Complete");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Daily Complete");
     SimulateClickAt(g_WizardVaultCompleteX, g_WizardVaultCompleteY);
+
+    // Weekly tab is optional — if captured, switch tabs and re-click items/total.
+    // Layout is identical to daily so we reuse the same WV/WV Complete positions.
+    if (g_WizardVaultWeeklyTabX != 0 || g_WizardVaultWeeklyTabY != 0)
+    {
+        Sleep(100);
+        APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Switch to Weekly tab");
+        SimulateClickAt(g_WizardVaultWeeklyTabX, g_WizardVaultWeeklyTabY);
+
+        Sleep(100);
+        APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Weekly Collect");
+        SimulateClickAt(g_WizardVaultX, g_WizardVaultY);
+
+        Sleep(100);
+        APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Weekly Complete");
+        SimulateClickAt(g_WizardVaultCompleteX, g_WizardVaultCompleteY);
+    }
+}
+
+void SimulateLfgCombo()
+{
+    // Open LFG via Y keypress → wait for panel → click Search tab.
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "LFG Combo: Open panel (Y via SendInput)");
+    EnsureGameWindow();
+
+    // Release any physically-held modifiers from the Nexus chord so GW2 sees a clean Y.
+    INPUT clear[4] = {};
+    clear[0].type = INPUT_KEYBOARD; clear[0].ki.wVk = VK_LCONTROL; clear[0].ki.dwFlags = KEYEVENTF_KEYUP;
+    clear[1].type = INPUT_KEYBOARD; clear[1].ki.wVk = VK_RCONTROL; clear[1].ki.dwFlags = KEYEVENTF_KEYUP;
+    clear[2].type = INPUT_KEYBOARD; clear[2].ki.wVk = VK_LSHIFT;   clear[2].ki.dwFlags = KEYEVENTF_KEYUP;
+    clear[3].type = INPUT_KEYBOARD; clear[3].ki.wVk = VK_RSHIFT;   clear[3].ki.dwFlags = KEYEVENTF_KEYUP;
+    SendInput(4, clear, sizeof(INPUT));
+    Sleep(50);
+
+    // Y (VK 0x59)
+    INPUT inputs[2] = {};
+    WORD yScan = (WORD)MapVirtualKey(0x59, MAPVK_VK_TO_VSC);
+
+    inputs[0].type = INPUT_KEYBOARD;
+    inputs[0].ki.wVk = 0x59;
+    inputs[0].ki.wScan = yScan;
+    inputs[0].ki.dwFlags = KEYEVENTF_SCANCODE;
+
+    inputs[1].type = INPUT_KEYBOARD;
+    inputs[1].ki.wVk = 0x59;
+    inputs[1].ki.wScan = yScan;
+    inputs[1].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
+
+    SendInput(2, inputs, sizeof(INPUT));
+
+    if (g_LfgSearchX == 0 && g_LfgSearchY == 0)
+    {
+        APIDefs->GUI_SendAlert("LFG Search position not set — panel opened, click skipped. Capture via Ctrl+Shift+C");
+        return;
+    }
+
+    Sleep(1000);
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "LFG Combo: Click Search tab");
+    SimulateClickAt(g_LfgSearchX, g_LfgSearchY);
 }
 
 void SimulateAcceptClick()
@@ -640,6 +699,61 @@ void SimulateAccept10Click()
     SimulateClickAt(g_Accept10X, g_Accept10Y);
 }
 
+void SimulateAccept11Click()
+{
+    if (g_Accept11X == 0 && g_Accept11Y == 0)
+    {
+        APIDefs->GUI_SendAlert("Accept 11 position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept 11");
+    SimulateClickAt(g_Accept11X, g_Accept11Y);
+}
+
+void SimulateAccept12Click()
+{
+    if (g_Accept12X == 0 && g_Accept12Y == 0)
+    {
+        APIDefs->GUI_SendAlert("Accept 12 position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept 12");
+    SimulateClickAt(g_Accept12X, g_Accept12Y);
+}
+
+void SimulateAccept13Click()
+{
+    if (g_Accept13X == 0 && g_Accept13Y == 0)
+    {
+        APIDefs->GUI_SendAlert("Accept 13 position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept 13");
+    SimulateClickAt(g_Accept13X, g_Accept13Y);
+}
+
+void SimulateAccept14Click()
+{
+    if (g_Accept14X == 0 && g_Accept14Y == 0)
+    {
+        APIDefs->GUI_SendAlert("Accept 14 position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept 14");
+    SimulateClickAt(g_Accept14X, g_Accept14Y);
+}
+
+void SimulateAccept15Click()
+{
+    if (g_Accept15X == 0 && g_Accept15Y == 0)
+    {
+        APIDefs->GUI_SendAlert("Accept 15 position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept 15");
+    SimulateClickAt(g_Accept15X, g_Accept15Y);
+}
+
 void SimulateBouncyMetaCompleteClick()
 {
     if (g_BouncyMetaCompleteX == 0 && g_BouncyMetaCompleteY == 0)
@@ -653,11 +767,10 @@ void SimulateBouncyMetaCompleteClick()
 
 void SimulateGeneralAcceptCombo()
 {
-    // "Accept Combo" — clicks Accept 1 → 10 in sequence. Skip any position
-    // that hasn't been captured. 300ms between clicks allows each Accept
-    // dialog to close before the next one is triggered.
+    // "Accept Combo" — clicks Accept 1 → 15 in sequence. Skip any position
+    // that hasn't been captured. 100ms between clicks.
     struct Slot { int x; int y; const char* name; };
-    Slot slots[10] = {
+    Slot slots[15] = {
         { g_AcceptX,          g_AcceptY,          "Accept Combo: 1 (Chest)" },
         { g_YesDialogX,       g_YesDialogY,       "Accept Combo: 2 (Yes)" },
         { g_GeneralAcceptX,   g_GeneralAcceptY,   "Accept Combo: 3" },
@@ -668,16 +781,21 @@ void SimulateGeneralAcceptCombo()
         { g_Accept8X,         g_Accept8Y,         "Accept Combo: 8" },
         { g_Accept9X,         g_Accept9Y,         "Accept Combo: 9" },
         { g_Accept10X,        g_Accept10Y,        "Accept Combo: 10" },
+        { g_Accept11X,        g_Accept11Y,        "Accept Combo: 11" },
+        { g_Accept12X,        g_Accept12Y,        "Accept Combo: 12" },
+        { g_Accept13X,        g_Accept13Y,        "Accept Combo: 13" },
+        { g_Accept14X,        g_Accept14Y,        "Accept Combo: 14" },
+        { g_Accept15X,        g_Accept15Y,        "Accept Combo: 15" },
     };
 
     int fired = 0;
-    for (int i = 0; i < 10; ++i)
+    for (int i = 0; i < 15; ++i)
     {
         if (slots[i].x == 0 && slots[i].y == 0) continue;
         APIDefs->Log(LOGL_INFO, "MysticClicker", slots[i].name);
         SimulateClickAt(slots[i].x, slots[i].y);
         fired++;
-        if (i < 9) Sleep(300);
+        if (i < 14) Sleep(100);
     }
 
     if (fired == 0)

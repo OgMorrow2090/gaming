@@ -56,7 +56,7 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     // Addon metadata
     AddonDef.Name = "Mystic Clicker";
     AddonDef.Version.Major = 3;
-    AddonDef.Version.Minor = 0;
+    AddonDef.Version.Minor = 1;
     AddonDef.Version.Build = 0;
     AddonDef.Version.Revision = 0;
     AddonDef.Author = "OgMorrow2090";
@@ -149,7 +149,7 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(WIZARD_VAULT_COMPLETE, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(WIZARD_VAULT_COMBO, ProcessKeybind, "CTRL+SHIFT+F2");
     APIDefs->InputBinds_RegisterWithString(ACCEPT, ProcessKeybind, "CTRL+SHIFT+F3");
-    APIDefs->InputBinds_RegisterWithString(GENERAL_ACCEPT, ProcessKeybind, "CTRL+SHIFT+F6");
+    APIDefs->InputBinds_RegisterWithString(GENERAL_ACCEPT, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(GENERAL_ACCEPT_2, ProcessKeybind, "CTRL+SHIFT+F7");
     APIDefs->InputBinds_RegisterWithString(GENERAL_ACCEPT_3, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(GENERAL_ACCEPT_4, ProcessKeybind, "(null)");
@@ -157,6 +157,12 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(ACCEPT_8, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(ACCEPT_9, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(ACCEPT_10, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(ACCEPT_11, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(ACCEPT_12, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(ACCEPT_13, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(ACCEPT_14, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(ACCEPT_15, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(LFG_COMBO, ProcessKeybind, "CTRL+SHIFT+F6");
     APIDefs->InputBinds_RegisterWithString(BOUNCY_META_COMPLETE, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(GENERAL_ACCEPT_COMBO, ProcessKeybind, "CTRL+SHIFT+F11");
     APIDefs->InputBinds_RegisterWithString(MAIL_COMBO, ProcessKeybind, "CTRL+SHIFT+F8");
@@ -179,6 +185,13 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT_8, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT_9, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT_10, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT_11, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT_12, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT_13, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT_14, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT_15, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_WIZARD_VAULT_WEEKLY_TAB, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_LFG_SEARCH, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_BOUNCY_ACCEPT, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_BOUNCY_META_COMPLETE, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_MAIL_TAKE_ALL, ProcessKeybind, "(null)");
@@ -187,7 +200,7 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(CAPTURE_CRAFT_CLOSE, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_GUILD_HALL, ProcessKeybind, "(null)");
 
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Addon loaded - 32 keybinds.");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Addon loaded.");
 }
 
 /**
@@ -229,6 +242,12 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(ACCEPT_8);
     APIDefs->InputBinds_Deregister(ACCEPT_9);
     APIDefs->InputBinds_Deregister(ACCEPT_10);
+    APIDefs->InputBinds_Deregister(ACCEPT_11);
+    APIDefs->InputBinds_Deregister(ACCEPT_12);
+    APIDefs->InputBinds_Deregister(ACCEPT_13);
+    APIDefs->InputBinds_Deregister(ACCEPT_14);
+    APIDefs->InputBinds_Deregister(ACCEPT_15);
+    APIDefs->InputBinds_Deregister(LFG_COMBO);
     APIDefs->InputBinds_Deregister(BOUNCY_META_COMPLETE);
     APIDefs->InputBinds_Deregister(GENERAL_ACCEPT_COMBO);
     APIDefs->InputBinds_Deregister(MAIL_COMBO);
@@ -251,6 +270,13 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT_8);
     APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT_9);
     APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT_10);
+    APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT_11);
+    APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT_12);
+    APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT_13);
+    APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT_14);
+    APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT_15);
+    APIDefs->InputBinds_Deregister(CAPTURE_WIZARD_VAULT_WEEKLY_TAB);
+    APIDefs->InputBinds_Deregister(CAPTURE_LFG_SEARCH);
     APIDefs->InputBinds_Deregister(CAPTURE_BOUNCY_ACCEPT);
     APIDefs->InputBinds_Deregister(CAPTURE_BOUNCY_META_COMPLETE);
     APIDefs->InputBinds_Deregister(CAPTURE_MAIL_TAKE_ALL);

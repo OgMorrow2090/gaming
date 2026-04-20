@@ -155,6 +155,30 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     {
         SimulateAccept10Click();
     }
+    else if (strcmp(aIdentifier, ACCEPT_11) == 0)
+    {
+        SimulateAccept11Click();
+    }
+    else if (strcmp(aIdentifier, ACCEPT_12) == 0)
+    {
+        SimulateAccept12Click();
+    }
+    else if (strcmp(aIdentifier, ACCEPT_13) == 0)
+    {
+        SimulateAccept13Click();
+    }
+    else if (strcmp(aIdentifier, ACCEPT_14) == 0)
+    {
+        SimulateAccept14Click();
+    }
+    else if (strcmp(aIdentifier, ACCEPT_15) == 0)
+    {
+        SimulateAccept15Click();
+    }
+    else if (strcmp(aIdentifier, LFG_COMBO) == 0)
+    {
+        SimulateLfgCombo();
+    }
     else if (strcmp(aIdentifier, BOUNCY_META_COMPLETE) == 0)
     {
         SimulateBouncyMetaCompleteClick();

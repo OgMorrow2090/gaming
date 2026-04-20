@@ -81,12 +81,19 @@ static bool CheckResolutionChange()
     return true;
 }
 
-// Clamp (x,y) so the window stays at least partially on-screen.
+// Clamp position AND size so the window fits on-screen with at least 60px visible.
 static void ClampWindowPos(MTWindowState& s)
 {
     int w, h;
     GetGameResolution(w, h);
     const float MIN_VISIBLE = 60.0f;
+
+    // Cap size to viewport — prevents a window saved at 4K from staying 4K-huge on 800p.
+    if (s.w > (float)w - 40.0f) s.w = (float)w - 40.0f;
+    if (s.h > (float)h - 40.0f) s.h = (float)h - 40.0f;
+    if (s.w < 150.0f) s.w = 150.0f;
+    if (s.h < 100.0f) s.h = 100.0f;
+
     if (s.x > (float)w - MIN_VISIBLE) s.x = (float)w - MIN_VISIBLE;
     if (s.y > (float)h - MIN_VISIBLE) s.y = (float)h - MIN_VISIBLE;
     if (s.x < -s.w + MIN_VISIBLE) s.x = -s.w + MIN_VISIBLE;
@@ -96,16 +103,19 @@ static void ClampWindowPos(MTWindowState& s)
 // Rescue flag stays "armed" for 200ms so all visible windows (rendered in sequence
 // inside the same frame tick) consume it, then auto-clears.
 static std::chrono::steady_clock::time_point s_RescueSetAt;
-static bool RescueActive()
+
+// Non-clearing probe — safe to call multiple times per frame (e.g. for flag logic).
+static bool IsRescuing()
 {
     if (!g_ResetWindowsFlag) return false;
-    auto elapsed = std::chrono::steady_clock::now() - s_RescueSetAt;
-    if (elapsed > std::chrono::milliseconds(200))
-    {
-        g_ResetWindowsFlag = false;
-        return false;
-    }
-    return true;
+    return (std::chrono::steady_clock::now() - s_RescueSetAt) <= std::chrono::milliseconds(200);
+}
+
+static bool RescueActive()
+{
+    bool active = IsRescuing();
+    if (!active && g_ResetWindowsFlag) g_ResetWindowsFlag = false;
+    return active;
 }
 
 // Call before ImGui::Begin. Sets pos/size from saved state or default.
@@ -595,10 +605,15 @@ void RenderDeliveryBox()
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.06f, 0.06f, 0.08f, g_WindowOpacity));
 
     bool resChanged = CheckResolutionChange();
+    bool rescuing = IsRescuing();
     ApplyWindowState(g_WinDelivery, ImVec2(340, 300), resChanged);
 
+    // When rescuing or repositioning for a new resolution, strip lock flags so
+    // SetNextWindowPos/Size actually takes effect. NoMove/NoResize would block it.
+    bool forceUnlock = resChanged || rescuing;
+
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse;
-    if (g_LockDelivery)
+    if (g_LockDelivery && !forceUnlock)
         flags |= ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar;
 
     if (!ImGui::Begin("Delivery Box##DeliveryWin", &g_ShowDelivery, flags))
@@ -777,10 +792,14 @@ void RenderFlipList()
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.06f, 0.06f, 0.08f, g_WindowOpacity));
 
     bool resChangedFlip = CheckResolutionChange();
+    bool rescuingFlip = IsRescuing();
     ApplyWindowState(g_WinFlipList, ImVec2(340, 600), resChangedFlip);
 
+    // Strip lock flags during rescue or resolution change so the window can reposition.
+    bool forceUnlockFlip = resChangedFlip || rescuingFlip;
+
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse;
-    if (g_LockFlipList)
+    if (g_LockFlipList && !forceUnlockFlip)
         flags |= ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar;
 
     if (!ImGui::Begin("Flips##FlipColumn", &g_ShowFlipList, flags))

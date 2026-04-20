@@ -532,54 +532,48 @@ void SimulateWizardVaultCombo()
     // Wait for panel animation before clicking
     Sleep(1000);
 
-    // WV remembers the last-selected tab (Daily vs Weekly). Click Daily Tab
-    // first so we always start on Daily regardless of what was open previously.
+    // Helper: click Collect 3 times (catches multi-collect states) then Complete once.
+    auto collectAndComplete = [](const char* label) {
+        char buf[64];
+        for (int i = 0; i < 3; ++i)
+        {
+            snprintf(buf, sizeof(buf), "Wizard Vault Combo: %s Collect %d/3", label, i + 1);
+            APIDefs->Log(LOGL_INFO, "MysticClicker", buf);
+            SimulateClickAt(g_WizardVaultX, g_WizardVaultY);
+            Sleep(100);
+        }
+        snprintf(buf, sizeof(buf), "Wizard Vault Combo: %s Complete", label);
+        APIDefs->Log(LOGL_INFO, "MysticClicker", buf);
+        SimulateClickAt(g_WizardVaultCompleteX, g_WizardVaultCompleteY);
+    };
+
+    // Daily tab first (WV remembers last-selected tab between opens).
     if (g_WizardVaultDailyTabX != 0 || g_WizardVaultDailyTabY != 0)
     {
         APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Switch to Daily tab");
         SimulateClickAt(g_WizardVaultDailyTabX, g_WizardVaultDailyTabY);
         Sleep(100);
     }
+    collectAndComplete("Daily");
 
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Daily Collect");
-    SimulateClickAt(g_WizardVaultX, g_WizardVaultY);
-
-    Sleep(100);
-
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Daily Complete");
-    SimulateClickAt(g_WizardVaultCompleteX, g_WizardVaultCompleteY);
-
-    // Weekly tab is optional — if captured, switch tabs and re-click items/total.
-    // Layout is identical to daily so we reuse the same WV/WV Complete positions.
+    // Weekly tab (optional).
     if (g_WizardVaultWeeklyTabX != 0 || g_WizardVaultWeeklyTabY != 0)
     {
         Sleep(100);
         APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Switch to Weekly tab");
         SimulateClickAt(g_WizardVaultWeeklyTabX, g_WizardVaultWeeklyTabY);
-
         Sleep(100);
-        APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Weekly Collect");
-        SimulateClickAt(g_WizardVaultX, g_WizardVaultY);
-
-        Sleep(100);
-        APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Weekly Complete");
-        SimulateClickAt(g_WizardVaultCompleteX, g_WizardVaultCompleteY);
+        collectAndComplete("Weekly");
     }
 
-    // Special tab is optional — same flow as Daily/Weekly.
+    // Special tab (optional).
     if (g_WizardVaultSpecialTabX != 0 || g_WizardVaultSpecialTabY != 0)
     {
         Sleep(100);
         APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Switch to Special tab");
         SimulateClickAt(g_WizardVaultSpecialTabX, g_WizardVaultSpecialTabY);
-
         Sleep(100);
-        APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Special Collect");
-        SimulateClickAt(g_WizardVaultX, g_WizardVaultY);
-
-        Sleep(100);
-        APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Special Complete");
-        SimulateClickAt(g_WizardVaultCompleteX, g_WizardVaultCompleteY);
+        collectAndComplete("Special");
     }
 
     // Return to Daily tab at the end so the next opening starts on Daily.

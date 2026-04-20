@@ -7,6 +7,26 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.0] - 2026-04-20 — Mystic Clicker + Mystic Trading v0.5.0 + Controller v17.2
+
+### Added
+
+- **Drag-anywhere** (both modules): click-and-hold any empty area to move a panel. No longer limited to the title bar.
+- **Per-resolution window positions** (both modules): each window remembers pos + size per resolution. Switch 4K → 1280×800 and it auto-loads the right layout. New state files: extended `mystic-clicker-{WxH}.cfg`, new `mystic-trading-windows-{WxH}.cfg`.
+- **Auto-clamp** on resolution change keeps at least 60px of each window on-screen.
+- **Rescue hotkey Ctrl+Shift+Home** snaps all addon windows back to (100, 100) at default size. 200ms arming window so all 3 MT panels consume it in one frame.
+- **Controller v17.2**: Utility Wheel slot 2 fires Ctrl+Shift+Home (Reset Windows).
+
+### Changed
+
+- Saves for window pos/size are 1-second debounced so drags don't hammer the disk.
+
+## [3.1.3] - 2026-04-20 — Mystic Clicker
+
+### Added
+
+- **Wizard Vault Special Tab** capture + combo step — combo now loops through Daily → Weekly → Special, each with Collect + Complete clicks. All three tabs optional.
+
 ## [3.1.2] - 2026-04-20 — Mystic Clicker
 
 ### Added

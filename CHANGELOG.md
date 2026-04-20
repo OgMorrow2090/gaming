@@ -7,6 +7,53 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.2] - 2026-04-20 — Mystic Clicker
+
+### Added
+
+- **Capture panel sort**: uncaptured targets on top, captured below, both A-Z. Re-sorts each frame so newly-captured entries drop to the bottom immediately.
+
+### Fixed
+
+- **LFG Combo not firing**: Nexus keybind store on Bazzite had `LFG_COMBO` with Code=0 (unbound) and `GENERAL_ACCEPT` stealing Ctrl+Shift+F6. Fixed InputBinds.json directly — LFG_COMBO now bound to scan code 64 (F6), GENERAL_ACCEPT cleared. Nexus uses scan codes, not VK codes.
+
+## [3.1.1] - 2026-04-20 — Mystic Clicker
+
+### Added
+
+- **Wizard Vault Daily Tab** capture + combo step — WV remembers the last-selected tab, so the combo now clicks Daily Tab first (when captured) to ensure Daily is always processed before switching to Weekly.
+
+## [3.1.0] - 2026-04-20 — Mystic Clicker + Controller v17.1
+
+### Added
+
+- **Accept Combo** expanded from 10 to 15 slots (Accept 11-15).
+- **Wizard Vault Weekly Tab** capture — combo now clicks Daily → Collect/Complete → Weekly Tab → Collect/Complete.
+- **LFG Combo** — press Y (opens LFG) → click Search tab. Bound to Ctrl+Shift+F6.
+- **Controller v17.1**: DPad Left Full Press now fires LFG Combo (was raw Y press).
+
+### Changed
+
+- **Click intervals** reduced from 300ms to 100ms between all combo clicks for faster flow.
+
+### Migrated
+
+- Accept 10's captured position moved to Accept 15 slot (one-time cfg migration on Bazzite 1280x800).
+
+## [3.0.0] - 2026-04-19 — Mystic Clicker + Controller v17.0
+
+### Added
+
+- **Accept Combo**: 8 → 10 slots with Bouncy Meta Complete (3rd bouncy capture for meta-completion dialogs).
+- **Right-click-to-clear** in capture window to reset a single captured position.
+- **Bouncy Open + Bouncy Accept** as separate captures from general Accept combo.
+- **Mail / Guild Hall / Wizard Vault combos** with keypress + click patterns using SendInput (KEYEVENTF_SCANCODE) to handle Nexus chord modifier timing.
+
+### Fixed
+
+- **Scan code requirement**: WM_KEYDOWN without scan code in lParam is silently dropped by GW2 — affected Guild Hall Combo (G key). Now constructs `(scan << 16) | 0x01` via `MapVirtualKey(vk, MAPVK_VK_TO_VSC)`.
+- **Nexus chord modifier timing**: Nexus keybind callback fires while physical Ctrl/Shift still held — combos that send SendInput chords (Shift+I for WV, Shift+0 for Mail) first release VK_LCONTROL/RCONTROL/LSHIFT/RSHIFT via SendInput KEYUP before sending the intended chord.
+
 ## [0.3.0] - 2026-03-18 — Mystic Trading
 
 ### Changed

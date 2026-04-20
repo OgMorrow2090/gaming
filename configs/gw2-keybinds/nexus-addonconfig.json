@@ -48,9 +48,9 @@
 		"AllowPrereleases": false,
 		"IsDisabledUntilUpdate": false,
 		"IsFavorite": false,
-		"IsLoaded": false,
+		"IsLoaded": true,
 		"IsPausingUpdates": false,
-		"Name": "-",
+		"Name": "Organizer",
 		"Signature": -216687354
 	},
 	{
@@ -182,7 +182,7 @@
 	{
 		"AllowPrereleases": false,
 		"IsDisabledUntilUpdate": false,
-		"IsFavorite": false,
+		"IsFavorite": true,
 		"IsLoaded": true,
 		"IsPausingUpdates": false,
 		"Name": "Anti Camera Smooth",
@@ -209,7 +209,7 @@
 	{
 		"AllowPrereleases": false,
 		"IsDisabledUntilUpdate": false,
-		"IsFavorite": false,
+		"IsFavorite": true,
 		"IsLoaded": true,
 		"IsPausingUpdates": false,
 		"Name": "Crafty Legend",
@@ -272,7 +272,7 @@
 	{
 		"AllowPrereleases": false,
 		"IsDisabledUntilUpdate": false,
-		"IsFavorite": false,
+		"IsFavorite": true,
 		"IsLoaded": true,
 		"IsPausingUpdates": false,
 		"Name": "Peace and Quiet",
@@ -340,5 +340,32 @@
 		"IsPausingUpdates": false,
 		"Name": "-",
 		"Signature": -54323
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "Events: Alerts",
+		"Signature": 1735852641
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "Events: Chat",
+		"Signature": 1735852643
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": true,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "NexusGameWiki",
+		"Signature": -26032501
 	}
 ]

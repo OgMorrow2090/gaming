@@ -559,6 +559,222 @@
 	},
 	{
 		"Alt": false,
+		"Code": 61,
+		"Ctrl": true,
+		"Identifier": "ACCEPT",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_10",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_11",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_12",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_13",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_14",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_15",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_7",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_8",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_9",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "BOUNCY_ACCEPT",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "BOUNCY_META_COMPLETE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_10",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_11",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_12",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_13",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_14",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_15",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_7",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_8",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_9",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_BOUNCY_ACCEPT",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_BOUNCY_META_COMPLETE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
 		"Code": 0,
 		"Ctrl": false,
 		"Identifier": "CAPTURE_CHAR_SWAP",
@@ -595,6 +811,33 @@
 	},
 	{
 		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_CRAFT_CLOSE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_CRAFT_COLLAPSE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_CRAFT_FILTER",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
 		"Code": 32,
 		"Ctrl": true,
 		"Identifier": "CAPTURE_DEPOSIT",
@@ -610,6 +853,69 @@
 		"Passthrough": false,
 		"Shift": true,
 		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_GENERAL_ACCEPT",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_GENERAL_ACCEPT_2",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_GENERAL_ACCEPT_3",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_GENERAL_ACCEPT_4",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_GUILD_HALL",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_LFG_SEARCH",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_MAIL_TAKE_ALL",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
 	},
 	{
 		"Alt": false,
@@ -706,6 +1012,33 @@
 		"Code": 0,
 		"Ctrl": false,
 		"Identifier": "CAPTURE_WIZARD_VAULT",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_WIZARD_VAULT_COMPLETE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_WIZARD_VAULT_DAILY_TAB",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_WIZARD_VAULT_WEEKLY_TAB",
 		"Passthrough": false,
 		"Shift": false,
 		"Type": 0
@@ -874,6 +1207,24 @@
 	},
 	{
 		"Alt": false,
+		"Code": 67,
+		"Ctrl": true,
+		"Identifier": "CRAFT_CLOSE",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 68,
+		"Ctrl": true,
+		"Identifier": "CRAFT_COLLAPSE_COMBO",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
 		"Code": 37,
 		"Ctrl": true,
 		"Identifier": "Copy KP ID to clipboard",
@@ -924,6 +1275,69 @@
 		"Identifier": "FASTSWAP_TOGGLE",
 		"Passthrough": false,
 		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "GENERAL_ACCEPT",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 65,
+		"Ctrl": true,
+		"Identifier": "GENERAL_ACCEPT_2",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "GENERAL_ACCEPT_3",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "GENERAL_ACCEPT_4",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 87,
+		"Ctrl": true,
+		"Identifier": "GENERAL_ACCEPT_COMBO",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "GUILD_HALL",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 63,
+		"Ctrl": true,
+		"Identifier": "GUILD_HALL_COMBO",
+		"Passthrough": false,
+		"Shift": true,
 		"Type": 1
 	},
 	{
@@ -1062,6 +1476,24 @@
 		"Type": 0
 	},
 	{
+		"Alt": false,
+		"Code": 64,
+		"Ctrl": true,
+		"Identifier": "LFG_COMBO",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 66,
+		"Ctrl": true,
+		"Identifier": "MAIL_COMBO",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
 		"Alt": true,
 		"Code": 20,
 		"Ctrl": false,
@@ -1131,6 +1563,15 @@
 		"Identifier": "OPEN_CHEST",
 		"Passthrough": false,
 		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 88,
+		"Ctrl": true,
+		"Identifier": "OPEN_CHEST_COMBO",
+		"Passthrough": false,
+		"Shift": true,
 		"Type": 1
 	},
 	{
@@ -1258,6 +1699,24 @@
 		"Passthrough": false,
 		"Shift": false,
 		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 60,
+		"Ctrl": true,
+		"Identifier": "WIZARD_VAULT_COMBO",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "WIZARD_VAULT_COMPLETE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
 	},
 	{
 		"Alt": false,

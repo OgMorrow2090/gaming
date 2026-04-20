@@ -73,6 +73,7 @@ constexpr const char* ACCEPT_14 = "ACCEPT_14";
 constexpr const char* ACCEPT_15 = "ACCEPT_15";
 constexpr const char* GENERAL_ACCEPT_COMBO = "GENERAL_ACCEPT_COMBO"; // "Accept Combo" — clicks Accept 1 → 15
 constexpr const char* LFG_COMBO = "LFG_COMBO";                      // press Y (open LFG) → click Search tab
+constexpr const char* PERSONAL_MARKER = "PERSONAL_MARKER";          // Alt+LeftClick at cursor (minimap marker)
 constexpr const char* TELEPORT_FRIEND_COMBO = "TELEPORT_FRIEND_COMBO"; // press I → double-click captured portal icon
 constexpr const char* TRADING_POST_COMBO_KEY = "TRADING_POST_COMBO";   // press I → double-click captured portable TP icon
 constexpr const char* BANK_COMBO = "BANK_COMBO";                       // press I → double-click captured portable Bank icon
@@ -167,6 +168,7 @@ void SimulateAccept15Click();
 void SimulateBouncyMetaCompleteClick();
 void SimulateGeneralAcceptCombo();       // "Accept Combo" — click Accept 1..15 in sequence
 void SimulateLfgCombo();                // press Y (open LFG) → delay → click Search tab
+void SimulatePersonalMarker();          // Alt+LeftClick at current cursor (places minimap marker)
 void SimulateTeleportFriendCombo();     // press I (open inventory) → delay → double-click Teleport to Friend
 void SimulateTradingPostCombo();        // press I (open inventory) → delay → double-click portable TP
 void SimulateBankCombo();               // press I (open inventory) → delay → double-click portable Bank

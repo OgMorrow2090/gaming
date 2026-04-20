@@ -658,6 +658,43 @@ void SimulateBankCombo()
     OpenInventoryAndDoubleClick(g_BankIconX, g_BankIconY, "Bank Combo: open inventory + double-click");
 }
 
+void SimulatePersonalMarker()
+{
+    // Alt+LeftClick at current cursor position — places a personal marker on the
+    // GW2 minimap (or world map). Uses SendInput for a single real OS-level
+    // Alt-held mouse click, which Sunshine's mouse_button LEFT VDF binding
+    // appears not to synthesize reliably on this Linux streaming stack.
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Personal Marker: Alt+LeftClick at cursor");
+
+    // Release chord modifiers that may be held from Nexus chord callback.
+    ReleaseChordModifiers();
+
+    INPUT inputs[4] = {};
+    WORD altScan = (WORD)MapVirtualKey(VK_LMENU, MAPVK_VK_TO_VSC);
+
+    // Alt down
+    inputs[0].type = INPUT_KEYBOARD;
+    inputs[0].ki.wVk = VK_LMENU;
+    inputs[0].ki.wScan = altScan;
+    inputs[0].ki.dwFlags = KEYEVENTF_SCANCODE;
+
+    // Left mouse down
+    inputs[1].type = INPUT_MOUSE;
+    inputs[1].mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+
+    // Left mouse up
+    inputs[2].type = INPUT_MOUSE;
+    inputs[2].mi.dwFlags = MOUSEEVENTF_LEFTUP;
+
+    // Alt up
+    inputs[3].type = INPUT_KEYBOARD;
+    inputs[3].ki.wVk = VK_LMENU;
+    inputs[3].ki.wScan = altScan;
+    inputs[3].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
+
+    SendInput(4, inputs, sizeof(INPUT));
+}
+
 void SimulateLfgCombo()
 {
     // Open LFG via Y keypress → wait for panel → click Search tab.

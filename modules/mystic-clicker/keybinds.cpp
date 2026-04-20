@@ -199,6 +199,10 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     {
         SimulateBankCombo();
     }
+    else if (strcmp(aIdentifier, PERSONAL_MARKER) == 0)
+    {
+        SimulatePersonalMarker();
+    }
     else if (strcmp(aIdentifier, BOUNCY_META_COMPLETE) == 0)
     {
         SimulateBouncyMetaCompleteClick();

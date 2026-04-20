@@ -56,8 +56,8 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     // Addon metadata
     AddonDef.Name = "Mystic Clicker";
     AddonDef.Version.Major = 3;
-    AddonDef.Version.Minor = 3;
-    AddonDef.Version.Build = 7;
+    AddonDef.Version.Minor = 4;
+    AddonDef.Version.Build = 0;
     AddonDef.Version.Revision = 0;
     AddonDef.Author = "OgMorrow2090";
     AddonDef.Description = "One-click hotkeys for inventory, vendors, trading post, Mystic Forge, and more.";
@@ -167,6 +167,7 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(TELEPORT_FRIEND_COMBO, ProcessKeybind, "F6");
     APIDefs->InputBinds_RegisterWithString(TRADING_POST_COMBO_KEY, ProcessKeybind, "F7");
     APIDefs->InputBinds_RegisterWithString(BANK_COMBO, ProcessKeybind, "F8");
+    APIDefs->InputBinds_RegisterWithString(PERSONAL_MARKER, ProcessKeybind, "F9");
     APIDefs->InputBinds_RegisterWithString(BOUNCY_META_COMPLETE, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(GENERAL_ACCEPT_COMBO, ProcessKeybind, "CTRL+SHIFT+F11");
     APIDefs->InputBinds_RegisterWithString(MAIL_COMBO, ProcessKeybind, "CTRL+SHIFT+F8");
@@ -260,6 +261,7 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(TELEPORT_FRIEND_COMBO);
     APIDefs->InputBinds_Deregister(TRADING_POST_COMBO_KEY);
     APIDefs->InputBinds_Deregister(BANK_COMBO);
+    APIDefs->InputBinds_Deregister(PERSONAL_MARKER);
     APIDefs->InputBinds_Deregister(BOUNCY_META_COMPLETE);
     APIDefs->InputBinds_Deregister(GENERAL_ACCEPT_COMBO);
     APIDefs->InputBinds_Deregister(MAIL_COMBO);

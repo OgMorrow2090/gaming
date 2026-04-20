@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2387"
-	"title"		"Guild Wars 2 - Og v17.4.1"
+	"revision"		"2388"
+	"title"		"Guild Wars 2 - Og v17.5"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -1715,8 +1715,7 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_ALT, Personal Marker, , "
-							"binding"		"mouse_button LEFT, Personal Marker, , "
+							"binding"		"key_press F9, Personal Marker, , "
 						}
 					}
 				}

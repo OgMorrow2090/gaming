@@ -57,7 +57,7 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     AddonDef.Name = "Mystic Clicker";
     AddonDef.Version.Major = 3;
     AddonDef.Version.Minor = 1;
-    AddonDef.Version.Build = 0;
+    AddonDef.Version.Build = 1;
     AddonDef.Version.Revision = 0;
     AddonDef.Author = "OgMorrow2090";
     AddonDef.Description = "One-click hotkeys for inventory, vendors, trading post, Mystic Forge, and more.";
@@ -190,6 +190,7 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT_13, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT_14, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT_15, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_WIZARD_VAULT_DAILY_TAB, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_WIZARD_VAULT_WEEKLY_TAB, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_LFG_SEARCH, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_BOUNCY_ACCEPT, ProcessKeybind, "(null)");
@@ -275,6 +276,7 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT_13);
     APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT_14);
     APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT_15);
+    APIDefs->InputBinds_Deregister(CAPTURE_WIZARD_VAULT_DAILY_TAB);
     APIDefs->InputBinds_Deregister(CAPTURE_WIZARD_VAULT_WEEKLY_TAB);
     APIDefs->InputBinds_Deregister(CAPTURE_LFG_SEARCH);
     APIDefs->InputBinds_Deregister(CAPTURE_BOUNCY_ACCEPT);

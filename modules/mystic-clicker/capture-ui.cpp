@@ -72,6 +72,7 @@ static CaptureTarget s_Targets[] = {
     {"Accept 13",         "Accept combo slot 13", &g_Accept13X,    &g_Accept13Y},
     {"Accept 14",         "Accept combo slot 14", &g_Accept14X,    &g_Accept14Y},
     {"Accept 15",         "Accept combo slot 15", &g_Accept15X,    &g_Accept15Y},
+    {"Wizard Vault Daily Tab",  "WV Daily tab button (combo ensures Daily selected before clicks)", &g_WizardVaultDailyTabX, &g_WizardVaultDailyTabY},
     {"Wizard Vault Weekly Tab", "WV Weekly tab button (combo switches tab after daily)", &g_WizardVaultWeeklyTabX, &g_WizardVaultWeeklyTabY},
     {"LFG Search",        "Search tab inside LFG panel (combo 2nd click)", &g_LfgSearchX, &g_LfgSearchY},
     {"Mail Take All",     "Take All button in Mail panel (combo 2nd click)", &g_MailTakeAllX, &g_MailTakeAllY},

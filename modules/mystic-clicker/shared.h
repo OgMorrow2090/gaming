@@ -64,6 +64,7 @@ constexpr const char* ACCEPT_14 = "ACCEPT_14";
 constexpr const char* ACCEPT_15 = "ACCEPT_15";
 constexpr const char* GENERAL_ACCEPT_COMBO = "GENERAL_ACCEPT_COMBO"; // "Accept Combo" — clicks Accept 1 → 15
 constexpr const char* LFG_COMBO = "LFG_COMBO";                      // press Y (open LFG) → click Search tab
+constexpr const char* WIZARD_VAULT_DAILY_TAB = "WIZARD_VAULT_DAILY_TAB";   // capture only
 constexpr const char* WIZARD_VAULT_WEEKLY_TAB = "WIZARD_VAULT_WEEKLY_TAB"; // capture only
 constexpr const char* GUILD_HALL = "GUILD_HALL";
 constexpr const char* GUILD_HALL_COMBO = "GUILD_HALL_COMBO";
@@ -95,6 +96,7 @@ constexpr const char* CAPTURE_ACCEPT_12 = "CAPTURE_ACCEPT_12";
 constexpr const char* CAPTURE_ACCEPT_13 = "CAPTURE_ACCEPT_13";
 constexpr const char* CAPTURE_ACCEPT_14 = "CAPTURE_ACCEPT_14";
 constexpr const char* CAPTURE_ACCEPT_15 = "CAPTURE_ACCEPT_15";
+constexpr const char* CAPTURE_WIZARD_VAULT_DAILY_TAB = "CAPTURE_WIZARD_VAULT_DAILY_TAB";
 constexpr const char* CAPTURE_WIZARD_VAULT_WEEKLY_TAB = "CAPTURE_WIZARD_VAULT_WEEKLY_TAB";
 constexpr const char* CAPTURE_LFG_SEARCH = "CAPTURE_LFG_SEARCH";
 constexpr const char* CAPTURE_BOUNCY_ACCEPT = "CAPTURE_BOUNCY_ACCEPT";
@@ -243,6 +245,8 @@ extern int g_Accept14X;
 extern int g_Accept14Y;
 extern int g_Accept15X;
 extern int g_Accept15Y;
+extern int g_WizardVaultDailyTabX;
+extern int g_WizardVaultDailyTabY;
 extern int g_WizardVaultWeeklyTabX;
 extern int g_WizardVaultWeeklyTabY;
 extern int g_LfgSearchX;

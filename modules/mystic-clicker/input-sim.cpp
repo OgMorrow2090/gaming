@@ -532,6 +532,15 @@ void SimulateWizardVaultCombo()
     // Wait for panel animation before clicking
     Sleep(1000);
 
+    // WV remembers the last-selected tab (Daily vs Weekly). Click Daily Tab
+    // first so we always start on Daily regardless of what was open previously.
+    if (g_WizardVaultDailyTabX != 0 || g_WizardVaultDailyTabY != 0)
+    {
+        APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Switch to Daily tab");
+        SimulateClickAt(g_WizardVaultDailyTabX, g_WizardVaultDailyTabY);
+        Sleep(100);
+    }
+
     APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Daily Collect");
     SimulateClickAt(g_WizardVaultX, g_WizardVaultY);
 

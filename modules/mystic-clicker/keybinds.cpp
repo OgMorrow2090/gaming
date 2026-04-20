@@ -10,7 +10,6 @@
 
 #include "shared.h"
 #include <cstring>
-#include <cstdio>
 
 /**
  * ProcessKeybind - Keybind callback handler
@@ -26,13 +25,6 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     if (aIsRelease)
     {
         return;
-    }
-
-    // TRACE: log every chord so we can see which ones reach the DLL.
-    {
-        char buf[256];
-        sprintf_s(buf, "[TRACE] ProcessKeybind received: %s", aIdentifier ? aIdentifier : "(null)");
-        APIDefs->Log(LOGL_INFO, "MysticClicker", buf);
     }
 
     // Check if resolution changed and load appropriate config

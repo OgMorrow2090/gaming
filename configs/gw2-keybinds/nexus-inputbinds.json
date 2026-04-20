@@ -649,6 +649,15 @@
 	},
 	{
 		"Alt": false,
+		"Code": 66,
+		"Ctrl": false,
+		"Identifier": "BANK_COMBO",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
 		"Code": 0,
 		"Ctrl": false,
 		"Identifier": "BOUNCY_ACCEPT",
@@ -751,6 +760,15 @@
 		"Code": 0,
 		"Ctrl": false,
 		"Identifier": "CAPTURE_ACCEPT_9",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_BANK_ICON",
 		"Passthrough": false,
 		"Shift": false,
 		"Type": 0
@@ -966,6 +984,15 @@
 		"Alt": false,
 		"Code": 0,
 		"Ctrl": false,
+		"Identifier": "CAPTURE_TELEPORT_FRIEND",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
 		"Identifier": "CAPTURE_TP_BUY_SELL",
 		"Passthrough": false,
 		"Shift": false,
@@ -988,6 +1015,15 @@
 		"Passthrough": false,
 		"Shift": true,
 		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_TRADING_POST_ICON",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
 	},
 	{
 		"Alt": false,
@@ -1030,6 +1066,15 @@
 		"Code": 0,
 		"Ctrl": false,
 		"Identifier": "CAPTURE_WIZARD_VAULT_DAILY_TAB",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_WIZARD_VAULT_SPECIAL_TAB",
 		"Passthrough": false,
 		"Shift": false,
 		"Type": 0
@@ -1494,6 +1539,15 @@
 		"Type": 1
 	},
 	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "MT_RESET_WINDOWS",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
 		"Alt": true,
 		"Code": 20,
 		"Ctrl": false,
@@ -1594,6 +1648,24 @@
 	},
 	{
 		"Alt": false,
+		"Code": 67,
+		"Ctrl": false,
+		"Identifier": "PERSONAL_MARKER",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "RESET_WINDOWS",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
 		"Code": 36,
 		"Ctrl": true,
 		"Identifier": "SELL_JUNK",
@@ -1621,6 +1693,15 @@
 	},
 	{
 		"Alt": false,
+		"Code": 64,
+		"Ctrl": false,
+		"Identifier": "TELEPORT_FRIEND_COMBO",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
 		"Code": 59,
 		"Ctrl": true,
 		"Identifier": "TP_BUY_SELL",
@@ -1642,6 +1723,15 @@
 		"Code": 24,
 		"Ctrl": true,
 		"Identifier": "TRADING_POST",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 65,
+		"Ctrl": false,
+		"Identifier": "TRADING_POST_COMBO",
 		"Passthrough": false,
 		"Shift": false,
 		"Type": 1

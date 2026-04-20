@@ -7,6 +7,27 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.4.1] - 2026-04-20 — Mystic Clicker + Controller v17.5
+
+### Added
+
+- **Personal Marker** moved from VDF mouse_button binding into DLL. New `PERSONAL_MARKER` keybind on bare F9 triggers a single SendInput batch (Alt-down → LeftClick-down → LeftClick-up → Alt-up) at the current cursor position. Reliable through Sunshine/uinput where Steam Input's `mouse_button LEFT` wasn't registering the Alt modifier in sync.
+- **Three portable-item combos** on R1+DPad Right variants. Each emits `key_press I` natively (opens inventory) + a bare F-key chord that fires the DLL to double-click the captured icon:
+  - R1+DPad Right Full → Teleport to Friend (F6)
+  - R1+DPad Right Double → Trading Post (F7)
+  - R1+DPad Right Hold → Bank (F8)
+- **Controller v17.3–v17.5** ships the R1+DPad Right bindings, new Personal Marker chord on R1+Y, and removed a duplicate empty `button_y` block that was shadowing Personal Marker.
+
+### Fixed
+
+- **WV Combo** now triple-clicks Collect per tab (catches multi-collect states), single-clicks Complete, and returns to Daily tab at the end so the next opening starts on Daily.
+- **MT lock bypass for rescue/resolution change**: locked Delivery / FlipList windows no longer stay stuck when a resolution change or Ctrl+Shift+Home rescue fires — `NoMove/NoResize/NoTitleBar` flags are temporarily stripped for that frame so the reposition actually takes effect.
+- **ClampWindowPos** now caps window size to the viewport, preventing a 4K-sized window from rendering oversized on an 800p display.
+
+### Notes
+
+After multiple misfires on chord choice (Ctrl+Alt+F1/F2/F3 = Linux TTY switch; Ctrl+Shift+Alt+F1/F2/F3 = 4-binding drop; Ctrl+Shift+PAGEUP/DOWN/INSERT and F13/F14/F15 = key names not in Steam Input's VDF parser), settled on **bare F6/F7/F8/F9** with `key_press I` alongside the chord. Steam Input definitely knows F1-F12; Nexus distinguishes bare-F6 from Ctrl+Shift+F6 by modifier bits.
+
 ## [3.2.0] - 2026-04-20 — Mystic Clicker + Mystic Trading v0.5.0 + Controller v17.2
 
 ### Added

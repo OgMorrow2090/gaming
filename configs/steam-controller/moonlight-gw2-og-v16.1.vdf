@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2385"
-	"title"		"Guild Wars 2 - Og v17.3.4"
+	"revision"		"2386"
+	"title"		"Guild Wars 2 - Og v17.4"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2129,6 +2129,7 @@
 					{
 						"bindings"
 						{
+							"binding"		"key_press I, Open Inventory, , "
 							"binding"		"key_press F13, Teleport to Friend, , "
 						}
 					}
@@ -2136,6 +2137,7 @@
 					{
 						"bindings"
 						{
+							"binding"		"key_press I, Open Inventory, , "
 							"binding"		"key_press F14, Trading Post Combo, , "
 						}
 					}
@@ -2143,6 +2145,7 @@
 					{
 						"bindings"
 						{
+							"binding"		"key_press I, Open Inventory, , "
 							"binding"		"key_press F15, Bank Combo, , "
 						}
 					}

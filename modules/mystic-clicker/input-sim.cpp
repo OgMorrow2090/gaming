@@ -623,8 +623,9 @@ void SimulateWizardVaultCombo()
     }
 }
 
-// Shared "open inventory and double-click a captured icon" flow.
-// Used by Teleport to Friend / Trading Post / Bank portable-item combos.
+// Double-click a captured inventory icon. The controller's VDF activator emits
+// `key_press I` alongside the chord, so the inventory panel is already opening
+// by the time this runs — we just wait for the animation and double-click.
 static void OpenInventoryAndDoubleClick(int x, int y, const char* label)
 {
     if (x == 0 && y == 0)
@@ -635,22 +636,6 @@ static void OpenInventoryAndDoubleClick(int x, int y, const char* label)
         return;
     }
     APIDefs->Log(LOGL_INFO, "MysticClicker", label);
-
-    // Release chord modifiers so I isn't read as Ctrl+I etc.
-    ReleaseChordModifiers();
-
-    // Send I via SendInput (scan code) — opens/toggles inventory in GW2 default binds.
-    INPUT inputs[2] = {};
-    WORD iScan = (WORD)MapVirtualKey(0x49, MAPVK_VK_TO_VSC);
-    inputs[0].type = INPUT_KEYBOARD;
-    inputs[0].ki.wVk = 0x49;
-    inputs[0].ki.wScan = iScan;
-    inputs[0].ki.dwFlags = KEYEVENTF_SCANCODE;
-    inputs[1].type = INPUT_KEYBOARD;
-    inputs[1].ki.wVk = 0x49;
-    inputs[1].ki.wScan = iScan;
-    inputs[1].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
-    SendInput(2, inputs, sizeof(INPUT));
 
     // Inventory panel animation — wait before clicking.
     Sleep(600);

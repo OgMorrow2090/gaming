@@ -581,6 +581,14 @@ void SimulateWizardVaultCombo()
         APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Special Complete");
         SimulateClickAt(g_WizardVaultCompleteX, g_WizardVaultCompleteY);
     }
+
+    // Return to Daily tab at the end so the next opening starts on Daily.
+    if (g_WizardVaultDailyTabX != 0 || g_WizardVaultDailyTabY != 0)
+    {
+        Sleep(100);
+        APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Return to Daily tab");
+        SimulateClickAt(g_WizardVaultDailyTabX, g_WizardVaultDailyTabY);
+    }
 }
 
 void SimulateLfgCombo()

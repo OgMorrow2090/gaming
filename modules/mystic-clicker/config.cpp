@@ -99,6 +99,8 @@ int g_WizardVaultDailyTabX = 0;
 int g_WizardVaultDailyTabY = 0;
 int g_WizardVaultWeeklyTabX = 0;
 int g_WizardVaultWeeklyTabY = 0;
+int g_WizardVaultSpecialTabX = 0;
+int g_WizardVaultSpecialTabY = 0;
 int g_LfgSearchX = 0;
 int g_LfgSearchY = 0;
 int g_MailTakeAllX = 0;
@@ -413,6 +415,10 @@ void LoadButtonPositions()
             g_WizardVaultWeeklyTabX = std::stoi(line.substr(22));
         else if (line.find("WizardVaultWeeklyTabY=") == 0)
             g_WizardVaultWeeklyTabY = std::stoi(line.substr(22));
+        else if (line.find("WizardVaultSpecialTabX=") == 0)
+            g_WizardVaultSpecialTabX = std::stoi(line.substr(23));
+        else if (line.find("WizardVaultSpecialTabY=") == 0)
+            g_WizardVaultSpecialTabY = std::stoi(line.substr(23));
         else if (line.find("LfgSearchX=") == 0)
             g_LfgSearchX = std::stoi(line.substr(11));
         else if (line.find("LfgSearchY=") == 0)
@@ -551,6 +557,8 @@ void SaveButtonPositions()
     file << "WizardVaultDailyTabY=" << g_WizardVaultDailyTabY << "\n";
     file << "WizardVaultWeeklyTabX=" << g_WizardVaultWeeklyTabX << "\n";
     file << "WizardVaultWeeklyTabY=" << g_WizardVaultWeeklyTabY << "\n";
+    file << "WizardVaultSpecialTabX=" << g_WizardVaultSpecialTabX << "\n";
+    file << "WizardVaultSpecialTabY=" << g_WizardVaultSpecialTabY << "\n";
     file << "LfgSearchX=" << g_LfgSearchX << "\n";
     file << "LfgSearchY=" << g_LfgSearchY << "\n";
     file << "BouncyMetaCompleteX=" << g_BouncyMetaCompleteX << "\n";
@@ -670,6 +678,8 @@ void CheckResolutionChange()
         g_WizardVaultDailyTabY = 0;
         g_WizardVaultWeeklyTabX = 0;
         g_WizardVaultWeeklyTabY = 0;
+        g_WizardVaultSpecialTabX = 0;
+        g_WizardVaultSpecialTabY = 0;
         g_LfgSearchX = 0;
         g_LfgSearchY = 0;
         g_BouncyMetaCompleteX = 0;

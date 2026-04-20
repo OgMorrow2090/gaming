@@ -565,6 +565,22 @@ void SimulateWizardVaultCombo()
         APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Weekly Complete");
         SimulateClickAt(g_WizardVaultCompleteX, g_WizardVaultCompleteY);
     }
+
+    // Special tab is optional — same flow as Daily/Weekly.
+    if (g_WizardVaultSpecialTabX != 0 || g_WizardVaultSpecialTabY != 0)
+    {
+        Sleep(100);
+        APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Switch to Special tab");
+        SimulateClickAt(g_WizardVaultSpecialTabX, g_WizardVaultSpecialTabY);
+
+        Sleep(100);
+        APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Special Collect");
+        SimulateClickAt(g_WizardVaultX, g_WizardVaultY);
+
+        Sleep(100);
+        APIDefs->Log(LOGL_INFO, "MysticClicker", "Wizard Vault Combo: Special Complete");
+        SimulateClickAt(g_WizardVaultCompleteX, g_WizardVaultCompleteY);
+    }
 }
 
 void SimulateLfgCombo()

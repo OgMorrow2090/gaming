@@ -22,6 +22,28 @@ extern ImGuiContext* ImGuiCtx;
 constexpr const char* KB_TOGGLE_DASHBOARD = "MT_TOGGLE_DASHBOARD";
 constexpr const char* KB_TOGGLE_FLIPLIST  = "MT_TOGGLE_FLIPLIST";
 constexpr const char* KB_TOGGLE_DELIVERY  = "MT_TOGGLE_DELIVERY";
+constexpr const char* KB_RESET_WINDOWS    = "MT_RESET_WINDOWS";
+
+// Window state (position + size), saved per resolution.
+struct MTWindowState {
+    float x;
+    float y;
+    float w;
+    float h;
+    bool  valid;  // true once we've stored a real position for this window/res
+};
+
+extern MTWindowState g_WinDashboard;
+extern MTWindowState g_WinFlipList;
+extern MTWindowState g_WinDelivery;
+extern int g_LastResW;
+extern int g_LastResH;
+extern bool g_ResetWindowsFlag;
+
+void LoadWindowStates();      // call once + on resolution change
+void SaveWindowStates();      // writes per-res cfg file
+void GetGameResolution(int& w, int& h);
+void ArmResetWindows();       // snap all windows back to (100,100) + defaults
 
 // Window visibility
 extern bool g_ShowDashboard;

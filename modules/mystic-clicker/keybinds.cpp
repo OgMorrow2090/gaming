@@ -212,4 +212,8 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     {
         ToggleCaptureWindow();
     }
+    else if (strcmp(aIdentifier, RESET_WINDOWS) == 0)
+    {
+        ResetWindowPositions();
+    }
 }

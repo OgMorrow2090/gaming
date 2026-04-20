@@ -8,6 +8,7 @@
  */
 
 #include "shared.h"
+#include "imgui/imgui.h"
 #include <thread>
 #include <atomic>
 #include <fstream>
@@ -15,6 +16,7 @@
 #include <algorithm>
 #include <set>
 #include <map>
+#include <cstdio>
 #include <wininet.h>
 
 #pragma comment(lib, "wininet.lib")
@@ -1043,4 +1045,110 @@ void SaveConfig()
     f << "lock_delivery=" << (g_LockDelivery ? 1 : 0) << "\n";
     if (!existingKey.empty())
         f << "api_key=" << existingKey << "\n";
+}
+
+// ============================================================================
+// Per-Resolution Window State
+// ============================================================================
+
+MTWindowState g_WinDashboard{};
+MTWindowState g_WinFlipList{};
+MTWindowState g_WinDelivery{};
+int g_LastResW = 0;
+int g_LastResH = 0;
+bool g_ResetWindowsFlag = false;
+
+void GetGameResolution(int& w, int& h)
+{
+    ImVec2 d = ImGui::GetIO().DisplaySize;
+    w = (int)d.x;
+    h = (int)d.y;
+    if (w <= 0) w = GetSystemMetrics(SM_CXSCREEN);
+    if (h <= 0) h = GetSystemMetrics(SM_CYSCREEN);
+}
+
+static std::string WindowStatePath(int w, int h)
+{
+    // Lives alongside mystic-trading.cfg in the addon dir.
+    size_t slash = g_ConfigPath.find_last_of("\\/");
+    std::string dir = (slash == std::string::npos) ? std::string(".") : g_ConfigPath.substr(0, slash);
+    char buf[512];
+    snprintf(buf, sizeof(buf), "%s\\mystic-trading-windows-%dx%d.cfg", dir.c_str(), w, h);
+    return std::string(buf);
+}
+
+static void ReadRect(const std::string& line, const char* prefix, MTWindowState& out, char field)
+{
+    size_t plen = strlen(prefix);
+    if (line.find(prefix) != 0) return;
+    float v = (float)atof(line.substr(plen).c_str());
+    switch (field)
+    {
+    case 'x': out.x = v; out.valid = true; break;
+    case 'y': out.y = v; out.valid = true; break;
+    case 'w': out.w = v; break;
+    case 'h': out.h = v; break;
+    }
+}
+
+void LoadWindowStates()
+{
+    int w, h;
+    GetGameResolution(w, h);
+    g_LastResW = w;
+    g_LastResH = h;
+
+    g_WinDashboard = MTWindowState{};
+    g_WinFlipList  = MTWindowState{};
+    g_WinDelivery  = MTWindowState{};
+
+    std::ifstream f(WindowStatePath(w, h));
+    if (!f.is_open()) return;
+
+    std::string line;
+    while (std::getline(f, line))
+    {
+        ReadRect(line, "Dashboard_X=", g_WinDashboard, 'x');
+        ReadRect(line, "Dashboard_Y=", g_WinDashboard, 'y');
+        ReadRect(line, "Dashboard_W=", g_WinDashboard, 'w');
+        ReadRect(line, "Dashboard_H=", g_WinDashboard, 'h');
+        ReadRect(line, "FlipList_X=",  g_WinFlipList,  'x');
+        ReadRect(line, "FlipList_Y=",  g_WinFlipList,  'y');
+        ReadRect(line, "FlipList_W=",  g_WinFlipList,  'w');
+        ReadRect(line, "FlipList_H=",  g_WinFlipList,  'h');
+        ReadRect(line, "Delivery_X=",  g_WinDelivery,  'x');
+        ReadRect(line, "Delivery_Y=",  g_WinDelivery,  'y');
+        ReadRect(line, "Delivery_W=",  g_WinDelivery,  'w');
+        ReadRect(line, "Delivery_H=",  g_WinDelivery,  'h');
+    }
+}
+
+void SaveWindowStates()
+{
+    int w, h;
+    GetGameResolution(w, h);
+    std::ofstream f(WindowStatePath(w, h));
+    if (!f.is_open()) return;
+    f << "# Resolution: " << w << "x" << h << "\n";
+    if (g_WinDashboard.valid)
+    {
+        f << "Dashboard_X=" << g_WinDashboard.x << "\n";
+        f << "Dashboard_Y=" << g_WinDashboard.y << "\n";
+        f << "Dashboard_W=" << g_WinDashboard.w << "\n";
+        f << "Dashboard_H=" << g_WinDashboard.h << "\n";
+    }
+    if (g_WinFlipList.valid)
+    {
+        f << "FlipList_X=" << g_WinFlipList.x << "\n";
+        f << "FlipList_Y=" << g_WinFlipList.y << "\n";
+        f << "FlipList_W=" << g_WinFlipList.w << "\n";
+        f << "FlipList_H=" << g_WinFlipList.h << "\n";
+    }
+    if (g_WinDelivery.valid)
+    {
+        f << "Delivery_X=" << g_WinDelivery.x << "\n";
+        f << "Delivery_Y=" << g_WinDelivery.y << "\n";
+        f << "Delivery_W=" << g_WinDelivery.w << "\n";
+        f << "Delivery_H=" << g_WinDelivery.h << "\n";
+    }
 }

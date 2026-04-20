@@ -114,6 +114,13 @@ int g_CraftCloseY = 0;
 int g_GuildHallX = 0;
 int g_GuildHallY = 0;
 
+// Per-resolution capture window state (position + size)
+float g_CaptureWinX = 0.0f;
+float g_CaptureWinY = 0.0f;
+float g_CaptureWinW = 0.0f;
+float g_CaptureWinH = 0.0f;
+bool g_ResetWindowsFlag = false;
+
 // Resolution tracking
 static int g_CurrentResWidth = 0;
 static int g_CurrentResHeight = 0;
@@ -447,6 +454,14 @@ void LoadButtonPositions()
             g_GuildHallX = std::stoi(line.substr(11));
         else if (line.find("GuildHallY=") == 0)
             g_GuildHallY = std::stoi(line.substr(11));
+        else if (line.find("CaptureWinX=") == 0)
+            g_CaptureWinX = (float)std::stod(line.substr(12));
+        else if (line.find("CaptureWinY=") == 0)
+            g_CaptureWinY = (float)std::stod(line.substr(12));
+        else if (line.find("CaptureWinW=") == 0)
+            g_CaptureWinW = (float)std::stod(line.substr(12));
+        else if (line.find("CaptureWinH=") == 0)
+            g_CaptureWinH = (float)std::stod(line.substr(12));
     }
 
     file.close();
@@ -573,6 +588,10 @@ void SaveButtonPositions()
     file << "CraftCloseY=" << g_CraftCloseY << "\n";
     file << "GuildHallX=" << g_GuildHallX << "\n";
     file << "GuildHallY=" << g_GuildHallY << "\n";
+    file << "CaptureWinX=" << g_CaptureWinX << "\n";
+    file << "CaptureWinY=" << g_CaptureWinY << "\n";
+    file << "CaptureWinW=" << g_CaptureWinW << "\n";
+    file << "CaptureWinH=" << g_CaptureWinH << "\n";
 
     file.close();
     
@@ -694,6 +713,10 @@ void CheckResolutionChange()
         g_CraftCloseY = 0;
         g_GuildHallX = 0;
         g_GuildHallY = 0;
+        g_CaptureWinX = 0.0f;
+        g_CaptureWinY = 0.0f;
+        g_CaptureWinW = 0.0f;
+        g_CaptureWinH = 0.0f;
 
         // Load config for new resolution (if exists)
         g_CurrentResWidth = width;
@@ -887,6 +910,14 @@ void CheckResolutionChange()
                     g_GuildHallX = std::stoi(line.substr(11));
                 else if (line.find("GuildHallY=") == 0)
                     g_GuildHallY = std::stoi(line.substr(11));
+                else if (line.find("CaptureWinX=") == 0)
+                    g_CaptureWinX = (float)std::stod(line.substr(12));
+                else if (line.find("CaptureWinY=") == 0)
+                    g_CaptureWinY = (float)std::stod(line.substr(12));
+                else if (line.find("CaptureWinW=") == 0)
+                    g_CaptureWinW = (float)std::stod(line.substr(12));
+                else if (line.find("CaptureWinH=") == 0)
+                    g_CaptureWinH = (float)std::stod(line.substr(12));
             }
             file.close();
 

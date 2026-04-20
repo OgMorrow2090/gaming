@@ -61,9 +61,9 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
 
     AddonDef.Name = "Mystic Trading";
     AddonDef.Version.Major = 0;
-    AddonDef.Version.Minor = 4;
-    AddonDef.Version.Build = 20260322;
-    AddonDef.Version.Revision = 1;
+    AddonDef.Version.Minor = 5;
+    AddonDef.Version.Build = 20260420;
+    AddonDef.Version.Revision = 0;
     AddonDef.Author = "OgMorrow2090";
     AddonDef.Description = "In-game trading post overlay with flips, orders, bank, and materials. Standalone — talks directly to GW2 API and GW2BLTC.";
 
@@ -93,6 +93,7 @@ void AddonLoad(AddonAPI_t* aApi)
     // Load config
     SetApiConfig(APIDefs->Paths_GetAddonDirectory("MysticTrading"));
     LoadConfig();
+    LoadWindowStates();
 
     // Register render callbacks
     APIDefs->GUI_Register(RT_Render, RenderDashboard);
@@ -109,6 +110,7 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(KB_TOGGLE_DASHBOARD, ProcessKeybind, "ALT+T");
     APIDefs->InputBinds_RegisterWithString(KB_TOGGLE_FLIPLIST, ProcessKeybind, "ALT+F");
     APIDefs->InputBinds_RegisterWithString(KB_TOGGLE_DELIVERY, ProcessKeybind, "ALT+D");
+    APIDefs->InputBinds_RegisterWithString(KB_RESET_WINDOWS, ProcessKeybind, "CTRL+SHIFT+HOME");
 
     // Start background data fetching
     StartDataFetch();
@@ -132,6 +134,7 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(KB_TOGGLE_DASHBOARD);
     APIDefs->InputBinds_Deregister(KB_TOGGLE_FLIPLIST);
     APIDefs->InputBinds_Deregister(KB_TOGGLE_DELIVERY);
+    APIDefs->InputBinds_Deregister(KB_RESET_WINDOWS);
 
     APIDefs->Log(LOGL_INFO, "MysticTrading", "Addon unloaded.");
     APIDefs = nullptr;

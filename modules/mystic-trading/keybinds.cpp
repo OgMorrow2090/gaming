@@ -22,4 +22,8 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     {
         g_ShowDelivery = !g_ShowDelivery;
     }
+    else if (strcmp(aIdentifier, KB_RESET_WINDOWS) == 0)
+    {
+        ArmResetWindows();
+    }
 }

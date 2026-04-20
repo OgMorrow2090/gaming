@@ -21,8 +21,17 @@ extern ImGuiContext* ImGuiCtx;
 // Capture UI
 extern bool g_ShowCaptureWindow;
 constexpr const char* CAPTURE_MODE = "CAPTURE_MODE";
+constexpr const char* RESET_WINDOWS = "RESET_WINDOWS";
 void RenderCaptureWindow();
 void ToggleCaptureWindow();
+void ResetWindowPositions();
+
+// Per-resolution capture window state
+extern float g_CaptureWinX;
+extern float g_CaptureWinY;
+extern float g_CaptureWinW;
+extern float g_CaptureWinH;
+extern bool g_ResetWindowsFlag;
 
 // Keybind identifiers - Actions
 constexpr const char* DEPOSIT_MATERIALS = "DEPOSIT_MATERIALS";

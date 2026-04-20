@@ -14,10 +14,55 @@
 #include "imgui/imgui.h"
 #include <cstdio>
 #include <cstring>
+#include <cmath>
 #include <chrono>
 
 // Capture window state
 bool g_ShowCaptureWindow = false;
+
+// Track last-seen resolution so we can force-reload saved window state when it changes.
+static int s_LastResW = 0;
+static int s_LastResH = 0;
+
+// Enables click-hold-anywhere dragging for the current window.
+// Call after ImGui::Begin(). Kicks in when dragging over empty space (no item hover).
+static void EnableDragAnywhere()
+{
+    if (ImGui::IsWindowFocused() &&
+        !ImGui::IsAnyItemHovered() &&
+        !ImGui::IsAnyItemActive() &&
+        ImGui::IsMouseDragging(ImGuiMouseButton_Left))
+    {
+        ImVec2 delta = ImGui::GetIO().MouseDelta;
+        if (delta.x != 0.0f || delta.y != 0.0f)
+        {
+            ImVec2 pos = ImGui::GetWindowPos();
+            ImGui::SetWindowPos(ImVec2(pos.x + delta.x, pos.y + delta.y), ImGuiCond_Always);
+        }
+    }
+}
+
+// Clamp a window's position to stay at least partially on-screen.
+static void ClampPosToScreen(float& x, float& y, float w, float h)
+{
+    int screenW = GetSystemMetrics(SM_CXSCREEN);
+    int screenH = GetSystemMetrics(SM_CYSCREEN);
+    if (GameWindow != nullptr)
+    {
+        RECT rect;
+        if (GetClientRect(GameWindow, &rect))
+        {
+            screenW = rect.right - rect.left;
+            screenH = rect.bottom - rect.top;
+        }
+    }
+    // Keep at least 60px visible so user can grab the title bar even if most of the window
+    // went off-screen after a resolution change.
+    if (x > (float)screenW - 60.0f) x = (float)screenW - 60.0f;
+    if (y > (float)screenH - 60.0f) y = (float)screenH - 60.0f;
+    if (x < -w + 60.0f) x = -w + 60.0f;
+    if (y < 0.0f)       y = 0.0f;
+}
 
 // Countdown state
 static bool s_CountdownActive = false;
@@ -135,10 +180,59 @@ void RenderCaptureWindow()
             s_ShowConfirmation = false;
     }
 
-    // Main window — always visible
-    ImGui::SetNextWindowSize(ImVec2(380, 0), ImGuiCond_FirstUseEver);
-    if (ImGui::Begin("Mystic Clicker - Capture", &g_ShowCaptureWindow, ImGuiWindowFlags_AlwaysAutoResize))
+    // Per-resolution window position/size management.
+    // CheckResolutionChange() is called from the keybind path, but the render loop
+    // may run before any keybind press — so detect res change here too.
+    int curW, curH;
+    if (GameWindow != nullptr)
     {
+        RECT r;
+        if (GetClientRect(GameWindow, &r)) { curW = r.right - r.left; curH = r.bottom - r.top; }
+        else { curW = GetSystemMetrics(SM_CXSCREEN); curH = GetSystemMetrics(SM_CYSCREEN); }
+    }
+    else
+    {
+        curW = GetSystemMetrics(SM_CXSCREEN);
+        curH = GetSystemMetrics(SM_CYSCREEN);
+    }
+    bool resChanged = (curW != s_LastResW || curH != s_LastResH);
+    if (resChanged)
+    {
+        CheckResolutionChange();
+        s_LastResW = curW;
+        s_LastResH = curH;
+    }
+
+    // Rescue: Ctrl+Shift+Home moves the window to a guaranteed-visible spot.
+    if (g_ResetWindowsFlag)
+    {
+        g_CaptureWinX = 100.0f;
+        g_CaptureWinY = 100.0f;
+        g_CaptureWinW = 380.0f;
+        g_CaptureWinH = 600.0f;
+        g_ResetWindowsFlag = false;
+        SaveButtonPositions();
+    }
+
+    // Apply saved pos/size. Use Always on resolution change or rescue, FirstUseEver otherwise.
+    ImGuiCond posCond = (g_CaptureWinX != 0.0f || g_CaptureWinY != 0.0f) ? ImGuiCond_FirstUseEver : ImGuiCond_FirstUseEver;
+    if (resChanged && (g_CaptureWinX != 0.0f || g_CaptureWinY != 0.0f))
+    {
+        ClampPosToScreen(g_CaptureWinX, g_CaptureWinY, g_CaptureWinW, g_CaptureWinH);
+        posCond = ImGuiCond_Always;
+    }
+
+    if (g_CaptureWinX != 0.0f || g_CaptureWinY != 0.0f)
+        ImGui::SetNextWindowPos(ImVec2(g_CaptureWinX, g_CaptureWinY), posCond);
+    if (g_CaptureWinW > 0.0f && g_CaptureWinH > 0.0f)
+        ImGui::SetNextWindowSize(ImVec2(g_CaptureWinW, g_CaptureWinH), posCond);
+    else
+        ImGui::SetNextWindowSize(ImVec2(380, 0), ImGuiCond_FirstUseEver);
+
+    if (ImGui::Begin("Mystic Clicker - Capture", &g_ShowCaptureWindow, 0))
+    {
+        EnableDragAnywhere();
+
         // Show countdown banner if active
         if (s_CountdownActive)
         {
@@ -294,8 +388,38 @@ void RenderCaptureWindow()
             s_CountdownActive = false;
             s_CountdownTarget = -1;
         }
+
+        // Persist position/size if moved/resized. Debounce to 1 second after
+        // the last change to avoid disk-thrashing during a drag.
+        ImVec2 curPos  = ImGui::GetWindowPos();
+        ImVec2 curSize = ImGui::GetWindowSize();
+        const float EPS = 0.5f;
+        static double s_LastChangeTime = 0.0;
+        static bool s_SavePending = false;
+        if (fabsf(curPos.x  - g_CaptureWinX) > EPS ||
+            fabsf(curPos.y  - g_CaptureWinY) > EPS ||
+            fabsf(curSize.x - g_CaptureWinW) > EPS ||
+            fabsf(curSize.y - g_CaptureWinH) > EPS)
+        {
+            g_CaptureWinX = curPos.x;
+            g_CaptureWinY = curPos.y;
+            g_CaptureWinW = curSize.x;
+            g_CaptureWinH = curSize.y;
+            s_LastChangeTime = ImGui::GetTime();
+            s_SavePending = true;
+        }
+        if (s_SavePending && (ImGui::GetTime() - s_LastChangeTime) > 1.0)
+        {
+            SaveButtonPositions();
+            s_SavePending = false;
+        }
     }
     ImGui::End();
+}
+
+void ResetWindowPositions()
+{
+    g_ResetWindowsFlag = true;
 }
 
 /**

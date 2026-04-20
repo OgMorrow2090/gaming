@@ -13,6 +13,8 @@
 #include "imgui/imgui.h"
 #include <cstdio>
 #include <cstring>
+#include <cmath>
+#include <chrono>
 #include <fstream>
 #include <mutex>
 #include <algorithm>
@@ -60,6 +62,127 @@ static const ImVec4 COLOR_COPPER = ImVec4(0.72f, 0.45f, 0.2f, 1.0f);
 
 static const ImVec4 ROW_BG_A = ImVec4(0.22f, 0.26f, 0.32f, 0.35f);
 static const ImVec4 ROW_BG_B = ImVec4(0.22f, 0.26f, 0.32f, 0.15f);
+
+// ============================================================================
+// Window State Management — drag-anywhere + per-resolution position save
+// ============================================================================
+
+// Debounce timers per window so a drag doesn't thrash the disk.
+static double s_LastChangeDash = 0.0, s_LastChangeFlip = 0.0, s_LastChangeDel = 0.0;
+static bool   s_PendingSaveDash = false, s_PendingSaveFlip = false, s_PendingSaveDel = false;
+
+// Detect resolution change and reload saved window state if so.
+static bool CheckResolutionChange()
+{
+    int w, h;
+    GetGameResolution(w, h);
+    if (w == g_LastResW && h == g_LastResH) return false;
+    LoadWindowStates();
+    return true;
+}
+
+// Clamp (x,y) so the window stays at least partially on-screen.
+static void ClampWindowPos(MTWindowState& s)
+{
+    int w, h;
+    GetGameResolution(w, h);
+    const float MIN_VISIBLE = 60.0f;
+    if (s.x > (float)w - MIN_VISIBLE) s.x = (float)w - MIN_VISIBLE;
+    if (s.y > (float)h - MIN_VISIBLE) s.y = (float)h - MIN_VISIBLE;
+    if (s.x < -s.w + MIN_VISIBLE) s.x = -s.w + MIN_VISIBLE;
+    if (s.y < 0.0f) s.y = 0.0f;
+}
+
+// Rescue flag stays "armed" for 200ms so all visible windows (rendered in sequence
+// inside the same frame tick) consume it, then auto-clears.
+static std::chrono::steady_clock::time_point s_RescueSetAt;
+static bool RescueActive()
+{
+    if (!g_ResetWindowsFlag) return false;
+    auto elapsed = std::chrono::steady_clock::now() - s_RescueSetAt;
+    if (elapsed > std::chrono::milliseconds(200))
+    {
+        g_ResetWindowsFlag = false;
+        return false;
+    }
+    return true;
+}
+
+// Call before ImGui::Begin. Sets pos/size from saved state or default.
+static void ApplyWindowState(MTWindowState& s, ImVec2 defaultSize, bool resChanged)
+{
+    bool rescue = RescueActive();
+    if (rescue)
+    {
+        s.x = 100.0f;
+        s.y = 100.0f;
+        s.w = defaultSize.x;
+        s.h = defaultSize.y;
+        s.valid = true;
+    }
+
+    if (s.valid)
+    {
+        if (resChanged || rescue) ClampWindowPos(s);
+        ImGuiCond cond = (resChanged || rescue) ? ImGuiCond_Always : ImGuiCond_FirstUseEver;
+        ImGui::SetNextWindowPos(ImVec2(s.x, s.y), cond);
+        ImGui::SetNextWindowSize(ImVec2(s.w, s.h), cond);
+    }
+    else
+    {
+        ImGui::SetNextWindowSize(defaultSize, ImGuiCond_FirstUseEver);
+    }
+}
+
+// Public: arm the rescue flag (called from keybind handler).
+void ArmResetWindows()
+{
+    g_ResetWindowsFlag = true;
+    s_RescueSetAt = std::chrono::steady_clock::now();
+}
+
+// Call after Begin. Drags when hovering empty space + left-dragging.
+static void EnableDragAnywhere()
+{
+    if (ImGui::IsWindowFocused() &&
+        !ImGui::IsAnyItemHovered() &&
+        !ImGui::IsAnyItemActive() &&
+        ImGui::IsMouseDragging(ImGuiMouseButton_Left))
+    {
+        ImVec2 delta = ImGui::GetIO().MouseDelta;
+        if (delta.x != 0.0f || delta.y != 0.0f)
+        {
+            ImVec2 pos = ImGui::GetWindowPos();
+            ImGui::SetWindowPos(ImVec2(pos.x + delta.x, pos.y + delta.y), ImGuiCond_Always);
+        }
+    }
+}
+
+// Track window pos/size; save 1 second after the last change.
+static void TrackWindowState(MTWindowState& s, double& lastChange, bool& pending)
+{
+    ImVec2 p = ImGui::GetWindowPos();
+    ImVec2 sz = ImGui::GetWindowSize();
+    const float EPS = 0.5f;
+    if (fabsf(p.x  - s.x) > EPS ||
+        fabsf(p.y  - s.y) > EPS ||
+        fabsf(sz.x - s.w) > EPS ||
+        fabsf(sz.y - s.h) > EPS)
+    {
+        s.x = p.x;
+        s.y = p.y;
+        s.w = sz.x;
+        s.h = sz.y;
+        s.valid = true;
+        lastChange = ImGui::GetTime();
+        pending = true;
+    }
+    if (pending && (ImGui::GetTime() - lastChange) > 1.0)
+    {
+        SaveWindowStates();
+        pending = false;
+    }
+}
 
 // ============================================================================
 // Helpers
@@ -471,7 +594,8 @@ void RenderDeliveryBox()
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(6, 2));
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.06f, 0.06f, 0.08f, g_WindowOpacity));
 
-    ImGui::SetNextWindowSize(ImVec2(340, 300), ImGuiCond_FirstUseEver);
+    bool resChanged = CheckResolutionChange();
+    ApplyWindowState(g_WinDelivery, ImVec2(340, 300), resChanged);
 
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse;
     if (g_LockDelivery)
@@ -485,6 +609,8 @@ void RenderDeliveryBox()
         return;
     }
     ImGui::SetWindowFontScale(g_FontScale);
+    if (!g_LockDelivery) EnableDragAnywhere();
+    TrackWindowState(g_WinDelivery, s_LastChangeDel, s_PendingSaveDel);
 
     // Right-click context menu for lock/unlock
     if (ImGui::BeginPopupContextWindow("##DeliveryCtx"))
@@ -535,7 +661,9 @@ void RenderDashboard()
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8, 4));
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.08f, 0.08f, 0.10f, g_WindowOpacity));
 
-    ImGui::SetNextWindowSize(ImVec2(600, 700), ImGuiCond_FirstUseEver);
+    bool resChangedDash = CheckResolutionChange();
+    ApplyWindowState(g_WinDashboard, ImVec2(600, 700), resChangedDash);
+
     if (!ImGui::Begin("Mystic Trading##Dashboard", &g_ShowDashboard, ImGuiWindowFlags_NoCollapse))
     {
         ImGui::End();
@@ -544,6 +672,8 @@ void RenderDashboard()
         return;
     }
     ImGui::SetWindowFontScale(g_FontScale);
+    EnableDragAnywhere();
+    TrackWindowState(g_WinDashboard, s_LastChangeDash, s_PendingSaveDash);
 
     std::lock_guard<std::mutex> lock(g_DataMutex);
 
@@ -646,7 +776,8 @@ void RenderFlipList()
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(6, 2));
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.06f, 0.06f, 0.08f, g_WindowOpacity));
 
-    ImGui::SetNextWindowSize(ImVec2(340, 600), ImGuiCond_FirstUseEver);
+    bool resChangedFlip = CheckResolutionChange();
+    ApplyWindowState(g_WinFlipList, ImVec2(340, 600), resChangedFlip);
 
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse;
     if (g_LockFlipList)
@@ -660,6 +791,8 @@ void RenderFlipList()
         return;
     }
     ImGui::SetWindowFontScale(g_FontScale);
+    if (!g_LockFlipList) EnableDragAnywhere();
+    TrackWindowState(g_WinFlipList, s_LastChangeFlip, s_PendingSaveFlip);
 
     // Right-click context menu for lock/unlock + flip limit
     if (ImGui::BeginPopupContextWindow("##FlipCtx"))

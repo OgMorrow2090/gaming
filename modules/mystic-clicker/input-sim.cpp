@@ -20,6 +20,7 @@
 
 #include "shared.h"
 #include <cstdio>
+#include <thread>
 
 // =============================================================================
 // Helper: Find Game Window
@@ -701,17 +702,32 @@ void SimulateWizardGobblerCombo()
 {
     // Uses DLL-press-I variant because the chord is Shift+F1 — if VDF also
     // emitted I, GW2 would see Shift+I (Wizard Vault) instead of inventory.
-    OpenInventoryDllAndDoubleClick(g_WizardGobblerX, g_WizardGobblerY, "Wizard Gobbler Combo: open inventory + double-click");
+    // Runs on a detached thread with a 500ms pre-delay: Steam Input's
+    // Long_Press / Double_Press activators keep Shift held via uinput for
+    // the duration of the physical button press. If we press I immediately,
+    // the still-held virtual Shift causes GW2 to see Shift+I (WV toggle).
+    // Delaying gives the user time to release the button and drains the
+    // virtual Shift before we synthesize `I`.
+    std::thread([] {
+        Sleep(500);
+        OpenInventoryDllAndDoubleClick(g_WizardGobblerX, g_WizardGobblerY, "Wizard Gobbler Combo: open inventory + double-click");
+    }).detach();
 }
 
 void SimulateWizardPortalScrollCombo()
 {
-    OpenInventoryDllAndDoubleClick(g_WizardPortalScrollX, g_WizardPortalScrollY, "Wizard Portal Scroll Combo: open inventory + double-click");
+    std::thread([] {
+        Sleep(500);
+        OpenInventoryDllAndDoubleClick(g_WizardPortalScrollX, g_WizardPortalScrollY, "Wizard Portal Scroll Combo: open inventory + double-click");
+    }).detach();
 }
 
 void SimulateLoungePassCombo()
 {
-    OpenInventoryDllAndDoubleClick(g_LoungePassX, g_LoungePassY, "Lounge Pass Combo: open inventory + double-click");
+    std::thread([] {
+        Sleep(500);
+        OpenInventoryDllAndDoubleClick(g_LoungePassX, g_LoungePassY, "Lounge Pass Combo: open inventory + double-click");
+    }).detach();
 }
 
 void SimulateWaypointCombo()

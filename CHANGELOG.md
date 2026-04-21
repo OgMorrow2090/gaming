@@ -7,6 +7,27 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.5.2] - 2026-04-21 — Mystic Clicker + Controller v17.7
+
+### Added
+
+- **Five new combos on R1+DPad Left and R1+DPad Down** (v3.5.0/v17.6):
+  - R1+DPad Left Full → **Wizard Gobbler** (Shift+F1)
+  - R1+DPad Left Long → **Wizard Portal Scroll** (Shift+F2)
+  - R1+DPad Left Double → **Lounge Pass** (Shift+F3)
+  - R1+DPad Down Full → **Waypoint Combo** (Shift+F4) — single-click captured chat waypoint → map auto-opens → double-click captured map waypoint to travel
+  - R1+DPad Down Long → **Leave Party Combo** (Shift+F5) — right-click captured party/squad bar → single-click captured Leave button
+
+### Fixed
+
+- **Wizard Gobbler / Portal Scroll / Lounge Pass opened Wizard Vault instead of inventory** (v3.5.1): the VDF emitted `I + LEFT_SHIFT + F#` simultaneously. GW2 observed `Shift+I` (WV toggle) while Nexus caught `Shift+F#`. Fix: strip `key_press I` from the 3 R1+DPad Left activators; new `OpenInventoryDllAndDoubleClick()` helper releases chord modifiers and synthesizes a clean `I` via SendInput scan code (same pattern WV combo uses for Shift+I).
+- **Long_Press / Double_Press variants still opened WV** after v3.5.1 fix (v3.5.2): Steam Input's Long_Press and Double_Press activators keep the chord keys held via uinput for the duration of the physical button press — our DLL's SendInput Shift-KEYUP got overridden by the still-asserting uinput hold. Fix: the 3 inventory combos now run on a detached `std::thread` with a 500ms pre-delay, letting the user's button release drain the virtual Shift before we press `I`.
+- **Waypoint Combo map double-click missed the waypoint** — 700ms post-chat-click sleep wasn't enough for the map to settle on the pin. Bumped to 1200ms.
+
+### Notes
+
+Architecture split between the 3 R1+DPad Right portable-item combos (bare-F6/F7/F8 chord, VDF emits `I` directly — no Shift conflict) and the 3 R1+DPad Left portable-item combos (Shift+F1/F2/F3 chord, DLL synthesizes `I` after a 500ms defer). Keep them that way — they use the same `OpenInventoryAndDoubleClick` / `OpenInventoryDllAndDoubleClick` helpers but resolve different Linux/Sunshine uinput quirks.
+
 ## [3.4.1] - 2026-04-20 — Mystic Clicker + Controller v17.5
 
 ### Added

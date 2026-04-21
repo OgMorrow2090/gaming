@@ -802,6 +802,15 @@
 	},
 	{
 		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_CHAT_WAYPOINT",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
 		"Code": 48,
 		"Ctrl": true,
 		"Identifier": "CAPTURE_CHEST",
@@ -921,6 +930,15 @@
 		"Alt": false,
 		"Code": 0,
 		"Ctrl": false,
+		"Identifier": "CAPTURE_LEAVE_PARTY",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
 		"Identifier": "CAPTURE_LFG_SEARCH",
 		"Passthrough": false,
 		"Shift": false,
@@ -930,7 +948,25 @@
 		"Alt": false,
 		"Code": 0,
 		"Ctrl": false,
+		"Identifier": "CAPTURE_LOUNGE_PASS",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
 		"Identifier": "CAPTURE_MAIL_TAKE_ALL",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_MAP_WAYPOINT",
 		"Passthrough": false,
 		"Shift": false,
 		"Type": 0
@@ -961,6 +997,15 @@
 		"Passthrough": false,
 		"Shift": true,
 		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_PARTY_SQUAD_BAR",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
 	},
 	{
 		"Alt": false,
@@ -1042,6 +1087,24 @@
 		"Passthrough": false,
 		"Shift": true,
 		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_WIZARD_GOBBLER",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_WIZARD_PORTAL_SCROLL",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
 	},
 	{
 		"Alt": false,
@@ -1522,9 +1585,27 @@
 	},
 	{
 		"Alt": false,
+		"Code": 63,
+		"Ctrl": false,
+		"Identifier": "LEAVE_PARTY_COMBO",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
 		"Code": 64,
 		"Ctrl": true,
 		"Identifier": "LFG_COMBO",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 61,
+		"Ctrl": false,
+		"Identifier": "LOUNGE_PASS_COMBO",
 		"Passthrough": false,
 		"Shift": true,
 		"Type": 1
@@ -1779,6 +1860,33 @@
 		"Identifier": "VENDOR_BUY",
 		"Passthrough": false,
 		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 62,
+		"Ctrl": false,
+		"Identifier": "WAYPOINT_COMBO",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 59,
+		"Ctrl": false,
+		"Identifier": "WIZARD_GOBBLER_COMBO",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 60,
+		"Ctrl": false,
+		"Identifier": "WIZARD_PORTAL_SCROLL_COMBO",
+		"Passthrough": false,
+		"Shift": true,
 		"Type": 1
 	},
 	{

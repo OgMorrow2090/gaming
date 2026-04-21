@@ -643,6 +643,45 @@ static void OpenInventoryAndDoubleClick(int x, int y, const char* label)
     SimulateDoubleClickAt(x, y);
 }
 
+// Variant used when the chord itself carries LEFT_SHIFT (e.g. Shift+F1 for
+// Wizard Gobbler). If the VDF also emitted `key_press I` alongside the chord,
+// GW2 would observe Shift+I and open the Wizard Vault instead of inventory.
+// So here the VDF sends ONLY the chord, and the DLL releases the held
+// modifiers then presses a clean `I` itself via SendInput scan-code.
+static void OpenInventoryDllAndDoubleClick(int x, int y, const char* label)
+{
+    if (x == 0 && y == 0)
+    {
+        char buf[128];
+        sprintf_s(buf, "%s position not set! Capture first", label);
+        APIDefs->GUI_SendAlert(buf);
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", label);
+
+    // Release physically-held chord modifiers so GW2 sees a clean `I`, not Shift+I.
+    ReleaseChordModifiers();
+
+    // Press `I` via SendInput scan code — WM_KEYDOWN path is unreliable here
+    // because Linux/Sunshine doesn't always set OS key state.
+    INPUT iKey[2] = {};
+    WORD iScan = (WORD)MapVirtualKey(0x49, MAPVK_VK_TO_VSC);
+    iKey[0].type = INPUT_KEYBOARD;
+    iKey[0].ki.wVk = 0x49;
+    iKey[0].ki.wScan = iScan;
+    iKey[0].ki.dwFlags = KEYEVENTF_SCANCODE;
+    iKey[1].type = INPUT_KEYBOARD;
+    iKey[1].ki.wVk = 0x49;
+    iKey[1].ki.wScan = iScan;
+    iKey[1].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
+    SendInput(2, iKey, sizeof(INPUT));
+
+    // Inventory panel animation.
+    Sleep(600);
+
+    SimulateDoubleClickAt(x, y);
+}
+
 void SimulateTeleportFriendCombo()
 {
     OpenInventoryAndDoubleClick(g_TeleportFriendX, g_TeleportFriendY, "Teleport Friend Combo: open inventory + double-click");
@@ -660,17 +699,19 @@ void SimulateBankCombo()
 
 void SimulateWizardGobblerCombo()
 {
-    OpenInventoryAndDoubleClick(g_WizardGobblerX, g_WizardGobblerY, "Wizard Gobbler Combo: open inventory + double-click");
+    // Uses DLL-press-I variant because the chord is Shift+F1 — if VDF also
+    // emitted I, GW2 would see Shift+I (Wizard Vault) instead of inventory.
+    OpenInventoryDllAndDoubleClick(g_WizardGobblerX, g_WizardGobblerY, "Wizard Gobbler Combo: open inventory + double-click");
 }
 
 void SimulateWizardPortalScrollCombo()
 {
-    OpenInventoryAndDoubleClick(g_WizardPortalScrollX, g_WizardPortalScrollY, "Wizard Portal Scroll Combo: open inventory + double-click");
+    OpenInventoryDllAndDoubleClick(g_WizardPortalScrollX, g_WizardPortalScrollY, "Wizard Portal Scroll Combo: open inventory + double-click");
 }
 
 void SimulateLoungePassCombo()
 {
-    OpenInventoryAndDoubleClick(g_LoungePassX, g_LoungePassY, "Lounge Pass Combo: open inventory + double-click");
+    OpenInventoryDllAndDoubleClick(g_LoungePassX, g_LoungePassY, "Lounge Pass Combo: open inventory + double-click");
 }
 
 void SimulateWaypointCombo()
@@ -685,8 +726,9 @@ void SimulateWaypointCombo()
     APIDefs->Log(LOGL_INFO, "MysticClicker", "Waypoint Combo: click chat waypoint link");
     SimulateClickAt(g_ChatWaypointX, g_ChatWaypointY);
 
-    // Wait for map to open and center on the waypoint.
-    Sleep(700);
+    // Wait for map to open and center on the waypoint. 700ms was too short —
+    // the double-click fired before the map finished settling on the target.
+    Sleep(1200);
 
     if (g_MapWaypointX == 0 && g_MapWaypointY == 0)
     {

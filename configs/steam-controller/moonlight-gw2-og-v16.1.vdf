@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2389"
-	"title"		"Guild Wars 2 - Og v17.6"
+	"revision"		"2390"
+	"title"		"Guild Wars 2 - Og v17.7"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2176,7 +2176,6 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press I, Open Inventory, , "
 							"binding"		"key_press LEFT_SHIFT, Wizard Gobbler Combo, , "
 							"binding"		"key_press F1, Wizard Gobbler Combo, , "
 						}
@@ -2185,7 +2184,6 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press I, Open Inventory, , "
 							"binding"		"key_press LEFT_SHIFT, Lounge Pass Combo, , "
 							"binding"		"key_press F3, Lounge Pass Combo, , "
 						}
@@ -2194,7 +2192,6 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press I, Open Inventory, , "
 							"binding"		"key_press LEFT_SHIFT, Wizard Portal Scroll Combo, , "
 							"binding"		"key_press F2, Wizard Portal Scroll Combo, , "
 						}

@@ -195,6 +195,26 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     {
         SimulatePersonalMarker();
     }
+    else if (strcmp(aIdentifier, WIZARD_GOBBLER_COMBO) == 0)
+    {
+        SimulateWizardGobblerCombo();
+    }
+    else if (strcmp(aIdentifier, WIZARD_PORTAL_SCROLL_COMBO) == 0)
+    {
+        SimulateWizardPortalScrollCombo();
+    }
+    else if (strcmp(aIdentifier, LOUNGE_PASS_COMBO) == 0)
+    {
+        SimulateLoungePassCombo();
+    }
+    else if (strcmp(aIdentifier, WAYPOINT_COMBO) == 0)
+    {
+        SimulateWaypointCombo();
+    }
+    else if (strcmp(aIdentifier, LEAVE_PARTY_COMBO) == 0)
+    {
+        SimulateLeavePartyCombo();
+    }
     else if (strcmp(aIdentifier, BOUNCY_META_COMPLETE) == 0)
     {
         SimulateBouncyMetaCompleteClick();

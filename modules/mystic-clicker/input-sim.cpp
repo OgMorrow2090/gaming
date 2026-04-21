@@ -658,6 +658,68 @@ void SimulateBankCombo()
     OpenInventoryAndDoubleClick(g_BankIconX, g_BankIconY, "Bank Combo: open inventory + double-click");
 }
 
+void SimulateWizardGobblerCombo()
+{
+    OpenInventoryAndDoubleClick(g_WizardGobblerX, g_WizardGobblerY, "Wizard Gobbler Combo: open inventory + double-click");
+}
+
+void SimulateWizardPortalScrollCombo()
+{
+    OpenInventoryAndDoubleClick(g_WizardPortalScrollX, g_WizardPortalScrollY, "Wizard Portal Scroll Combo: open inventory + double-click");
+}
+
+void SimulateLoungePassCombo()
+{
+    OpenInventoryAndDoubleClick(g_LoungePassX, g_LoungePassY, "Lounge Pass Combo: open inventory + double-click");
+}
+
+void SimulateWaypointCombo()
+{
+    // Click the pinged waypoint in chat → that opens the map centered on the
+    // waypoint → then double-click the map waypoint marker to travel.
+    if (g_ChatWaypointX == 0 && g_ChatWaypointY == 0)
+    {
+        APIDefs->GUI_SendAlert("Chat Waypoint position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Waypoint Combo: click chat waypoint link");
+    SimulateClickAt(g_ChatWaypointX, g_ChatWaypointY);
+
+    // Wait for map to open and center on the waypoint.
+    Sleep(700);
+
+    if (g_MapWaypointX == 0 && g_MapWaypointY == 0)
+    {
+        APIDefs->GUI_SendAlert("Map Waypoint position not set — map opened, double-click skipped");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Waypoint Combo: double-click map waypoint");
+    SimulateDoubleClickAt(g_MapWaypointX, g_MapWaypointY);
+}
+
+void SimulateLeavePartyCombo()
+{
+    // Right-click the party/squad bar to open the context menu → click Leave.
+    if (g_PartySquadBarX == 0 && g_PartySquadBarY == 0)
+    {
+        APIDefs->GUI_SendAlert("Party/Squad Bar position not set! Capture first");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Leave Party Combo: right-click party bar");
+    SimulateRightClickAt(g_PartySquadBarX, g_PartySquadBarY);
+
+    // Context menu animation.
+    Sleep(200);
+
+    if (g_LeavePartyX == 0 && g_LeavePartyY == 0)
+    {
+        APIDefs->GUI_SendAlert("Leave Party button position not set — menu opened, click skipped");
+        return;
+    }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Leave Party Combo: click Leave button");
+    SimulateClickAt(g_LeavePartyX, g_LeavePartyY);
+}
+
 void SimulatePersonalMarker()
 {
     // Alt+LeftClick at current cursor position — places a personal marker on the

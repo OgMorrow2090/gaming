@@ -109,6 +109,20 @@ int g_TradingPostIconX = 0;
 int g_TradingPostIconY = 0;
 int g_BankIconX = 0;
 int g_BankIconY = 0;
+int g_WizardGobblerX = 0;
+int g_WizardGobblerY = 0;
+int g_WizardPortalScrollX = 0;
+int g_WizardPortalScrollY = 0;
+int g_LoungePassX = 0;
+int g_LoungePassY = 0;
+int g_ChatWaypointX = 0;
+int g_ChatWaypointY = 0;
+int g_MapWaypointX = 0;
+int g_MapWaypointY = 0;
+int g_PartySquadBarX = 0;
+int g_PartySquadBarY = 0;
+int g_LeavePartyX = 0;
+int g_LeavePartyY = 0;
 int g_MailTakeAllX = 0;
 int g_MailTakeAllY = 0;
 int g_CraftFilterX = 0;
@@ -448,6 +462,34 @@ void LoadButtonPositions()
             g_BankIconX = std::stoi(line.substr(10));
         else if (line.find("BankIconY=") == 0)
             g_BankIconY = std::stoi(line.substr(10));
+        else if (line.find("WizardGobblerX=") == 0)
+            g_WizardGobblerX = std::stoi(line.substr(15));
+        else if (line.find("WizardGobblerY=") == 0)
+            g_WizardGobblerY = std::stoi(line.substr(15));
+        else if (line.find("WizardPortalScrollX=") == 0)
+            g_WizardPortalScrollX = std::stoi(line.substr(20));
+        else if (line.find("WizardPortalScrollY=") == 0)
+            g_WizardPortalScrollY = std::stoi(line.substr(20));
+        else if (line.find("LoungePassX=") == 0)
+            g_LoungePassX = std::stoi(line.substr(12));
+        else if (line.find("LoungePassY=") == 0)
+            g_LoungePassY = std::stoi(line.substr(12));
+        else if (line.find("ChatWaypointX=") == 0)
+            g_ChatWaypointX = std::stoi(line.substr(14));
+        else if (line.find("ChatWaypointY=") == 0)
+            g_ChatWaypointY = std::stoi(line.substr(14));
+        else if (line.find("MapWaypointX=") == 0)
+            g_MapWaypointX = std::stoi(line.substr(13));
+        else if (line.find("MapWaypointY=") == 0)
+            g_MapWaypointY = std::stoi(line.substr(13));
+        else if (line.find("PartySquadBarX=") == 0)
+            g_PartySquadBarX = std::stoi(line.substr(15));
+        else if (line.find("PartySquadBarY=") == 0)
+            g_PartySquadBarY = std::stoi(line.substr(15));
+        else if (line.find("LeavePartyX=") == 0)
+            g_LeavePartyX = std::stoi(line.substr(12));
+        else if (line.find("LeavePartyY=") == 0)
+            g_LeavePartyY = std::stoi(line.substr(12));
         else if (line.find("BouncyMetaCompleteX=") == 0)
             g_BouncyMetaCompleteX = std::stoi(line.substr(20));
         else if (line.find("BouncyMetaCompleteY=") == 0)
@@ -600,6 +642,20 @@ void SaveButtonPositions()
     file << "TradingPostIconY=" << g_TradingPostIconY << "\n";
     file << "BankIconX=" << g_BankIconX << "\n";
     file << "BankIconY=" << g_BankIconY << "\n";
+    file << "WizardGobblerX=" << g_WizardGobblerX << "\n";
+    file << "WizardGobblerY=" << g_WizardGobblerY << "\n";
+    file << "WizardPortalScrollX=" << g_WizardPortalScrollX << "\n";
+    file << "WizardPortalScrollY=" << g_WizardPortalScrollY << "\n";
+    file << "LoungePassX=" << g_LoungePassX << "\n";
+    file << "LoungePassY=" << g_LoungePassY << "\n";
+    file << "ChatWaypointX=" << g_ChatWaypointX << "\n";
+    file << "ChatWaypointY=" << g_ChatWaypointY << "\n";
+    file << "MapWaypointX=" << g_MapWaypointX << "\n";
+    file << "MapWaypointY=" << g_MapWaypointY << "\n";
+    file << "PartySquadBarX=" << g_PartySquadBarX << "\n";
+    file << "PartySquadBarY=" << g_PartySquadBarY << "\n";
+    file << "LeavePartyX=" << g_LeavePartyX << "\n";
+    file << "LeavePartyY=" << g_LeavePartyY << "\n";
     file << "BouncyMetaCompleteX=" << g_BouncyMetaCompleteX << "\n";
     file << "BouncyMetaCompleteY=" << g_BouncyMetaCompleteY << "\n";
     file << "MailTakeAllX=" << g_MailTakeAllX << "\n";
@@ -731,6 +787,20 @@ void CheckResolutionChange()
         g_TradingPostIconY = 0;
         g_BankIconX = 0;
         g_BankIconY = 0;
+        g_WizardGobblerX = 0;
+        g_WizardGobblerY = 0;
+        g_WizardPortalScrollX = 0;
+        g_WizardPortalScrollY = 0;
+        g_LoungePassX = 0;
+        g_LoungePassY = 0;
+        g_ChatWaypointX = 0;
+        g_ChatWaypointY = 0;
+        g_MapWaypointX = 0;
+        g_MapWaypointY = 0;
+        g_PartySquadBarX = 0;
+        g_PartySquadBarY = 0;
+        g_LeavePartyX = 0;
+        g_LeavePartyY = 0;
         g_BouncyMetaCompleteX = 0;
         g_BouncyMetaCompleteY = 0;
         g_MailTakeAllX = 0;

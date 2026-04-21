@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2388"
-	"title"		"Guild Wars 2 - Og v17.5"
+	"revision"		"2389"
+	"title"		"Guild Wars 2 - Og v17.6"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2114,7 +2114,22 @@
 			{
 				"activators"
 				{
-
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, Waypoint Combo, , "
+							"binding"		"key_press F4, Waypoint Combo, , "
+						}
+					}
+					"Long_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, Leave Party Combo, , "
+							"binding"		"key_press F5, Leave Party Combo, , "
+						}
+					}
 				}
 				"disabled_activators"
 				{
@@ -2157,7 +2172,33 @@
 			{
 				"activators"
 				{
-
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press I, Open Inventory, , "
+							"binding"		"key_press LEFT_SHIFT, Wizard Gobbler Combo, , "
+							"binding"		"key_press F1, Wizard Gobbler Combo, , "
+						}
+					}
+					"Double_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press I, Open Inventory, , "
+							"binding"		"key_press LEFT_SHIFT, Lounge Pass Combo, , "
+							"binding"		"key_press F3, Lounge Pass Combo, , "
+						}
+					}
+					"Long_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press I, Open Inventory, , "
+							"binding"		"key_press LEFT_SHIFT, Wizard Portal Scroll Combo, , "
+							"binding"		"key_press F2, Wizard Portal Scroll Combo, , "
+						}
+					}
 				}
 				"disabled_activators"
 				{

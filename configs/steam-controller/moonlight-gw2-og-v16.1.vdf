@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2390"
-	"title"		"Guild Wars 2 - Og v17.7"
+	"revision"		"2391"
+	"title"		"Guild Wars 2 - Og v17.8"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2119,7 +2119,7 @@
 						"bindings"
 						{
 							"binding"		"key_press LEFT_SHIFT, Waypoint Combo, , "
-							"binding"		"key_press F4, Waypoint Combo, , "
+							"binding"		"key_press F9, Waypoint Combo, , "
 						}
 					}
 					"Long_Press"
@@ -2127,7 +2127,7 @@
 						"bindings"
 						{
 							"binding"		"key_press LEFT_SHIFT, Leave Party Combo, , "
-							"binding"		"key_press F5, Leave Party Combo, , "
+							"binding"		"key_press F10, Leave Party Combo, , "
 						}
 					}
 				}
@@ -2177,7 +2177,7 @@
 						"bindings"
 						{
 							"binding"		"key_press LEFT_SHIFT, Wizard Gobbler Combo, , "
-							"binding"		"key_press F1, Wizard Gobbler Combo, , "
+							"binding"		"key_press F6, Wizard Gobbler Combo, , "
 						}
 					}
 					"Double_Press"
@@ -2185,7 +2185,7 @@
 						"bindings"
 						{
 							"binding"		"key_press LEFT_SHIFT, Lounge Pass Combo, , "
-							"binding"		"key_press F3, Lounge Pass Combo, , "
+							"binding"		"key_press F8, Lounge Pass Combo, , "
 						}
 					}
 					"Long_Press"
@@ -2193,7 +2193,7 @@
 						"bindings"
 						{
 							"binding"		"key_press LEFT_SHIFT, Wizard Portal Scroll Combo, , "
-							"binding"		"key_press F2, Wizard Portal Scroll Combo, , "
+							"binding"		"key_press F7, Wizard Portal Scroll Combo, , "
 						}
 					}
 				}

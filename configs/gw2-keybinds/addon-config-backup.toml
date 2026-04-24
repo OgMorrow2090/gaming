@@ -1,0 +1,5 @@
+target_folder = "/var/home/Og/Documents/Guild Wars 2/nexus-configs"
+backup_on_launch = true
+delete_old_on_launch = true
+backups_to_keep = 30
+package_addons = true

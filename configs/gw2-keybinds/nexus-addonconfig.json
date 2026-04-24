@@ -367,5 +367,14 @@
 		"IsPausingUpdates": false,
 		"Name": "NexusGameWiki",
 		"Signature": -26032501
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "Alter Ego",
+		"Signature": -1585561968
 	}
 ]

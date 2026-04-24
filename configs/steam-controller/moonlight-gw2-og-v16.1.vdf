@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2393"
-	"title"		"Guild Wars 2 - Og v18.0"
+	"revision"		"2394"
+	"title"		"Guild Wars 2 - Og v18.1"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2102,6 +2102,14 @@
 							"binding"		"key_press LEFT_CONTROL, Char Swap, , "
 							"binding"		"key_press LEFT_SHIFT, Char Swap, , "
 							"binding"		"key_press F4, Char Swap, , "
+						}
+					}
+					"Double_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Fast Swap, , "
+							"binding"		"key_press F6, Fast Swap, , "
 						}
 					}
 				}

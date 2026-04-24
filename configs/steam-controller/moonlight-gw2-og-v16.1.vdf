@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2392"
-	"title"		"Guild Wars 2 - Og v17.9"
+	"revision"		"2393"
+	"title"		"Guild Wars 2 - Og v18.0"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -2568,7 +2568,8 @@
 						"bindings"
 						{
 							"binding"		"key_press LEFT_CONTROL, Capture Mode, , "
-							"binding"		"key_press F6, Capture Mode, , "
+							"binding"		"key_press LEFT_SHIFT, Capture Mode, , "
+								"binding"		"key_press C, Capture Mode, , "
 						}
 					}
 				}

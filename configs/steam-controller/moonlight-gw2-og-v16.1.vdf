@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2391"
-	"title"		"Guild Wars 2 - Og v17.8"
+	"revision"		"2392"
+	"title"		"Guild Wars 2 - Og v17.9"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
@@ -793,7 +793,6 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_ALT, Toggle Action Camera, , "
 							"binding"		"key_press E, Toggle Action Camera, , "
 						}
 						"settings"

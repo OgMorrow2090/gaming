@@ -17,6 +17,13 @@
 
 static const float MIN_VISIBLE_PX = 60.0f;
 
+// Cap window size at 70% of viewport so a window stretched to 4K dimensions
+// (e.g. 1920×1080) still shrinks to a usable size on a 1280×800 Deck —
+// 896×560 in this case. Without this cap, a window only shrinks if it's
+// strictly larger than the display, which leaves it filling the whole screen
+// (still unusable).
+static const float MAX_VIEWPORT_FRACTION = 0.70f;
+
 void RescueAllImGuiWindows()
 {
     ImGuiContext* ctx = ImGui::GetCurrentContext();
@@ -44,9 +51,12 @@ void RescueAllImGuiWindows()
 
         bool changed = false;
 
-        // Clamp size to display first.
-        if (size.x > ds.x) { size.x = ds.x; changed = true; }
-        if (size.y > ds.y) { size.y = ds.y; changed = true; }
+        // Clamp size to a fraction of the viewport so oversized windows shrink
+        // to something usable, not just to fill-the-screen.
+        const float maxW = ds.x * MAX_VIEWPORT_FRACTION;
+        const float maxH = ds.y * MAX_VIEWPORT_FRACTION;
+        if (size.x > maxW) { size.x = maxW; changed = true; }
+        if (size.y > maxH) { size.y = maxH; changed = true; }
 
         // Clamp position so at least MIN_VISIBLE_PX of the window stays on-screen
         // on every edge.
@@ -67,10 +77,8 @@ void RescueAllImGuiWindows()
         }
     }
 
-    if (rescued > 0)
-    {
-        char buf[96];
-        sprintf_s(buf, "Window rescue: repositioned %d ImGui window(s)", rescued);
-        APIDefs->Log(LOGL_INFO, "MysticClicker", buf);
-    }
+    char buf[128];
+    sprintf_s(buf, "Window rescue: %d window(s) repositioned/resized (viewport %.0fx%.0f)",
+              rescued, ds.x, ds.y);
+    APIDefs->Log(LOGL_INFO, "MysticClicker", buf);
 }

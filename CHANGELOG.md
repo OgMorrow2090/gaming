@@ -7,6 +7,20 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.5] - 2026-04-26 — Mystic Clicker + Controller v18.4.6
+
+### Fixed
+
+- **R1+DPad Left Double_Press → Lounge Pass opened Wizard Vault instead.** Same `Shift+I → WV` race we fixed for Long_Press in v3.5.2, but on Double_Press the second physical tap can run longer than 500 ms — uinput is still asserting Shift when the DLL synthesizes `I`. Bumped `SimulateLoungePassCombo`'s detached-thread defer from 500 ms → 800 ms so the held virtual modifier fully drains. Same change applied to `SimulateMerchantCombo` (also Double_Press, also `Alt+F11`).
+- **R1+DPad Right Double_Press → Merchant didn't always trigger** because the user's natural double-tap rhythm exceeded Steam Input's default `double_tap_time` window. Added explicit `"double_tap_time" "500"` to all three v18.4 Double_Press activators (Merchant on R1+Right, Leave Party on R1+Down, Lounge Pass on R1+Left), giving 500 ms between taps.
+- **Window rescue (Utility Wheel slot 2) didn't change window sizes** — `rescue.cpp` only clamped to display size, so a 1920×1080 window on the Deck became a 1280×800 window filling the whole screen. Now clamps to 70% of viewport (896×560 on Deck) so oversized windows actually shrink to a usable size. Also logs every press now (even when no windows needed rescuing) so the user can confirm the chord reached the addon.
+
+### Notes
+
+The two Double_Press combos that drive inventory items both run the held-modifier-drain pattern with an 800 ms defer (longer than the 500 ms used by Long_Press combos). Pattern: when an inventory-item combo lives on a Double_Press activator and the chord carries `Shift` or `Alt`, the DLL must wait at least 800 ms before synthesizing `I` — uinput key-hold during the second physical tap can outlast a 500 ms drain.
+
+Versions: VDF v18.4.6 (revision 2406), Mystic Clicker DLL 3.6.5.
+
 ## [3.6.4] - 2026-04-26 — Mystic Clicker + Controller v18.4.5
 
 ### Fixed

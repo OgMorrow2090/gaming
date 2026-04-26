@@ -1,12 +1,12 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2405"
-	"title"		"Guild Wars 2 - Og v18.4.5"
+	"revision"		"2406"
+	"title"		"Guild Wars 2 - Og v18.4.6"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
-	"url"		"usercloud://moonlight/og v18.4.5_0"
+	"url"		"usercloud://moonlight/og v18.4.6_0"
 	"export_type"		"personal_local"
 	"controller_type"		"controller_neptune"
 	"controller_caps"		"23117823"
@@ -2144,6 +2144,10 @@
 							"binding"		"key_press LEFT_SHIFT, Leave Party Combo, , "
 							"binding"		"key_press F10, Leave Party Combo, , "
 						}
+						"settings"
+						{
+							"double_tap_time"		"500"
+						}
 					}
 				}
 				"disabled_activators"
@@ -2177,6 +2181,10 @@
 							"binding"		"key_press LEFT_ALT, Merchant Combo, , "
 							"binding"		"key_press F11, Merchant Combo, , "
 						}
+						"settings"
+						{
+							"double_tap_time"		"500"
+						}
 					}
 				}
 				"disabled_activators"
@@ -2201,6 +2209,10 @@
 						{
 							"binding"		"key_press LEFT_SHIFT, Lounge Pass Combo, , "
 							"binding"		"key_press F8, Lounge Pass Combo, , "
+						}
+						"settings"
+						{
+							"double_tap_time"		"500"
 						}
 					}
 					"Long_Press"

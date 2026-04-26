@@ -724,8 +724,13 @@ void SimulateWizardPortalScrollCombo()
 
 void SimulateLoungePassCombo()
 {
+    // Double_Press activator. Steam Input keeps Shift held via uinput for the
+    // duration of the second physical tap, which can run longer than 500 ms
+    // on a fast double-press — bump to 800 ms so the held virtual Shift has
+    // fully drained before we synthesize `I`. Otherwise GW2 sees Shift+I and
+    // toggles Wizard Vault instead of opening inventory.
     std::thread([] {
-        Sleep(500);
+        Sleep(800);
         OpenInventoryDllAndDoubleClick(g_LoungePassX, g_LoungePassY, "Lounge Pass Combo: open inventory + double-click");
     }).detach();
 }
@@ -1048,13 +1053,14 @@ void SimulateAccept20Click()
 
 void SimulateMerchantCombo()
 {
-    // Chord is Alt+F11 (R1+DPad Right Double_Press). Steam Input holds Alt
-    // via uinput for the duration of the physical button press, and the VDF
-    // does NOT emit `I` (Alt+I in GW2 is unbound, so adding it wouldn't open
-    // inventory anyway). Use the same detached-thread + 500ms defer pattern
-    // as the Wizard combos so the held virtual Alt drains before we synthesize `I`.
+    // Chord is Alt+F11 (R1+DPad Right Double_Press). Steam Input holds Alt via
+    // uinput for the duration of the second physical tap. Use 800 ms (not the
+    // 500 ms used by Long_Press combos) — Double_Press second-tap holds run
+    // longer than typical Long_Press holds, and a residual virtual Alt while
+    // synthesizing `I` would give GW2 Alt+I (which is unbound, so inventory
+    // never opens and the captured-slot double-click lands on a closed panel).
     std::thread([] {
-        Sleep(500);
+        Sleep(800);
         OpenInventoryDllAndDoubleClick(g_MerchantX, g_MerchantY, "Merchant Combo: open inventory + double-click");
     }).detach();
 }

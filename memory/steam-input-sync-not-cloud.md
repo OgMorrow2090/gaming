@@ -4,6 +4,8 @@ description: Disabling Steam Cloud in the client UI does not stop Steam Input fr
 type: project
 ---
 
+<!-- markdownlint-disable MD041 -->
+
 Steam Input maintains its own server-side sync layer for controller configs that is **independent** of the Steam Cloud toggle in the client UI. Disabling Steam Cloud will not stop Steam Input from re-injecting workshop refs or re-pulling deleted layouts on next launch.
 
 This is Valve bug #7801, unfixed as of 2026-04.

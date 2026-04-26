@@ -1485,7 +1485,7 @@
 		"Type": 1
 	},
 	{
-		"Alt": false,
+		"Alt": true,
 		"Code": 87,
 		"Ctrl": false,
 		"Identifier": "MERCHANT_COMBO",

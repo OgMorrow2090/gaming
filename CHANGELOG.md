@@ -7,6 +7,22 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.3] - 2026-04-26 — Mystic Clicker + Controller v18.4.4
+
+### Fixed
+
+- **R1+DPad Right Double_Press → Merchant Combo opened Settings + Wizard Vault instead** — Nexus log showed no `Merchant Combo` event because the v18.4.3 chord (`Shift+F11+I`) didn't match what Nexus had stored for `MERCHANT_COMBO` (`F11` alone). Meanwhile GW2 caught `F11` (Game Options) and `Shift+I` (Wizard Vault toggle) — the same `Shift+I → WV` bug that bit Wizard Gobbler in v3.5.1. Fix: strip `key_press I` from the chord (DLL opens inventory itself with the 500 ms detached-thread defer) and move the chord off `Shift+F11` entirely. First tried `Ctrl+F11`, which collided with `KB_CRAFTY_TOGGLE` — settled on **`Alt+F11`** which is unbound. Updated `configs/gw2-keybinds/nexus-inputbinds.json` (deployed live to Bazzite) and the DLL `RegisterWithString` default so first-run users get the same key.
+
+### Added
+
+- **Utility Wheel slot 0 → Open Settings** (`F11`) — bare F11 is GW2's default Game Options keybind and is unbound in Nexus, so a single emit opens Settings cleanly.
+- **Golden Rule #11: check Nexus for chord collisions before picking a key** — added to `docs/vdf-editing-golden-rules.md` with a one-line Python snippet that lists everything bound to a given scancode. Would have caught the `Ctrl+F11` / `KB_CRAFTY_TOGGLE` collision before deploy.
+
+### Changed
+
+- **Renamed `configs/steam-controller/moonlight-gw2-og-v16.1.vdf` → `moonlight-gw2-og-template.vdf`.** The `v16.1` in the filename had been misleading for many releases — the actual VDF version is in the `title` field inside the file. The repo template now has no version in its name; per-release deploys still go to the Deck under `og v<N.M.P>_0.vdf`.
+- DLL bumped to **3.6.3**, controller VDF bumped to **v18.4.4** (revision 2404).
+
 ## [3.6.2] - 2026-04-26 — Mystic Clicker + Controller v18.4.3
 
 ### Fixed

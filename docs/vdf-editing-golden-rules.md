@@ -14,7 +14,7 @@ The Steam Deck VDF parser **silently rejects** structurally damaged files — no
 
 A Steam Input VDF is a deeply nested KeyValues tree. Each chord on a button (e.g. R1+DPad Right) lives under:
 
-```
+```text
 "group" -> "inputs" -> "<dpad direction>" -> "activators" ->
   Full_Press -> bindings -> binding
   Long_Press -> bindings -> binding
@@ -76,7 +76,7 @@ If the diff is more than ~30 lines for a chord change, you've probably touched t
 Three valid schemes for personal layouts:
 
 | Scheme | Meaning | When |
-|--------|---------|------|
+| ------ | ------- | ---- |
 | `autosave:///home/deck/.local/share/Steam/.../controller_neptune.vdf` | The active autosave | Auto-managed by Steam — don't ship this |
 | `usercloud://moonlight/<name>_0` | Personal save | What we deploy via SSH |
 | `workshop://<id>` | Community/workshop | Set by Steam when you upload |
@@ -141,6 +141,28 @@ Mystic Clicker DLL and the controller VDF together form one product. When a chor
 
 The repo's GitHub Actions builds the DLL on push — so the order matters: commit + push **before** asking the user to pull on Bazzite.
 
+### 11. Check Nexus for chord collisions before picking a key
+
+The `key_press` chord emitted by Steam Input is delivered to **everything that's listening** — GW2 itself, Mystic Clicker, and any other Nexus addon. Before picking a chord for a new combo, verify nothing else is bound to the same key+modifier set.
+
+```bash
+python3 - <<'PY'
+import json
+with open('configs/gw2-keybinds/nexus-inputbinds.json') as f:
+    binds = json.load(f)
+# Replace 87 with the scancode you're considering. F1=58 .. F12=88, F11=87.
+target_code = 87
+for b in binds:
+    if b.get('Code') == target_code:
+        mods = [m for m in ('Ctrl','Shift','Alt') if b.get(m)]
+        print('+'.join(mods + [f"K{target_code}"]).ljust(25), b['Identifier'])
+PY
+```
+
+A live example: when wiring `MERCHANT_COMBO` to `Ctrl+F11`, the script revealed `KB_CRAFTY_TOGGLE` was already bound there — so pressing the chord would fire both. Switched Merchant to `Alt+F11`, which was unbound. Cost: 30 seconds. Cost of skipping the check: a chord that silently does the wrong thing.
+
+Also worth double-checking against GW2's own bindings — `F11` alone, `F12` alone, and `Esc` are GW2 defaults (Game Options, Wiki, Menu) regardless of what Nexus does. Choose chord keys whose **bare** form GW2 ignores, or whose **modified** form GW2's strict-modifier-match suppresses. When in doubt, prefer `Alt+Fn` or `Ctrl+Alt+Fn` over plain `Shift+Fn` — Shift is the modifier most likely to collide with a typing key in GW2.
+
 ---
 
 ## Recovery Playbook
@@ -149,15 +171,19 @@ If you've broken a deployed layout:
 
 1. **Don't panic, don't overwrite the file again.** The damage is on the Deck side.
 2. Check how big it is:
+
    ```bash
    ssh steam-deck 'ls -la "/home/deck/.local/share/Steam/steamapps/common/Steam Controller Configs/64793831/config/moonlight/"'
    ```
+
 3. If your new file is dramatically smaller than the working baseline, it was bulk-rewritten. Revert from the repo:
+
    ```bash
    git show <last-good-commit>:configs/steam-controller/<file.vdf> > /tmp/recovery.vdf
    # patch url to usercloud://moonlight/<name>_0
    # scp to the deck under a NEW name (don't overwrite the broken one)
    ```
+
 4. In the Deck UI, apply the recovery layout. The broken one stays in the list as evidence — delete it later from the UI once recovery is confirmed.
 5. **Do not `git push --force` or rewrite history** — the broken file in the repo is part of the audit trail. Add a `fix(...)` commit on top instead, the way `c278737` did for v18.4.3.
 
@@ -165,7 +191,7 @@ If you've broken a deployed layout:
 
 ## Reference: the v18.4 incident
 
-- **What happened**: a Python regex was used to rewrite `dpad_south` and `dpad_east` blocks inside `moonlight-gw2-og-v16.1.vdf` to add the Merchant chord and rearrange Friend / Waypoint / LeaveParty.
+- **What happened**: a Python regex was used to rewrite `dpad_south` and `dpad_east` blocks inside the template VDF (now `configs/steam-controller/moonlight-gw2-og-template.vdf`, formerly named `moonlight-gw2-og-v16.1.vdf` until 2026-04-26 when the v16.1 in the name became misleading and was dropped) to add the Merchant chord and rearrange Friend / Waypoint / LeaveParty.
 - **What broke**: the regex's block boundary was greedy and consumed `Long_Press` / `Double_Press` activator subgroups across multiple groups, dropping ~25 of them. File went 63 121 → 37 170 bytes (3543 → 1768 lines, 296 → 158 bindings, 56 → 31 effective groups).
 - **What Steam did**: silently dropped the layout. Personal tab empty. Templates empty. No error.
 - **What rescue took**: signout/signin, multiple workshop-cache wipes, fighting "hidden" errors on workshop items, eventually rolling back to v18.3 and SSH-overwriting the Personal save with the v18.3 base.

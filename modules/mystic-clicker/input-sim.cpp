@@ -190,6 +190,47 @@ static void ReleaseChordModifiers()
     Sleep(50);
 }
 
+// Block until Steam Input's uinput layer stops asserting Shift/Alt/Ctrl, then
+// give a short grace period before the caller synthesizes `I`. Replaces the
+// previous fixed-time Sleep(500) / Sleep(800) defers, which assumed a typical
+// chord hold-time — Long_Press chords can hold modifiers for 1–2 s, longer
+// than any safe fixed sleep, and a too-long fixed sleep makes the addon feel
+// laggy on quick taps. Polling adapts to the actual hold time.
+//
+// Logs the modifier state on entry and the wait duration on exit so we can
+// see in Nexus.log whether the hold pattern matched what we expected.
+static void WaitForChordModifiersRelease(const char* label)
+{
+    auto modsHeld = []() -> int {
+        int m = 0;
+        if (GetAsyncKeyState(VK_LSHIFT)   & 0x8000) m |= 1;
+        if (GetAsyncKeyState(VK_RSHIFT)   & 0x8000) m |= 1;
+        if (GetAsyncKeyState(VK_LMENU)    & 0x8000) m |= 2;  // Alt
+        if (GetAsyncKeyState(VK_RMENU)    & 0x8000) m |= 2;
+        if (GetAsyncKeyState(VK_LCONTROL) & 0x8000) m |= 4;
+        if (GetAsyncKeyState(VK_RCONTROL) & 0x8000) m |= 4;
+        return m;
+    };
+
+    int initial = modsHeld();
+    int waited = 0;
+    const int MAX_WAIT_MS = 3000;
+    const int POLL_MS = 50;
+    while (modsHeld() != 0 && waited < MAX_WAIT_MS)
+    {
+        Sleep(POLL_MS);
+        waited += POLL_MS;
+    }
+
+    char buf[160];
+    sprintf_s(buf,
+              "%s: modifiers held at start=0x%X, released after %dms (timeout=%s)",
+              label, initial, waited, waited >= MAX_WAIT_MS ? "yes" : "no");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", buf);
+
+    Sleep(100);  // Small grace after release before the caller synthesizes `I`.
+}
+
 /**
  * SimulateRightClickAt - Send RIGHT mouse click at coordinates
  */
@@ -700,16 +741,15 @@ void SimulateBankCombo()
 
 void SimulateWizardGobblerCombo()
 {
-    // Uses DLL-press-I variant because the chord is Shift+F1 — if VDF also
+    // Uses DLL-press-I variant because the chord is Shift+F6 — if VDF also
     // emitted I, GW2 would see Shift+I (Wizard Vault) instead of inventory.
-    // Runs on a detached thread with a 500ms pre-delay: Steam Input's
-    // Long_Press / Double_Press activators keep Shift held via uinput for
-    // the duration of the physical button press. If we press I immediately,
-    // the still-held virtual Shift causes GW2 to see Shift+I (WV toggle).
-    // Delaying gives the user time to release the button and drains the
-    // virtual Shift before we synthesize `I`.
+    // Runs on a detached thread that polls until the user releases the chord
+    // (Steam Input keeps Shift asserted via uinput for the duration of the
+    // physical button hold). Polling adapts to actual hold time, replacing
+    // the previous fixed Sleep(500/800) defers which were too short for
+    // Long_Press holds and too long for quick Full_Press taps.
     std::thread([] {
-        Sleep(500);
+        WaitForChordModifiersRelease("Wizard Gobbler");
         OpenInventoryDllAndDoubleClick(g_WizardGobblerX, g_WizardGobblerY, "Wizard Gobbler Combo: open inventory + double-click");
     }).detach();
 }
@@ -717,20 +757,15 @@ void SimulateWizardGobblerCombo()
 void SimulateWizardPortalScrollCombo()
 {
     std::thread([] {
-        Sleep(500);
+        WaitForChordModifiersRelease("Wizard Portal Scroll");
         OpenInventoryDllAndDoubleClick(g_WizardPortalScrollX, g_WizardPortalScrollY, "Wizard Portal Scroll Combo: open inventory + double-click");
     }).detach();
 }
 
 void SimulateLoungePassCombo()
 {
-    // Double_Press activator. Steam Input keeps Shift held via uinput for the
-    // duration of the second physical tap, which can run longer than 500 ms
-    // on a fast double-press — bump to 800 ms so the held virtual Shift has
-    // fully drained before we synthesize `I`. Otherwise GW2 sees Shift+I and
-    // toggles Wizard Vault instead of opening inventory.
     std::thread([] {
-        Sleep(800);
+        WaitForChordModifiersRelease("Lounge Pass");
         OpenInventoryDllAndDoubleClick(g_LoungePassX, g_LoungePassY, "Lounge Pass Combo: open inventory + double-click");
     }).detach();
 }
@@ -1053,14 +1088,12 @@ void SimulateAccept20Click()
 
 void SimulateMerchantCombo()
 {
-    // Chord is Alt+F11 (R1+DPad Right Double_Press). Steam Input holds Alt via
-    // uinput for the duration of the second physical tap. Use 800 ms (not the
-    // 500 ms used by Long_Press combos) — Double_Press second-tap holds run
-    // longer than typical Long_Press holds, and a residual virtual Alt while
-    // synthesizing `I` would give GW2 Alt+I (which is unbound, so inventory
-    // never opens and the captured-slot double-click lands on a closed panel).
+    // Chord is Alt+F11 (R1+DPad Right Double_Press). Polls until uinput stops
+    // asserting Alt before synthesizing `I`. Without this, GW2 sees Alt+I
+    // (which is unbound) and inventory never opens — the captured-slot
+    // double-click then lands on a closed panel.
     std::thread([] {
-        Sleep(800);
+        WaitForChordModifiersRelease("Merchant");
         OpenInventoryDllAndDoubleClick(g_MerchantX, g_MerchantY, "Merchant Combo: open inventory + double-click");
     }).detach();
 }

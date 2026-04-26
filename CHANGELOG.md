@@ -7,6 +7,20 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.6] - 2026-04-26 — Mystic Clicker DLL only
+
+### Fixed
+
+- **Long_Press inventory combos (Wizard Portal Scroll) still opened Wizard Vault** even with v3.6.5's 800 ms defer. Root cause: Steam Input keeps Shift asserted via uinput for the **entire physical hold**, which on a Long_Press routinely exceeds 800 ms (user's natural hold is 500 – 2000 ms). Any fixed `Sleep(N)` is a guess.
+- Replaced the fixed-time defer in all four detached-thread combos (Wizard Gobbler, Wizard Portal Scroll, Lounge Pass, Merchant) with `WaitForChordModifiersRelease()` — polls `GetAsyncKeyState(VK_LSHIFT/RSHIFT/LMENU/RMENU/LCONTROL/RCONTROL)` every 50 ms (3 s timeout) and exits as soon as the OS sees the modifier release. Adapts to actual hold time so quick taps don't feel laggy and long holds don't leak `Shift+I`/`Alt+I` to GW2.
+- Each combo now logs the modifier state on entry and the wait duration on exit (`Wizard Portal Scroll: modifiers held at start=0x1, released after 1450ms (timeout=no)`), so future debugging can see hold patterns directly in `Nexus.log`.
+
+### Notes
+
+DLL-only release — no VDF or Nexus binding changes. v18.4.6 controller layout stays current.
+
+Versions: Mystic Clicker DLL 3.6.6.
+
 ## [3.6.5] - 2026-04-26 — Mystic Clicker + Controller v18.4.6
 
 ### Fixed

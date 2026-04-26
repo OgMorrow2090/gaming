@@ -7,6 +7,24 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.4] - 2026-04-26 — Mystic Clicker + Controller v18.4.5
+
+### Fixed
+
+- **R1+DPad Down → Friend didn't open inventory before clicking the captured slot.** `SimulateTeleportFriendCombo` does not press `I` itself — it relies on the VDF chord emitting `I` alongside the keycode. v18.3 had Friend on R1+DPad Right Full_Press emitting `I+F6`; v18.4.x moved Friend to R1+DPad Down and only emitted `F6`, so the 600ms wait + double-click landed on a closed inventory and did nothing. Fix: add `key_press I, Open Inventory` back to the dpad_south Full_Press chord. (F6 is bare, so `I` reaches GW2 cleanly with no `Shift+I`→WV bug.)
+- **R1+DPad Right Double_Press → Merchant had the same bug**, but unlike Friend the chord carries `Alt`, so adding `key_press I` to the VDF wouldn't help (GW2 sees `Alt+I`, which is unbound). Fix: switch `SimulateMerchantCombo` to use `OpenInventoryDllAndDoubleClick` on a detached `std::thread` with a 500ms pre-delay — the same pattern already used by Wizard Gobbler / Portal Scroll / Lounge Pass to drain the held virtual modifier before the DLL synthesizes a clean `I`.
+
+### Notes
+
+The two inventory-combo patterns in this codebase:
+
+1. **Bare-chord pattern** (Friend, Trading Post, Bank): VDF emits `I + F<n>`. GW2 sees `I` → opens inventory. Nexus catches `F<n>` → DLL waits 600ms → double-click captured slot. DLL function uses `OpenInventoryAndDoubleClick`.
+2. **Modifier-chord pattern** (Wizard Gobbler / Portal Scroll / Lounge Pass / Merchant): chord uses `Shift` or `Alt`, so VDF must NOT emit `I` (would fire `Shift+I` = WV or be ignored as `Alt+I`). DLL runs on a detached `std::thread`, sleeps 500ms to let the held virtual modifier drain, then `ReleaseChordModifiers()` and synthesizes `I` via SendInput. DLL function uses `OpenInventoryDllAndDoubleClick`.
+
+Pattern selection is determined by whether the chord carries a modifier — not by which button the chord lives on. When moving a combo across DPad slots, the new chord's modifier set must match the DLL function's pattern, or the inventory-open step silently fails.
+
+Versions: VDF v18.4.5 (revision 2405), Mystic Clicker DLL 3.6.4.
+
 ## [3.6.3] - 2026-04-26 — Mystic Clicker + Controller v18.4.4
 
 ### Fixed

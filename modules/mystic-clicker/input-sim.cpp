@@ -1048,7 +1048,15 @@ void SimulateAccept20Click()
 
 void SimulateMerchantCombo()
 {
-    OpenInventoryAndDoubleClick(g_MerchantX, g_MerchantY, "Merchant Combo: open inventory + double-click");
+    // Chord is Alt+F11 (R1+DPad Right Double_Press). Steam Input holds Alt
+    // via uinput for the duration of the physical button press, and the VDF
+    // does NOT emit `I` (Alt+I in GW2 is unbound, so adding it wouldn't open
+    // inventory anyway). Use the same detached-thread + 500ms defer pattern
+    // as the Wizard combos so the held virtual Alt drains before we synthesize `I`.
+    std::thread([] {
+        Sleep(500);
+        OpenInventoryDllAndDoubleClick(g_MerchantX, g_MerchantY, "Merchant Combo: open inventory + double-click");
+    }).detach();
 }
 
 void SimulateBouncyMetaCompleteClick()

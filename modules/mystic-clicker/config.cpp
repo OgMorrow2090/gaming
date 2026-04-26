@@ -95,6 +95,18 @@ int g_Accept14X = 0;
 int g_Accept14Y = 0;
 int g_Accept15X = 0;
 int g_Accept15Y = 0;
+int g_Accept16X = 0;
+int g_Accept16Y = 0;
+int g_Accept17X = 0;
+int g_Accept17Y = 0;
+int g_Accept18X = 0;
+int g_Accept18Y = 0;
+int g_Accept19X = 0;
+int g_Accept19Y = 0;
+int g_Accept20X = 0;
+int g_Accept20Y = 0;
+int g_MerchantX = 0;
+int g_MerchantY = 0;
 int g_WizardVaultDailyTabX = 0;
 int g_WizardVaultDailyTabY = 0;
 int g_WizardVaultWeeklyTabX = 0;
@@ -434,6 +446,30 @@ void LoadButtonPositions()
             g_Accept15X = std::stoi(line.substr(10));
         else if (line.find("Accept15Y=") == 0)
             g_Accept15Y = std::stoi(line.substr(10));
+        else if (line.find("Accept16X=") == 0)
+            g_Accept16X = std::stoi(line.substr(10));
+        else if (line.find("Accept16Y=") == 0)
+            g_Accept16Y = std::stoi(line.substr(10));
+        else if (line.find("Accept17X=") == 0)
+            g_Accept17X = std::stoi(line.substr(10));
+        else if (line.find("Accept17Y=") == 0)
+            g_Accept17Y = std::stoi(line.substr(10));
+        else if (line.find("Accept18X=") == 0)
+            g_Accept18X = std::stoi(line.substr(10));
+        else if (line.find("Accept18Y=") == 0)
+            g_Accept18Y = std::stoi(line.substr(10));
+        else if (line.find("Accept19X=") == 0)
+            g_Accept19X = std::stoi(line.substr(10));
+        else if (line.find("Accept19Y=") == 0)
+            g_Accept19Y = std::stoi(line.substr(10));
+        else if (line.find("Accept20X=") == 0)
+            g_Accept20X = std::stoi(line.substr(10));
+        else if (line.find("Accept20Y=") == 0)
+            g_Accept20Y = std::stoi(line.substr(10));
+        else if (line.find("MerchantX=") == 0)
+            g_MerchantX = std::stoi(line.substr(10));
+        else if (line.find("MerchantY=") == 0)
+            g_MerchantY = std::stoi(line.substr(10));
         else if (line.find("WizardVaultDailyTabX=") == 0)
             g_WizardVaultDailyTabX = std::stoi(line.substr(21));
         else if (line.find("WizardVaultDailyTabY=") == 0)
@@ -628,6 +664,18 @@ void SaveButtonPositions()
     file << "Accept14Y=" << g_Accept14Y << "\n";
     file << "Accept15X=" << g_Accept15X << "\n";
     file << "Accept15Y=" << g_Accept15Y << "\n";
+    file << "Accept16X=" << g_Accept16X << "\n";
+    file << "Accept16Y=" << g_Accept16Y << "\n";
+    file << "Accept17X=" << g_Accept17X << "\n";
+    file << "Accept17Y=" << g_Accept17Y << "\n";
+    file << "Accept18X=" << g_Accept18X << "\n";
+    file << "Accept18Y=" << g_Accept18Y << "\n";
+    file << "Accept19X=" << g_Accept19X << "\n";
+    file << "Accept19Y=" << g_Accept19Y << "\n";
+    file << "Accept20X=" << g_Accept20X << "\n";
+    file << "Accept20Y=" << g_Accept20Y << "\n";
+    file << "MerchantX=" << g_MerchantX << "\n";
+    file << "MerchantY=" << g_MerchantY << "\n";
     file << "WizardVaultDailyTabX=" << g_WizardVaultDailyTabX << "\n";
     file << "WizardVaultDailyTabY=" << g_WizardVaultDailyTabY << "\n";
     file << "WizardVaultWeeklyTabX=" << g_WizardVaultWeeklyTabX << "\n";
@@ -773,6 +821,18 @@ void CheckResolutionChange()
         g_Accept14Y = 0;
         g_Accept15X = 0;
         g_Accept15Y = 0;
+        g_Accept16X = 0;
+        g_Accept16Y = 0;
+        g_Accept17X = 0;
+        g_Accept17Y = 0;
+        g_Accept18X = 0;
+        g_Accept18Y = 0;
+        g_Accept19X = 0;
+        g_Accept19Y = 0;
+        g_Accept20X = 0;
+        g_Accept20Y = 0;
+        g_MerchantX = 0;
+        g_MerchantY = 0;
         g_WizardVaultDailyTabX = 0;
         g_WizardVaultDailyTabY = 0;
         g_WizardVaultWeeklyTabX = 0;
@@ -978,6 +1038,30 @@ void CheckResolutionChange()
                     g_Accept15X = std::stoi(line.substr(10));
                 else if (line.find("Accept15Y=") == 0)
                     g_Accept15Y = std::stoi(line.substr(10));
+                else if (line.find("Accept16X=") == 0)
+                    g_Accept16X = std::stoi(line.substr(10));
+                else if (line.find("Accept16Y=") == 0)
+                    g_Accept16Y = std::stoi(line.substr(10));
+                else if (line.find("Accept17X=") == 0)
+                    g_Accept17X = std::stoi(line.substr(10));
+                else if (line.find("Accept17Y=") == 0)
+                    g_Accept17Y = std::stoi(line.substr(10));
+                else if (line.find("Accept18X=") == 0)
+                    g_Accept18X = std::stoi(line.substr(10));
+                else if (line.find("Accept18Y=") == 0)
+                    g_Accept18Y = std::stoi(line.substr(10));
+                else if (line.find("Accept19X=") == 0)
+                    g_Accept19X = std::stoi(line.substr(10));
+                else if (line.find("Accept19Y=") == 0)
+                    g_Accept19Y = std::stoi(line.substr(10));
+                else if (line.find("Accept20X=") == 0)
+                    g_Accept20X = std::stoi(line.substr(10));
+                else if (line.find("Accept20Y=") == 0)
+                    g_Accept20Y = std::stoi(line.substr(10));
+                else if (line.find("MerchantX=") == 0)
+                    g_MerchantX = std::stoi(line.substr(10));
+                else if (line.find("MerchantY=") == 0)
+                    g_MerchantY = std::stoi(line.substr(10));
                 else if (line.find("WizardVaultWeeklyTabX=") == 0)
                     g_WizardVaultWeeklyTabX = std::stoi(line.substr(22));
                 else if (line.find("WizardVaultWeeklyTabY=") == 0)

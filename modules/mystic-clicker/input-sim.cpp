@@ -1004,11 +1004,51 @@ void SimulateAccept15Click()
 {
     if (g_Accept15X == 0 && g_Accept15Y == 0)
     {
-        APIDefs->GUI_SendAlert("Accept 15 position not set! Capture first");
+        APIDefs->GUI_SendAlert("Yes (final Accept) position not set! Capture first");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept 15");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Yes (final)");
     SimulateClickAt(g_Accept15X, g_Accept15Y);
+}
+
+void SimulateAccept16Click()
+{
+    if (g_Accept16X == 0 && g_Accept16Y == 0) { APIDefs->GUI_SendAlert("Accept 16 position not set!"); return; }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept 16");
+    SimulateClickAt(g_Accept16X, g_Accept16Y);
+}
+
+void SimulateAccept17Click()
+{
+    if (g_Accept17X == 0 && g_Accept17Y == 0) { APIDefs->GUI_SendAlert("Accept 17 position not set!"); return; }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept 17");
+    SimulateClickAt(g_Accept17X, g_Accept17Y);
+}
+
+void SimulateAccept18Click()
+{
+    if (g_Accept18X == 0 && g_Accept18Y == 0) { APIDefs->GUI_SendAlert("Accept 18 position not set!"); return; }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept 18");
+    SimulateClickAt(g_Accept18X, g_Accept18Y);
+}
+
+void SimulateAccept19Click()
+{
+    if (g_Accept19X == 0 && g_Accept19Y == 0) { APIDefs->GUI_SendAlert("Accept 19 position not set!"); return; }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept 19");
+    SimulateClickAt(g_Accept19X, g_Accept19Y);
+}
+
+void SimulateAccept20Click()
+{
+    if (g_Accept20X == 0 && g_Accept20Y == 0) { APIDefs->GUI_SendAlert("Accept 20 position not set!"); return; }
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept 20");
+    SimulateClickAt(g_Accept20X, g_Accept20Y);
+}
+
+void SimulateMerchantCombo()
+{
+    OpenInventoryAndDoubleClick(g_MerchantX, g_MerchantY, "Merchant Combo: open inventory + double-click");
 }
 
 void SimulateBouncyMetaCompleteClick()
@@ -1024,12 +1064,14 @@ void SimulateBouncyMetaCompleteClick()
 
 void SimulateGeneralAcceptCombo()
 {
-    // "Accept Combo" — clicks Accept 1 → 15 in sequence. Skip any position
-    // that hasn't been captured. 100ms between clicks.
+    // "Accept Combo" — clicks Accept 1..14, then 16..20, then 15 (Yes) last.
+    // Yes is the post-confirmation click that frequently follows an accept
+    // chain (e.g. salvage confirmation), so it has to fire AFTER the others.
+    // Skip any position that hasn't been captured. 100ms between clicks.
     struct Slot { int x; int y; const char* name; };
-    Slot slots[15] = {
+    Slot slots[20] = {
         { g_AcceptX,          g_AcceptY,          "Accept Combo: 1 (Chest)" },
-        { g_YesDialogX,       g_YesDialogY,       "Accept Combo: 2 (Yes)" },
+        { g_YesDialogX,       g_YesDialogY,       "Accept Combo: 2 (Yes early)" },
         { g_GeneralAcceptX,   g_GeneralAcceptY,   "Accept Combo: 3" },
         { g_GeneralAccept2X,  g_GeneralAccept2Y,  "Accept Combo: 4" },
         { g_GeneralAccept3X,  g_GeneralAccept3Y,  "Accept Combo: 5" },
@@ -1042,17 +1084,22 @@ void SimulateGeneralAcceptCombo()
         { g_Accept12X,        g_Accept12Y,        "Accept Combo: 12" },
         { g_Accept13X,        g_Accept13Y,        "Accept Combo: 13" },
         { g_Accept14X,        g_Accept14Y,        "Accept Combo: 14" },
-        { g_Accept15X,        g_Accept15Y,        "Accept Combo: 15" },
+        { g_Accept16X,        g_Accept16Y,        "Accept Combo: 16" },
+        { g_Accept17X,        g_Accept17Y,        "Accept Combo: 17" },
+        { g_Accept18X,        g_Accept18Y,        "Accept Combo: 18" },
+        { g_Accept19X,        g_Accept19Y,        "Accept Combo: 19" },
+        { g_Accept20X,        g_Accept20Y,        "Accept Combo: 20" },
+        { g_Accept15X,        g_Accept15Y,        "Accept Combo: Yes (final)" },
     };
 
     int fired = 0;
-    for (int i = 0; i < 15; ++i)
+    for (int i = 0; i < 20; ++i)
     {
         if (slots[i].x == 0 && slots[i].y == 0) continue;
         APIDefs->Log(LOGL_INFO, "MysticClicker", slots[i].name);
         SimulateClickAt(slots[i].x, slots[i].y);
         fired++;
-        if (i < 14) Sleep(100);
+        if (i < 19) Sleep(100);
     }
 
     if (fired == 0)

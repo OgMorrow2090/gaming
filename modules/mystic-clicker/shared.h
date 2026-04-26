@@ -70,8 +70,14 @@ constexpr const char* ACCEPT_11 = "ACCEPT_11";
 constexpr const char* ACCEPT_12 = "ACCEPT_12";
 constexpr const char* ACCEPT_13 = "ACCEPT_13";
 constexpr const char* ACCEPT_14 = "ACCEPT_14";
-constexpr const char* ACCEPT_15 = "ACCEPT_15";
-constexpr const char* GENERAL_ACCEPT_COMBO = "GENERAL_ACCEPT_COMBO"; // "Accept Combo" — clicks Accept 1 → 15
+constexpr const char* ACCEPT_15 = "ACCEPT_15";  // displayed as "Yes" — fires LAST in combo
+constexpr const char* ACCEPT_16 = "ACCEPT_16";
+constexpr const char* ACCEPT_17 = "ACCEPT_17";
+constexpr const char* ACCEPT_18 = "ACCEPT_18";
+constexpr const char* ACCEPT_19 = "ACCEPT_19";
+constexpr const char* ACCEPT_20 = "ACCEPT_20";
+constexpr const char* MERCHANT_COMBO = "MERCHANT_COMBO";  // press I → double-click captured Merchant item
+constexpr const char* GENERAL_ACCEPT_COMBO = "GENERAL_ACCEPT_COMBO"; // "Accept Combo" — Accept 1..14, 16..20, then 15 (Yes)
 constexpr const char* LFG_COMBO = "LFG_COMBO";                      // press Y (open LFG) → click Search tab
 constexpr const char* PERSONAL_MARKER = "PERSONAL_MARKER";          // Alt+LeftClick at cursor (minimap marker)
 constexpr const char* WIZARD_GOBBLER_COMBO = "WIZARD_GOBBLER_COMBO";           // press I → double-click Wizard Gobbler
@@ -114,7 +120,13 @@ constexpr const char* CAPTURE_ACCEPT_11 = "CAPTURE_ACCEPT_11";
 constexpr const char* CAPTURE_ACCEPT_12 = "CAPTURE_ACCEPT_12";
 constexpr const char* CAPTURE_ACCEPT_13 = "CAPTURE_ACCEPT_13";
 constexpr const char* CAPTURE_ACCEPT_14 = "CAPTURE_ACCEPT_14";
-constexpr const char* CAPTURE_ACCEPT_15 = "CAPTURE_ACCEPT_15";
+constexpr const char* CAPTURE_ACCEPT_15 = "CAPTURE_ACCEPT_15";   // captures the "Yes" final-slot position
+constexpr const char* CAPTURE_ACCEPT_16 = "CAPTURE_ACCEPT_16";
+constexpr const char* CAPTURE_ACCEPT_17 = "CAPTURE_ACCEPT_17";
+constexpr const char* CAPTURE_ACCEPT_18 = "CAPTURE_ACCEPT_18";
+constexpr const char* CAPTURE_ACCEPT_19 = "CAPTURE_ACCEPT_19";
+constexpr const char* CAPTURE_ACCEPT_20 = "CAPTURE_ACCEPT_20";
+constexpr const char* CAPTURE_MERCHANT = "CAPTURE_MERCHANT";
 constexpr const char* CAPTURE_WIZARD_VAULT_DAILY_TAB = "CAPTURE_WIZARD_VAULT_DAILY_TAB";
 constexpr const char* CAPTURE_WIZARD_VAULT_WEEKLY_TAB = "CAPTURE_WIZARD_VAULT_WEEKLY_TAB";
 constexpr const char* CAPTURE_WIZARD_VAULT_SPECIAL_TAB = "CAPTURE_WIZARD_VAULT_SPECIAL_TAB";
@@ -177,6 +189,12 @@ void SimulateAccept12Click();
 void SimulateAccept13Click();
 void SimulateAccept14Click();
 void SimulateAccept15Click();
+void SimulateAccept16Click();
+void SimulateAccept17Click();
+void SimulateAccept18Click();
+void SimulateAccept19Click();
+void SimulateAccept20Click();
+void SimulateMerchantCombo();           // press I (open inventory) → delay → double-click portable Merchant
 void SimulateBouncyMetaCompleteClick();
 void SimulateGeneralAcceptCombo();       // "Accept Combo" — click Accept 1..15 in sequence
 void SimulateLfgCombo();                // press Y (open LFG) → delay → click Search tab
@@ -285,6 +303,18 @@ extern int g_Accept14X;
 extern int g_Accept14Y;
 extern int g_Accept15X;
 extern int g_Accept15Y;
+extern int g_Accept16X;
+extern int g_Accept16Y;
+extern int g_Accept17X;
+extern int g_Accept17Y;
+extern int g_Accept18X;
+extern int g_Accept18Y;
+extern int g_Accept19X;
+extern int g_Accept19Y;
+extern int g_Accept20X;
+extern int g_Accept20Y;
+extern int g_MerchantX;
+extern int g_MerchantY;
 extern int g_WizardVaultDailyTabX;
 extern int g_WizardVaultDailyTabY;
 extern int g_WizardVaultWeeklyTabX;

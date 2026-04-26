@@ -56,8 +56,8 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     // Addon metadata
     AddonDef.Name = "Mystic Clicker";
     AddonDef.Version.Major = 3;
-    AddonDef.Version.Minor = 5;
-    AddonDef.Version.Build = 2;
+    AddonDef.Version.Minor = 6;
+    AddonDef.Version.Build = 0;
     AddonDef.Version.Revision = 0;
     AddonDef.Author = "OgMorrow2090";
     AddonDef.Description = "One-click hotkeys for inventory, vendors, trading post, Mystic Forge, and more.";
@@ -163,6 +163,12 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(ACCEPT_13, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(ACCEPT_14, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(ACCEPT_15, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(ACCEPT_16, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(ACCEPT_17, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(ACCEPT_18, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(ACCEPT_19, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(ACCEPT_20, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(MERCHANT_COMBO, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(LFG_COMBO, ProcessKeybind, "CTRL+SHIFT+F6");
     APIDefs->InputBinds_RegisterWithString(TELEPORT_FRIEND_COMBO, ProcessKeybind, "F6");
     APIDefs->InputBinds_RegisterWithString(TRADING_POST_COMBO_KEY, ProcessKeybind, "F7");
@@ -200,6 +206,12 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT_13, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT_14, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT_15, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT_16, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT_17, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT_18, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT_19, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_ACCEPT_20, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_MERCHANT, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_WIZARD_VAULT_DAILY_TAB, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_WIZARD_VAULT_WEEKLY_TAB, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_WIZARD_VAULT_SPECIAL_TAB, ProcessKeybind, "(null)");
@@ -269,6 +281,12 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(ACCEPT_13);
     APIDefs->InputBinds_Deregister(ACCEPT_14);
     APIDefs->InputBinds_Deregister(ACCEPT_15);
+    APIDefs->InputBinds_Deregister(ACCEPT_16);
+    APIDefs->InputBinds_Deregister(ACCEPT_17);
+    APIDefs->InputBinds_Deregister(ACCEPT_18);
+    APIDefs->InputBinds_Deregister(ACCEPT_19);
+    APIDefs->InputBinds_Deregister(ACCEPT_20);
+    APIDefs->InputBinds_Deregister(MERCHANT_COMBO);
     APIDefs->InputBinds_Deregister(LFG_COMBO);
     APIDefs->InputBinds_Deregister(TELEPORT_FRIEND_COMBO);
     APIDefs->InputBinds_Deregister(TRADING_POST_COMBO_KEY);
@@ -306,6 +324,12 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT_13);
     APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT_14);
     APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT_15);
+    APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT_16);
+    APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT_17);
+    APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT_18);
+    APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT_19);
+    APIDefs->InputBinds_Deregister(CAPTURE_ACCEPT_20);
+    APIDefs->InputBinds_Deregister(CAPTURE_MERCHANT);
     APIDefs->InputBinds_Deregister(CAPTURE_WIZARD_VAULT_DAILY_TAB);
     APIDefs->InputBinds_Deregister(CAPTURE_WIZARD_VAULT_WEEKLY_TAB);
     APIDefs->InputBinds_Deregister(CAPTURE_WIZARD_VAULT_SPECIAL_TAB);

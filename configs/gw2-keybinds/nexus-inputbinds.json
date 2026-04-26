@@ -624,6 +624,51 @@
 		"Alt": false,
 		"Code": 0,
 		"Ctrl": false,
+		"Identifier": "ACCEPT_16",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_17",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_18",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_19",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_20",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
 		"Identifier": "ACCEPT_7",
 		"Passthrough": false,
 		"Shift": false,
@@ -733,6 +778,51 @@
 		"Code": 0,
 		"Ctrl": false,
 		"Identifier": "CAPTURE_ACCEPT_15",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_16",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_17",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_18",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_19",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_20",
 		"Passthrough": false,
 		"Shift": false,
 		"Type": 0
@@ -940,6 +1030,15 @@
 		"Code": 0,
 		"Ctrl": false,
 		"Identifier": "CAPTURE_MAP_WAYPOINT",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_MERCHANT",
 		"Passthrough": false,
 		"Shift": false,
 		"Type": 0
@@ -1383,6 +1482,15 @@
 		"Identifier": "MAIL_COMBO",
 		"Passthrough": false,
 		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 87,
+		"Ctrl": false,
+		"Identifier": "MERCHANT_COMBO",
+		"Passthrough": false,
+		"Shift": false,
 		"Type": 1
 	},
 	{

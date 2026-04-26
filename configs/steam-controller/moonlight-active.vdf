@@ -1,12 +1,12 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2369"
-	"title"		"Guild Wars 2 - Og v16.21"
+	"revision"		"2403"
+	"title"		"Guild Wars 2 - Og v18.4.3"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
-	"url"		"autosave:///home/deck/.local/share/Steam/steamapps/common/Steam Controller Configs/64793831/config/moonlight/controller_neptune.vdf"
+	"url"		"usercloud://moonlight/og v18.4.3_0"
 	"export_type"		"personal_local"
 	"controller_type"		"controller_neptune"
 	"controller_caps"		"23117823"
@@ -244,8 +244,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Yes Dialog, "
-							"binding"		"key_press P, Yes Dialog, "
+							"binding"		"key_press LEFT_CONTROL, Accept Combo, , "
+							"binding"		"key_press LEFT_SHIFT, Accept Combo, , "
+							"binding"		"key_press F11, Accept Combo, , "
 						}
 					}
 				}
@@ -273,8 +274,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Open Chest, "
-							"binding"		"key_press B, Open Chest, "
+							"binding"		"key_press LEFT_CONTROL, Open Chest Combo, , "
+							"binding"		"key_press LEFT_SHIFT, Open Chest Combo, , "
+							"binding"		"key_press F12, Open Chest Combo, , "
 						}
 						"settings"
 						{
@@ -662,8 +664,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press E, Action Cam, "
-							"binding"		"key_press END, Char Switch, "
+							"binding"		"key_press LEFT_CONTROL, Fast Swap, , "
+							"binding"		"key_press F6, Fast Swap, , "
 						}
 						"settings"
 						{
@@ -754,7 +756,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press Y, Contacts Panel, , "
+							"binding"		"key_press LEFT_CONTROL, LFG Combo, , "
+							"binding"		"key_press LEFT_SHIFT, LFG Combo, , "
+							"binding"		"key_press F6, LFG Combo, , "
 						}
 						"settings"
 						{
@@ -789,7 +793,6 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_ALT, Toggle Action Camera, , "
 							"binding"		"key_press E, Toggle Action Camera, , "
 						}
 						"settings"
@@ -897,25 +900,31 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, General Accept 1, , "
-							"binding"		"key_press LEFT_SHIFT, General Accept 1, , "
-							"binding"		"key_press F6, General Accept 1, , "
+							"binding"		"key_press LEFT_CONTROL, Sell Junk, "
+							"binding"		"key_press J, Sell Junk, "
 						}
 					}
 					"Full_Press"
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Vendor Buy, "
-							"binding"		"key_press U, Vendor Buy, "
+							"binding"		"key_press LEFT_CONTROL, General Accept Combo, , "
+							"binding"		"key_press LEFT_SHIFT, General Accept Combo, , "
+							"binding"		"key_press F11, General Accept Combo, , "
 						}
 					}
 					"Long_Press"
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Sell Junk, "
-							"binding"		"key_press J, Sell Junk, "
+							"binding"		"key_press LEFT_CONTROL, Vendor Buy, "
+							"binding"		"key_press U, Vendor Buy, "
+						}
+						"settings"
+						{
+							"hold_repeats"		"1"
+							"repeat_rate"		"99"
+							"haptic_intensity"		"2"
 						}
 					}
 				}
@@ -1705,21 +1714,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_ALT, Personal Marker, , "
-							"binding"		"mouse_button LEFT, Personal Marker, , "
+							"binding"		"key_press F9, Personal Marker, , "
 						}
 					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-
-			"button_y"
-			{
-				"activators"
-				{
-
 				}
 				"disabled_activators"
 				{
@@ -2107,6 +2104,14 @@
 							"binding"		"key_press F4, Char Swap, , "
 						}
 					}
+					"Double_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Fast Swap, , "
+							"binding"		"key_press F6, Fast Swap, , "
+						}
+					}
 				}
 				"disabled_activators"
 				{
@@ -2116,7 +2121,29 @@
 			{
 				"activators"
 				{
-
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press F6, Teleport to Friend, , "
+						}
+					}
+					"Long_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, Waypoint Combo, , "
+							"binding"		"key_press F9, Waypoint Combo, , "
+						}
+					}
+					"Double_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, Leave Party Combo, , "
+							"binding"		"key_press F10, Leave Party Combo, , "
+						}
+					}
 				}
 				"disabled_activators"
 				{
@@ -2126,25 +2153,29 @@
 			{
 				"activators"
 				{
-					"Long_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_SHIFT, , "
-							"binding"		"mouse_button LEFT, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"3"
-							"delay_end"		"50"
-						}
-					}
 					"Full_Press"
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Item Details, "
-							"binding"		"key_press COMMA, Item Details, "
+							"binding"		"key_press I, Open Inventory, , "
+							"binding"		"key_press F7, Trading Post Combo, , "
+						}
+					}
+					"Long_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press I, Open Inventory, , "
+							"binding"		"key_press F8, Bank Combo, , "
+						}
+					}
+					"Double_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press I, Open Inventory, , "
+							"binding"		"key_press LEFT_SHIFT, Merchant Combo, , "
+							"binding"		"key_press F11, Merchant Combo, , "
 						}
 					}
 				}
@@ -2156,7 +2187,30 @@
 			{
 				"activators"
 				{
-
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, Wizard Gobbler Combo, , "
+							"binding"		"key_press F6, Wizard Gobbler Combo, , "
+						}
+					}
+					"Double_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, Lounge Pass Combo, , "
+							"binding"		"key_press F8, Lounge Pass Combo, , "
+						}
+					}
+					"Long_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, Wizard Portal Scroll Combo, , "
+							"binding"		"key_press F7, Wizard Portal Scroll Combo, , "
+						}
+					}
 				}
 				"disabled_activators"
 				{
@@ -2412,9 +2466,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, TaimiHUD, , "
-							"binding"		"key_press LEFT_ALT, TaimiHUD, , "
-							"binding"		"key_press M, TaimiHUD, , "
+							"binding"		"key_press LEFT_CONTROL, Reset Windows, , "
+							"binding"		"key_press LEFT_SHIFT, Reset Windows, , "
+							"binding"		"key_press HOME, Reset Windows, , "
 						}
 					}
 				}
@@ -2530,7 +2584,8 @@
 						"bindings"
 						{
 							"binding"		"key_press LEFT_CONTROL, Capture Mode, , "
-							"binding"		"key_press F6, Capture Mode, , "
+							"binding"		"key_press LEFT_SHIFT, Capture Mode, , "
+								"binding"		"key_press C, Capture Mode, , "
 						}
 					}
 				}

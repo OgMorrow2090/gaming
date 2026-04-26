@@ -7,6 +7,26 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.2] - 2026-04-26 — Mystic Clicker + Controller v18.4.3
+
+### Fixed
+
+- **Controller v18.4 VDF was structurally rejected by the Steam Deck parser** — Personal/Templates tabs went empty, ghost workshop refs kept getting restored on every Steam restart, and the user's saved layout could not be applied. Root cause: an earlier session used Python regex to rewrite `dpad_south` and `dpad_east` blocks in `moonlight-gw2-og-v16.1.vdf`. The greedy regex consumed Long_Press/Double_Press activator subgroups across multiple groups, dropping ~25 of them. The file went from 63 121 → 37 170 bytes (3543 → 1768 lines, 296 → 158 bindings, 56 → 31 effective groups). Brackets still balanced and the file looked legal, but Steam silently dropped it.
+- **Recovery (v18.4.3)**: started fresh from the v18.3 base on disk (3543 lines, 56 groups, 296 bindings) and applied the v18.4 chord changes via two surgical line-level edits. Final file: 3551 lines, 63 305 bytes, 56 groups, 298 bindings (+2 for the new Merchant chord), bracket balance 918/918. Deployed to the Deck as `og v18.4.3_0.vdf` with `url=usercloud://moonlight/og v18.4.3_0` and `export_type=personal_local`.
+
+### Added
+
+- **R1+DPad Right Double_Press → Merchant Combo** (`SHIFT+F11`) — opens inventory and double-clicks the captured Merchant slot. New capture `CAPTURE_MERCHANT` already existed in v3.6.0; this commit wires it to a chord.
+- **R1+DPad Right reorganized**: Full=TP (F7) / Long=Bank (F8) / **Double=Merchant** (Shift+F11, new).
+- **R1+DPad Down reorganized**: Full=Friend (F6) / Long=Waypoint (Shift+F9) / Double=LeaveParty (Shift+F10). Friend was previously bound on R1+DPad Right Full.
+- **`docs/vdf-editing-golden-rules.md`** — full reference doc with hard rules, validation checklist, and recovery playbook to prevent this class of outage. Memory entries (`memory/vdf-editing-rules.md`, `memory/steam-input-sync-not-cloud.md`) point at it.
+
+### Notes
+
+- Steam Input sync layer is **separate** from the Steam Cloud toggle in the client UI (Valve bug #7801). Disabling Cloud does not stop Steam Input from re-syncing controller layouts. Confirmed during recovery — only signout/signin combined with local cache wipe (`appworkshop_241100.acf`, `ugcmsgcache/`, `userdata/.../remotecache.vdf`) consistently broke the ghost-layout cycle.
+- DLL `MERCHANT_COMBO` default changed from `(null)` to `SHIFT+F11`.
+- Mystic Clicker DLL bumped to **3.6.2**. GitHub Actions builds it on push.
+
 ## [3.5.2] - 2026-04-21 — Mystic Clicker + Controller v17.7
 
 ### Added

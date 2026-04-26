@@ -7,6 +7,22 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.8] - 2026-04-26 — Mystic Clicker + Controller v18.4.8
+
+### Fixed
+
+- **Friend chord still opened then immediately closed inventory** even with v3.6.7's Nexus-side debounce. Log analysis showed Steam Input is double-emitting the **entire VDF chord** (both `I` and `F6`) on Full_Press in this layout, 50–80 ms apart. Nexus debounce caught the second `F6` dispatch (`Debounced duplicate dispatch of TELEPORT_FRIEND_COMBO`), but **GW2 still saw `I` pressed twice** at the OS level — and two `I` presses toggle inventory open then closed.
+- Fix: convert Friend to the **DLL-press-`I` pattern** (matches Wizard Gobbler / Portal / Lounge / Merchant). VDF chord now emits `F6` alone — no `I`. The DLL synthesizes `I` exactly once per dispatch via `OpenInventoryDllAndDoubleClick`. The chord has no modifier so `WaitForChordModifiersRelease` returns instantly — no perceptible delay.
+- **Mystic Clicker DLL `RegisterWithString` default for `RESET_WINDOWS` updated** from `CTRL+SHIFT+HOME` → `CTRL+SHIFT+INSERT` to match v18.4.7's wheel-slot-2 chord change.
+
+### Notes
+
+After deploying v18.4.7 the user reported: "Screen rescue shows no skill error[,] still does nothing[. No] window change." Translation: chord moved off Home (skill collision gone) but Nexus isn't dispatching the new `Ctrl+Shift+Insert` chord — the on-disk InputBinds.json change to Code 45 hasn't been picked up because **Nexus only reads InputBinds.json on startup**. The user must do a full GW2 restart (not just an addon reload) for the Reset Windows binding to take effect. The DLL default change in this release ensures any future install picks up Insert directly without manual rebinding.
+
+The Steam Input double-emit-Full_Press behavior also affects Trading Post and Bank chords (`I+F7`, `I+F8`) on dpad_east, but the user reports those work — likely because the second `I` toggle happens within the same frame as the first and isn't visually obvious. Leaving those alone for now (don't fix what isn't broken). If they ever exhibit the symptom, convert them to the same DLL-press-`I` pattern.
+
+Versions: VDF v18.4.8 (revision 2408), Mystic Clicker DLL 3.6.8.
+
 ## [3.6.7] - 2026-04-26 — Mystic Clicker + Controller v18.4.7
 
 ### Fixed

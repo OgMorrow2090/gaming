@@ -57,7 +57,7 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     AddonDef.Name = "Mystic Clicker";
     AddonDef.Version.Major = 3;
     AddonDef.Version.Minor = 6;
-    AddonDef.Version.Build = 7;
+    AddonDef.Version.Build = 8;
     AddonDef.Version.Revision = 0;
     AddonDef.Author = "OgMorrow2090";
     AddonDef.Description = "One-click hotkeys for inventory, vendors, trading post, Mystic Forge, and more.";
@@ -124,7 +124,7 @@ void AddonLoad(AddonAPI_t* aApi)
 
     // Capture mode keybind
     APIDefs->InputBinds_RegisterWithString(CAPTURE_MODE, ProcessKeybind, "CTRL+SHIFT+C");
-    APIDefs->InputBinds_RegisterWithString(RESET_WINDOWS, ProcessKeybind, "CTRL+SHIFT+HOME");
+    APIDefs->InputBinds_RegisterWithString(RESET_WINDOWS, ProcessKeybind, "CTRL+SHIFT+INSERT");
 
     // 13 action keybinds
     APIDefs->InputBinds_RegisterWithString(DEPOSIT_MATERIALS, ProcessKeybind, "CTRL+D");

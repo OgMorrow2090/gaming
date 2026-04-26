@@ -726,7 +726,21 @@ static void OpenInventoryDllAndDoubleClick(int x, int y, const char* label)
 
 void SimulateTeleportFriendCombo()
 {
-    OpenInventoryAndDoubleClick(g_TeleportFriendX, g_TeleportFriendY, "Teleport Friend Combo: open inventory + double-click");
+    // Steam Input double-emits the entire VDF chord on Full_Press in some
+    // dpad layouts (visible in Nexus.log as two TELEPORT_FRIEND_COMBO
+    // dispatches 50–80ms apart, even after our debounce catches the second).
+    // The double-emit means GW2 sees `I` pressed twice, which TOGGLES
+    // inventory open then closed — the captured-slot double-click then
+    // lands on a closed panel.
+    //
+    // Fix: VDF chord emits ONLY F6 (no `I`). DLL synthesizes `I` itself,
+    // exactly once per dispatch. Same pattern as Wizard Gobbler / Portal /
+    // Lounge / Merchant. The chord is bare F6 with no modifier, so the
+    // poll exits immediately — no perceptible lag.
+    std::thread([] {
+        WaitForChordModifiersRelease("Teleport Friend");
+        OpenInventoryDllAndDoubleClick(g_TeleportFriendX, g_TeleportFriendY, "Teleport Friend Combo: open inventory + double-click");
+    }).detach();
 }
 
 void SimulateTradingPostCombo()

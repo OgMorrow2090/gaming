@@ -300,263 +300,263 @@ void LoadButtonPositions()
     {
         if (line.find("DepositX=") == 0)
             g_DepositX = std::stoi(line.substr(9));
-        else if (line.find("DepositY=") == 0)
+        if (line.find("DepositY=") == 0)
             g_DepositY = std::stoi(line.substr(9));
-        else if (line.find("SortX=") == 0)
+        if (line.find("SortX=") == 0)
             g_SortX = std::stoi(line.substr(6));
-        else if (line.find("SortY=") == 0)
+        if (line.find("SortY=") == 0)
             g_SortY = std::stoi(line.substr(6));
-        else if (line.find("ChestX=") == 0)
+        if (line.find("ChestX=") == 0)
             g_ChestX = std::stoi(line.substr(7));
-        else if (line.find("ChestY=") == 0)
+        if (line.find("ChestY=") == 0)
             g_ChestY = std::stoi(line.substr(7));
-        else if (line.find("BouncyAcceptX=") == 0)
+        if (line.find("BouncyAcceptX=") == 0)
             g_BouncyAcceptX = std::stoi(line.substr(14));
-        else if (line.find("BouncyAcceptY=") == 0)
+        if (line.find("BouncyAcceptY=") == 0)
             g_BouncyAcceptY = std::stoi(line.substr(14));
-        else if (line.find("ExitInstanceX=") == 0)
+        if (line.find("ExitInstanceX=") == 0)
             g_ExitInstanceX = std::stoi(line.substr(14));
-        else if (line.find("ExitInstanceY=") == 0)
+        if (line.find("ExitInstanceY=") == 0)
             g_ExitInstanceY = std::stoi(line.substr(14));
-        else if (line.find("Generic1X=") == 0)
+        if (line.find("Generic1X=") == 0)
             g_Generic1X = std::stoi(line.substr(10));
-        else if (line.find("Generic1Y=") == 0)
+        if (line.find("Generic1Y=") == 0)
             g_Generic1Y = std::stoi(line.substr(10));
-        else if (line.find("Generic2X=") == 0)
+        if (line.find("Generic2X=") == 0)
             g_Generic2X = std::stoi(line.substr(10));
-        else if (line.find("Generic2Y=") == 0)
+        if (line.find("Generic2Y=") == 0)
             g_Generic2Y = std::stoi(line.substr(10));
-        else if (line.find("Generic3X=") == 0)
+        if (line.find("Generic3X=") == 0)
             g_Generic3X = std::stoi(line.substr(10));
-        else if (line.find("Generic3Y=") == 0)
+        if (line.find("Generic3Y=") == 0)
             g_Generic3Y = std::stoi(line.substr(10));
-        else if (line.find("Generic4X=") == 0)
+        if (line.find("Generic4X=") == 0)
             g_Generic4X = std::stoi(line.substr(10));
-        else if (line.find("Generic4Y=") == 0)
+        if (line.find("Generic4Y=") == 0)
             g_Generic4Y = std::stoi(line.substr(10));
-        else if (line.find("Generic5X=") == 0)
+        if (line.find("Generic5X=") == 0)
             g_Generic5X = std::stoi(line.substr(10));
-        else if (line.find("Generic5Y=") == 0)
+        if (line.find("Generic5Y=") == 0)
             g_Generic5Y = std::stoi(line.substr(10));
-        else if (line.find("YesDialogX=") == 0)
+        if (line.find("YesDialogX=") == 0)
             g_YesDialogX = std::stoi(line.substr(11));
-        else if (line.find("YesDialogY=") == 0)
+        if (line.find("YesDialogY=") == 0)
             g_YesDialogY = std::stoi(line.substr(11));
-        else if (line.find("MysticForgeX=") == 0)
+        if (line.find("MysticForgeX=") == 0)
             g_MysticForgeX = std::stoi(line.substr(13));
-        else if (line.find("MysticForgeY=") == 0)
+        if (line.find("MysticForgeY=") == 0)
             g_MysticForgeY = std::stoi(line.substr(13));
-        else if (line.find("MysticRefillX=") == 0)
+        if (line.find("MysticRefillX=") == 0)
             g_MysticRefillX = std::stoi(line.substr(14));
-        else if (line.find("MysticRefillY=") == 0)
+        if (line.find("MysticRefillY=") == 0)
             g_MysticRefillY = std::stoi(line.substr(14));
-        else if (line.find("VendorX=") == 0)
+        if (line.find("VendorX=") == 0)
             g_VendorX = std::stoi(line.substr(8));
-        else if (line.find("VendorY=") == 0)
+        if (line.find("VendorY=") == 0)
             g_VendorY = std::stoi(line.substr(8));
-        else if (line.find("SellJunkX=") == 0)
+        if (line.find("SellJunkX=") == 0)
             g_SellJunkX = std::stoi(line.substr(10));
-        else if (line.find("SellJunkY=") == 0)
+        if (line.find("SellJunkY=") == 0)
             g_SellJunkY = std::stoi(line.substr(10));
-        else if (line.find("TradingPostX=") == 0)
+        if (line.find("TradingPostX=") == 0)
             g_TradingPostX = std::stoi(line.substr(13));
-        else if (line.find("TradingPostY=") == 0)
+        if (line.find("TradingPostY=") == 0)
             g_TradingPostY = std::stoi(line.substr(13));
-        else if (line.find("TpRemoveX=") == 0)
+        if (line.find("TpRemoveX=") == 0)
             g_TpRemoveX = std::stoi(line.substr(10));
-        else if (line.find("TpRemoveY=") == 0)
+        if (line.find("TpRemoveY=") == 0)
             g_TpRemoveY = std::stoi(line.substr(10));
-        else if (line.find("CraftX=") == 0)
+        if (line.find("CraftX=") == 0)
             g_CraftX = std::stoi(line.substr(7));
-        else if (line.find("CraftY=") == 0)
+        if (line.find("CraftY=") == 0)
             g_CraftY = std::stoi(line.substr(7));
-        else if (line.find("CraftAllX=") == 0)
+        if (line.find("CraftAllX=") == 0)
             g_CraftAllX = std::stoi(line.substr(10));
-        else if (line.find("CraftAllY=") == 0)
+        if (line.find("CraftAllY=") == 0)
             g_CraftAllY = std::stoi(line.substr(10));
-        else if (line.find("WizardVaultX=") == 0)
+        if (line.find("WizardVaultX=") == 0)
             g_WizardVaultX = std::stoi(line.substr(13));
-        else if (line.find("WizardVaultY=") == 0)
+        if (line.find("WizardVaultY=") == 0)
             g_WizardVaultY = std::stoi(line.substr(13));
-        else if (line.find("CharSwapX=") == 0)
+        if (line.find("CharSwapX=") == 0)
             g_CharSwapX = std::stoi(line.substr(10));
-        else if (line.find("CharSwapY=") == 0)
+        if (line.find("CharSwapY=") == 0)
             g_CharSwapY = std::stoi(line.substr(10));
-        else if (line.find("TpBuySellX=") == 0)
+        if (line.find("TpBuySellX=") == 0)
             g_TpBuySellX = std::stoi(line.substr(11));
-        else if (line.find("TpBuySellY=") == 0)
+        if (line.find("TpBuySellY=") == 0)
             g_TpBuySellY = std::stoi(line.substr(11));
-        else if (line.find("WizardVaultCompleteX=") == 0)
+        if (line.find("WizardVaultCompleteX=") == 0)
             g_WizardVaultCompleteX = std::stoi(line.substr(21));
-        else if (line.find("WizardVaultCompleteY=") == 0)
+        if (line.find("WizardVaultCompleteY=") == 0)
             g_WizardVaultCompleteY = std::stoi(line.substr(21));
-        else if (line.find("AcceptX=") == 0)
+        if (line.find("AcceptX=") == 0)
             g_AcceptX = std::stoi(line.substr(8));
-        else if (line.find("AcceptY=") == 0)
+        if (line.find("AcceptY=") == 0)
             g_AcceptY = std::stoi(line.substr(8));
-        else if (line.find("GeneralAcceptX=") == 0)
+        if (line.find("GeneralAcceptX=") == 0)
             g_GeneralAcceptX = std::stoi(line.substr(15));
-        else if (line.find("GeneralAcceptY=") == 0)
+        if (line.find("GeneralAcceptY=") == 0)
             g_GeneralAcceptY = std::stoi(line.substr(15));
-        else if (line.find("GeneralAccept2X=") == 0)
+        if (line.find("GeneralAccept2X=") == 0)
             g_GeneralAccept2X = std::stoi(line.substr(16));
-        else if (line.find("GeneralAccept2Y=") == 0)
+        if (line.find("GeneralAccept2Y=") == 0)
             g_GeneralAccept2Y = std::stoi(line.substr(16));
-        else if (line.find("GeneralAccept3X=") == 0)
+        if (line.find("GeneralAccept3X=") == 0)
             g_GeneralAccept3X = std::stoi(line.substr(16));
-        else if (line.find("GeneralAccept3Y=") == 0)
+        if (line.find("GeneralAccept3Y=") == 0)
             g_GeneralAccept3Y = std::stoi(line.substr(16));
-        else if (line.find("GeneralAccept4X=") == 0)
+        if (line.find("GeneralAccept4X=") == 0)
             g_GeneralAccept4X = std::stoi(line.substr(16));
-        else if (line.find("GeneralAccept4Y=") == 0)
+        if (line.find("GeneralAccept4Y=") == 0)
             g_GeneralAccept4Y = std::stoi(line.substr(16));
-        else if (line.find("Accept7X=") == 0)
+        if (line.find("Accept7X=") == 0)
             g_Accept7X = std::stoi(line.substr(9));
-        else if (line.find("Accept7Y=") == 0)
+        if (line.find("Accept7Y=") == 0)
             g_Accept7Y = std::stoi(line.substr(9));
-        else if (line.find("Accept8X=") == 0)
+        if (line.find("Accept8X=") == 0)
             g_Accept8X = std::stoi(line.substr(9));
-        else if (line.find("Accept8Y=") == 0)
+        if (line.find("Accept8Y=") == 0)
             g_Accept8Y = std::stoi(line.substr(9));
-        else if (line.find("Accept9X=") == 0)
+        if (line.find("Accept9X=") == 0)
             g_Accept9X = std::stoi(line.substr(9));
-        else if (line.find("Accept9Y=") == 0)
+        if (line.find("Accept9Y=") == 0)
             g_Accept9Y = std::stoi(line.substr(9));
-        else if (line.find("Accept10X=") == 0)
+        if (line.find("Accept10X=") == 0)
             g_Accept10X = std::stoi(line.substr(10));
-        else if (line.find("Accept10Y=") == 0)
+        if (line.find("Accept10Y=") == 0)
             g_Accept10Y = std::stoi(line.substr(10));
-        else if (line.find("Accept11X=") == 0)
+        if (line.find("Accept11X=") == 0)
             g_Accept11X = std::stoi(line.substr(10));
-        else if (line.find("Accept11Y=") == 0)
+        if (line.find("Accept11Y=") == 0)
             g_Accept11Y = std::stoi(line.substr(10));
-        else if (line.find("Accept12X=") == 0)
+        if (line.find("Accept12X=") == 0)
             g_Accept12X = std::stoi(line.substr(10));
-        else if (line.find("Accept12Y=") == 0)
+        if (line.find("Accept12Y=") == 0)
             g_Accept12Y = std::stoi(line.substr(10));
-        else if (line.find("Accept13X=") == 0)
+        if (line.find("Accept13X=") == 0)
             g_Accept13X = std::stoi(line.substr(10));
-        else if (line.find("Accept13Y=") == 0)
+        if (line.find("Accept13Y=") == 0)
             g_Accept13Y = std::stoi(line.substr(10));
-        else if (line.find("Accept14X=") == 0)
+        if (line.find("Accept14X=") == 0)
             g_Accept14X = std::stoi(line.substr(10));
-        else if (line.find("Accept14Y=") == 0)
+        if (line.find("Accept14Y=") == 0)
             g_Accept14Y = std::stoi(line.substr(10));
-        else if (line.find("Accept15X=") == 0)
+        if (line.find("Accept15X=") == 0)
             g_Accept15X = std::stoi(line.substr(10));
-        else if (line.find("Accept15Y=") == 0)
+        if (line.find("Accept15Y=") == 0)
             g_Accept15Y = std::stoi(line.substr(10));
-        else if (line.find("Accept16X=") == 0)
+        if (line.find("Accept16X=") == 0)
             g_Accept16X = std::stoi(line.substr(10));
-        else if (line.find("Accept16Y=") == 0)
+        if (line.find("Accept16Y=") == 0)
             g_Accept16Y = std::stoi(line.substr(10));
-        else if (line.find("Accept17X=") == 0)
+        if (line.find("Accept17X=") == 0)
             g_Accept17X = std::stoi(line.substr(10));
-        else if (line.find("Accept17Y=") == 0)
+        if (line.find("Accept17Y=") == 0)
             g_Accept17Y = std::stoi(line.substr(10));
-        else if (line.find("Accept18X=") == 0)
+        if (line.find("Accept18X=") == 0)
             g_Accept18X = std::stoi(line.substr(10));
-        else if (line.find("Accept18Y=") == 0)
+        if (line.find("Accept18Y=") == 0)
             g_Accept18Y = std::stoi(line.substr(10));
-        else if (line.find("Accept19X=") == 0)
+        if (line.find("Accept19X=") == 0)
             g_Accept19X = std::stoi(line.substr(10));
-        else if (line.find("Accept19Y=") == 0)
+        if (line.find("Accept19Y=") == 0)
             g_Accept19Y = std::stoi(line.substr(10));
-        else if (line.find("Accept20X=") == 0)
+        if (line.find("Accept20X=") == 0)
             g_Accept20X = std::stoi(line.substr(10));
-        else if (line.find("Accept20Y=") == 0)
+        if (line.find("Accept20Y=") == 0)
             g_Accept20Y = std::stoi(line.substr(10));
-        else if (line.find("MerchantX=") == 0)
+        if (line.find("MerchantX=") == 0)
             g_MerchantX = std::stoi(line.substr(10));
-        else if (line.find("MerchantY=") == 0)
+        if (line.find("MerchantY=") == 0)
             g_MerchantY = std::stoi(line.substr(10));
-        else if (line.find("WizardVaultDailyTabX=") == 0)
+        if (line.find("WizardVaultDailyTabX=") == 0)
             g_WizardVaultDailyTabX = std::stoi(line.substr(21));
-        else if (line.find("WizardVaultDailyTabY=") == 0)
+        if (line.find("WizardVaultDailyTabY=") == 0)
             g_WizardVaultDailyTabY = std::stoi(line.substr(21));
-        else if (line.find("WizardVaultWeeklyTabX=") == 0)
+        if (line.find("WizardVaultWeeklyTabX=") == 0)
             g_WizardVaultWeeklyTabX = std::stoi(line.substr(22));
-        else if (line.find("WizardVaultWeeklyTabY=") == 0)
+        if (line.find("WizardVaultWeeklyTabY=") == 0)
             g_WizardVaultWeeklyTabY = std::stoi(line.substr(22));
-        else if (line.find("WizardVaultSpecialTabX=") == 0)
+        if (line.find("WizardVaultSpecialTabX=") == 0)
             g_WizardVaultSpecialTabX = std::stoi(line.substr(23));
-        else if (line.find("WizardVaultSpecialTabY=") == 0)
+        if (line.find("WizardVaultSpecialTabY=") == 0)
             g_WizardVaultSpecialTabY = std::stoi(line.substr(23));
-        else if (line.find("LfgSearchX=") == 0)
+        if (line.find("LfgSearchX=") == 0)
             g_LfgSearchX = std::stoi(line.substr(11));
-        else if (line.find("LfgSearchY=") == 0)
+        if (line.find("LfgSearchY=") == 0)
             g_LfgSearchY = std::stoi(line.substr(11));
-        else if (line.find("TeleportFriendX=") == 0)
+        if (line.find("TeleportFriendX=") == 0)
             g_TeleportFriendX = std::stoi(line.substr(16));
-        else if (line.find("TeleportFriendY=") == 0)
+        if (line.find("TeleportFriendY=") == 0)
             g_TeleportFriendY = std::stoi(line.substr(16));
-        else if (line.find("TradingPostIconX=") == 0)
+        if (line.find("TradingPostIconX=") == 0)
             g_TradingPostIconX = std::stoi(line.substr(17));
-        else if (line.find("TradingPostIconY=") == 0)
+        if (line.find("TradingPostIconY=") == 0)
             g_TradingPostIconY = std::stoi(line.substr(17));
-        else if (line.find("BankIconX=") == 0)
+        if (line.find("BankIconX=") == 0)
             g_BankIconX = std::stoi(line.substr(10));
-        else if (line.find("BankIconY=") == 0)
+        if (line.find("BankIconY=") == 0)
             g_BankIconY = std::stoi(line.substr(10));
-        else if (line.find("WizardGobblerX=") == 0)
+        if (line.find("WizardGobblerX=") == 0)
             g_WizardGobblerX = std::stoi(line.substr(15));
-        else if (line.find("WizardGobblerY=") == 0)
+        if (line.find("WizardGobblerY=") == 0)
             g_WizardGobblerY = std::stoi(line.substr(15));
-        else if (line.find("WizardPortalScrollX=") == 0)
+        if (line.find("WizardPortalScrollX=") == 0)
             g_WizardPortalScrollX = std::stoi(line.substr(20));
-        else if (line.find("WizardPortalScrollY=") == 0)
+        if (line.find("WizardPortalScrollY=") == 0)
             g_WizardPortalScrollY = std::stoi(line.substr(20));
-        else if (line.find("LoungePassX=") == 0)
+        if (line.find("LoungePassX=") == 0)
             g_LoungePassX = std::stoi(line.substr(12));
-        else if (line.find("LoungePassY=") == 0)
+        if (line.find("LoungePassY=") == 0)
             g_LoungePassY = std::stoi(line.substr(12));
-        else if (line.find("ChatWaypointX=") == 0)
+        if (line.find("ChatWaypointX=") == 0)
             g_ChatWaypointX = std::stoi(line.substr(14));
-        else if (line.find("ChatWaypointY=") == 0)
+        if (line.find("ChatWaypointY=") == 0)
             g_ChatWaypointY = std::stoi(line.substr(14));
-        else if (line.find("MapWaypointX=") == 0)
+        if (line.find("MapWaypointX=") == 0)
             g_MapWaypointX = std::stoi(line.substr(13));
-        else if (line.find("MapWaypointY=") == 0)
+        if (line.find("MapWaypointY=") == 0)
             g_MapWaypointY = std::stoi(line.substr(13));
-        else if (line.find("PartySquadBarX=") == 0)
+        if (line.find("PartySquadBarX=") == 0)
             g_PartySquadBarX = std::stoi(line.substr(15));
-        else if (line.find("PartySquadBarY=") == 0)
+        if (line.find("PartySquadBarY=") == 0)
             g_PartySquadBarY = std::stoi(line.substr(15));
-        else if (line.find("LeavePartyX=") == 0)
+        if (line.find("LeavePartyX=") == 0)
             g_LeavePartyX = std::stoi(line.substr(12));
-        else if (line.find("LeavePartyY=") == 0)
+        if (line.find("LeavePartyY=") == 0)
             g_LeavePartyY = std::stoi(line.substr(12));
-        else if (line.find("BouncyMetaCompleteX=") == 0)
+        if (line.find("BouncyMetaCompleteX=") == 0)
             g_BouncyMetaCompleteX = std::stoi(line.substr(20));
-        else if (line.find("BouncyMetaCompleteY=") == 0)
+        if (line.find("BouncyMetaCompleteY=") == 0)
             g_BouncyMetaCompleteY = std::stoi(line.substr(20));
-        else if (line.find("MailTakeAllX=") == 0)
+        if (line.find("MailTakeAllX=") == 0)
             g_MailTakeAllX = std::stoi(line.substr(13));
-        else if (line.find("MailTakeAllY=") == 0)
+        if (line.find("MailTakeAllY=") == 0)
             g_MailTakeAllY = std::stoi(line.substr(13));
-        else if (line.find("CraftFilterX=") == 0)
+        if (line.find("CraftFilterX=") == 0)
             g_CraftFilterX = std::stoi(line.substr(13));
-        else if (line.find("CraftFilterY=") == 0)
+        if (line.find("CraftFilterY=") == 0)
             g_CraftFilterY = std::stoi(line.substr(13));
-        else if (line.find("CraftCollapseX=") == 0)
+        if (line.find("CraftCollapseX=") == 0)
             g_CraftCollapseX = std::stoi(line.substr(15));
-        else if (line.find("CraftCollapseY=") == 0)
+        if (line.find("CraftCollapseY=") == 0)
             g_CraftCollapseY = std::stoi(line.substr(15));
-        else if (line.find("CraftCloseX=") == 0)
+        if (line.find("CraftCloseX=") == 0)
             g_CraftCloseX = std::stoi(line.substr(12));
-        else if (line.find("CraftCloseY=") == 0)
+        if (line.find("CraftCloseY=") == 0)
             g_CraftCloseY = std::stoi(line.substr(12));
-        else if (line.find("GuildHallX=") == 0)
+        if (line.find("GuildHallX=") == 0)
             g_GuildHallX = std::stoi(line.substr(11));
-        else if (line.find("GuildHallY=") == 0)
+        if (line.find("GuildHallY=") == 0)
             g_GuildHallY = std::stoi(line.substr(11));
-        else if (line.find("CaptureWinX=") == 0)
+        if (line.find("CaptureWinX=") == 0)
             g_CaptureWinX = (float)std::stod(line.substr(12));
-        else if (line.find("CaptureWinY=") == 0)
+        if (line.find("CaptureWinY=") == 0)
             g_CaptureWinY = (float)std::stod(line.substr(12));
-        else if (line.find("CaptureWinW=") == 0)
+        if (line.find("CaptureWinW=") == 0)
             g_CaptureWinW = (float)std::stod(line.substr(12));
-        else if (line.find("CaptureWinH=") == 0)
+        if (line.find("CaptureWinH=") == 0)
             g_CaptureWinH = (float)std::stod(line.substr(12));
     }
 
@@ -892,215 +892,215 @@ void CheckResolutionChange()
             {
                 if (line.find("DepositX=") == 0)
                     g_DepositX = std::stoi(line.substr(9));
-                else if (line.find("DepositY=") == 0)
+                if (line.find("DepositY=") == 0)
                     g_DepositY = std::stoi(line.substr(9));
-                else if (line.find("SortX=") == 0)
+                if (line.find("SortX=") == 0)
                     g_SortX = std::stoi(line.substr(6));
-                else if (line.find("SortY=") == 0)
+                if (line.find("SortY=") == 0)
                     g_SortY = std::stoi(line.substr(6));
-                else if (line.find("ChestX=") == 0)
+                if (line.find("ChestX=") == 0)
                     g_ChestX = std::stoi(line.substr(7));
-                else if (line.find("ChestY=") == 0)
+                if (line.find("ChestY=") == 0)
                     g_ChestY = std::stoi(line.substr(7));
-                else if (line.find("BouncyAcceptX=") == 0)
+                if (line.find("BouncyAcceptX=") == 0)
                     g_BouncyAcceptX = std::stoi(line.substr(14));
-                else if (line.find("BouncyAcceptY=") == 0)
+                if (line.find("BouncyAcceptY=") == 0)
                     g_BouncyAcceptY = std::stoi(line.substr(14));
-                else if (line.find("ExitInstanceX=") == 0)
+                if (line.find("ExitInstanceX=") == 0)
                     g_ExitInstanceX = std::stoi(line.substr(14));
-                else if (line.find("ExitInstanceY=") == 0)
+                if (line.find("ExitInstanceY=") == 0)
                     g_ExitInstanceY = std::stoi(line.substr(14));
-                else if (line.find("Generic1X=") == 0)
+                if (line.find("Generic1X=") == 0)
                     g_Generic1X = std::stoi(line.substr(10));
-                else if (line.find("Generic1Y=") == 0)
+                if (line.find("Generic1Y=") == 0)
                     g_Generic1Y = std::stoi(line.substr(10));
-                else if (line.find("Generic2X=") == 0)
+                if (line.find("Generic2X=") == 0)
                     g_Generic2X = std::stoi(line.substr(10));
-                else if (line.find("Generic2Y=") == 0)
+                if (line.find("Generic2Y=") == 0)
                     g_Generic2Y = std::stoi(line.substr(10));
-                else if (line.find("Generic3X=") == 0)
+                if (line.find("Generic3X=") == 0)
                     g_Generic3X = std::stoi(line.substr(10));
-                else if (line.find("Generic3Y=") == 0)
+                if (line.find("Generic3Y=") == 0)
                     g_Generic3Y = std::stoi(line.substr(10));
-                else if (line.find("Generic4X=") == 0)
+                if (line.find("Generic4X=") == 0)
                     g_Generic4X = std::stoi(line.substr(10));
-                else if (line.find("Generic4Y=") == 0)
+                if (line.find("Generic4Y=") == 0)
                     g_Generic4Y = std::stoi(line.substr(10));
-                else if (line.find("Generic5X=") == 0)
+                if (line.find("Generic5X=") == 0)
                     g_Generic5X = std::stoi(line.substr(10));
-                else if (line.find("Generic5Y=") == 0)
+                if (line.find("Generic5Y=") == 0)
                     g_Generic5Y = std::stoi(line.substr(10));
-                else if (line.find("YesDialogX=") == 0)
+                if (line.find("YesDialogX=") == 0)
                     g_YesDialogX = std::stoi(line.substr(11));
-                else if (line.find("YesDialogY=") == 0)
+                if (line.find("YesDialogY=") == 0)
                     g_YesDialogY = std::stoi(line.substr(11));
-                else if (line.find("MysticForgeX=") == 0)
+                if (line.find("MysticForgeX=") == 0)
                     g_MysticForgeX = std::stoi(line.substr(13));
-                else if (line.find("MysticForgeY=") == 0)
+                if (line.find("MysticForgeY=") == 0)
                     g_MysticForgeY = std::stoi(line.substr(13));
-                else if (line.find("MysticRefillX=") == 0)
+                if (line.find("MysticRefillX=") == 0)
                     g_MysticRefillX = std::stoi(line.substr(14));
-                else if (line.find("MysticRefillY=") == 0)
+                if (line.find("MysticRefillY=") == 0)
                     g_MysticRefillY = std::stoi(line.substr(14));
-                else if (line.find("VendorX=") == 0)
+                if (line.find("VendorX=") == 0)
                     g_VendorX = std::stoi(line.substr(8));
-                else if (line.find("VendorY=") == 0)
+                if (line.find("VendorY=") == 0)
                     g_VendorY = std::stoi(line.substr(8));
-                else if (line.find("SellJunkX=") == 0)
+                if (line.find("SellJunkX=") == 0)
                     g_SellJunkX = std::stoi(line.substr(10));
-                else if (line.find("SellJunkY=") == 0)
+                if (line.find("SellJunkY=") == 0)
                     g_SellJunkY = std::stoi(line.substr(10));
-                else if (line.find("TradingPostX=") == 0)
+                if (line.find("TradingPostX=") == 0)
                     g_TradingPostX = std::stoi(line.substr(13));
-                else if (line.find("TradingPostY=") == 0)
+                if (line.find("TradingPostY=") == 0)
                     g_TradingPostY = std::stoi(line.substr(13));
-                else if (line.find("TpRemoveX=") == 0)
+                if (line.find("TpRemoveX=") == 0)
                     g_TpRemoveX = std::stoi(line.substr(10));
-                else if (line.find("TpRemoveY=") == 0)
+                if (line.find("TpRemoveY=") == 0)
                     g_TpRemoveY = std::stoi(line.substr(10));
-                else if (line.find("CraftX=") == 0)
+                if (line.find("CraftX=") == 0)
                     g_CraftX = std::stoi(line.substr(7));
-                else if (line.find("CraftY=") == 0)
+                if (line.find("CraftY=") == 0)
                     g_CraftY = std::stoi(line.substr(7));
-                else if (line.find("CraftAllX=") == 0)
+                if (line.find("CraftAllX=") == 0)
                     g_CraftAllX = std::stoi(line.substr(10));
-                else if (line.find("CraftAllY=") == 0)
+                if (line.find("CraftAllY=") == 0)
                     g_CraftAllY = std::stoi(line.substr(10));
-                else if (line.find("WizardVaultX=") == 0)
+                if (line.find("WizardVaultX=") == 0)
                     g_WizardVaultX = std::stoi(line.substr(13));
-                else if (line.find("WizardVaultY=") == 0)
+                if (line.find("WizardVaultY=") == 0)
                     g_WizardVaultY = std::stoi(line.substr(13));
-                else if (line.find("CharSwapX=") == 0)
+                if (line.find("CharSwapX=") == 0)
                     g_CharSwapX = std::stoi(line.substr(10));
-                else if (line.find("CharSwapY=") == 0)
+                if (line.find("CharSwapY=") == 0)
                     g_CharSwapY = std::stoi(line.substr(10));
-                else if (line.find("TpBuySellX=") == 0)
+                if (line.find("TpBuySellX=") == 0)
                     g_TpBuySellX = std::stoi(line.substr(11));
-                else if (line.find("TpBuySellY=") == 0)
+                if (line.find("TpBuySellY=") == 0)
                     g_TpBuySellY = std::stoi(line.substr(11));
-                else if (line.find("WizardVaultCompleteX=") == 0)
+                if (line.find("WizardVaultCompleteX=") == 0)
                     g_WizardVaultCompleteX = std::stoi(line.substr(21));
-                else if (line.find("WizardVaultCompleteY=") == 0)
+                if (line.find("WizardVaultCompleteY=") == 0)
                     g_WizardVaultCompleteY = std::stoi(line.substr(21));
-                else if (line.find("AcceptX=") == 0)
+                if (line.find("AcceptX=") == 0)
                     g_AcceptX = std::stoi(line.substr(8));
-                else if (line.find("AcceptY=") == 0)
+                if (line.find("AcceptY=") == 0)
                     g_AcceptY = std::stoi(line.substr(8));
-                else if (line.find("GeneralAcceptX=") == 0)
+                if (line.find("GeneralAcceptX=") == 0)
                     g_GeneralAcceptX = std::stoi(line.substr(15));
-                else if (line.find("GeneralAcceptY=") == 0)
+                if (line.find("GeneralAcceptY=") == 0)
                     g_GeneralAcceptY = std::stoi(line.substr(15));
-                else if (line.find("GeneralAccept2X=") == 0)
+                if (line.find("GeneralAccept2X=") == 0)
                     g_GeneralAccept2X = std::stoi(line.substr(16));
-                else if (line.find("GeneralAccept2Y=") == 0)
+                if (line.find("GeneralAccept2Y=") == 0)
                     g_GeneralAccept2Y = std::stoi(line.substr(16));
-                else if (line.find("GeneralAccept3X=") == 0)
+                if (line.find("GeneralAccept3X=") == 0)
                     g_GeneralAccept3X = std::stoi(line.substr(16));
-                else if (line.find("GeneralAccept3Y=") == 0)
+                if (line.find("GeneralAccept3Y=") == 0)
                     g_GeneralAccept3Y = std::stoi(line.substr(16));
-                else if (line.find("GeneralAccept4X=") == 0)
+                if (line.find("GeneralAccept4X=") == 0)
                     g_GeneralAccept4X = std::stoi(line.substr(16));
-                else if (line.find("GeneralAccept4Y=") == 0)
+                if (line.find("GeneralAccept4Y=") == 0)
                     g_GeneralAccept4Y = std::stoi(line.substr(16));
-                else if (line.find("Accept7X=") == 0)
+                if (line.find("Accept7X=") == 0)
                     g_Accept7X = std::stoi(line.substr(9));
-                else if (line.find("Accept7Y=") == 0)
+                if (line.find("Accept7Y=") == 0)
                     g_Accept7Y = std::stoi(line.substr(9));
-                else if (line.find("Accept8X=") == 0)
+                if (line.find("Accept8X=") == 0)
                     g_Accept8X = std::stoi(line.substr(9));
-                else if (line.find("Accept8Y=") == 0)
+                if (line.find("Accept8Y=") == 0)
                     g_Accept8Y = std::stoi(line.substr(9));
-                else if (line.find("Accept9X=") == 0)
+                if (line.find("Accept9X=") == 0)
                     g_Accept9X = std::stoi(line.substr(9));
-                else if (line.find("Accept9Y=") == 0)
+                if (line.find("Accept9Y=") == 0)
                     g_Accept9Y = std::stoi(line.substr(9));
-                else if (line.find("Accept10X=") == 0)
+                if (line.find("Accept10X=") == 0)
                     g_Accept10X = std::stoi(line.substr(10));
-                else if (line.find("Accept10Y=") == 0)
+                if (line.find("Accept10Y=") == 0)
                     g_Accept10Y = std::stoi(line.substr(10));
-                else if (line.find("Accept11X=") == 0)
+                if (line.find("Accept11X=") == 0)
                     g_Accept11X = std::stoi(line.substr(10));
-                else if (line.find("Accept11Y=") == 0)
+                if (line.find("Accept11Y=") == 0)
                     g_Accept11Y = std::stoi(line.substr(10));
-                else if (line.find("Accept12X=") == 0)
+                if (line.find("Accept12X=") == 0)
                     g_Accept12X = std::stoi(line.substr(10));
-                else if (line.find("Accept12Y=") == 0)
+                if (line.find("Accept12Y=") == 0)
                     g_Accept12Y = std::stoi(line.substr(10));
-                else if (line.find("Accept13X=") == 0)
+                if (line.find("Accept13X=") == 0)
                     g_Accept13X = std::stoi(line.substr(10));
-                else if (line.find("Accept13Y=") == 0)
+                if (line.find("Accept13Y=") == 0)
                     g_Accept13Y = std::stoi(line.substr(10));
-                else if (line.find("Accept14X=") == 0)
+                if (line.find("Accept14X=") == 0)
                     g_Accept14X = std::stoi(line.substr(10));
-                else if (line.find("Accept14Y=") == 0)
+                if (line.find("Accept14Y=") == 0)
                     g_Accept14Y = std::stoi(line.substr(10));
-                else if (line.find("Accept15X=") == 0)
+                if (line.find("Accept15X=") == 0)
                     g_Accept15X = std::stoi(line.substr(10));
-                else if (line.find("Accept15Y=") == 0)
+                if (line.find("Accept15Y=") == 0)
                     g_Accept15Y = std::stoi(line.substr(10));
-                else if (line.find("Accept16X=") == 0)
+                if (line.find("Accept16X=") == 0)
                     g_Accept16X = std::stoi(line.substr(10));
-                else if (line.find("Accept16Y=") == 0)
+                if (line.find("Accept16Y=") == 0)
                     g_Accept16Y = std::stoi(line.substr(10));
-                else if (line.find("Accept17X=") == 0)
+                if (line.find("Accept17X=") == 0)
                     g_Accept17X = std::stoi(line.substr(10));
-                else if (line.find("Accept17Y=") == 0)
+                if (line.find("Accept17Y=") == 0)
                     g_Accept17Y = std::stoi(line.substr(10));
-                else if (line.find("Accept18X=") == 0)
+                if (line.find("Accept18X=") == 0)
                     g_Accept18X = std::stoi(line.substr(10));
-                else if (line.find("Accept18Y=") == 0)
+                if (line.find("Accept18Y=") == 0)
                     g_Accept18Y = std::stoi(line.substr(10));
-                else if (line.find("Accept19X=") == 0)
+                if (line.find("Accept19X=") == 0)
                     g_Accept19X = std::stoi(line.substr(10));
-                else if (line.find("Accept19Y=") == 0)
+                if (line.find("Accept19Y=") == 0)
                     g_Accept19Y = std::stoi(line.substr(10));
-                else if (line.find("Accept20X=") == 0)
+                if (line.find("Accept20X=") == 0)
                     g_Accept20X = std::stoi(line.substr(10));
-                else if (line.find("Accept20Y=") == 0)
+                if (line.find("Accept20Y=") == 0)
                     g_Accept20Y = std::stoi(line.substr(10));
-                else if (line.find("MerchantX=") == 0)
+                if (line.find("MerchantX=") == 0)
                     g_MerchantX = std::stoi(line.substr(10));
-                else if (line.find("MerchantY=") == 0)
+                if (line.find("MerchantY=") == 0)
                     g_MerchantY = std::stoi(line.substr(10));
-                else if (line.find("WizardVaultWeeklyTabX=") == 0)
+                if (line.find("WizardVaultWeeklyTabX=") == 0)
                     g_WizardVaultWeeklyTabX = std::stoi(line.substr(22));
-                else if (line.find("WizardVaultWeeklyTabY=") == 0)
+                if (line.find("WizardVaultWeeklyTabY=") == 0)
                     g_WizardVaultWeeklyTabY = std::stoi(line.substr(22));
-                else if (line.find("LfgSearchX=") == 0)
+                if (line.find("LfgSearchX=") == 0)
                     g_LfgSearchX = std::stoi(line.substr(11));
-                else if (line.find("LfgSearchY=") == 0)
+                if (line.find("LfgSearchY=") == 0)
                     g_LfgSearchY = std::stoi(line.substr(11));
-                else if (line.find("BouncyMetaCompleteX=") == 0)
+                if (line.find("BouncyMetaCompleteX=") == 0)
                     g_BouncyMetaCompleteX = std::stoi(line.substr(20));
-                else if (line.find("BouncyMetaCompleteY=") == 0)
+                if (line.find("BouncyMetaCompleteY=") == 0)
                     g_BouncyMetaCompleteY = std::stoi(line.substr(20));
-                else if (line.find("MailTakeAllX=") == 0)
+                if (line.find("MailTakeAllX=") == 0)
                     g_MailTakeAllX = std::stoi(line.substr(13));
-                else if (line.find("MailTakeAllY=") == 0)
+                if (line.find("MailTakeAllY=") == 0)
                     g_MailTakeAllY = std::stoi(line.substr(13));
-                else if (line.find("CraftFilterX=") == 0)
+                if (line.find("CraftFilterX=") == 0)
                     g_CraftFilterX = std::stoi(line.substr(13));
-                else if (line.find("CraftFilterY=") == 0)
+                if (line.find("CraftFilterY=") == 0)
                     g_CraftFilterY = std::stoi(line.substr(13));
-                else if (line.find("CraftCollapseX=") == 0)
+                if (line.find("CraftCollapseX=") == 0)
                     g_CraftCollapseX = std::stoi(line.substr(15));
-                else if (line.find("CraftCollapseY=") == 0)
+                if (line.find("CraftCollapseY=") == 0)
                     g_CraftCollapseY = std::stoi(line.substr(15));
-                else if (line.find("CraftCloseX=") == 0)
+                if (line.find("CraftCloseX=") == 0)
                     g_CraftCloseX = std::stoi(line.substr(12));
-                else if (line.find("CraftCloseY=") == 0)
+                if (line.find("CraftCloseY=") == 0)
                     g_CraftCloseY = std::stoi(line.substr(12));
-                else if (line.find("GuildHallX=") == 0)
+                if (line.find("GuildHallX=") == 0)
                     g_GuildHallX = std::stoi(line.substr(11));
-                else if (line.find("GuildHallY=") == 0)
+                if (line.find("GuildHallY=") == 0)
                     g_GuildHallY = std::stoi(line.substr(11));
-                else if (line.find("CaptureWinX=") == 0)
+                if (line.find("CaptureWinX=") == 0)
                     g_CaptureWinX = (float)std::stod(line.substr(12));
-                else if (line.find("CaptureWinY=") == 0)
+                if (line.find("CaptureWinY=") == 0)
                     g_CaptureWinY = (float)std::stod(line.substr(12));
-                else if (line.find("CaptureWinW=") == 0)
+                if (line.find("CaptureWinW=") == 0)
                     g_CaptureWinW = (float)std::stod(line.substr(12));
-                else if (line.find("CaptureWinH=") == 0)
+                if (line.find("CaptureWinH=") == 0)
                     g_CaptureWinH = (float)std::stod(line.substr(12));
             }
             file.close();

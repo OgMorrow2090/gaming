@@ -185,6 +185,18 @@ static void PerformCapture(int targetIdx)
  */
 void RenderCaptureWindow()
 {
+    // Global window rescue — runs even when the capture panel is hidden so
+    // Ctrl+Shift+Home pulls every Nexus addon window back on-screen, not just
+    // ours. This is the cross-addon fix for windows that drift off-screen
+    // after a 4K → Deck resolution swap.
+    if (g_ResetWindowsFlag)
+    {
+        RescueAllImGuiWindows();
+        // Mystic Trading and the per-window MC capture state still consume
+        // the flag — leave it set; capture-ui's own block (further down) and
+        // MT's render path each clear after applying their own state.
+    }
+
     if (!g_ShowCaptureWindow) return;
 
     // Auto-hide confirmation after 3 seconds

@@ -25,6 +25,7 @@ constexpr const char* RESET_WINDOWS = "RESET_WINDOWS";
 void RenderCaptureWindow();
 void ToggleCaptureWindow();
 void ResetWindowPositions();
+void RescueAllImGuiWindows();   // walks every Nexus ImGui window and clamps to viewport
 
 // Per-resolution capture window state
 extern float g_CaptureWinX;

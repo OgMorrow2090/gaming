@@ -1,12 +1,12 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2406"
-	"title"		"Guild Wars 2 - Og v18.4.6"
+	"revision"		"2407"
+	"title"		"Guild Wars 2 - Og v18.4.7"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
-	"url"		"usercloud://moonlight/og v18.4.6_0"
+	"url"		"usercloud://moonlight/og v18.4.7_0"
 	"export_type"		"personal_local"
 	"controller_type"		"controller_neptune"
 	"controller_caps"		"23117823"
@@ -2496,7 +2496,7 @@
 						{
 							"binding"		"key_press LEFT_CONTROL, Reset Windows, , "
 							"binding"		"key_press LEFT_SHIFT, Reset Windows, , "
-							"binding"		"key_press HOME, Reset Windows, , "
+							"binding"		"key_press INSERT, Reset Windows, , "
 						}
 					}
 				}

@@ -7,6 +7,19 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.7] - 2026-04-26 — Mystic Clicker + Controller v18.4.7
+
+### Fixed
+
+- **R1+DPad Down → Friend "doesn't open inventory" — actually a chord double-fire.** Nexus.log shows two `Teleport Friend Combo: open inventory + double-click` entries at the **same millisecond timestamp** for every press (15:02:26.16 ×2, 15:02:33.847 ×2, 15:02:51.711 ×2). The pattern affects all Full_Press chords in v18.4.x layouts (Friend, Wizard Gobbler, TP, Bank). Pressing `I` twice toggles the inventory **closed** on the same combo that just opened it, so the second double-click lands on a closed panel. Added per-identifier debounce in `ProcessKeybind` — drops any dispatch within 300 ms of the same identifier's last fire. Logs the suppressed dispatch at DEBUG level for verification.
+- **Utility Wheel slot 2 (Reset Windows) also fired GW2's Skill Profession 5** ("skill recharging" message). User has `SkillProfession5` bound to `button="36"` (Home key) in `GameBinds.xml`, and GW2 ignores the Ctrl+Shift modifiers — bare Home press triggers the skill. Switched the rescue chord from `Ctrl+Shift+Home` → `Ctrl+Shift+Insert` (Insert is unbound across all of the user's GW2 keybinds) and updated both `RESET_WINDOWS` + `MT_RESET_WINDOWS` Nexus bindings to Code 45 (Insert). The `Ctrl+Shift+Insert` chord is also unique to Mystic Clicker — no other Nexus addon claims it.
+
+### Notes
+
+The user's GW2 GameBinds.xml binds **Home / End / PageUp / PageDown** all to Skill Profession 2-5 — pressing any of those keys (regardless of modifier state) fires the skill. When picking chord keys for Steam Input wheel slots, check `gamebinds.xml` for `button="36"` (Home), `button="35"` (End), `button="33"` (PgUp), `button="34"` (PgDn) and avoid them. F11 / F12 / Insert / Delete / Numpad 0 / 1 / 5 / 7 / 9 / + / - / / are all free in this user's setup.
+
+Versions: VDF v18.4.7 (revision 2407), Mystic Clicker DLL 3.6.7.
+
 ## [3.6.6] - 2026-04-26 — Mystic Clicker DLL only
 
 ### Fixed

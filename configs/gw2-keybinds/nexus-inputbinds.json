@@ -1495,7 +1495,7 @@
 	},
 	{
 		"Alt": false,
-		"Code": 71,
+		"Code": 45,
 		"Ctrl": true,
 		"Identifier": "MT_RESET_WINDOWS",
 		"Passthrough": false,
@@ -1603,7 +1603,7 @@
 	},
 	{
 		"Alt": false,
-		"Code": 71,
+		"Code": 45,
 		"Ctrl": true,
 		"Identifier": "RESET_WINDOWS",
 		"Passthrough": false,

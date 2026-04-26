@@ -10,6 +10,9 @@
 
 #include "shared.h"
 #include <cstring>
+#include <unordered_map>
+#include <string>
+#include <chrono>
 
 /**
  * ProcessKeybind - Keybind callback handler
@@ -19,6 +22,16 @@
  * @param aIdentifier - The keybind identifier
  * @param aIsRelease - true if key was released, false if pressed
  */
+// Debounce to suppress chord double-fires. Steam Input + Nexus deliver two
+// press events at the same millisecond for Full_Press chord activators when
+// Long_Press and/or Double_Press are also defined on the same input — see
+// Nexus.log entries like two `Teleport Friend Combo: open inventory + double-click`
+// lines at identical timestamps. The second invocation re-presses `I`, which
+// toggles inventory CLOSED on the same combo that just opened it, leaving the
+// double-click to land on a closed panel. Drop any dispatch within
+// COMBO_DEBOUNCE_MS of the same identifier's last fire.
+static const long long COMBO_DEBOUNCE_MS = 300;
+
 void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
 {
     // Only act on key press, not release
@@ -26,6 +39,25 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     {
         return;
     }
+
+    // Per-identifier debounce — ignore the second press of a same-millisecond
+    // double-fire. 300 ms is well above any double-fire delta but short enough
+    // that intentional rapid taps still fire.
+    static std::unordered_map<std::string, long long> lastFireMs;
+    using clock = std::chrono::steady_clock;
+    long long nowMs = std::chrono::duration_cast<std::chrono::milliseconds>(
+                          clock::now().time_since_epoch()).count();
+    std::string key(aIdentifier);
+    auto it = lastFireMs.find(key);
+    if (it != lastFireMs.end() && (nowMs - it->second) < COMBO_DEBOUNCE_MS)
+    {
+        char buf[160];
+        sprintf_s(buf, "Debounced duplicate dispatch of %s (%lldms since last)",
+                  aIdentifier, nowMs - it->second);
+        APIDefs->Log(LOGL_DEBUG, "MysticClicker", buf);
+        return;
+    }
+    lastFireMs[key] = nowMs;
 
     // Check if resolution changed and load appropriate config
     CheckResolutionChange();

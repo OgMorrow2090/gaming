@@ -11,8 +11,8 @@
  */
 
 #include "shared.h"
-#include "imgui.h"
-#include "imgui_internal.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_internal.h"
 #include <cstdio>
 
 static const float MIN_VISIBLE_PX = 60.0f;

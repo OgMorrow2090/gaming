@@ -45,14 +45,35 @@ esac
 CURRENT="$(cat "$HOME/.config/gamescope-mode" 2>/dev/null | tr -d '[:space:]' || true)"
 echo "  width=$WIDTH → mode=$MODE  (current=${CURRENT:-default})"
 
+# Always make sure Steam is responsive before returning — even if mode already
+# matches, Sunshine may have triggered prep-cmd in the middle of a previous
+# gamescope restart cycle and Steam might not be ready yet.
+wait_for_steam() {
+    local desc="$1"
+    echo "  waiting for Steam to be ready ($desc)..."
+    local i
+    for i in $(seq 1 45); do
+        if pgrep -x steamwebhelper > /dev/null 2>&1; then
+            # steamwebhelper running — give it grace for URL handler registration
+            sleep 5
+            if pgrep -x steamwebhelper > /dev/null 2>&1; then
+                echo "  Steam ready after ${i}s poll + 5s grace"
+                return 0
+            fi
+        fi
+        sleep 1
+    done
+    echo "  WARN: Steam not detected ready after 45s — proceeding anyway"
+    return 1
+}
+
 if [ "$CURRENT" = "$MODE" ]; then
     echo "  already on $MODE — no restart needed"
+    wait_for_steam "no-restart"
     exit 0
 fi
 
 echo "  switching: $CURRENT → $MODE"
 /var/home/Og/bin/gamescope-mode "$MODE"
-
-# gamescope-mode already sleeps 4s; give it a few more for Steam to be responsive
-sleep 4
+wait_for_steam "post-restart"
 echo "  done"

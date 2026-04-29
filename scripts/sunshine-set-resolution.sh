@@ -61,6 +61,11 @@ esac
 # client. GW2 reads this file on launch — values apply on next Gw2-64.exe start.
 # Without this swap, GW2 keeps the resolution from the last session, so
 # streaming Deck after Apple TV gives a cut-off render.
+#
+# CRITICAL: also forces screenMode=fullscreen. In windowed_fullscreen GW2
+# ignores RESOLUTION and just inherits the desktop size, so a Deck-mode
+# desktop persists after a 4K mode flip until gamescope's xwayland fully
+# re-initialises. Fullscreen makes RESOLUTION authoritative.
 update_gw2_resolution() {
     local w="$1" h="$2"
     local xml="/var/home/Og/.local/share/Steam/steamapps/compatdata/1284210/pfx/drive_c/users/steamuser/AppData/Roaming/Guild Wars 2/GFXSettings.Gw2-64.exe.xml"
@@ -76,12 +81,35 @@ update_gw2_resolution() {
         sed -i -E "s|<RESOLUTION Width=\"[0-9]+\" Height=\"[0-9]+\"|<RESOLUTION Width=\"$w\" Height=\"$h\"|" "$xml"
     fi
 
+    # Force fullscreen (not windowed_fullscreen) so RESOLUTION is authoritative.
+    if grep -q "Name=\"screenMode\".*Value=\"windowed" "$xml"; then
+        echo "  GW2 screenMode → fullscreen"
+        sed -i -E "s|(<OPTION Name=\"screenMode\" [^>]*Value=\")windowed[a-z_]*(\")|\1fullscreen\2|" "$xml"
+    fi
+
     # Force VSync OFF so DXVK doesn't FIFO-lock to Wine's reported refresh rate
     # (which is capped by EDID DTD at 4K@60). With VSync off + frameLimit=120,
     # GW2 renders as fast as the GPU allows up to 120fps even at 4K.
     if grep -q "Name=\"verticalSync\".*Value=\"true\"" "$xml"; then
         echo "  GW2 verticalSync → false"
         sed -i -E "s|(<OPTION Name=\"verticalSync\" [^/]*Value=\")true(\"[^/]*/?>)|\1false\2|" "$xml"
+    fi
+}
+
+# Kill any running Gw2-64.exe with SIGKILL so it can't write stale window
+# state back to GFXSettings on shutdown. Without this, switching modes mid-
+# session lets GW2's exit-handler overwrite our XML edits with the previous
+# desktop size.
+kill_gw2() {
+    if pgrep -f Gw2-64.exe > /dev/null 2>&1; then
+        echo "  killing existing Gw2-64.exe (so it can't overwrite GFXSettings)"
+        pkill -9 -f Gw2-64.exe || true
+        # Wait for it to actually exit before continuing (max 5s)
+        local i
+        for i in $(seq 1 10); do
+            if ! pgrep -f Gw2-64.exe > /dev/null 2>&1; then break; fi
+            sleep 0.5
+        done
     fi
 }
 
@@ -134,9 +162,11 @@ wait_for_steam() {
     return 1
 }
 
-# Update Wine DPI + GW2 GFXSettings before any gamescope restart so both are
-# settled by the time GW2 launches. Wine reads user.reg fresh on each
-# Gw2-64.exe launch; GW2 reads its own GFXSettings.xml at launch too.
+# Kill GW2 first (with SIGKILL) so it can't race us by writing stale window
+# state on shutdown after we update XML. Then update Wine DPI + GW2 GFXSettings
+# while GW2 is gone. Wine reads user.reg fresh on each Gw2-64.exe launch; GW2
+# reads its own GFXSettings.xml at launch too.
+kill_gw2
 update_wine_dpi "$DPI"
 update_gw2_resolution "$GW2_W" "$GW2_H"
 

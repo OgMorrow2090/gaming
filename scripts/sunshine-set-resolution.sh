@@ -26,21 +26,27 @@ mkdir -p "$(dirname "$LOG")"
 exec > >(tee -a "$LOG") 2>&1
 echo "=== $(date -Iseconds) === client=${SUNSHINE_CLIENT_NAME:-?} ${SUNSHINE_CLIENT_WIDTH:-?}x${SUNSHINE_CLIENT_HEIGHT:-?}@${SUNSHINE_CLIENT_FPS:-?} app=${SUNSHINE_APP_NAME:-?}"
 
-WIDTH="${SUNSHINE_CLIENT_WIDTH:-3840}"
-
-case "$WIDTH" in
-    1280|''|0) MODE=deck  ;;
-    1920)      MODE=1080p144 ;;
-    2560)      MODE=2k120 ;;
-    3840)      MODE=4k120 ;;
-    *)
-        if   [ "$WIDTH" -le 1280 ]; then MODE=deck
-        elif [ "$WIDTH" -le 1920 ]; then MODE=1080p144
-        elif [ "$WIDTH" -le 2560 ]; then MODE=2k120
-        else                             MODE=4k120
-        fi
-        ;;
-esac
+# Mode can be forced via argument (used by per-resolution Sunshine apps),
+# otherwise auto-detect from client width (used by the generic Guild Wars 2 app).
+if [ -n "${1:-}" ]; then
+    MODE="$1"
+    echo "  mode forced via argument: $MODE"
+else
+    WIDTH="${SUNSHINE_CLIENT_WIDTH:-3840}"
+    case "$WIDTH" in
+        1280|''|0) MODE=deck  ;;
+        1920)      MODE=1080p144 ;;
+        2560)      MODE=2k120 ;;
+        3840)      MODE=4k120 ;;
+        *)
+            if   [ "$WIDTH" -le 1280 ]; then MODE=deck
+            elif [ "$WIDTH" -le 1920 ]; then MODE=1080p144
+            elif [ "$WIDTH" -le 2560 ]; then MODE=2k120
+            else                             MODE=4k120
+            fi
+            ;;
+    esac
+fi
 
 # Wine DPI (LogPixels) + GW2 in-game resolution per mode.
 case "$MODE" in

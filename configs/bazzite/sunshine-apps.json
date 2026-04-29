@@ -3,7 +3,7 @@
         {
             "image-path": "/home/Og/.config/sunshine/covers/steamos_cover.png",
             "name": "SteamOS Game Mode",
-            "output": "DP-1",
+            "output": "HDMI-A-1",
             "prep-cmd": [
                 {
                     "do": "/var/home/Og/scripts/sunshine-set-resolution.sh"
@@ -13,13 +13,13 @@
         {
             "image-path": "/home/Og/.config/sunshine/covers/active_session_cover.png",
             "name": "Active Session",
-            "output": "DP-1"
+            "output": "HDMI-A-1"
         },
         {
             "image-path": "/home/Og/.config/sunshine/covers/gw2.png",
             "name": "Guild Wars 2",
             "cmd": "/var/home/Og/scripts/sunshine-launch-gw2.sh",
-            "output": "DP-1",
+            "output": "HDMI-A-1",
             "prep-cmd": [
                 {
                     "do": "/var/home/Og/scripts/sunshine-set-resolution.sh"
@@ -27,16 +27,38 @@
             ]
         },
         {
+            "image-path": "/home/Og/.config/sunshine/covers/gw2.png",
+            "name": "Guild Wars 2 (2K)",
+            "cmd": "/var/home/Og/scripts/sunshine-launch-gw2.sh",
+            "output": "HDMI-A-1",
+            "prep-cmd": [
+                {
+                    "do": "/var/home/Og/scripts/sunshine-set-resolution.sh 2k120"
+                }
+            ]
+        },
+        {
+            "image-path": "/home/Og/.config/sunshine/covers/gw2.png",
+            "name": "Guild Wars 2 (4K)",
+            "cmd": "/var/home/Og/scripts/sunshine-launch-gw2.sh",
+            "output": "HDMI-A-1",
+            "prep-cmd": [
+                {
+                    "do": "/var/home/Og/scripts/sunshine-set-resolution.sh 4k120"
+                }
+            ]
+        },
+        {
             "image-path": "/home/Og/.config/sunshine/covers/killgame_cover.png",
             "name": "Kill Game",
             "cmd": "/var/home/Og/scripts/kill-game.sh",
-            "output": "DP-1"
+            "output": "HDMI-A-1"
         },
         {
             "image-path": "/home/Og/.config/sunshine/covers/reboot_cover.png",
             "name": "Reboot",
             "cmd": "/var/home/Og/scripts/reboot.sh",
-            "output": "DP-1"
+            "output": "HDMI-A-1"
         }
     ],
     "env": {

@@ -27,7 +27,7 @@
             ]
         },
         {
-            "image-path": "/home/Og/.config/sunshine/covers/gw2.png",
+            "image-path": "/home/Og/.config/sunshine/covers/gw2-2k.png",
             "name": "Guild Wars 2 (2K)",
             "cmd": "/var/home/Og/scripts/sunshine-launch-gw2.sh",
             "output": "HDMI-A-1",
@@ -38,7 +38,7 @@
             ]
         },
         {
-            "image-path": "/home/Og/.config/sunshine/covers/gw2.png",
+            "image-path": "/home/Og/.config/sunshine/covers/gw2-4k.png",
             "name": "Guild Wars 2 (4K)",
             "cmd": "/var/home/Og/scripts/sunshine-launch-gw2.sh",
             "output": "HDMI-A-1",

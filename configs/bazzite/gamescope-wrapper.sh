@@ -24,4 +24,8 @@ case "$MODE" in
   default)  EXTRA="" ;;
   *)        EXTRA="" ;;
 esac
+# Prefer DP-1 (virtual display via drm.edid_firmware) over HDMI-A-1 (physical
+# dongle). DP doesn't have HDMI's TMDS bandwidth limit so 4K@120 modes from
+# the EDID are usable by NVIDIA. Last --prefer-output wins.
+EXTRA="$EXTRA --prefer-output DP-1,*"
 exec /usr/bin/gamescope "$@" $EXTRA

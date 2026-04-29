@@ -84,14 +84,6 @@ update_gw2_resolution() {
         sed -i -E "s|<RESOLUTION Width=\"[0-9]+\" Height=\"[0-9]+\"|<RESOLUTION Width=\"$w\" Height=\"$h\"|" "$xml"
     fi
 
-    # Force windowed_fullscreen (borderless). GW2 inherits gamescope's
-    # nested xwayland size — fine on Apple TV (matches 2K), and on the
-    # Steam Deck Moonlight downscales the 2K stream to the panel locally.
-    if grep -q "Name=\"screenMode\".*Value=\"fullscreen\"" "$xml"; then
-        echo "  GW2 screenMode → windowed_fullscreen"
-        sed -i -E "s|(<OPTION Name=\"screenMode\" [^>]*Value=\")fullscreen(\")|\1windowed_fullscreen\2|" "$xml"
-    fi
-
     # Force VSync OFF so DXVK doesn't FIFO-lock to Wine's reported refresh rate
     # (which is capped by EDID DTD at 4K@60). With VSync off + frameLimit=120,
     # GW2 renders as fast as the GPU allows up to 120fps even at 4K.
@@ -100,14 +92,12 @@ update_gw2_resolution() {
         sed -i -E "s|(<OPTION Name=\"verticalSync\" [^/]*Value=\")true(\"[^/]*/?>)|\1false\2|" "$xml"
     fi
 
-    # Force dpiScaling OFF so GW2 ignores Wine's reported DPI and just uses
-    # its in-game "User Interface Size" setting. With dpiScaling=true GW2's
-    # UI gets squashed/stretched whenever Wine LogPixels changes between
-    # mode flips, fighting the user's chosen interface size.
-    if grep -q "Name=\"dpiScaling\".*Value=\"true\"" "$xml"; then
-        echo "  GW2 dpiScaling → false"
-        sed -i -E "s|(<OPTION Name=\"dpiScaling\" [^/]*Value=\")true(\"[^/]*/?>)|\1false\2|" "$xml"
-    fi
+    # NOTE: leave dpiScaling and screenMode alone. With dpiScaling=true (GW2
+    # default), GW2 honours Wine LogPixels per mode (96/144/192) and the UI
+    # proportions come out right after gamescope's 2K-canvas-to-output
+    # downscale. Forcing dpiScaling=false made GW2 ignore Wine DPI and the
+    # UI rendered at fixed size on the 2K canvas — which after downscale
+    # to 1280x800 for the Deck stream looked tiny ("stuck 2K" symptom).
 }
 
 # Kill any running Gw2-64.exe with SIGKILL so it can't write stale window

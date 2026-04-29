@@ -12,7 +12,7 @@ Start a session for the **guildwars2** project.
 - **Target host: shaun-bazzite (172.16.100.212).** Deploys via SSH/rsync directly to that host — there is no container layer.
 - Many scripts are interactive (xdotool / UI manipulation / controller mappings) — be aware they assume a graphical session is up; remote SSH-only invocation will fail without `DISPLAY=:0`.
 - Bazzite is image-based — system changes that should persist must go via `rpm-ostree` or layered overlays, not direct `/etc` edits.
-- Local Mac has `chrome-devtools-mcp` + `mobile-mcp` (iPhone 17 Pro sim) installed for any cross-cutting web UI verification — full setup at `Shauns-MacBook-Air-72196` only; Mac mini parity pending.
+- Local Mac has `chrome-devtools-mcp` + `mobile-mcp` installed for any cross-cutting web UI verification. Mobile-mcp must use the **`Dev iPhone (logged in)`** simulator (UDID `25D56B79-8DF0-494A-8DD1-4F44899A2081`) — already signed into the relevant portals. Never `simctl create` a fresh sim. Full setup at `Shauns-MacBook-Air-72196` only; Mac mini parity pending. See `dev-toolkit/memory/reference_dev_iphone_simulator.md`.
 
 ## Steps
 

@@ -3,7 +3,12 @@
         {
             "image-path": "/home/Og/.config/sunshine/covers/steamos_cover.png",
             "name": "SteamOS Game Mode",
-            "output": "HDMI-A-2"
+            "output": "HDMI-A-2",
+            "prep-cmd": [
+                {
+                    "do": "/var/home/Og/scripts/sunshine-set-resolution.sh"
+                }
+            ]
         },
         {
             "image-path": "/home/Og/.config/sunshine/covers/gw2.png",

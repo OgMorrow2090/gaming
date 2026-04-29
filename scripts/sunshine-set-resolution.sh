@@ -65,12 +65,18 @@ update_gw2_resolution() {
     local current
     current=$(grep -oE "<RESOLUTION Width=\"[0-9]+\" Height=\"[0-9]+\"" "$xml" | head -1)
     local target="<RESOLUTION Width=\"$w\" Height=\"$h\""
-    if [ "$current" = "$target" ]; then
-        echo "  GW2 in-game resolution already ${w}x${h} — skip"
-        return 0
+    if [ "$current" != "$target" ]; then
+        echo "  GW2 in-game resolution ${current#*Width=\"} → ${w}x${h}"
+        sed -i -E "s|<RESOLUTION Width=\"[0-9]+\" Height=\"[0-9]+\"|<RESOLUTION Width=\"$w\" Height=\"$h\"|" "$xml"
     fi
-    echo "  GW2 in-game resolution ${current#*Width=\"} → ${w}x${h}"
-    sed -i -E "s|<RESOLUTION Width=\"[0-9]+\" Height=\"[0-9]+\"|<RESOLUTION Width=\"$w\" Height=\"$h\"|" "$xml"
+
+    # Force VSync OFF so DXVK doesn't FIFO-lock to Wine's reported refresh rate
+    # (which is capped by EDID DTD at 4K@60). With VSync off + frameLimit=120,
+    # GW2 renders as fast as the GPU allows up to 120fps even at 4K.
+    if grep -q "Name=\"verticalSync\".*Value=\"true\"" "$xml"; then
+        echo "  GW2 verticalSync → false"
+        sed -i -E "s|(<OPTION Name=\"verticalSync\" [^/]*Value=\")true(\"[^/]*/?>)|\1false\2|" "$xml"
+    fi
 }
 
 # Update Wine LogPixels in GW2's Proton prefix so GW2 picks up the right DPI

@@ -11,6 +11,11 @@
             ]
         },
         {
+            "image-path": "/home/Og/.config/sunshine/covers/active_session_cover.png",
+            "name": "Active Session",
+            "output": "HDMI-A-1"
+        },
+        {
             "image-path": "/home/Og/.config/sunshine/covers/gw2.png",
             "name": "Guild Wars 2",
             "cmd": "/var/home/Og/scripts/sunshine-launch-gw2.sh",

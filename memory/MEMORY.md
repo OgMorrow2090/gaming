@@ -7,3 +7,5 @@ Index of memory entries for this repo. Each line points at one file in `memory/`
 - [Chord emission quirks](chord-emission-quirks.md) — uinput modifier-hold + Full_Press double-emit; when to use DLL-press-`I` pattern
 - [GW2 GameBinds.xml chord collisions](gw2-keybind-collisions.md) — Home/End/PgUp/PgDn = Skill Profession 2-5; check before picking chord keys
 - [configset_controller_neptune.vdf is the appname→layout pointer](configset-controller-pointer.md) — renaming a non-Steam shortcut breaks SSH deploys until you update this file
+- [gamescope nested xwayland is hardlocked at EDID max](gamescope-nested-xwayland-constraint.md) — `-w/-h`, `--force-windows-fullscreen`, post-init xrandr all fail; don't try them again
+- [GW2 dpiScaling=true + per-mode Wine LogPixels is the UI compensation](gw2-windowed-fullscreen-dpiscaling-trick.md) — never force dpiScaling=false or screenMode=fullscreen; let GW2 scale via Wine DPI

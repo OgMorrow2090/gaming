@@ -1,0 +1,23 @@
+"controller_config"
+{
+	"0"
+	{
+		"workshop"		"3716461043"
+	}
+	"1284210"
+	{
+		"workshop"		"2858596725"
+	}
+	"moonlight"
+	{
+		"template"		"CLOUD_moonlight/og v18.4.8_0"
+	}
+	"moonlight - active"
+	{
+		"workshop"		"3716461043"
+	}
+	"moonlight - gw2 steamos"
+	{
+		"template"		"CLOUD_moonlight/og v18.4.8_0"
+	}
+}

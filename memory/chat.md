@@ -2,6 +2,70 @@
 
 Append-only log of agent sessions on this repo. Read at session start for continuity. Entries are summaries — not full transcripts.
 
+## 2026-04-29 (PM) — Per-mode resolution switching, gamescope xwayland constraint, GW2 - SteamOS hybrid app
+
+Long second-half session continuing morning Sunshine work. User wanted per-stream-client resolution switching (Deck → 1280x800, Apple TV → higher) with GW2 settings auto-adapted, plus a clean way to access Big Picture mid-session to change res.
+
+### Major outcome — gamescope's nested xwayland resists size-locking
+
+Hours of investigation into why GW2 always rendered at 2K on the Deck stream regardless of gamescope `-W -H`:
+
+- **`-W/-H` controls the gamescope output canvas; `-w/-h` is supposed to set the nested xwayland init size.** Without `-w/-h` xwayland defaults to the EDID's largest mode.
+- **Even with `-w 1280 -h 800` the xwayland gets bumped up to 2560x1440 once Steam/Wine start.** Steam logs literally say `Desktop state changed: desktop: size: 2560,1440`. Steam ignores gamescope's nested-size flags.
+- **`xrandr --output gamescope --mode 1280x800` from outside returns `BadMatch`** — gamescope's nested xwayland refuses post-init RRSetScreenSize. Even attempting `--newmode/--addmode` fails on the nested compositor.
+- **`--force-windows-fullscreen` only forces window draw size, not xwayland reported size** — Steam keeps redrawing at 2K, conflicting with gamescope's clamping → visible flicker. Useless for our case.
+- **`--generate-drm-mode fixed` doesn't force the connector to deck mode either** — gamescope still picks the highest CVT-derivable mode (2560x1440@144) over EDID DTDs.
+
+Net result: with the EVanlak HDMI dongle EDID + NVIDIA proprietary driver, **gamescope's nested xwayland is hardlocked at 2K**. GW2 in `windowed_fullscreen` always renders at 2K canvas. Reverted all these flags (added then removed in same session).
+
+### Why morning auto-detect "worked fine" — `dpiScaling=true` was the secret sauce
+
+User said the AM session worked but PM testing didn't. Diff showed the PM script forced `dpiScaling=false`. With dpiScaling=true (GW2 default), GW2 honours Wine LogPixels (96/144/192 per gamescope mode) and **scales UI proportionally** to the Wine-reported DPI. After Sunshine downscales the 2K-rendered stream to 1280x800 for the Deck, the per-mode UI scaling lands correctly — UI on Deck looks Deck-sized despite the underlying 2K render. Forcing dpiScaling=false killed that compensation. Reverted.
+
+### Final Sunshine app layout
+
+Stripped per-launch GW2 mode flips because they fought Steam Big Picture and GW2 in unstable ways. New design:
+
+- **SteamOS Game Mode** — auto-detect prep-cmd; lands in Big Picture; default controller layout. Use this to set the gamescope mode for the session.
+- **GW2 - SteamOS** (NEW) — auto-detect prep-cmd + `sunshine-wait-gw2.sh` cmd that waits up to 30 min for user to launch GW2 from Big Picture, then waits for GW2 to exit, then returns. Steam Input maps the AppName "GW2 - SteamOS" to the GW2 controller layout. Workflow: connect → Big Picture (change res if needed) → launch GW2 → play → Alt+F4 → stream auto-ends.
+- **Guild Wars 2** — direct-launch via `sunshine-launch-gw2.sh`. No prep-cmd. Use when you already have the right gamescope mode and want straight-to-game.
+- **Active Session** — no prep-cmd, no cmd, just attaches.
+- **Kill Game** / **Reboot** — utility apps unchanged.
+
+The script `sunshine-set-resolution.sh` still does the auto-detect + Wine LogPixels swap + GFXSettings RESOLUTION swap + verticalSync=false + SIGKILL pre-edit, but is only wired up to SteamOS Game Mode and GW2 - SteamOS now.
+
+### Steam Deck side: matched shortcut + controller layout for the new app
+
+- Added `Moonlight - GW2 SteamOS` to `shortcuts.vdf` via custom binary VDF appender (no `vdf` Python module on SteamOS) — appid 3161606423
+- Removed redundant `Moonlight - GW2` shortcut (was the direct-launch path before this session's split)
+- Force-killed Steam (`pkill -9`) before editing so it didn't overwrite shortcuts.vdf with its in-memory copy on shutdown — Steam writes this file on clean shutdown, will clobber external edits if running. **Critical pattern for any future shortcut edits.**
+- Added `"moonlight - gw2 steamos"` entry in `configset_controller_neptune.vdf` pointing at `template CLOUD_moonlight/og v18.4.8_0` so the new shortcut applies the GW2 controller layout
+- Copied GW2 VoE artwork (4 grid PNG variants) from old appid `2959110740` to new appid `3161606423`. Removed the orphaned old artwork files.
+- Removed the now-orphaned `"moonlight - gw2"` configset entry
+
+### Bazzite side cleanup
+
+- Removed unused `gw2-2k.png` / `gw2-4k.png` covers (per-mode app icons that were briefly added then removed)
+- Live `~/.config/sunshine/apps.json` matches `configs/bazzite/sunshine-apps.json` ✓
+
+### Files changed this session
+
+- `configs/bazzite/sunshine-apps.json` — final 6-app layout
+- `configs/bazzite/gamescope-wrapper.sh` — back to simple `-W -H -r -o` (added then removed `-w/-h`, `--force-windows-fullscreen`, `--generate-drm-mode fixed`)
+- `scripts/sunshine-set-resolution.sh` — Apple TV → 2k120 (was 4k120), SIGKILL GW2 before edits, optional MODE arg via `$1` (kept), per-mode Wine LogPixels (kept), per-mode RESOLUTION (kept), verticalSync=false (kept). Removed: forced screenMode, forced dpiScaling.
+- `scripts/sunshine-wait-gw2.sh` (NEW) — Sunshine cmd that waits for GW2 to start (30m grace), then waits for it to exit, then returns
+- `configs/steam-deck/configset_controller_neptune.vdf` (NEW backup) — current state of the layout pointer table
+- `configs/steam-deck/moonlight-shortcuts-summary.txt` (NEW backup) — human-readable summary of the 5 Moonlight shortcuts and their Sunshine app targets
+
+### Apple TV side — pending
+
+User mentioned wanting the same dual-app pattern on Apple TV (Big Picture + GW2 - SteamOS hybrid). Apple TV uses different controller hardware so the layout pointer file is `configset_controller_xbox.vdf` (or whichever matches the connected MFi controller). The Sunshine apps are already there; just need the controller pointer mapping next session.
+
+### New memory entries (PM session)
+
+- `gamescope-nested-xwayland-constraint.md` — gamescope nested xwayland defaults to EDID max and resists post-init resize
+- `gw2-windowed-fullscreen-dpiscaling-trick.md` — keep `dpiScaling=true` so per-mode Wine LogPixels does the UI scaling
+
 ## 2026-04-29 — Moonlight shortcut split + configset pointer fix
 
 Cross-repo session driven from `itinyk-app` working dir. User rebuilt the Steam Deck library to have multiple Moonlight non-Steam shortcuts (Moonlight - GW2, Moonlight - SteamOS, Moonlight - Reboot Bazzite, Moonlight - Kill Game) so each could carry its own Steam Input layout. The rename of the original "Moonlight" shortcut to "Moonlight - GW2" broke v18.4.8 controller bindings — Steam appeared to revert to v18.4.2 even though `og v18.4.8_0.vdf` was deployed correctly.

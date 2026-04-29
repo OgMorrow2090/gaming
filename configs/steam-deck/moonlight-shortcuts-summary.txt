@@ -1,0 +1,23 @@
+# Steam Deck Moonlight shortcuts (post 2026-04-29 cleanup)
+#
+# All entries in shortcuts.vdf at:
+#   /home/deck/.local/share/Steam/userdata/64793831/config/shortcuts.vdf
+#
+# Each is a non-Steam shortcut that launches Moonlight (Flatpak) with --quit-after,
+# streaming directly to a specific Sunshine app on bazzite (172.16.100.212).
+#
+# Launch command for all of them:
+#   /usr/bin/flatpak run --branch=stable --arch=x86_64 --command=moonlight \
+#     com.moonlight_stream.Moonlight stream 172.16.100.212 "<sunshine-app-name>" --quit-after
+
+| AppName                  | Sunshine app on bazzite | Notes                                          |
+|--------------------------|-------------------------|------------------------------------------------|
+| Moonlight - SteamOS      | SteamOS Game Mode       | Auto-detect mode prep-cmd; Big Picture         |
+| Moonlight - Reboot Bazzite | Reboot                | Reboots bazzite host                           |
+| Moonlight - Kill Game    | Kill Game               | Kills running game                             |
+| Moonlight - Active       | Active Session          | Attaches to current session, no prep-cmd       |
+| Moonlight - GW2 SteamOS  | GW2 - SteamOS           | Big Picture + GW2 controller layout + auto-end |
+
+# Removed during this session: "Moonlight - GW2" (direct GW2 launch path)
+# Replaced by "Moonlight - GW2 SteamOS" which goes via Big Picture so user
+# can change resolution mid-session.

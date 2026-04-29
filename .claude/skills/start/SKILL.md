@@ -12,6 +12,7 @@ Start a session for the **guildwars2** project.
 - **Target host: shaun-bazzite (172.16.100.212).** Deploys via SSH/rsync directly to that host — there is no container layer.
 - Many scripts are interactive (xdotool / UI manipulation / controller mappings) — be aware they assume a graphical session is up; remote SSH-only invocation will fail without `DISPLAY=:0`.
 - Bazzite is image-based — system changes that should persist must go via `rpm-ostree` or layered overlays, not direct `/etc` edits.
+- Local Mac has `chrome-devtools-mcp` + `mobile-mcp` (iPhone 17 Pro sim) installed for any cross-cutting web UI verification — full setup at `Shauns-MacBook-Air-72196` only; Mac mini parity pending.
 
 ## Steps
 

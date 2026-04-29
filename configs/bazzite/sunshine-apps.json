@@ -22,7 +22,7 @@
             "output": "HDMI-A-1",
             "prep-cmd": [
                 {
-                    "do": "/var/home/Og/scripts/sunshine-set-resolution.sh 2k120"
+                    "do": "/var/home/Og/scripts/sunshine-set-resolution.sh"
                 }
             ]
         },

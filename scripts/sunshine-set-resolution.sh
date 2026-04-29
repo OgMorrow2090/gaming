@@ -32,17 +32,20 @@ if [ -n "${1:-}" ]; then
     MODE="$1"
     echo "  mode forced via argument: $MODE"
 else
+    # Apple TV (3840) maps to 2k120 not 4k120: NVIDIA driver caps 4K@120 over
+    # the HDMI dongle (TMDS 600 MHz), so 4K never exceeds 60 fps anyway, while
+    # 2k120 reliably delivers 90+ fps in GW2 and Moonlight upscales cleanly to
+    # the Apple TV's 4K panel.
     WIDTH="${SUNSHINE_CLIENT_WIDTH:-3840}"
     case "$WIDTH" in
-        1280|''|0) MODE=deck  ;;
+        1280|''|0) MODE=deck     ;;
         1920)      MODE=1080p144 ;;
-        2560)      MODE=2k120 ;;
-        3840)      MODE=4k120 ;;
+        2560)      MODE=2k120    ;;
+        3840)      MODE=2k120    ;;
         *)
             if   [ "$WIDTH" -le 1280 ]; then MODE=deck
             elif [ "$WIDTH" -le 1920 ]; then MODE=1080p144
-            elif [ "$WIDTH" -le 2560 ]; then MODE=2k120
-            else                             MODE=4k120
+            else                             MODE=2k120
             fi
             ;;
     esac

@@ -51,71 +51,16 @@ else
     esac
 fi
 
-# Wine DPI (LogPixels) + GW2 in-game resolution per mode.
+# Wine DPI (LogPixels) per mode. GW2 reads Wine DPI when dpiScaling=true and
+# scales its UI accordingly — this is the gamescope-2K-canvas compensation.
+# We do NOT touch GFXSettings.xml here; the user manages GW2 settings manually.
 case "$MODE" in
-    deck)     DPI=96  ; GW2_W=1280 ; GW2_H=800  ;;  # Steam Deck native
-    1080p144) DPI=96  ; GW2_W=1920 ; GW2_H=1080 ;;  # 1080p
-    2k120)    DPI=144 ; GW2_W=2560 ; GW2_H=1440 ;;  # 1440p, 150% UI
-    4k120)    DPI=192 ; GW2_W=3840 ; GW2_H=2160 ;;  # 4K, 200% UI
-    *)        DPI=96  ; GW2_W=3840 ; GW2_H=2160 ;;
+    deck)     DPI=96  ;;  # Steam Deck native, 100% UI
+    1080p144) DPI=96  ;;  # 1080p, 100% UI
+    2k120)    DPI=144 ;;  # 1440p, 150% UI
+    4k120)    DPI=192 ;;  # 4K, 200% UI
+    *)        DPI=96  ;;
 esac
-
-# Update GW2's GFXSettings.xml so the in-game resolution matches the stream
-# client. GW2 reads this file on launch — values apply on next Gw2-64.exe start.
-# Without this swap, GW2 keeps the resolution from the last session, so
-# streaming Deck after Apple TV gives a cut-off render.
-#
-# CRITICAL: also forces screenMode=fullscreen. In windowed_fullscreen GW2
-# ignores RESOLUTION and just inherits the desktop size, so a Deck-mode
-# desktop persists after a 4K mode flip until gamescope's xwayland fully
-# re-initialises. Fullscreen makes RESOLUTION authoritative.
-update_gw2_resolution() {
-    local w="$1" h="$2"
-    local xml="/var/home/Og/.local/share/Steam/steamapps/compatdata/1284210/pfx/drive_c/users/steamuser/AppData/Roaming/Guild Wars 2/GFXSettings.Gw2-64.exe.xml"
-    if [ ! -f "$xml" ]; then
-        echo "  GFXSettings.xml not found — skip GW2 res update"
-        return 0
-    fi
-    local current
-    current=$(grep -oE "<RESOLUTION Width=\"[0-9]+\" Height=\"[0-9]+\"" "$xml" | head -1)
-    local target="<RESOLUTION Width=\"$w\" Height=\"$h\""
-    if [ "$current" != "$target" ]; then
-        echo "  GW2 in-game resolution ${current#*Width=\"} → ${w}x${h}"
-        sed -i -E "s|<RESOLUTION Width=\"[0-9]+\" Height=\"[0-9]+\"|<RESOLUTION Width=\"$w\" Height=\"$h\"|" "$xml"
-    fi
-
-    # Force VSync OFF so DXVK doesn't FIFO-lock to Wine's reported refresh rate
-    # (which is capped by EDID DTD at 4K@60). With VSync off + frameLimit=120,
-    # GW2 renders as fast as the GPU allows up to 120fps even at 4K.
-    if grep -q "Name=\"verticalSync\".*Value=\"true\"" "$xml"; then
-        echo "  GW2 verticalSync → false"
-        sed -i -E "s|(<OPTION Name=\"verticalSync\" [^/]*Value=\")true(\"[^/]*/?>)|\1false\2|" "$xml"
-    fi
-
-    # NOTE: leave dpiScaling and screenMode alone. With dpiScaling=true (GW2
-    # default), GW2 honours Wine LogPixels per mode (96/144/192) and the UI
-    # proportions come out right after gamescope's 2K-canvas-to-output
-    # downscale. Forcing dpiScaling=false made GW2 ignore Wine DPI and the
-    # UI rendered at fixed size on the 2K canvas — which after downscale
-    # to 1280x800 for the Deck stream looked tiny ("stuck 2K" symptom).
-}
-
-# Kill any running Gw2-64.exe with SIGKILL so it can't write stale window
-# state back to GFXSettings on shutdown. Without this, switching modes mid-
-# session lets GW2's exit-handler overwrite our XML edits with the previous
-# desktop size.
-kill_gw2() {
-    if pgrep -f Gw2-64.exe > /dev/null 2>&1; then
-        echo "  killing existing Gw2-64.exe (so it can't overwrite GFXSettings)"
-        pkill -9 -f Gw2-64.exe || true
-        # Wait for it to actually exit before continuing (max 5s)
-        local i
-        for i in $(seq 1 10); do
-            if ! pgrep -f Gw2-64.exe > /dev/null 2>&1; then break; fi
-            sleep 0.5
-        done
-    fi
-}
 
 # Update Wine LogPixels in GW2's Proton prefix so GW2 picks up the right DPI
 # on next launch. Pick whichever Proton version the user currently has installed.
@@ -166,13 +111,9 @@ wait_for_steam() {
     return 1
 }
 
-# Kill GW2 first (with SIGKILL) so it can't race us by writing stale window
-# state on shutdown after we update XML. Then update Wine DPI + GW2 GFXSettings
-# while GW2 is gone. Wine reads user.reg fresh on each Gw2-64.exe launch; GW2
-# reads its own GFXSettings.xml at launch too.
-kill_gw2
+# Update Wine DPI only — Wine reads user.reg fresh on each Gw2-64.exe launch.
+# GFXSettings.xml is left alone (user manages GW2 settings manually).
 update_wine_dpi "$DPI"
-update_gw2_resolution "$GW2_W" "$GW2_H"
 
 if [ "$CURRENT" = "$MODE" ]; then
     echo "  already on $MODE — no restart needed"

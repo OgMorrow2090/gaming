@@ -37,10 +37,12 @@ The DPI scaling counteracts the 2K-canvas-with-100%-UI-then-downscale-to-deck = 
 
 ## How to apply
 
-The script `scripts/sunshine-set-resolution.sh` already has the correct logic:
-- Updates Wine LogPixels per mode (`update_wine_dpi`)
-- Updates GW2 GFXSettings RESOLUTION (cosmetic — RESOLUTION value isn't actually honored in windowed_fullscreen but harmless)
-- Forces `verticalSync=false` (DXVK FIFO uncap)
-- **Does NOT touch `dpiScaling` or `screenMode`** — leave them at GW2 defaults (true / windowed_fullscreen)
+The script `scripts/sunshine-set-resolution.sh` does ONLY the Wine LogPixels swap:
 
-If a future session adds `screenMode` or `dpiScaling` rewrites to the script: **revert immediately**. We have already burned hours on this.
+- Updates Wine LogPixels per mode (`update_wine_dpi`) — 96 / 144 / 192
+- **Does NOT touch GFXSettings.xml at all** — user manages GW2 settings (resolution, verticalSync, dpiScaling, screenMode) manually
+- **Does NOT kill Gw2-64.exe** — no XML race to protect against
+
+History: earlier versions also rewrote `RESOLUTION` and forced `verticalSync=false` on every prep-cmd run. Removed 2026-04-29 — user reported the verticalSync flip was clobbering their in-game choice every Deck↔Apple TV switch. Wine LogPixels stays because it's `user.reg`, not GW2 config, and is the gamescope-2K-canvas UI compensation.
+
+If a future session adds GFXSettings.xml rewrites, `screenMode`/`dpiScaling` rewrites, or `pkill Gw2-64.exe` to the script: **revert immediately**. The user manages GW2 settings; the script only touches Wine DPI.

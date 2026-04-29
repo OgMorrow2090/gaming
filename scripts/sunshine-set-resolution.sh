@@ -81,10 +81,15 @@ update_gw2_resolution() {
         sed -i -E "s|<RESOLUTION Width=\"[0-9]+\" Height=\"[0-9]+\"|<RESOLUTION Width=\"$w\" Height=\"$h\"|" "$xml"
     fi
 
-    # Force fullscreen (not windowed_fullscreen) so RESOLUTION is authoritative.
-    if grep -q "Name=\"screenMode\".*Value=\"windowed" "$xml"; then
-        echo "  GW2 screenMode → fullscreen"
-        sed -i -E "s|(<OPTION Name=\"screenMode\" [^>]*Value=\")windowed[a-z_]*(\")|\1fullscreen\2|" "$xml"
+    # Force windowed_fullscreen (borderless). With kill_gw2 running before
+    # the gamescope mode flip, GW2 is always dead during the canvas resize,
+    # so by the time it relaunches Wine xwayland is already at the new
+    # desktop size and windowed_fullscreen inherits the correct dimensions.
+    # windowed_fullscreen is preferred over fullscreen for faster alt-tab
+    # and cleaner Sunshine capture.
+    if grep -q "Name=\"screenMode\".*Value=\"fullscreen\"" "$xml"; then
+        echo "  GW2 screenMode → windowed_fullscreen"
+        sed -i -E "s|(<OPTION Name=\"screenMode\" [^>]*Value=\")fullscreen(\")|\1windowed_fullscreen\2|" "$xml"
     fi
 
     # Force VSync OFF so DXVK doesn't FIFO-lock to Wine's reported refresh rate

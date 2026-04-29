@@ -115,4 +115,14 @@ fi
 echo "  switching: $CURRENT → $MODE"
 /var/home/Og/bin/gamescope-mode "$MODE"
 wait_for_steam "post-restart"
+
+# After gamescope-session restart, Sunshine's wayland display connection is
+# stale — encoder pipeline falls back to vulkan/vaapi/software (all of which
+# require XDG portal that gamescope doesn't expose) instead of nvenc.
+# Schedule a Sunshine restart in the background so we don't kill ourselves.
+# Current Moonlight connection will likely fail; client retries and gets a
+# fresh Sunshine.
+echo "  scheduling Sunshine restart (5s delay) to refresh display capture..."
+(sleep 5 && systemctl --user restart sunshine-gaming.service) &
+disown
 echo "  done"

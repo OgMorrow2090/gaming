@@ -42,15 +42,36 @@ case "$WIDTH" in
         ;;
 esac
 
-# Wine DPI (LogPixels) per mode — fixes tiny GW2 UI on high-res streams.
-# 96=100%, 120=125%, 144=150%, 168=175%, 192=200%.
+# Wine DPI (LogPixels) + GW2 in-game resolution per mode.
 case "$MODE" in
-    deck)     DPI=96  ;;   # 1280x800 — native, no scaling
-    1080p144) DPI=96  ;;   # 1080p — no scaling
-    2k120)    DPI=144 ;;   # 1440p — 150%
-    4k120)    DPI=192 ;;   # 4K — 200%
-    *)        DPI=96  ;;
+    deck)     DPI=96  ; GW2_W=1280 ; GW2_H=800  ;;  # Steam Deck native
+    1080p144) DPI=96  ; GW2_W=1920 ; GW2_H=1080 ;;  # 1080p
+    2k120)    DPI=144 ; GW2_W=2560 ; GW2_H=1440 ;;  # 1440p, 150% UI
+    4k120)    DPI=192 ; GW2_W=3840 ; GW2_H=2160 ;;  # 4K, 200% UI
+    *)        DPI=96  ; GW2_W=3840 ; GW2_H=2160 ;;
 esac
+
+# Update GW2's GFXSettings.xml so the in-game resolution matches the stream
+# client. GW2 reads this file on launch — values apply on next Gw2-64.exe start.
+# Without this swap, GW2 keeps the resolution from the last session, so
+# streaming Deck after Apple TV gives a cut-off render.
+update_gw2_resolution() {
+    local w="$1" h="$2"
+    local xml="/var/home/Og/.local/share/Steam/steamapps/compatdata/1284210/pfx/drive_c/users/steamuser/AppData/Roaming/Guild Wars 2/GFXSettings.Gw2-64.exe.xml"
+    if [ ! -f "$xml" ]; then
+        echo "  GFXSettings.xml not found — skip GW2 res update"
+        return 0
+    fi
+    local current
+    current=$(grep -oE "<RESOLUTION Width=\"[0-9]+\" Height=\"[0-9]+\"" "$xml" | head -1)
+    local target="<RESOLUTION Width=\"$w\" Height=\"$h\""
+    if [ "$current" = "$target" ]; then
+        echo "  GW2 in-game resolution already ${w}x${h} — skip"
+        return 0
+    fi
+    echo "  GW2 in-game resolution ${current#*Width=\"} → ${w}x${h}"
+    sed -i -E "s|<RESOLUTION Width=\"[0-9]+\" Height=\"[0-9]+\"|<RESOLUTION Width=\"$w\" Height=\"$h\"|" "$xml"
+}
 
 # Update Wine LogPixels in GW2's Proton prefix so GW2 picks up the right DPI
 # on next launch. Pick whichever Proton version the user currently has installed.
@@ -101,10 +122,11 @@ wait_for_steam() {
     return 1
 }
 
-# Update Wine DPI before any gamescope restart so the registry is settled by
-# the time GW2 launches. Safe to run whether or not we restart gamescope —
-# wine reads user.reg fresh on each Gw2-64.exe launch.
+# Update Wine DPI + GW2 GFXSettings before any gamescope restart so both are
+# settled by the time GW2 launches. Wine reads user.reg fresh on each
+# Gw2-64.exe launch; GW2 reads its own GFXSettings.xml at launch too.
 update_wine_dpi "$DPI"
+update_gw2_resolution "$GW2_W" "$GW2_H"
 
 if [ "$CURRENT" = "$MODE" ]; then
     echo "  already on $MODE — no restart needed"

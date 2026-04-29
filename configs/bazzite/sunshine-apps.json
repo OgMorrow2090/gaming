@@ -8,7 +8,7 @@
         {
             "image-path": "/home/Og/.config/sunshine/covers/gw2.png",
             "name": "Guild Wars 2",
-            "cmd": "steam steam://rungameid/1284210",
+            "cmd": "/var/home/Og/scripts/sunshine-launch-gw2.sh",
             "output": "HDMI-A-2",
             "prep-cmd": [
                 {

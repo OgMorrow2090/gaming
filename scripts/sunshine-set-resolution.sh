@@ -84,22 +84,12 @@ update_gw2_resolution() {
         sed -i -E "s|<RESOLUTION Width=\"[0-9]+\" Height=\"[0-9]+\"|<RESOLUTION Width=\"$w\" Height=\"$h\"|" "$xml"
     fi
 
-    # Force exclusive fullscreen so GW2 honors GFXSettings RESOLUTION.
-    #
-    # windowed_fullscreen would inherit gamescope's nested xwayland desktop
-    # size, but xwayland advertises a fixed mode list (max 2560x1440 from
-    # the dongle EDID, no 1280x800 mode at all) regardless of gamescope's
-    # -w/-h. Steam and Wine xrandr-resize xwayland up to that max, so a
-    # windowed_fullscreen GW2 always ends up at 2K — gamescope then just
-    # downscales to the active output (1280x800 for Deck), giving the
-    # "still 2K" cut-off symptom.
-    #
-    # In exclusive fullscreen, GW2 calls Wine's SetDisplayMode with the
-    # RESOLUTION value, Wine creates the mode if needed, and the render
-    # actually happens at e.g. 1280x800 for Deck and 2560x1440 for Apple TV.
-    if grep -q "Name=\"screenMode\".*Value=\"windowed" "$xml"; then
-        echo "  GW2 screenMode → fullscreen"
-        sed -i -E "s|(<OPTION Name=\"screenMode\" [^>]*Value=\")windowed[a-z_]*(\")|\1fullscreen\2|" "$xml"
+    # Force windowed_fullscreen (borderless). GW2 inherits gamescope's
+    # nested xwayland size — fine on Apple TV (matches 2K), and on the
+    # Steam Deck Moonlight downscales the 2K stream to the panel locally.
+    if grep -q "Name=\"screenMode\".*Value=\"fullscreen\"" "$xml"; then
+        echo "  GW2 screenMode → windowed_fullscreen"
+        sed -i -E "s|(<OPTION Name=\"screenMode\" [^>]*Value=\")fullscreen(\")|\1windowed_fullscreen\2|" "$xml"
     fi
 
     # Force VSync OFF so DXVK doesn't FIFO-lock to Wine's reported refresh rate

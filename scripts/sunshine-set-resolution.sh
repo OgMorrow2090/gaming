@@ -94,6 +94,15 @@ update_gw2_resolution() {
         echo "  GW2 verticalSync → false"
         sed -i -E "s|(<OPTION Name=\"verticalSync\" [^/]*Value=\")true(\"[^/]*/?>)|\1false\2|" "$xml"
     fi
+
+    # Force dpiScaling OFF so GW2 ignores Wine's reported DPI and just uses
+    # its in-game "User Interface Size" setting. With dpiScaling=true GW2's
+    # UI gets squashed/stretched whenever Wine LogPixels changes between
+    # mode flips, fighting the user's chosen interface size.
+    if grep -q "Name=\"dpiScaling\".*Value=\"true\"" "$xml"; then
+        echo "  GW2 dpiScaling → false"
+        sed -i -E "s|(<OPTION Name=\"dpiScaling\" [^/]*Value=\")true(\"[^/]*/?>)|\1false\2|" "$xml"
+    fi
 }
 
 # Kill any running Gw2-64.exe with SIGKILL so it can't write stale window

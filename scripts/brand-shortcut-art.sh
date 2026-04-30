@@ -41,8 +41,16 @@ brand_one_appid() {
         else
             BH=$((H * 12 / 100))
         fi
-        # Text point size = 65% of band height (was 55% — text felt too small on landscape)
+        # Text point size = 65% of band height
         local PT=$((BH * 65 / 100))
+
+        # Hero gets the band at the BOTTOM — Steam's game detail page crops/positions
+        # the hero so the top is hidden under the logo overlay. Portrait + landscape
+        # use the top (most readable in tile/card views).
+        local gravity="north"
+        if [ "$variant" = "_hero.png" ]; then
+            gravity="south"
+        fi
 
         magick "$orig" \
             \( -size "${W}x${BH}" "xc:${band}" \
@@ -51,11 +59,11 @@ brand_one_appid() {
                -font "$FONT" \
                -pointsize "$PT" \
                -annotate 0 "$label" \) \
-            -gravity north \
+            -gravity "$gravity" \
             -composite \
             "$f"
 
-        echo "  branded ${variant} (${W}x${H}, band ${BH}px @ ${PT}pt) — $(stat -c %s "$f") bytes"
+        echo "  branded ${variant} (${W}x${H}, band ${BH}px @ ${PT}pt, gravity=$gravity) — $(stat -c %s "$f") bytes"
     done
 }
 

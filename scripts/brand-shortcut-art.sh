@@ -34,10 +34,15 @@ brand_one_appid() {
         dims=$(magick identify -format '%w %h' "$orig")
         W=${dims% *}
         H=${dims#* }
-        # Band height = 12% of image height
-        local BH=$((H * 12 / 100))
-        # Text point size = 55% of band height
-        local PT=$((BH * 55 / 100))
+        # Band height: portrait 12%, landscape/hero 18% (small images need taller bands so text reads)
+        local BH
+        if [ "$H" -lt 600 ]; then
+            BH=$((H * 18 / 100))
+        else
+            BH=$((H * 12 / 100))
+        fi
+        # Text point size = 65% of band height (was 55% — text felt too small on landscape)
+        local PT=$((BH * 65 / 100))
 
         magick "$orig" \
             \( -size "${W}x${BH}" "xc:${band}" \

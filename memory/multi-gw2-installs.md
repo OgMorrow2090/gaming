@@ -128,6 +128,38 @@ cp ~/.local/share/Steam/steamapps/compatdata/1284210/pfx/drive_c/users/steamuser
 
 As long as the exe path and name don't change, the appid stays stable, so `CompatToolMapping` and `compatdata/<appid>/` paths remain valid.
 
+## Seeding a new profile from a baseline (verified working 2026-04-30)
+
+When the user wants a new profile to start with the same GW2 + Nexus state as an existing profile (rather than tuning from scratch), pre-seed the new prefix BEFORE first launch:
+
+1. **Nexus addon configs** — already present in the cloned `addons/` dir (we copy this at install creation). If the source profile's configs have drifted since the clone, sync individual files: `InputBinds.json`, `GameBinds.xml`, `AddonConfig.json`, `Settings.json`. NEVER `cp -r addons/` (clobbers other diverged state).
+
+1. **GFXSettings.xml** — copy from source profile's Wine prefix into the new prefix path, creating the directory tree if it doesn't exist yet:
+
+```bash
+SRC=/home/Og/.local/share/Steam/steamapps/compatdata/<src-appid>/pfx/drive_c/users/steamuser/AppData/Roaming/Guild\ Wars\ 2
+DST=/home/Og/.local/share/Steam/steamapps/compatdata/<dst-appid>/pfx/drive_c/users/steamuser/AppData/Roaming/Guild\ Wars\ 2
+mkdir -p "$DST"
+cp -f "$SRC/GFXSettings.Gw2-64.exe.xml" "$DST/"
+```
+
+Wine's `wineboot` (run on first Steam launch) creates standard prefix scaffolding (drive_c, system DLLs, etc.) but does NOT overwrite user files in `AppData/Roaming/`. Pre-seeded files survive prefix init.
+
+1. **Local.dat** — copy if you want to skip ArenaNet login on first launch (token usually valid ~30 days). Same `cp` pattern. Optional. If the token is expired by launch time, GW2 falls back to login prompt — no harm.
+
+After pre-seeding + first launch:
+
+- GW2 reads seeded GFXSettings → renders with baseline-tuned settings
+- Login skipped if Local.dat is fresh
+- Nexus loads (d3d11.dll symlinked, addons/Nexus configs identical to source)
+- prep-cmd's Wine DPI swap will set the right `[Control Panel\\Desktop]` LogPixels on next stream connect
+
+User confirmed this workflow worked end-to-end for the Steam Deck profile (cloned from Steam GW2 baseline at 2026-04-30 19:24 install creation, then GFXSettings + Local.dat pre-seeded into compatdata/3111887265/pfx/.../Roaming/Guild Wars 2/ at 19:42).
+
+## Universal change → deploy to all three
+
+When the user makes a change to one profile that's meant to be universal (a new Nexus addon DLL, a fixed keybind, an updated ArcDPS config, a tweaked Mystic Clicker per-resolution config), **default to deploying to all three profile install dirs** AND syncing all three repo backup dirs in `configs/gw2-keybinds/{local,apple-tv,deck}/`. See `nexus-multi-deploy-rules.md` for the full rule. Only diverge per-profile when the change is explicitly screen-size or controller-layout specific (e.g., addon UI position for ultrawide vs Deck).
+
 ## Repo backup strategy
 
 Three per-profile snapshot directories are the source of truth — sync any change to the matching profile on bazzite to its repo dir:

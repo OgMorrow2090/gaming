@@ -9,3 +9,4 @@ Index of memory entries for this repo. Each line points at one file in `memory/`
 - [configset_controller_neptune.vdf is the appname→layout pointer](configset-controller-pointer.md) — renaming a non-Steam shortcut breaks SSH deploys until you update this file
 - [gamescope nested xwayland is hardlocked at EDID max](gamescope-nested-xwayland-constraint.md) — `-w/-h`, `--force-windows-fullscreen`, post-init xrandr all fail; don't try them again
 - [GW2 dpiScaling=true + per-mode Wine LogPixels is the UI compensation](gw2-windowed-fullscreen-dpiscaling-trick.md) — never force dpiScaling=false or screenMode=fullscreen; let GW2 scale via Wine DPI
+- [Dual GW2 installs — Deck profile + Apple TV profile](dual-gw2-installs.md) — Steam install + ~/Games/gw2-appletv/ (symlinked Gw2.dat/bin64, copied exe + addons); separate Wine prefix per profile; sync-gw2-exe.sh re-copies launcher after Steam patches

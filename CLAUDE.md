@@ -25,3 +25,4 @@ When the user says "cleanup", "session end", or "synchronize", read and follow t
 - Lowercase filenames only
 - Platform: Windows only (DLL-based Nexus addon)
 - Language: C++ with Visual Studio 2022
+- **Dual GW2 installs on bazzite**: changes to GW2 addon files (`addons/Nexus/*`, `addons/MysticClicker/*`, etc.) must deploy to BOTH profile dirs (`~/.local/share/Steam/steamapps/common/Guild Wars 2/addons/` AND `~/Games/gw2-appletv/addons/`) unless the change is explicitly per-profile (UI position, screen-size-specific). Symlinked files (`Gw2.dat`, `bin64/`, `d3d11.dll`) auto-propagate; the entire `addons/` dir does NOT. See `memory/nexus-dual-deploy-rules.md`.

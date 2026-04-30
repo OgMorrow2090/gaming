@@ -44,26 +44,45 @@ brand_one_appid() {
         # Text point size = 65% of band height
         local PT=$((BH * 65 / 100))
 
-        # Hero gets the band at the BOTTOM — Steam's game detail page crops/positions
-        # the hero so the top is hidden under the logo overlay. Portrait + landscape
-        # use the top (most readable in tile/card views).
-        local gravity="north"
         if [ "$variant" = "_hero.png" ]; then
-            gravity="south"
+            # Hero: corner BADGE in bottom-right (full-width band gets washed out by
+            # Steam's left-to-right white gradient on the detail page that makes the
+            # logo overlay readable). Bottom-right is outside the gradient zone.
+            local BADGE_W=360
+            local BADGE_H=100
+            local BADGE_PT=46
+            magick "$orig" \
+                \( -size "${BADGE_W}x${BADGE_H}" xc:transparent \
+                   -fill "$band" \
+                   -draw "roundrectangle 0,0 $((BADGE_W-1)),$((BADGE_H-1)) 16,16" \
+                   -gravity center \
+                   -fill white \
+                   -font "$FONT" \
+                   -pointsize "$BADGE_PT" \
+                   -stroke "rgba(0,0,0,0.4)" \
+                   -strokewidth 2 \
+                   -annotate 0 "$label" \
+                   -stroke none \
+                   -annotate 0 "$label" \) \
+                -gravity southeast \
+                -geometry +50+50 \
+                -composite \
+                "$f"
+            echo "  branded ${variant} (${W}x${H}, badge ${BADGE_W}x${BADGE_H} @ ${BADGE_PT}pt, bottom-right) — $(stat -c %s "$f") bytes"
+        else
+            # Portrait + landscape: top band (works in tile/card views)
+            magick "$orig" \
+                \( -size "${W}x${BH}" "xc:${band}" \
+                   -gravity center \
+                   -fill white \
+                   -font "$FONT" \
+                   -pointsize "$PT" \
+                   -annotate 0 "$label" \) \
+                -gravity north \
+                -composite \
+                "$f"
+            echo "  branded ${variant} (${W}x${H}, band ${BH}px @ ${PT}pt, top) — $(stat -c %s "$f") bytes"
         fi
-
-        magick "$orig" \
-            \( -size "${W}x${BH}" "xc:${band}" \
-               -gravity center \
-               -fill white \
-               -font "$FONT" \
-               -pointsize "$PT" \
-               -annotate 0 "$label" \) \
-            -gravity "$gravity" \
-            -composite \
-            "$f"
-
-        echo "  branded ${variant} (${W}x${H}, band ${BH}px @ ${PT}pt, gravity=$gravity) — $(stat -c %s "$f") bytes"
     done
 }
 

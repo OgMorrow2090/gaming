@@ -62,12 +62,18 @@ case "$MODE" in
     *)        DPI=96  ;;
 esac
 
-# Update Wine LogPixels in BOTH GW2 Proton prefixes so whichever profile the user
-# picks from Big Picture (Steam GW2 = Deck profile, or non-Steam "Guild Wars 2 (Apple
-# TV)" = Apple TV profile), it has the right DPI. The prep-cmd runs before the user
-# picks, so we set DPI in both prefixes to whatever the client width dictates.
-GW2_APPID_DECK=1284210
-GW2_APPID_APPLETV=2879321470  # crc32+highbit-derived from exe path + name; see memory/dual-gw2-installs.md
+# Three GW2 profiles on bazzite:
+#   - Steam app 1284210      = LOCAL desktop play with Steam Controller (user-managed DPI)
+#   - non-Steam 2879321470   = Apple TV stream profile
+#   - non-Steam 3111887265   = Steam Deck stream profile
+#
+# Prep-cmd only swaps DPI on the two STREAM profiles. The local profile is left
+# untouched so the user can configure it for local play (likely ultrawide) without
+# the prep-cmd overwriting their settings every Moonlight session.
+# shellcheck disable=SC2034  # GW2_APPID_LOCAL kept as documentation; deliberately not iterated
+GW2_APPID_LOCAL=1284210         # local play — DO NOT touch from prep-cmd
+GW2_APPID_APPLETV=2879321470    # crc32(exe+name) for Apple TV non-Steam shortcut
+GW2_APPID_DECK=3111887265       # crc32(exe+name) for Steam Deck non-Steam shortcut
 
 update_wine_dpi_one() {
     local appid="$1"
@@ -107,8 +113,9 @@ update_wine_dpi_one() {
 
 update_wine_dpi() {
     local target="$1"
-    update_wine_dpi_one "$GW2_APPID_DECK" "$target"
+    # Only the two stream profiles. Local profile (1284210) is user-managed.
     update_wine_dpi_one "$GW2_APPID_APPLETV" "$target"
+    update_wine_dpi_one "$GW2_APPID_DECK" "$target"
 }
 
 CURRENT="$(cat "$HOME/.config/gamescope-mode" 2>/dev/null | tr -d '[:space:]' || true)"

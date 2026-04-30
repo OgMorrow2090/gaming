@@ -55,9 +55,9 @@ brand_one_appid() {
 }
 
 # Apple TV: blue band
-brand_one_appid 2879321470 "APPLE TV" "rgba(0,80,150,0.92)"
+brand_one_appid 2879321470 "Apple TV" "rgba(0,80,150,0.92)"
 # Steam Deck: orange band (SteamOS-ish)
-brand_one_appid 3111887265 "STEAM DECK" "rgba(180,60,15,0.92)"
+brand_one_appid 3111887265 "Steam Deck" "rgba(180,60,15,0.92)"
 
 echo ""
 echo "=== final art ==="

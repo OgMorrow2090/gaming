@@ -63,6 +63,31 @@ The Steam install at `~/.local/share/Steam/steamapps/common/Guild Wars 2/` is ne
 - **Symlinks must stay relative-resolvable**: if the Steam install is moved (different library), update both symlinks: `~/Games/gw2-appletv/Gw2.dat` and `~/Games/gw2-appletv/bin64`.
 - **Account login is single-instance**: ArenaNet enforces one login per account; second launch boots the first. User confirmed never running both simultaneously.
 
+## How the non-Steam shortcut was wired (2026-04-30)
+
+Done via SSH binary VDF editing (Steam Deck-style — same approach as last session). Kill all Steam helpers (`steamwebhelper`, `steam-runtime-launcher-service`, `pressure-vessel`), then:
+
+1. `scripts/add-gw2-appletv-shortcut.py` — parses `~/.local/share/Steam/userdata/64793831/config/shortcuts.vdf`, appends new entry (appid `2879321470` = `crc32(exe+name) | 0x80000000`), updates `config.vdf` `CompatToolMapping` for that appid → `proton_11`, writes both back. Idempotent (refuses to add duplicate name).
+2. Steam respawns automatically via gamescope-session-plus and reads the new file on startup.
+
+### Critical VDF format gotcha
+
+Steam's binary VDF requires a **trailing `0x08` byte at file end** beyond the closing brace of the outermost section. The original shortcuts.vdf ends with `08 08 08`:
+
+- `0x08` close `tags` (innermost empty section)
+- `0x08` close last shortcut entry
+- `0x08` close-of-root marker — **this is what Steam checks for**
+
+If you parse + re-emit without the final `0x08`, Steam logs `CSteamDoc::LoadShortcuts: failed to load shortcut file` and **deletes** the file. Always append `b"\x08"` after `emit_vdf_binary(parsed)`.
+
+### The shortcuts.vdf is sometimes malformed (not our fault)
+
+bazzite's `shortcuts.vdf` has the `Reboot` shortcut as a **separate root-level section keyed `"1"`** instead of nested inside `shortcuts`. Probably from an earlier external edit by a different tool. Our parser handles this correctly (treats root as a dict of multiple top-level sections). Do not "fix" the structure — Steam tolerates it.
+
+### Computed appid is stable
+
+For the Apple TV non-Steam shortcut: `crc32('"/var/home/Og/Games/gw2-appletv/Gw2-64.exe"' + 'Guild Wars 2 (Apple TV)') | 0x80000000 = 2879321470 (0xab9ef57e)`. As long as the exe path and name don't change, the appid stays stable, so `CompatToolMapping` and `compatdata/<appid>/` paths remain valid.
+
 ## Backup strategy
 
 The two profiles' Nexus configs should be backed up to the repo separately so each client's settings are versioned:

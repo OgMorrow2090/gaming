@@ -65,7 +65,7 @@ brand_one_appid() {
                    -stroke none \
                    -annotate 0 "$label" \) \
                 -gravity southeast \
-                -geometry +50+50 \
+                -geometry +50+130 \
                 -composite \
                 "$f"
             echo "  branded ${variant} (${W}x${H}, badge ${BADGE_W}x${BADGE_H} @ ${BADGE_PT}pt, bottom-right) — $(stat -c %s "$f") bytes"

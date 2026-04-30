@@ -62,28 +62,53 @@ case "$MODE" in
     *)        DPI=96  ;;
 esac
 
-# Update Wine LogPixels in GW2's Proton prefix so GW2 picks up the right DPI
-# on next launch. Pick whichever Proton version the user currently has installed.
-update_wine_dpi() {
-    local target="$1"
-    local prefix="/var/home/Og/.local/share/Steam/steamapps/compatdata/1284210/pfx"
+# Update Wine LogPixels in BOTH GW2 Proton prefixes so whichever profile the user
+# picks from Big Picture (Steam GW2 = Deck profile, or non-Steam "Guild Wars 2 (Apple
+# TV)" = Apple TV profile), it has the right DPI. The prep-cmd runs before the user
+# picks, so we set DPI in both prefixes to whatever the client width dictates.
+GW2_APPID_DECK=1284210
+GW2_APPID_APPLETV=2879321470  # crc32+highbit-derived from exe path + name; see memory/dual-gw2-installs.md
+
+update_wine_dpi_one() {
+    local appid="$1"
+    local target="$2"
+    local prefix="/var/home/Og/.local/share/Steam/steamapps/compatdata/$appid/pfx"
     local user_reg="$prefix/user.reg"
-    local target_hex
-    target_hex=$(printf "dword:%08x" "$target")
 
-    local current_hex
-    current_hex=$(grep -A30 "^\[Control Panel..Desktop\]" "$user_reg" 2>/dev/null | grep -oE "\"LogPixels\"=dword:[0-9a-f]+" | head -1 | cut -d= -f2)
-
-    if [ "$current_hex" = "$target_hex" ]; then
-        echo "  Wine LogPixels already $target ($target_hex) — skip"
+    if [ ! -f "$user_reg" ]; then
+        echo "  [appid=$appid] user.reg not present (prefix not yet created) — skip"
         return 0
     fi
 
-    echo "  Wine LogPixels $current_hex → $target_hex (DPI=$target)"
-    # In-place edit user.reg — only updates the entry inside [Control Panel\\Desktop].
-    # Match LogPixels lines and replace with target value (matches both occurrences;
-    # safer than scoping to one section since both should agree anyway).
-    sed -i -E "s/\"LogPixels\"=dword:[0-9a-f]+/\"LogPixels\"=$target_hex/g" "$user_reg"
+    local target_hex
+    target_hex=$(printf "dword:%08x" "$target")
+
+    # GW2 reads LogPixels from [Control Panel\\Desktop] (Windows-emulated user DPI),
+    # NOT from [Software\\Wine\\Fonts] (Wine's internal font DPI — Proton auto-creates
+    # this on prefix init). So we must check section-scope, not file-global.
+    local section_logpixels
+    section_logpixels=$(awk '/^\[Control Panel..Desktop\] /,/^$/ {print}' "$user_reg" | grep -oE "\"LogPixels\"=dword:[0-9a-f]+" | head -1)
+
+    if [ -n "$section_logpixels" ]; then
+        local current_hex="${section_logpixels#*=}"
+        if [ "$current_hex" = "$target_hex" ]; then
+            echo "  [appid=$appid] Wine LogPixels already $target ($target_hex) — skip"
+            return 0
+        fi
+        echo "  [appid=$appid] Wine LogPixels $current_hex → $target_hex (DPI=$target)"
+        # Section-scoped replace: only inside [Control Panel\\Desktop] block.
+        sed -i -E "/^\[Control Panel..Desktop\] /,/^$/ s/\"LogPixels\"=dword:[0-9a-f]+/\"LogPixels\"=$target_hex/" "$user_reg"
+    else
+        printf '  [appid=%s] Wine LogPixels absent in [Control Panel\\Desktop] — inserting (DPI=%s)\n' "$appid" "$target"
+        # Insert after the [Control Panel\\Desktop] section header line.
+        sed -i "/^\[Control Panel..Desktop\] /a \"LogPixels\"=$target_hex" "$user_reg"
+    fi
+}
+
+update_wine_dpi() {
+    local target="$1"
+    update_wine_dpi_one "$GW2_APPID_DECK" "$target"
+    update_wine_dpi_one "$GW2_APPID_APPLETV" "$target"
 }
 
 CURRENT="$(cat "$HOME/.config/gamescope-mode" 2>/dev/null | tr -d '[:space:]' || true)"

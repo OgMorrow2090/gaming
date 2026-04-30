@@ -11,15 +11,16 @@ Created 2026-04-30. User wanted parallel GW2 settings (Nexus keybinds, Mystic Cl
 ## Layout
 
 | Path | Type | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | `~/.local/share/Steam/steamapps/common/Guild Wars 2/` | Steam-managed | **Deck profile** install — Steam app id 1284210 |
-| `~/Games/gw2-appletv/` | Manual | **Apple TV profile** install — non-Steam shortcut |
+| `~/Games/gw2-appletv/` | Manual | **Apple TV profile** install — non-Steam shortcut, app id 2879321470 |
 | `~/Games/gw2-appletv/Gw2.dat` | symlink → Steam install | 81 GB content blob — patches flow through |
 | `~/Games/gw2-appletv/bin64/` | symlink → Steam install | Steam-patched binaries flow through |
+| `~/Games/gw2-appletv/d3d11.dll` | symlink → Steam install | Nexus addon loader (7.6 MB); Nexus patches flow through |
 | `~/Games/gw2-appletv/Gw2-64.exe` | copy | 43 MB launcher; sync-gw2-exe.sh re-copies after Steam patches |
 | `~/Games/gw2-appletv/addons/` | independent copy | Diverges per profile (Nexus, MysticClicker, ArcDPS, etc.) |
 | `~/.local/share/Steam/steamapps/compatdata/1284210/pfx/` | Wine prefix A | Deck profile GFXSettings + user.reg |
-| `~/.local/share/Steam/steamapps/compatdata/<new-appid>/pfx/` | Wine prefix B | Apple TV profile GFXSettings + user.reg (auto-created on first launch of non-Steam shortcut) |
+| `~/.local/share/Steam/steamapps/compatdata/2879321470/pfx/` | Wine prefix B | Apple TV profile GFXSettings + user.reg (auto-created on first launch of non-Steam shortcut) |
 
 Net unique disk cost: ~200 MB (43 MB exe + ~150 MB addons). Gw2.dat (81 GB) and bin64 (204 MB) are single-source via symlink.
 
@@ -83,6 +84,23 @@ If you parse + re-emit without the final `0x08`, Steam logs `CSteamDoc::LoadShor
 ### The shortcuts.vdf is sometimes malformed (not our fault)
 
 bazzite's `shortcuts.vdf` has the `Reboot` shortcut as a **separate root-level section keyed `"1"`** instead of nested inside `shortcuts`. Probably from an earlier external edit by a different tool. Our parser handles this correctly (treats root as a dict of multiple top-level sections). Do not "fix" the structure — Steam tolerates it.
+
+### Files missed in initial install + post-first-launch fixups
+
+**Initial dir creation missed `d3d11.dll`** — Nexus's loader DLL lives at the install root (NOT in `bin64/`). Without it, Nexus addons silently fail to load (no overlay, no addon menu). Fixed 2026-04-30 by symlinking it like `Gw2.dat`/`bin64/`. Future installs: include `d3d11.dll` in the symlink set.
+
+**Fresh Wine prefix has no `[Control Panel\\Desktop]` LogPixels** — Proton auto-creates `[Software\\Wine\\Fonts]` LogPixels (Wine internal font DPI), but the Apple TV first-launch prefix had no `[Control Panel\\Desktop]` LogPixels (Windows-emulated user DPI — the one GW2 reads). The prep-cmd's sed-replace was a no-op, leaving the prefix at default 96 DPI. Fixed: `update_wine_dpi_one()` in `scripts/sunshine-set-resolution.sh` now does section-scoped detection and inserts the LogPixels line if absent. **Critical**: the existence check MUST be section-scoped (`awk '/^\[Control Panel..Desktop\] /,/^$/'`) — checking the whole file matches the unrelated `[Software\\Wine\\Fonts]` LogPixels and bypasses the insert.
+
+**GFXSettings.xml in fresh prefix is default** — first-launch creates a default GFXSettings.xml. Seed it from another profile if you want to start from a known-good baseline:
+
+```bash
+cp ~/.local/share/Steam/steamapps/compatdata/1284210/pfx/drive_c/users/steamuser/AppData/Roaming/Guild\ Wars\ 2/GFXSettings.Gw2-64.exe.xml \
+   ~/.local/share/Steam/steamapps/compatdata/2879321470/pfx/drive_c/users/steamuser/AppData/Roaming/Guild\ Wars\ 2/GFXSettings.Gw2-64.exe.xml
+```
+
+### prep-cmd now updates BOTH prefixes
+
+`scripts/sunshine-set-resolution.sh::update_wine_dpi()` iterates over `GW2_APPID_DECK=1284210` and `GW2_APPID_APPLETV=2879321470`, setting the same DPI on both. The prep-cmd runs before the user picks a profile in Big Picture, so we don't know which they'll pick — easiest is set both to the client-width-derived DPI. The other profile's DPI is irrelevant in that stream session anyway. **If you ever change the Apple TV non-Steam shortcut's exe path or name, the appid changes — update `GW2_APPID_APPLETV` in the script.**
 
 ### Computed appid is stable
 

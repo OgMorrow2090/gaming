@@ -1,0 +1,179 @@
+<?xml version="1.0"?>
+<InputBindings>
+	<action name="((MoveForward))" id="0" device="Keyboard" button="87" device2="Keyboard" button2="31" />
+	<action name="((MoveBackward))" id="1" device="Keyboard" button="83" device2="Keyboard" button2="28" />
+	<action name="((MoveLeft))" id="2" device="Keyboard" button="65" device2="Keyboard" button2="29" />
+	<action name="((TargetAlert))" id="131" device="Keyboard" button="84" mod="1" device2="None" />
+	<action name="((MoveRight))" id="3" device="Keyboard" button="68" device2="Keyboard" button2="30" />
+	<action name="((MoveTurnLeft))" id="4" device="Keyboard" button="81" device2="None" />
+	<action name="((TargetAllyTargetingMode))" id="197" device="None" device2="None" />
+	<action name="((MoveTurnRight))" id="5" device="Keyboard" button="69" device2="None" />
+	<action name="((TargetAllyTargetingModeToggle))" id="198" device="None" device2="None" />
+	<action name="((MoveDodge))" id="6" device="Keyboard" button="86" device2="None" />
+	<action name="((UiMail))" id="71" device="None" device2="None" />
+	<action name="((TargetCallLocal))" id="199" device="None" device2="None" />
+	<action name="((MoveAutoRun))" id="7" device="Keyboard" button="82" device2="Keyboard" button2="11" />
+	<action name="((TargetTakeLocal))" id="200" device="None" device2="None" />
+	<action name="((MoveWalk))" id="8" device="None" device2="None" />
+	<action name="((UiPvp))" id="73" device="None" device2="None" />
+	<action name="((SkillProfession6))" id="201" device="Keyboard" button="37" device2="None" />
+	<action name="((MoveJump))" id="9" device="Keyboard" button="21" device2="None" />
+	<action name="((UiPvpBuild))" id="75" device="None" device2="None" />
+	<action name="((MoveSwimDown))" id="11" device="None" device2="None" />
+	<action name="((MoveAboutFace))" id="12" device="None" device2="None" />
+	<action name="((UiSeasonalObjectivesShop))" id="209" device="Keyboard" button="72" mod="1" device2="None" />
+	<action name="((SkillWeaponSwap))" id="17" device="Keyboard" button="17" device2="None" />
+	<action name="((SkillSpecialAction))" id="82" device="Keyboard" button="78" device2="None" />
+	<action name="((SkillWeapon1))" id="18" device="Keyboard" button="49" device2="None" />
+	<action name="((SkillWeapon2))" id="19" device="Keyboard" button="50" device2="None" />
+	<action name="((SkillWeapon3))" id="20" device="Keyboard" button="51" device2="None" />
+	<action name="((SkillWeapon4))" id="21" device="Keyboard" button="52" device2="None" />
+	<action name="((SkillWeapon5))" id="22" device="Keyboard" button="53" device2="None" />
+	<action name="((SkillHeal))" id="23" device="Keyboard" button="54" device2="None" />
+	<action name="((SkillUtility1))" id="24" device="Keyboard" button="55" device2="None" />
+	<action name="((SkillUtility2))" id="25" device="Keyboard" button="56" device2="None" />
+	<action name="((SkillUtility3))" id="26" device="Keyboard" button="57" device2="None" />
+	<action name="((SkillElite))" id="27" device="Keyboard" button="48" device2="None" />
+	<action name="((SkillProfession1))" id="28" device="Keyboard" button="32" device2="None" />
+	<action name="((SkillProfession2))" id="29" device="Keyboard" button="33" device2="None" />
+	<action name="((SkillProfession3))" id="30" device="Keyboard" button="34" device2="None" />
+	<action name="((SkillProfession4))" id="31" device="Keyboard" button="35" device2="None" />
+	<action name="((SkillProfession5))" id="79" device="Keyboard" button="36" device2="None" />
+	<action name="((SkillProfession7))" id="202" device="Keyboard" button="38" device2="None" />
+	<action name="((TargetCall))" id="32" device="Keyboard" button="84" mod="2" device2="None" />
+	<action name="((TargetTake))" id="33" device="Keyboard" button="84" device2="None" />
+	<action name="((TargetEnemyNearest))" id="34" device="None" device2="None" />
+	<action name="((TargetEnemyNext))" id="35" device="Keyboard" button="22" device2="None" />
+	<action name="((TargetEnemyPrev))" id="36" device="Keyboard" button="22" mod="1" device2="None" />
+	<action name="((TargetAllyNearest))" id="37" device="None" device2="None" />
+	<action name="((TargetAllyNext))" id="38" device="None" device2="None" />
+	<action name="((TargetAllyPrev))" id="39" device="None" device2="None" />
+	<action name="((TargetLock))" id="40" device="None" device2="None" />
+	<action name="((TargetSnapGroundTarget))" id="80" device="None" device2="None" />
+	<action name="((UiInformation))" id="51" device="Keyboard" button="7" device2="None" />
+	<action name="((TargetSnapGroundTargetToggle))" id="115" device="None" device2="None" />
+	<action name="((TargetAutoTargetingDisable))" id="116" device="None" device2="None" />
+	<action name="((TargetAutoTargetingToggle))" id="117" device="None" device2="None" />
+	<action name="((UiCommerce))" id="41" device="Keyboard" button="79" device2="None" />
+	<action name="((UiContacts))" id="42" device="Keyboard" button="89" device2="None" />
+	<action name="((UiGuild))" id="43" device="Keyboard" button="71" device2="None" />
+	<action name="((UiHero))" id="44" device="Keyboard" button="72" device2="None" />
+	<action name="((UiInventory))" id="45" device="Keyboard" button="73" device2="None" />
+	<action name="((UiKennel))" id="46" device="Keyboard" button="75" device2="None" />
+	<action name="((UiLogout))" id="47" device="Keyboard" button="43" device2="None" />
+	<action name="((UiOptions))" id="48" device="Keyboard" button="42" device2="None" />
+	<action name="((UiParty))" id="49" device="Keyboard" button="80" device2="None" />
+	<action name="((UiScoreboard))" id="50" device="Keyboard" button="66" device2="None" />
+	<action name="((UiChatToggle))" id="70" device="Keyboard" button="4" device2="None" />
+	<action name="((UiChatCommand))" id="52" device="Keyboard" button="15" device2="None" />
+	<action name="((UiChatFocus))" id="53" device="Keyboard" button="20" device2="Keyboard" button2="105" />
+	<action name="((UiChatReply))" id="54" device="Keyboard" button="18" device2="None" />
+	<action name="((UiToggle))" id="55" device="Keyboard" button="72" mod="3" device2="None" />
+	<action name="((UiSquadBroadcastChatToggle))" id="85" device="Keyboard" button="4" mod="1" device2="None" />
+	<action name="((UiSquadBroadcastChatCommand))" id="83" device="Keyboard" button="15" mod="1" device2="None" />
+	<action name="((UiSquadBroadcastChatFocus))" id="84" device="Keyboard" button="20" mod="1" device2="Keyboard" button2="105" mod2="1" />
+	<action name="((CameraFree))" id="13" device="None" device2="None" />
+	<action name="((CameraZoomIn))" id="14" device="Keyboard" button="27" device2="None" />
+	<action name="((CameraZoomOut))" id="15" device="Keyboard" button="26" device2="None" />
+	<action name="((CameraReverse))" id="16" device="None" device2="None" />
+	<action name="((CameraActionMode))" id="78" device="Keyboard" button="69" device2="None" />
+	<action name="((CameraActionModeDisable))" id="114" device="None" device2="None" />
+	<action name="((ScreenshotNormal))" id="56" device="Keyboard" button="16" device2="None" />
+	<action name="((ScreenshotStereoscopic))" id="57" device="None" device2="None" />
+	<action name="((MapToggle))" id="59" device="Keyboard" button="77" device2="None" />
+	<action name="((MapFocusPlayer))" id="60" device="Keyboard" button="21" device2="None" />
+	<action name="((MapFloorDown))" id="61" device="Keyboard" button="26" device2="None" />
+	<action name="((MapFloorUp))" id="62" device="Keyboard" button="27" device2="None" />
+	<action name="((MapZoomIn))" id="63" device="Keyboard" button="91" device2="Keyboard" button2="8" />
+	<action name="((MapZoomOut))" id="64" device="Keyboard" button="106" device2="Keyboard" button2="7" />
+	<action name="((SpumoniToggle))" id="152" device="Keyboard" button="88" device2="None" />
+	<action name="((SpumoniMovement))" id="130" device="Keyboard" button="86" device2="None" />
+	<action name="((SpumoniSecondaryMovement))" id="153" device="Keyboard" button="67" device2="None" />
+	<action name="((SpumoniMAM01))" id="155" device="None" device2="None" />
+	<action name="((SpumoniMAM02))" id="156" device="None" device2="None" />
+	<action name="((SpumoniMAM03))" id="157" device="None" device2="None" />
+	<action name="((SpumoniMAM04))" id="158" device="None" device2="None" />
+	<action name="((SpumoniMAM05))" id="159" device="None" device2="None" />
+	<action name="((SpumoniMAM06))" id="161" device="None" device2="None" />
+	<action name="((SpumoniMAM07))" id="169" device="None" device2="None" />
+	<action name="((SpumoniMAM08))" id="170" device="None" device2="None" />
+	<action name="((SpumoniMAM09))" id="203" device="None" device2="None" />
+	<action name="((SpectatorNearestFixed))" id="102" device="Keyboard" button="22" mod="1" device2="None" />
+	<action name="((SpectatorNearestPlayer))" id="103" device="Keyboard" button="22" device2="None" />
+	<action name="((SpectatorPlayerRed1))" id="104" device="Keyboard" button="49" device2="None" />
+	<action name="((SpectatorPlayerRed2))" id="105" device="Keyboard" button="50" device2="None" />
+	<action name="((SpectatorPlayerRed3))" id="106" device="Keyboard" button="51" device2="None" />
+	<action name="((SpectatorPlayerRed4))" id="107" device="Keyboard" button="52" device2="None" />
+	<action name="((SpectatorPlayerRed5))" id="108" device="Keyboard" button="53" device2="None" />
+	<action name="((SpectatorPlayerBlue1))" id="109" device="Keyboard" button="54" device2="None" />
+	<action name="((SpectatorPlayerBlue2))" id="110" device="Keyboard" button="55" device2="None" />
+	<action name="((SpectatorPlayerBlue3))" id="111" device="Keyboard" button="56" device2="None" />
+	<action name="((SpectatorPlayerBlue4))" id="112" device="Keyboard" button="57" device2="None" />
+	<action name="((SpectatorPlayerBlue5))" id="113" device="Keyboard" button="48" device2="None" />
+	<action name="((SpectatorFreeCamera))" id="120" device="Keyboard" button="70" mod="3" device2="None" />
+	<action name="((SpectatorFreeCameraMode))" id="127" device="Keyboard" button="69" device2="None" />
+	<action name="((SpectatorFreeMoveForward))" id="121" device="Keyboard" button="87" device2="None" />
+	<action name="((SpectatorFreeMoveBackward))" id="122" device="Keyboard" button="83" device2="None" />
+	<action name="((SpectatorFreeMoveLeft))" id="123" device="Keyboard" button="65" device2="None" />
+	<action name="((SpectatorFreeMoveRight))" id="124" device="Keyboard" button="68" device2="None" />
+	<action name="((SpectatorFreeMoveUp))" id="125" device="Keyboard" button="21" device2="None" />
+	<action name="((SpectatorFreeMoveDown))" id="126" device="Keyboard" button="86" device2="None" />
+	<action name="((SquadMarkerPlaceWorld1))" id="86" device="Keyboard" button="49" mod="4" device2="None" />
+	<action name="((SquadMarkerPlaceWorld2))" id="87" device="Keyboard" button="50" mod="4" device2="None" />
+	<action name="((SquadMarkerPlaceWorld3))" id="88" device="Keyboard" button="51" mod="4" device2="None" />
+	<action name="((SquadMarkerPlaceWorld4))" id="89" device="Keyboard" button="52" mod="4" device2="None" />
+	<action name="((SquadMarkerPlaceWorld5))" id="90" device="Keyboard" button="53" mod="4" device2="None" />
+	<action name="((SquadMarkerPlaceWorld6))" id="91" device="Keyboard" button="54" mod="4" device2="None" />
+	<action name="((SquadMarkerPlaceWorld7))" id="92" device="Keyboard" button="55" mod="4" device2="None" />
+	<action name="((SquadMarkerPlaceWorld8))" id="93" device="Keyboard" button="56" mod="4" device2="None" />
+	<action name="((SquadMarkerClearAllWorld))" id="119" device="Keyboard" button="57" mod="4" device2="None" />
+	<action name="((SquadMarkerSetAgent1))" id="94" device="Keyboard" button="49" mod="5" device2="None" />
+	<action name="((SquadMarkerSetAgent2))" id="95" device="Keyboard" button="50" mod="5" device2="None" />
+	<action name="((SquadMarkerSetAgent3))" id="96" device="Keyboard" button="51" mod="5" device2="None" />
+	<action name="((SquadMarkerSetAgent4))" id="97" device="Keyboard" button="52" mod="5" device2="None" />
+	<action name="((SquadMarkerSetAgent5))" id="98" device="Keyboard" button="53" mod="5" device2="None" />
+	<action name="((SquadMarkerSetAgent6))" id="99" device="Keyboard" button="54" mod="5" device2="None" />
+	<action name="((SquadMarkerSetAgent7))" id="100" device="Keyboard" button="55" mod="5" device2="None" />
+	<action name="((SquadMarkerSetAgent8))" id="101" device="Keyboard" button="56" mod="5" device2="None" />
+	<action name="((SquadMarkerClearAllAgent))" id="118" device="Keyboard" button="57" mod="5" device2="None" />
+	<action name="((MasteryAccess))" id="196" device="Keyboard" button="74" device2="None" />
+	<action name="((MasteryAccess01))" id="204" device="None" device2="None" />
+	<action name="((MasteryAccess02))" id="205" device="None" device2="None" />
+	<action name="((MasteryAccess03))" id="206" device="None" device2="None" />
+	<action name="((MasteryAccess04))" id="207" device="None" device2="None" />
+	<action name="((MasteryAccess05))" id="208" device="None" device2="None" />
+	<action name="((MasteryAccess06))" id="211" device="None" device2="None" />
+	<action name="((MiscAoELoot))" id="74" device="None" device2="None" />
+	<action name="((MiscInteract))" id="65" device="Keyboard" button="70" device2="None" />
+	<action name="((MiscShowEnemies))" id="66" device="Keyboard" button="1" device2="None" />
+	<action name="((MiscShowAllies))" id="67" device="Keyboard" button="0" device2="None" />
+	<action name="((MiscCombatStance))" id="68" device="None" device2="None" />
+	<action name="((MiscToggleLanguage))" id="69" device="Keyboard" button="110" device2="None" />
+	<action name="((MiscTogglePetCombat))" id="76" device="None" device2="None" />
+	<action name="((MiscToggleFullScreen))" id="160" device="Keyboard" button="20" mod="4" device2="None" />
+	<action name="((MiscToggleDecorationMode))" id="210" device="Keyboard" button="76" device2="None" />
+	<action name="((ToyUseDefault))" id="162" device="Keyboard" button="85" device2="None" />
+	<action name="((ToyUseSlot1))" id="163" device="None" device2="None" />
+	<action name="((ToyUseSlot2))" id="164" device="None" device2="None" />
+	<action name="((ToyUseSlot3))" id="165" device="None" device2="None" />
+	<action name="((ToyUseSlot4))" id="166" device="None" device2="None" />
+	<action name="((ToyUseSlot5))" id="167" device="None" device2="None" />
+	<action name="((Loadout1))" id="171" device="None" device2="None" />
+	<action name="((Loadout2))" id="172" device="None" device2="None" />
+	<action name="((Loadout3))" id="173" device="None" device2="None" />
+	<action name="((Loadout4))" id="174" device="None" device2="None" />
+	<action name="((Loadout5))" id="175" device="None" device2="None" />
+	<action name="((Loadout6))" id="176" device="None" device2="None" />
+	<action name="((Loadout7))" id="177" device="None" device2="None" />
+	<action name="((Loadout8))" id="178" device="None" device2="None" />
+	<action name="((Loadout9))" id="179" device="None" device2="None" />
+	<action name="((GearLoadout1))" id="182" device="None" device2="None" />
+	<action name="((GearLoadout2))" id="183" device="None" device2="None" />
+	<action name="((GearLoadout3))" id="184" device="None" device2="None" />
+	<action name="((GearLoadout4))" id="185" device="None" device2="None" />
+	<action name="((GearLoadout5))" id="186" device="None" device2="None" />
+	<action name="((GearLoadout6))" id="187" device="None" device2="None" />
+	<action name="((GearLoadout7))" id="188" device="None" device2="None" />
+	<action name="((GearLoadout8))" id="189" device="None" device2="None" />
+	<action name="((GearLoadout9))" id="190" device="None" device2="None" />
+</InputBindings>

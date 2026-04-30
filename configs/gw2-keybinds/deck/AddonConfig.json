@@ -1,0 +1,380 @@
+[
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "Fast Load",
+		"Signature": 67000001
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": false,
+		"IsPausingUpdates": false,
+		"Name": "-",
+		"Signature": -9475
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": false,
+		"IsPausingUpdates": false,
+		"Name": "-",
+		"Signature": -50603
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "World bosses",
+		"Signature": -1
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": false,
+		"IsPausingUpdates": false,
+		"Name": "-",
+		"Signature": -63546313
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "Organizer",
+		"Signature": -216687354
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "VfxDenoiser",
+		"Signature": -51092108
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "KP Sync",
+		"Signature": -204767106
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "RealTime API",
+		"Signature": 620863532
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "Transparent Heart Progress",
+		"Signature": 2003728946
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "CursorAnchor",
+		"Signature": -424242
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "Addon Config Backup",
+		"Signature": -50602
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "arcdps",
+		"Signature": -617263
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": false,
+		"IsPausingUpdates": false,
+		"Name": "-",
+		"Signature": -912284124
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": false,
+		"IsPausingUpdates": false,
+		"Name": "-",
+		"Signature": -204767107
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "UnhideNPCs",
+		"Signature": 1817724315
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": false,
+		"IsPausingUpdates": false,
+		"Name": "-",
+		"Signature": -1582119980
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": false,
+		"IsPausingUpdates": false,
+		"Name": "-",
+		"Signature": 159851333
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": false,
+		"IsPausingUpdates": false,
+		"Name": "-",
+		"Signature": -424248
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "/gg",
+		"Signature": 907018609
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": true,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "Anti Camera Smooth",
+		"Signature": 919805723
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": true,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "Mystic Clicker",
+		"Signature": -54321
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "Community LFG",
+		"Signature": -61416033
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": true,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "Crafty Legend",
+		"Signature": -1696423207
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": true,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "Event Timers",
+		"Signature": -1163284052
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": true,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "Fast Swap",
+		"Signature": -1179866992
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "TaimiHUD",
+		"Signature": -1932638909
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "/Commands!",
+		"Signature": 1872416537
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "Castbar Clarity",
+		"Signature": -308316617
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "Emote Chat",
+		"Signature": -69423
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": true,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "Peace and Quiet",
+		"Signature": -562594189
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "True World Completion",
+		"Signature": 2003728945
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": false,
+		"IsPausingUpdates": false,
+		"Name": "-",
+		"Signature": 2003728947
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": false,
+		"IsPausingUpdates": false,
+		"Name": "Item detail popups",
+		"Signature": -204767108
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": true,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "Mystic Trading",
+		"Signature": -54322
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": true,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "Hoard & Seek",
+		"Signature": 1598412393
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "Compass",
+		"Signature": 17
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": true,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "-",
+		"Signature": -54323
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "Events: Alerts",
+		"Signature": 1735852641
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "Events: Chat",
+		"Signature": 1735852643
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": true,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "NexusGameWiki",
+		"Signature": -26032501
+	},
+	{
+		"AllowPrereleases": false,
+		"IsDisabledUntilUpdate": false,
+		"IsFavorite": false,
+		"IsLoaded": true,
+		"IsPausingUpdates": false,
+		"Name": "Alter Ego",
+		"Signature": -1585561968
+	}
+]

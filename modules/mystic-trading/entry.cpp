@@ -62,7 +62,7 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     AddonDef.Name = "Mystic Trading";
     AddonDef.Version.Major = 0;
     AddonDef.Version.Minor = 5;
-    AddonDef.Version.Build = 20260420;
+    AddonDef.Version.Build = 20260501;
     AddonDef.Version.Revision = 1;
     AddonDef.Author = "OgMorrow2090";
     AddonDef.Description = "In-game trading post overlay with flips, orders, bank, and materials. Standalone — talks directly to GW2 API and GW2BLTC.";
@@ -101,10 +101,10 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->GUI_Register(RT_Render, RenderDeliveryBox);
     APIDefs->GUI_Register(RT_OptionsRender, RenderOptions);
 
-    // ESC closes dashboard and flip list (but NOT delivery box)
-    // Names must match ImGui::Begin() window IDs exactly
+    // ESC closes all three MT windows. Names must match ImGui::Begin() IDs exactly.
     APIDefs->GUI_RegisterCloseOnEscape("Mystic Trading##Dashboard", &g_ShowDashboard);
     APIDefs->GUI_RegisterCloseOnEscape("Flips##FlipColumn", &g_ShowFlipList);
+    APIDefs->GUI_RegisterCloseOnEscape("Delivery Box##DeliveryWin", &g_ShowDelivery);
 
     // Register keybinds
     APIDefs->InputBinds_RegisterWithString(KB_TOGGLE_DASHBOARD, ProcessKeybind, "ALT+T");
@@ -130,6 +130,7 @@ void AddonUnload()
 
     APIDefs->GUI_DeregisterCloseOnEscape("Mystic Trading##Dashboard");
     APIDefs->GUI_DeregisterCloseOnEscape("Flips##FlipColumn");
+    APIDefs->GUI_DeregisterCloseOnEscape("Delivery Box##DeliveryWin");
 
     APIDefs->InputBinds_Deregister(KB_TOGGLE_DASHBOARD);
     APIDefs->InputBinds_Deregister(KB_TOGGLE_FLIPLIST);

@@ -7,6 +7,18 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.10] - 2026-05-01 — Mystic Clicker capture window + Mystic Trading delivery box close on ESC
+
+### Added
+
+- **Mystic Clicker**: capture window registers `GUI_RegisterCloseOnEscape` so pressing ESC closes the panel just like any other Nexus window. Symmetric `GUI_DeregisterCloseOnEscape` in `AddonUnload`.
+- **Mystic Trading**: Delivery Box now also closes on ESC. Previously only Dashboard and FlipColumn responded — Delivery Box was an explicit gap noted in a `// (but NOT delivery box)` comment. Comment updated; all three MT windows now consistent.
+
+### Files
+
+- `modules/mystic-clicker/entry.cpp` — register/deregister + version bump 3.6.9 → 3.6.10
+- `modules/mystic-trading/entry.cpp` — register/deregister Delivery Box + version build bump 20260420 → 20260501
+
 ## [3.6.9] - 2026-05-01 — Mystic Clicker: Bouncy Meta Progress capture
 
 ### Added

@@ -57,7 +57,7 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     AddonDef.Name = "Mystic Clicker";
     AddonDef.Version.Major = 3;
     AddonDef.Version.Minor = 6;
-    AddonDef.Version.Build = 9;
+    AddonDef.Version.Build = 10;
     AddonDef.Version.Revision = 0;
     AddonDef.Author = "OgMorrow2090";
     AddonDef.Description = "One-click hotkeys for inventory, vendors, trading post, Mystic Forge, and more.";
@@ -121,6 +121,7 @@ void AddonLoad(AddonAPI_t* aApi)
 
     // Register capture window render callback
     APIDefs->GUI_Register(RT_Render, RenderCaptureWindow);
+    APIDefs->GUI_RegisterCloseOnEscape("Mystic Clicker - Capture", &g_ShowCaptureWindow);
 
     // Capture mode keybind
     APIDefs->InputBinds_RegisterWithString(CAPTURE_MODE, ProcessKeybind, "CTRL+SHIFT+C");
@@ -353,6 +354,7 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(CAPTURE_GUILD_HALL);
 
     APIDefs->GUI_Deregister(RenderCaptureWindow);
+    APIDefs->GUI_DeregisterCloseOnEscape("Mystic Clicker - Capture");
     APIDefs->InputBinds_Deregister(CAPTURE_MODE);
     APIDefs->InputBinds_Deregister(RESET_WINDOWS);
 

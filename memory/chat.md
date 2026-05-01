@@ -143,3 +143,36 @@ Long session driven by user-reported bugs after v18.4 was promoted from broken P
 - The user must do a full GW2 restart on Bazzite to pick up the `Ctrl+Shift+Insert` binding for Reset Windows. Until then, wheel slot 2 emits the new chord but Nexus's in-memory binding is still the old `Ctrl+Shift+Home`.
 - Window rescue 70% viewport clamp + always-log are in v3.6.8 but were never logged because the chord wasn't dispatching (per above). Verify after user's restart.
 - The `<button>"36"`/`35`/`34`/`33` skill bindings in user's GameBinds.xml are documented in memory but worth re-checking if user re-imports a fresh template.
+
+## 2026-05-01 — Controller v18.4.9 + ESC-close on MC capture & MT delivery
+
+Driven by user reports: "I don't see new controller build on steamdeck" and "add ESC to close capture window".
+
+### Major outcomes
+
+- **Controller v18.4.8 → v18.4.9**: L1 + D-Pad Up Tap = MT Fliplist (Alt+D, "Flip"). MT Delivery dropped from this slot. Long-Press = MT Dashboard unchanged. Double_Press removed entirely. Validation: 298 → 296 bindings, brackets balanced 924/924.
+- **Architecture lesson recorded** at `memory/streaming-input-host-vs-client.md`: for the Deck stream, Steam Input runs on the **Deck** (translates physical input to keys *before* Moonlight transmits) — bazzite never sees a gamepad. Apple TV stream is the opposite (raw HID over Moonlight tvOS app → bazzite-side Steam Input applies). My initial v18.4.9 deploy went only to bazzite per-appname CLOUD subdirs, which the Deck-side stream never reads. Fix: also SCP'd to `deck@172.16.100.95:.../moonlight/og v18.4.9_0.vdf` and bumped Deck's `configset_controller_neptune.vdf` "moonlight" + "moonlight - gw2 steamos" entries.
+- **MC v3.6.9 → v3.6.10**: capture window now closes on ESC via `GUI_RegisterCloseOnEscape("Mystic Clicker - Capture", &g_ShowCaptureWindow)`; symmetric Deregister in unload.
+- **MT 20260420 → 20260501**: Delivery Box now closes on ESC. Previously Dashboard + FlipColumn registered but Delivery Box was an explicit `// (but NOT delivery box)` gap. All three MT windows now consistent.
+- **GW2 UI persistence model corrected**: chat box, minimap layout, hero panel are **server-side / account level**, NOT in `Local.dat` as I initially claimed. What stays per-profile: `GFXSettings.Gw2-64.exe.xml`, Nexus addon configs, Wine reg (DPI + time format). Inventory state (compact toggle, sort order) is also per-install. Documented in conversation only — no memory file because the test was empirical.
+
+### Files
+
+- `configs/steam-controller/moonlight-gw2-og-template.vdf` — title v18.4.9, url, drop Double_Press, swap Full_Press F→D (line-anchored Edits, no regex)
+- `configs/steam-controller/moonlight-gw2-og-v18.4.9.vdf` — new snapshot
+- `configs/steam-deck/configset_controller_neptune.vdf` — bumped to v18.4.9, added `guild wars 2 (apple tv)` and `(steam deck)` entries
+- `modules/mystic-clicker/entry.cpp` — Build 9 → 10, Register/Deregister CloseOnEscape
+- `modules/mystic-trading/entry.cpp` — Build 20260420 → 20260501, Delivery Box ESC register
+- `CHANGELOG.md` — v3.6.10 entry
+- `memory/streaming-input-host-vs-client.md` (new) + `memory/MEMORY.md` (index entry)
+
+### Infrastructure changes
+
+- **Bazzite (Og@172.16.100.212)**: configset rewritten with per-appname `template` entries (moonlight, guild wars 2 (apple tv), guild wars 2 (steam deck)); new CLOUD subdirs created for both new GW2 profiles; v18.4.9 VDF deployed in each; Steam fully restarted (kill steamwebhelper + parent + bust htmlcache); both DLLs deployed to all three profile addons dirs (`Steam install`, `gw2-appletv`, `gw2-deck`) with `.bak-20260501-092609` rotation.
+- **Steam Deck (deck@172.16.100.95)**: v18.4.9 SCP'd to `moonlight/og v18.4.9_0.vdf`; configset bumped (`moonlight` + `moonlight - gw2 steamos`); Steam respawned via steamwebhelper + parent kill + htmlcache bust.
+
+### Open items / next session
+
+- Mystic Clicker Bouncy Meta Progress capture position (added in v3.6.9 prior session) still needs to be set in-game per profile.
+- 12-hour clock fix on Apple TV + Steam Deck profiles: applied via Wine reg `iTime`/`sShortTime`/`sTimeFormat` patch earlier today; user said "will need test after 12 as AM moment so will work either way". Verify after noon.
+- Build "Bouncy Meta Progress" capture coordinates per profile or copy `.cfg` files between profiles (positions are resolution-dependent).

@@ -236,6 +236,8 @@ extern int g_ChestX;
 extern int g_ChestY;
 extern int g_BouncyAcceptX;
 extern int g_BouncyAcceptY;
+extern int g_BouncyMetaProgressX;
+extern int g_BouncyMetaProgressY;
 extern int g_BouncyMetaCompleteX;
 extern int g_BouncyMetaCompleteY;
 extern int g_ExitInstanceX;

@@ -7,6 +7,27 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.9] - 2026-05-01 — Mystic Clicker: Bouncy Meta Progress capture
+
+### Added
+
+- **New capture point: "Bouncy Meta Progress"** — fits between Bouncy Accept and Bouncy Meta Complete in the OPEN_CHEST_COMBO flow. Some bouncy chest meta events show a separate progress dialog mid-flow that needs clicking before the final completion dialog appears; without this capture step, the combo would skip it and stall.
+- New config keys `BouncyMetaProgressX`/`BouncyMetaProgressY` persisted to / loaded from `mystic-clicker.cfg` and per-resolution variants.
+- Capture-UI row inserted between "Bouncy Accept" and "Bouncy Meta Complete"; existing Meta Complete description updated from "(combo step 3)" → "(combo step 4)".
+- Combo sequencing in `SimulateOpenChestCombo`: Right-click chest → 500ms → Accept (optional) → 100ms → **Meta Progress (optional, NEW)** → 100ms → Meta Complete (optional). All clicks remain optional; whichever positions are captured fire.
+
+### Files
+
+- `modules/mystic-clicker/shared.h` — extern declarations
+- `modules/mystic-clicker/config.cpp` — globals, primary load, save, reset, secondary load (5 touch-points)
+- `modules/mystic-clicker/capture-ui.cpp` — new row in `s_Targets[]`
+- `modules/mystic-clicker/input-sim.cpp` — combo flow click between Accept and Meta Complete
+- `modules/mystic-clicker/entry.cpp` — version bump 3.6.8 → 3.6.9
+
+### Deploy reminder
+
+Per `memory/nexus-multi-deploy-rules.md`, after GitHub Actions builds the new DLL it must be deployed to **all three** profile install dirs (`~/.local/share/Steam/steamapps/common/Guild Wars 2/addons/`, `~/Games/gw2-appletv/addons/`, `~/Games/gw2-deck/addons/`). User then captures the Meta Progress position once per profile (or copies the `.cfg` files between profiles since click positions are screen-resolution-dependent).
+
 ## [3.6.8] - 2026-04-26 — Mystic Clicker + Controller v18.4.8
 
 ### Fixed

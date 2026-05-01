@@ -308,10 +308,11 @@ void SimulateBouncyAcceptClick()
 void SimulateOpenChestCombo()
 {
     // Right-click chest (opens it) → wait for dialog → click Bouncy Accept →
-    // click Bouncy Meta Complete. Both Accept clicks are optional; whichever
-    // positions are captured will fire. Handles regular chests (no dialog),
-    // bouncy chests (Bouncy Accept dialog), and meta completion chests
-    // (Bouncy Meta Complete dialog, slightly offset).
+    // click Bouncy Meta Progress → click Bouncy Meta Complete. All three click
+    // positions are optional; whichever are captured will fire. Handles regular
+    // chests (no dialog), bouncy chests (Bouncy Accept dialog), the meta
+    // progress dialog mid-flow, and meta completion chests (Bouncy Meta
+    // Complete dialog, slightly offset).
     if (g_ChestX == 0 && g_ChestY == 0)
     {
         APIDefs->GUI_SendAlert("Bouncy Open position not set! Use Ctrl+Shift+B to capture");
@@ -327,6 +328,13 @@ void SimulateOpenChestCombo()
     {
         APIDefs->Log(LOGL_INFO, "MysticClicker", "Bouncy Combo: click Bouncy Accept");
         SimulateClickAt(g_BouncyAcceptX, g_BouncyAcceptY);
+    }
+
+    if (g_BouncyMetaProgressX != 0 || g_BouncyMetaProgressY != 0)
+    {
+        Sleep(100);
+        APIDefs->Log(LOGL_INFO, "MysticClicker", "Bouncy Combo: click Bouncy Meta Progress");
+        SimulateClickAt(g_BouncyMetaProgressX, g_BouncyMetaProgressY);
     }
 
     if (g_BouncyMetaCompleteX != 0 || g_BouncyMetaCompleteY != 0)

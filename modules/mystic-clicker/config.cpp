@@ -27,6 +27,8 @@ int g_ChestX = 0;
 int g_ChestY = 0;
 int g_BouncyAcceptX = 0;
 int g_BouncyAcceptY = 0;
+int g_BouncyMetaProgressX = 0;
+int g_BouncyMetaProgressY = 0;
 int g_BouncyMetaCompleteX = 0;
 int g_BouncyMetaCompleteY = 0;
 int g_ExitInstanceX = 0;
@@ -526,6 +528,10 @@ void LoadButtonPositions()
             g_LeavePartyX = std::stoi(line.substr(12));
         if (line.find("LeavePartyY=") == 0)
             g_LeavePartyY = std::stoi(line.substr(12));
+        if (line.find("BouncyMetaProgressX=") == 0)
+            g_BouncyMetaProgressX = std::stoi(line.substr(20));
+        if (line.find("BouncyMetaProgressY=") == 0)
+            g_BouncyMetaProgressY = std::stoi(line.substr(20));
         if (line.find("BouncyMetaCompleteX=") == 0)
             g_BouncyMetaCompleteX = std::stoi(line.substr(20));
         if (line.find("BouncyMetaCompleteY=") == 0)
@@ -704,6 +710,8 @@ void SaveButtonPositions()
     file << "PartySquadBarY=" << g_PartySquadBarY << "\n";
     file << "LeavePartyX=" << g_LeavePartyX << "\n";
     file << "LeavePartyY=" << g_LeavePartyY << "\n";
+    file << "BouncyMetaProgressX=" << g_BouncyMetaProgressX << "\n";
+    file << "BouncyMetaProgressY=" << g_BouncyMetaProgressY << "\n";
     file << "BouncyMetaCompleteX=" << g_BouncyMetaCompleteX << "\n";
     file << "BouncyMetaCompleteY=" << g_BouncyMetaCompleteY << "\n";
     file << "MailTakeAllX=" << g_MailTakeAllX << "\n";
@@ -861,6 +869,8 @@ void CheckResolutionChange()
         g_PartySquadBarY = 0;
         g_LeavePartyX = 0;
         g_LeavePartyY = 0;
+        g_BouncyMetaProgressX = 0;
+        g_BouncyMetaProgressY = 0;
         g_BouncyMetaCompleteX = 0;
         g_BouncyMetaCompleteY = 0;
         g_MailTakeAllX = 0;
@@ -1070,6 +1080,10 @@ void CheckResolutionChange()
                     g_LfgSearchX = std::stoi(line.substr(11));
                 if (line.find("LfgSearchY=") == 0)
                     g_LfgSearchY = std::stoi(line.substr(11));
+                if (line.find("BouncyMetaProgressX=") == 0)
+                    g_BouncyMetaProgressX = std::stoi(line.substr(20));
+                if (line.find("BouncyMetaProgressY=") == 0)
+                    g_BouncyMetaProgressY = std::stoi(line.substr(20));
                 if (line.find("BouncyMetaCompleteX=") == 0)
                     g_BouncyMetaCompleteX = std::stoi(line.substr(20));
                 if (line.find("BouncyMetaCompleteY=") == 0)

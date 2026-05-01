@@ -10,7 +10,7 @@
 	}
 	"moonlight"
 	{
-		"template"		"CLOUD_moonlight/og v18.4.8_0"
+		"template"		"CLOUD_moonlight/og v18.4.9_0"
 	}
 	"moonlight - active"
 	{
@@ -18,6 +18,14 @@
 	}
 	"moonlight - gw2 steamos"
 	{
-		"template"		"CLOUD_moonlight/og v18.4.8_0"
+		"template"		"CLOUD_moonlight/og v18.4.9_0"
+	}
+	"guild wars 2 (apple tv)"
+	{
+		"template"		"CLOUD_moonlight/og v18.4.9_0"
+	}
+	"guild wars 2 (steam deck)"
+	{
+		"template"		"CLOUD_moonlight/og v18.4.9_0"
 	}
 }

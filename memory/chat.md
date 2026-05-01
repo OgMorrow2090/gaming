@@ -176,3 +176,72 @@ Driven by user reports: "I don't see new controller build on steamdeck" and "add
 - Mystic Clicker Bouncy Meta Progress capture position (added in v3.6.9 prior session) still needs to be set in-game per profile.
 - 12-hour clock fix on Apple TV + Steam Deck profiles: applied via Wine reg `iTime`/`sShortTime`/`sTimeFormat` patch earlier today; user said "will need test after 12 as AM moment so will work either way". Verify after noon.
 - Build "Bouncy Meta Progress" capture coordinates per profile or copy `.cfg` files between profiles (positions are resolution-dependent).
+
+## 2026-05-01 (evening) — Controller v19.0/v19.1 + Deck profile InputBinds catastrophic-drift recovery (4+ hour debug)
+
+Session started with user reporting auto-sort inventory (DPad-Right hold) was firing Community LFG instead. What followed was a **dual-failure-mode** debugging session that took ~4 hours to resolve. Documented in detail at [nexus-inputbinds-per-profile-drift.md](nexus-inputbinds-per-profile-drift.md) Dual-failure section.
+
+### Root cause (of the symptom)
+
+Two independent failures stacked:
+
+1. **Controller layout side**: Steam Input UI auto-saved a local copy of `controller_neptune.vdf` with `Ctrl+C` on `dpad_east` Long_Press instead of `Ctrl+Q`. The file path was `~/.local/share/Steam/steamapps/common/Steam Controller Configs/64793831/config/moonlight - gw2 steamos/controller_neptune.vdf` with `description: "#SettingsController_AutosaveDescription"` (Steam Input's autosave marker). User firmly denies making this edit; mechanism likely a Steam Input UI side-effect of opening the layout editor or a sync/merge event. **This broke both Apple TV and Deck streams** because Apple TV uses Deck-as-controller per [streaming-input-host-vs-client.md](streaming-input-host-vs-client.md) (older note about bazzite-side Steam Input governing Apple TV is wrong for this setup).
+
+2. **Nexus side**: Deck profile's `InputBinds.json` had **23 entries** drifted vs canonical (Apple TV / repo source-of-truth). Many bindings cleared (`Code=0`), several mismapped. Cause of the magnitude unknown — see open-bug section in nexus-inputbinds-per-profile-drift.md for ruled-out theories.
+
+Surgical fixes (only `DEPOSIT_AND_SORT` + `0xFC56DD9F_ToggleLFG`) didn't converge because each only addressed one of the two failures. The breakthrough was recognizing the dual-failure mode and:
+
+1. Replacing controller layout with clean canonical (deployed v19.0, then v19.1 with `Double_Press` removed from `dpad_east`)
+2. Wholesale-copying Apple TV profile's clean `InputBinds.json` over the Deck profile's drifted state
+
+After both layers fixed: auto-sort works, Trading Post works, Bank works, Mystic Forge works, all chord bindings restored.
+
+### Major outcomes
+
+- **Controller v18.4.9 → v19.0 → v19.1**: title bumps to make active layout visible in Steam Input UI; `Double_Press` `S+U+M` removed from `dpad_east` (was dead code — three keys aren't a usable GW2 chord). Validation: 296 → 293 bindings.
+- **bazzite Sunshine recovery**: a separate Sunshine-can't-find-display issue surfaced when SDDM was restarted. Root cause: bazzite's immutable `/usr` (composefs) doesn't allow `setcap` on `/usr/bin/sunshine`, AND `Og` was not in `video`/`render` groups (system groups live in read-only `/usr/lib/group`; user-side memberships need to be added to `/etc/group`). Fix: appended `video:x:39:Og` and `render:x:105:Og` to `/etc/group`, then `sudo systemctl restart sddm` to refresh the user session's group membership. Sunshine can now access `/dev/dri/card0`.
+- **gw2-deck native install identified on the Deck** at `/home/deck/.local/share/Steam/steamapps/common/Guild Wars 2/` (78 GB, appid 1284210). Used as a streaming-isolation test environment by copying the Apple TV InputBinds + v19.1 controller layout there too.
+- **Memory honest correction**: my initial memory entry attributing the 23-binding drift to "passive collision-resolution" was over-reach. Updated to acknowledge cause-unknown with theories tested.
+
+### Files
+
+- `configs/steam-controller/moonlight-gw2-og-template.vdf` — title v19.1, Double_Press removed from dpad_east, line-anchored Edits per VDF rules
+- `configs/steam-controller/moonlight-gw2-og-v19.0.vdf` — snapshot
+- `configs/steam-controller/moonlight-gw2-og-v19.1.vdf` — snapshot (current canonical)
+- `memory/nexus-inputbinds-per-profile-drift.md` — added Dual-failure mode section, Open bug section (cause unknown), wholesale-vs-surgical decision rule, capture-diagnostics recipe for next time
+
+### Infrastructure changes
+
+- **bazzite (Og@172.16.100.212)**:
+  - `/etc/group`: appended `video:x:39:Og` and `render:x:105:Og`
+  - `sudo systemctl restart sddm` (to refresh user session group membership for Sunshine)
+  - `Documents/Guild Wars 2/nexus-configs/backup-2026-04-30-19-45.zip` was deleted by Addon_Config_Backup_Tool's auto-rotation (kept `backup-2026-04-30-20-27.zip`)
+  - `~/Games/gw2-deck/addons/Nexus/InputBinds.json` ← wholesale-copied from `~/Games/gw2-appletv/addons/Nexus/InputBinds.json` (canonical state); backup at `InputBinds.json.bak-pre-applewipe-20260501-215910`
+  - `~/Games/gw2-deck/addons/Nexus/InputBinds.json.bak-20260501-193659` — earlier surgical-restore backup (before wholesale)
+  - `~/.local/share/Steam/steamapps/common/Guild Wars 2/addons/Nexus/InputBinds.json` ← also wholesale-copied from Apple TV
+  - `~/.local/share/Steam/userdata/64793831/config/configset_controller_neptune.vdf` — restored from repo (was missing entirely on bazzite; cause unknown)
+  - `~/.local/share/Steam/steamapps/common/Steam Controller Configs/64793831/config/moonlight/og v18.4.9_0.vdf` — added (was missing); also v19.0 + v19.1 deployed to all per-appname CLOUD subdirs
+- **Steam Deck (deck@172.16.100.95)**:
+  - `~/.local/share/Steam/userdata/64793831/config/configset_controller_neptune.vdf` — restored from repo (was missing)
+  - `~/.local/share/Steam/steamapps/common/Steam Controller Configs/64793831/config/moonlight - gw2 steamos/controller_neptune.vdf` — overwritten with v19.0 then v19.1; backup at `.bak-locally-edited-20260501-202007` (the Ctrl+C autosave that started this whole mess)
+  - `~/.local/share/Steam/steamapps/common/Steam Controller Configs/64793831/config/1284210/controller_neptune.vdf` — overwritten with v19.1 for native Deck GW2 testing; backup at `.bak-pre-test-*`
+  - `~/.local/share/Steam/steamapps/common/Guild Wars 2/addons/Nexus/InputBinds.json` ← wholesale-copied from Apple TV (Deck native install)
+  - Multiple `pkill steam.sh` cycles to force config reloads
+
+### Open bugs / unresolved
+
+- **🐛 Cause of 23-binding drift on Deck profile InputBinds is unknown.** Theories ruled out: passive Nexus drift, OneDrive sync, Steam Cloud sync, Addon_Config_Backup_Tool restore. Theories on the table: addon update bulk-resetting identifiers, stale file overwrite during multi-profile setup on Apr 30, accumulated silent collision resolutions over weeks. **If recurs**, capture diagnostic snapshots BEFORE wholesale-restoring (recipe in [nexus-inputbinds-per-profile-drift.md](nexus-inputbinds-per-profile-drift.md) open-bug section).
+- **🐛 Cause of `controller_neptune.vdf` autosave with `Ctrl+C` instead of `Ctrl+Q` is unknown.** User firmly denies editing the controller layout. The file had `description: "#SettingsController_AutosaveDescription"` and `progenitor: usercloud://moonlight - gw2 steamos/controller_neptune` indicating Steam Input UI autosaved it. Mechanism unclear. **If recurs**, capture the file's progenitor + url + description fields and any Steam Input UI events from the day it changed.
+- **🐛 Cause of `configset_controller_neptune.vdf` going missing on both bazzite and Deck simultaneously is unknown.** This is the appname→layout pointer file. Was missing entirely on both machines at session start. Restored from repo backup. Mechanism for both being deleted simultaneously unclear.
+- **dpad_east Long_Press not firing** — initially suspected Steam Input regression from today's SteamOS update (`/etc/os-release` modified May 1 01:28). Ultimately resolved to be the dual-failure mode (controller emitting wrong key + Nexus binding cleared). Dual fix worked. Whether SteamOS update contributed is unverified — left as ambient possibility.
+- **Long-term mitigation for InputBinds drift** — user hasn't decided between sync script / diff script / per-launch validation. For now, the manual recovery recipe is the standing fix.
+
+### What worked (for next-time triage)
+
+- **Smoke test using `Q` typed in chat** — temporarily change Long_Press binding to plain `Q` and check if the keystroke shows up in GW2 chat. If `Q` doesn't appear, the Long_Press isn't firing at the controller layer (rules out Nexus). If `Q` appears, Long_Press fires fine and the issue is downstream (binding misalignment).
+- **Test Device Inputs on the Deck** for hardware verification (Settings → Controller → Test Device Inputs). Rules out physical button issues.
+- **Tail Nexus.log live with grep filter** during user testing to capture exactly which addon dispatch fires:
+  ```bash
+  ssh Og@172.16.100.212 'timeout 60 tail -F "$HOME/Games/gw2-deck/addons/Nexus/Nexus.log" 2>&1 | grep --line-buffered -E "MysticClicker|DEPOSIT|Combo|LFG"'
+  ```
+- **Wholesale-copy from Apple TV profile** is the canonical recovery — Apple TV's InputBinds.json reliably matches `configs/gw2-keybinds/nexus-inputbinds.json` repo source-of-truth.

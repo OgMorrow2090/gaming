@@ -149,12 +149,40 @@ Per [streaming-input-host-vs-client.md](streaming-input-host-vs-client.md), the 
 
 If the user reports "both Apple TV and Deck are broken the same way", that's the signal. Don't waste time investigating the bazzite-side Apple TV configset — fix the Deck-side controller layout (single source for both routes).
 
+## Open bug — root cause of the 23-binding drift remains unknown
+
+Honest assessment after the 2026-05-01 catastrophic-drift session: 23 entries differing between the Deck profile and Apple TV/canonical does **NOT** fit any single mechanism we identified. The wholesale-copy recovery worked, but we never proved the cause. Theories tested and ruled out:
+
+- ❌ **Passive Nexus collision-resolution** — only affects 1-3 bindings per load, not 23
+- ❌ **OneDrive sync** — bazzite has no OneDrive (the `users/shaun/OneDrive/Documents/` path inside the Wine prefix is just a folder name, no actual cloud sync)
+- ❌ **Steam Cloud sync** — does not apply to non-Steam Nexus configs
+- ❌ **Addon_Config_Backup_Tool restore** — the most recent backup zip on disk (`backup-2026-04-30-20-27.zip`) contains the canonical bindings (Ctrl+Q, Ctrl+O, etc.), so a restore from it would have FIXED not broken
+- ❌ **User direct edit** — user confidently denies making 23 manual binding changes; this fits
+
+Possible causes still on the table (not verified):
+
+- ⚠️ **Nexus addon update bulk-resetting its own identifiers** on first launch in a new version. Each addon owns specific identifiers (e.g. Mystic Clicker owns `DEPOSIT_AND_SORT`, `BANK_COMBO`, etc.); an update could plausibly clear them. Multiple addons updating in one window could explain widespread drift.
+- ⚠️ **Stale file overwrite during gw2-deck profile setup on Apr 30** — the addons folder was *copied* (per [multi-gw2-installs.md](multi-gw2-installs.md) and [nexus-multi-deploy-rules.md](nexus-multi-deploy-rules.md)) at profile creation. If the Steam install's InputBinds.json was already drifted at copy time, the gw2-deck profile inherited it. But this doesn't explain why Apple TV profile (also copied on Apr 30) was clean.
+- ⚠️ **Cumulative passive drift over weeks** — each load that hits a collision clears 1-3 entries; over many sessions this could add up. User says they didn't make the changes; if the mechanism is the silent reconciliation we already documented, it qualifies as "they didn't make changes" because Nexus did them silently.
+
+**Action item for next time the drift recurs:** capture diagnostic data BEFORE wholesale-restoring:
+
+```bash
+# Snapshot the broken state
+TS=$(date +%Y%m%d-%H%M%S)
+cp "$HOME/Games/gw2-deck/addons/Nexus/InputBinds.json" "/tmp/inputbinds-broken-$TS.json"
+ls -la "$HOME/Documents/Guild Wars 2/nexus-configs/" > "/tmp/backup-list-$TS.txt"
+grep -E "Loaded addon|Updater|Backup" "$HOME/Games/gw2-deck/addons/Nexus/Nexus.log" | tail -200 > "/tmp/nexus-load-$TS.log"
+```
+
+Then commit those snapshots to the repo for forensic analysis. The current memory is "we know the recovery, we don't know the cause."
+
 ## Long-term mitigation
 
-User chose option (A) "surgical restore on demand" rather than a periodic profile sync. If this recurs frequently, options:
+If this recurs more than once or twice, mitigation options:
 
-- **Sync script** that copies a known-canonical profile's InputBinds.json to others on a cron (loses intentional divergence)
+- **Sync script** that copies the canonical profile to others on a cron (loses intentional divergence — accepted because the practical cost of drift far exceeds the cost of re-applying 2-3 deliberate Deck-only overrides)
 - **Diff script** that warns when bindings drift between profiles without auto-fixing
-- **Treat one profile as source-of-truth** and document non-shared per-profile overrides separately
+- **Per-launch validation** — small wrapper around game launch that checks key bindings against canonical and aborts/warns if drifted
 
-For now, the recipe in step 3 above is the standing fix.
+For now, the recipe in the surgical-or-wholesale section above is the standing fix.

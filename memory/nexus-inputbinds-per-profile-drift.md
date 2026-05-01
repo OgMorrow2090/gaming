@@ -161,6 +161,14 @@ Honest assessment after the 2026-05-01 catastrophic-drift session: 23 entries di
 
 Possible causes still on the table (not verified):
 
+- ⚠️ **Alt+F4 hard-quit losing in-session fixes** — *most plausible candidate.* The Menu button's Long_Press is bound to `Alt+F4 (Quit Game)` in the controller layout (button_escape Long_Press). User uses this to quit GW2. While Alt+F4 normally goes through `WM_CLOSE` → graceful Nexus unload → InputBinds.json save, in some cases (mid-frame, hung process, repeat-firing during Long_Press, Wine "not responding" handling) it can become a force-terminate before Nexus's `Unload` runs. Pattern over weeks:
+    1. Bindings drift slightly via passive Nexus collision-resolution (1-3 cleared per session)
+    2. User notices in-game, re-binds via Nexus options menu (change is in memory only)
+    3. User Alt+F4-quits → in-memory fix never saved → disk still has cleared bindings
+    4. Repeat across sessions — cumulative cleared-binding count grows because fixes don't persist
+    5. After weeks: 23 drifted bindings on disk despite user "fixing" them several times
+
+   This fits the evidence: user firmly denies making 23 changes (they made *fixes* that never persisted), magnitude exceeds pure passive drift alone, Apple TV profile less affected (probably different usage pattern — quit cleanly more often, or Alt+F4 less often used). **Mitigation: avoid Alt+F4 to quit; use in-game Logout instead. Or document that any in-game binding fixes need a clean exit afterward.**
 - ⚠️ **Nexus addon update bulk-resetting its own identifiers** on first launch in a new version. Each addon owns specific identifiers (e.g. Mystic Clicker owns `DEPOSIT_AND_SORT`, `BANK_COMBO`, etc.); an update could plausibly clear them. Multiple addons updating in one window could explain widespread drift.
 - ⚠️ **Stale file overwrite during gw2-deck profile setup on Apr 30** — the addons folder was *copied* (per [multi-gw2-installs.md](multi-gw2-installs.md) and [nexus-multi-deploy-rules.md](nexus-multi-deploy-rules.md)) at profile creation. If the Steam install's InputBinds.json was already drifted at copy time, the gw2-deck profile inherited it. But this doesn't explain why Apple TV profile (also copied on Apr 30) was clean.
 - ⚠️ **Cumulative passive drift over weeks** — each load that hits a collision clears 1-3 entries; over many sessions this could add up. User says they didn't make the changes; if the mechanism is the silent reconciliation we already documented, it qualifies as "they didn't make changes" because Nexus did them silently.

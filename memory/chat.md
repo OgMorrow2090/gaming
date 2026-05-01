@@ -245,3 +245,19 @@ After both layers fixed: auto-sort works, Trading Post works, Bank works, Mystic
   ssh Og@172.16.100.212 'timeout 60 tail -F "$HOME/Games/gw2-deck/addons/Nexus/Nexus.log" 2>&1 | grep --line-buffered -E "MysticClicker|DEPOSIT|Combo|LFG"'
   ```
 - **Wholesale-copy from Apple TV profile** is the canonical recovery — Apple TV's InputBinds.json reliably matches `configs/gw2-keybinds/nexus-inputbinds.json` repo source-of-truth.
+
+### Late addition — Alt+F4 hard-quit theory
+
+User raised this after the main session: the Menu button's Long_Press is bound to `Alt+F4 (Quit Game)` ([template:2908-2914](configs/steam-controller/moonlight-gw2-og-template.vdf#L2908-L2914)). User uses this to quit GW2. While Alt+F4 normally goes through `WM_CLOSE → Nexus Unload → InputBinds.json save → exit`, in some cases (mid-frame, hung process, repeat-firing during Long_Press, Wine "not responding") it can become a force-terminate before Nexus's `Unload` runs.
+
+The mechanism that fits the drift evidence:
+
+1. Bindings drift slightly via passive Nexus collision-resolution (1-2 cleared per session)
+2. User notices in-game, re-binds via Nexus options menu (in memory only)
+3. Alt+F4 quit → in-memory fix never saved → disk still has the old cleared state
+4. Repeat across sessions; cumulative cleared count grows because fixes don't persist
+5. Disk state diverges from what user expects, despite "fixing" several times
+
+**This is now the most plausible candidate** in the open-bug section of [nexus-inputbinds-per-profile-drift.md](nexus-inputbinds-per-profile-drift.md). Mitigation: avoid Alt+F4 to quit (use in-game Logout / Exit menu); or do a clean GW2 exit any time you change a binding in-game.
+
+Apple TV profile being less drift-affected is consistent with this — different usage pattern, possibly more clean quits.

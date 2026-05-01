@@ -54,11 +54,14 @@ for ident in sorted(b):
 "
 ```
 
-### 3. Surgical restore — DON'T full-sync
+### 3. Choose surgical OR wholesale based on damage scope
 
-**Important**: do not blindly copy one profile's bindings to another — some divergence is intentional. Instead, restore **only the cleared (Code=0) or visibly-wrong** entries.
+**Rule of thumb (revised after 2026-05-01 catastrophic-drift session):**
 
-Pattern (run on bazzite, GW2 must be CLOSED on that profile):
+- **≤3 bindings differ** → surgical restore (preserves intentional divergence)
+- **>3 bindings differ OR multiple chord groups broken at once** → **wholesale copy from Apple TV profile** (the canonical clean state — matches `configs/gw2-keybinds/nexus-inputbinds.json` repo source-of-truth)
+
+Surgical pattern:
 
 ```bash
 F="$HOME/Games/gw2-deck/addons/Nexus/InputBinds.json"
@@ -75,6 +78,16 @@ for b in binds:
 json.dump(binds, open(P,'w'), indent=2)
 "
 ```
+
+Wholesale pattern (when many bindings drifted — verified canonical fix on 2026-05-01):
+
+```bash
+F="$HOME/Games/gw2-deck/addons/Nexus/InputBinds.json"
+cp "$F" "$F.bak-pre-applewipe-$(date +%Y%m%d-%H%M%S)"
+cp "$HOME/Games/gw2-appletv/addons/Nexus/InputBinds.json" "$F"
+```
+
+**Trade-off of wholesale:** loses intentional Deck-only customizations like the swapped `MT_TOGGLE_FLIPLIST`/`MT_TOGGLE_DELIVERY` Alt+D ↔ Alt+F mapping. Re-apply those after if needed. Worth it because user can re-edit 2-3 bindings in 30 seconds vs another multi-hour debug session.
 
 ### 4. Critical timing — close GW2 first
 
@@ -111,6 +124,30 @@ Common ones for chord debugging:
 | 45 | Home | | |
 
 Note: GW2's `gamebinds.xml` uses **VK codes** instead — different table. E.g. VK 89 = Y, VK 73 = I, VK 81 = Q.
+
+## Dual-failure mode (catastrophic case — observed 2026-05-01)
+
+When **controller layout AND Nexus bindings drift simultaneously**, surgical fixes don't work because each fix only addresses one of two stacked problems. Symptoms feel "random" — depending on which binding you test, you hit either layer's broken side:
+
+- **Controller side broken** (e.g., Steam Input UI auto-saved a local-edit overriding the CLOUD template, with one chord changed): controller emits the wrong key. Even if Nexus has the right binding waiting, no match.
+- **Nexus side drifted** (multiple bindings cleared / moved): controller emits the right key, but no Nexus binding catches it.
+
+If only one is broken, surgical fixes work. If BOTH are broken, you need to:
+
+1. **Restore controller layout** to canonical from `configs/steam-controller/moonlight-gw2-og-template.vdf` (line-anchored copy, NOT regex)
+2. **Wholesale-copy InputBinds** from Apple TV profile (the canonical clean state, matches `configs/gw2-keybinds/nexus-inputbinds.json`)
+3. Restart Steam so it reloads layout from disk
+
+Heuristic: if user reports "many things are broken simultaneously" or "everything is wrong", suspect dual failure. Don't waste hours on surgical fixes — restore both layers in one shot. Took 4+ hours on 2026-05-01 to converge on this; should be 5 minutes next time.
+
+## Why both profiles can appear broken at once
+
+Per [streaming-input-host-vs-client.md](streaming-input-host-vs-client.md), the Apple TV stream uses the **Deck as its physical controller** (over Moonlight, despite the older note that bazzite-side Steam Input governs Apple TV — that note is wrong for this setup). So:
+
+- **Deck stream broken**: Deck Steam Input → wrong keystroke
+- **Apple TV stream broken**: Apple TV uses Deck-as-controller → same Deck Steam Input → same wrong keystroke
+
+If the user reports "both Apple TV and Deck are broken the same way", that's the signal. Don't waste time investigating the bazzite-side Apple TV configset — fix the Deck-side controller layout (single source for both routes).
 
 ## Long-term mitigation
 

@@ -2,11 +2,11 @@
 {
 	"version"		"3"
 	"revision"		"2408"
-	"title"		"Guild Wars 2 - Og v19.1"
+	"title"		"Guild Wars 2 - Og v19.0"
 	"description"		"Your modified layout for this game."
 	"creator"		"76561198025059559"
 	"progenitor"		""
-	"url"		"usercloud://moonlight/og v19.1_0"
+	"url"		"usercloud://moonlight/og v19.0_0"
 	"export_type"		"personal_local"
 	"controller_type"		"controller_neptune"
 	"controller_caps"		"23117823"
@@ -719,6 +719,20 @@
 						"bindings"
 						{
 							"binding"		"key_press I, , "
+						}
+					}
+					"Double_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press S, , "
+							"binding"		"key_press U, , "
+							"binding"		"key_press M, , "
+						}
+						"settings"
+						{
+							"hold_repeats"		"1"
+							"haptic_intensity"		"3"
 						}
 					}
 					"Long_Press"

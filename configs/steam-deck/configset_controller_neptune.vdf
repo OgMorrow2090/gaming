@@ -22,10 +22,10 @@
 	}
 	"guild wars 2 (apple tv)"
 	{
-		"template"		"CLOUD_moonlight/og v18.4.9_0"
+		"template"		"CLOUD_guild wars 2 (apple tv)/og v18.4.9_0"
 	}
 	"guild wars 2 (steam deck)"
 	{
-		"template"		"CLOUD_moonlight/og v18.4.9_0"
+		"template"		"CLOUD_guild wars 2 (steam deck)/og v18.4.9_0"
 	}
 }

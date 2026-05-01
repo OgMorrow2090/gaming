@@ -261,3 +261,53 @@ The mechanism that fits the drift evidence:
 **This is now the most plausible candidate** in the open-bug section of [nexus-inputbinds-per-profile-drift.md](nexus-inputbinds-per-profile-drift.md). Mitigation: avoid Alt+F4 to quit (use in-game Logout / Exit menu); or do a clean GW2 exit any time you change a binding in-game.
 
 Apple TV profile being less drift-affected is consistent with this — different usage pattern, possibly more clean quits.
+
+### Planned for next session — Mystic Clicker GRACEFUL_QUIT macro
+
+Replace controller `button_escape` Long_Press = `Alt+F4` (Quit Game) with a graceful Mystic Clicker macro to eliminate the force-quit drift hypothesis.
+
+**Flow** (no confirm dialog click — clicking Exit closes the game directly):
+
+1. Press `Esc` (open in-game menu)
+2. Sleep 200ms
+3. SendInput click at captured `g_ExitGameX/Y` coordinate
+4. Done — GW2 closes via normal shutdown path → Nexus `Unload` runs → InputBinds.json saves cleanly
+
+**Files to change:**
+
+| File | Change |
+| --- | --- |
+| `modules/mystic-clicker/shared.h` | Add `GRACEFUL_QUIT` constant; extern `g_ExitGameX/Y` |
+| `modules/mystic-clicker/entry.cpp` | `InputBinds_RegisterWithString(GRACEFUL_QUIT, ProcessKeybind, "ALT+SHIFT+Q")`; matching Deregister; bump version to v3.6.11 |
+| `modules/mystic-clicker/keybinds.cpp` | Dispatch `GRACEFUL_QUIT → SimulateGracefulQuit()` |
+| `modules/mystic-clicker/input-sim.cpp` | `SimulateGracefulQuit()`: `SendInput(VK_ESCAPE)` → `Sleep(200)` → `SimulateClickAt(g_ExitGameX, g_ExitGameY)` with log line |
+| `modules/mystic-clicker/capture-ui.cpp` | New capture entry "Exit Game" or "Exit to Character Select" with description |
+| `modules/mystic-clicker/config.cpp` | Read/write `ExitGameX=`, `ExitGameY=` per-resolution `.cfg` |
+| `configs/gw2-keybinds/nexus-inputbinds.json` | Add `GRACEFUL_QUIT` entry: scancode for Q (16), Ctrl=False, Shift=True, Alt=True |
+| `configs/steam-controller/moonlight-gw2-og-template.vdf` | `button_escape` Long_Press: replace `LEFT_ALT + F4` with `LEFT_ALT + LEFT_SHIFT + Q` (label `Graceful Quit`); bump title to v19.2 |
+| `configs/steam-controller/moonlight-gw2-og-v19.2.vdf` | New snapshot |
+| `CHANGELOG.md` | v3.6.11 entry |
+| `modules/mystic-clicker/CMakeLists.txt` (if version-string lives there) | Bump |
+
+**Default chord** (TBD with user tomorrow): `ALT+SHIFT+Q` works because Q is unused with that modifier combo, mnemonic matches "Quit". Alternatives: `CTRL+SHIFT+Q`, `ALT+Q`. Verify against existing nexus-inputbinds.json before picking.
+
+**Captures needed in-game** (after deploy):
+
+- Steam Deck profile (1280×800) — capture once
+- Apple TV profile (2560×1440) — capture once
+- Local play profile (3840×1600) — capture once
+
+User uses Capture Mode (Ctrl+Shift+C) → "Exit Game" → 5s countdown → click the actual Exit button position.
+
+**Deploy steps:**
+
+1. Code + commit → trigger GitHub Actions build → pull `mystic-clicker.dll` artifact
+2. Deploy DLL to all 3 profiles (`addons/mystic-clicker.dll`) per [nexus-multi-deploy-rules.md](nexus-multi-deploy-rules.md)
+3. Deploy v19.2 controller layout to Deck (`config/moonlight - gw2 steamos/controller_neptune.vdf` + `moonlight/og v19.2_0.vdf` + `1284210/controller_neptune.vdf`)
+4. Deploy updated `nexus-inputbinds.json` to all 3 profiles
+5. Restart Steam on Deck so layout reloads
+6. Capture Exit Game position in each profile
+7. Verify by holding Menu button — GW2 should close gracefully (no Alt+F4 force-quit)
+
+**Estimated effort:** ~1.5 hours coding + 30 min deploy + capture per profile
+

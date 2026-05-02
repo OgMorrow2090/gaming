@@ -948,6 +948,15 @@
 		"Alt": false,
 		"Code": 0,
 		"Ctrl": false,
+		"Identifier": "CAPTURE_EXIT_GAME",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
 		"Identifier": "CAPTURE_GENERAL_ACCEPT",
 		"Passthrough": false,
 		"Shift": false,
@@ -1291,6 +1300,15 @@
 		"Code": 87,
 		"Ctrl": true,
 		"Identifier": "GENERAL_ACCEPT_COMBO",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": true,
+		"Code": 16,
+		"Ctrl": false,
+		"Identifier": "GRACEFUL_QUIT",
 		"Passthrough": false,
 		"Shift": true,
 		"Type": 1

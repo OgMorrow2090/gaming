@@ -147,6 +147,8 @@ int g_CraftCloseX = 0;
 int g_CraftCloseY = 0;
 int g_GuildHallX = 0;
 int g_GuildHallY = 0;
+int g_ExitGameX = 0;
+int g_ExitGameY = 0;
 
 // Per-resolution capture window state (position + size)
 float g_CaptureWinX = 0.0f;
@@ -556,6 +558,10 @@ void LoadButtonPositions()
             g_GuildHallX = std::stoi(line.substr(11));
         if (line.find("GuildHallY=") == 0)
             g_GuildHallY = std::stoi(line.substr(11));
+        if (line.find("ExitGameX=") == 0)
+            g_ExitGameX = std::stoi(line.substr(10));
+        if (line.find("ExitGameY=") == 0)
+            g_ExitGameY = std::stoi(line.substr(10));
         if (line.find("CaptureWinX=") == 0)
             g_CaptureWinX = (float)std::stod(line.substr(12));
         if (line.find("CaptureWinY=") == 0)
@@ -724,6 +730,8 @@ void SaveButtonPositions()
     file << "CraftCloseY=" << g_CraftCloseY << "\n";
     file << "GuildHallX=" << g_GuildHallX << "\n";
     file << "GuildHallY=" << g_GuildHallY << "\n";
+    file << "ExitGameX=" << g_ExitGameX << "\n";
+    file << "ExitGameY=" << g_ExitGameY << "\n";
     file << "CaptureWinX=" << g_CaptureWinX << "\n";
     file << "CaptureWinY=" << g_CaptureWinY << "\n";
     file << "CaptureWinW=" << g_CaptureWinW << "\n";
@@ -883,6 +891,8 @@ void CheckResolutionChange()
         g_CraftCloseY = 0;
         g_GuildHallX = 0;
         g_GuildHallY = 0;
+        g_ExitGameX = 0;
+        g_ExitGameY = 0;
         g_CaptureWinX = 0.0f;
         g_CaptureWinY = 0.0f;
         g_CaptureWinW = 0.0f;

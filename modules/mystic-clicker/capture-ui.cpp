@@ -144,6 +144,7 @@ static CaptureTarget s_Targets[] = {
     {"Craft Collapse",    "Crafting collapse-all button (combo 2nd click)", &g_CraftCollapseX, &g_CraftCollapseY},
     {"Craft Close",       "Close button on Crafting window", &g_CraftCloseX, &g_CraftCloseY},
     {"Guild Hall",        "Guild Hall button in Guild panel", &g_GuildHallX,    &g_GuildHallY},
+    {"Exit Game",         "Exit to Character Select button in in-game menu (Esc menu) — used by Graceful Quit", &g_ExitGameX, &g_ExitGameY},
 };
 static constexpr int NUM_TARGETS = sizeof(s_Targets) / sizeof(s_Targets[0]);
 

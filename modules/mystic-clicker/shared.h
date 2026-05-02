@@ -100,6 +100,7 @@ constexpr const char* CRAFT_FILTER = "CRAFT_FILTER";        // capture only
 constexpr const char* CRAFT_COLLAPSE = "CRAFT_COLLAPSE";    // capture only
 constexpr const char* CRAFT_COLLAPSE_COMBO = "CRAFT_COLLAPSE_COMBO"; // click Filter → click Collapse
 constexpr const char* CRAFT_CLOSE = "CRAFT_CLOSE";          // single click to close crafting
+constexpr const char* GRACEFUL_QUIT = "GRACEFUL_QUIT";      // Esc → wait → click captured Exit Game button (replaces Alt+F4)
 
 // Capture keybind identifiers
 constexpr const char* CAPTURE_CRAFT = "CAPTURE_CRAFT";
@@ -149,6 +150,7 @@ constexpr const char* CAPTURE_MAIL_TAKE_ALL = "CAPTURE_MAIL_TAKE_ALL";
 constexpr const char* CAPTURE_CRAFT_FILTER = "CAPTURE_CRAFT_FILTER";
 constexpr const char* CAPTURE_CRAFT_COLLAPSE = "CAPTURE_CRAFT_COLLAPSE";
 constexpr const char* CAPTURE_CRAFT_CLOSE = "CAPTURE_CRAFT_CLOSE";
+constexpr const char* CAPTURE_EXIT_GAME = "CAPTURE_EXIT_GAME";   // captures the in-game menu's "Exit to Character Select" button position
 
 // Keybind handler
 void ProcessKeybind(const char* aIdentifier, bool aIsRelease);
@@ -214,6 +216,7 @@ void SimulateCraftCollapseCombo();      // click Filter → delay → click Coll
 void SimulateCraftCloseClick();
 void SimulateGuildHallClick();
 void SimulateGuildHallCombo();    // Press G → delay → click Guild Hall button
+void SimulateGracefulQuit();      // Press Esc → delay → click captured Exit Game button (replaces Alt+F4 force-quit)
 void SimulateGenericClick(int slot);
 void SimulateClickAt(int x, int y);
 void SimulateRightClickAt(int x, int y);
@@ -356,3 +359,5 @@ extern int g_CraftCloseX;
 extern int g_CraftCloseY;
 extern int g_GuildHallX;
 extern int g_GuildHallY;
+extern int g_ExitGameX;
+extern int g_ExitGameY;

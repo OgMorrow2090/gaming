@@ -1296,6 +1296,27 @@ void SimulateGuildHallCombo()
     SimulateRealClickAt(g_GuildHallX, g_GuildHallY);
 }
 
+void SimulateGracefulQuit()
+{
+    // Replaces controller Alt+F4 force-quit. Clean shutdown via in-game menu so
+    // Nexus runs Unload (saves InputBinds.json properly).
+    if (g_ExitGameX == 0 && g_ExitGameY == 0)
+    {
+        APIDefs->GUI_SendAlert("Exit Game position not set — capture via Ctrl+Shift+C before using.");
+        return;
+    }
+
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Graceful Quit: Press Esc (open menu)");
+    SimulateKeyPress(VK_ESCAPE);
+
+    Sleep(200);
+
+    char buf[96];
+    sprintf_s(buf, "Graceful Quit: Click Exit at (%d,%d)", g_ExitGameX, g_ExitGameY);
+    APIDefs->Log(LOGL_INFO, "MysticClicker", buf);
+    SimulateClickAt(g_ExitGameX, g_ExitGameY);
+}
+
 void SimulateMysticForgeCombo()
 {
     // Check both positions are set

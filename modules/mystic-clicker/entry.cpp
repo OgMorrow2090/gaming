@@ -57,7 +57,7 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     AddonDef.Name = "Mystic Clicker";
     AddonDef.Version.Major = 3;
     AddonDef.Version.Minor = 6;
-    AddonDef.Version.Build = 10;
+    AddonDef.Version.Build = 11;
     AddonDef.Version.Revision = 0;
     AddonDef.Author = "OgMorrow2090";
     AddonDef.Description = "One-click hotkeys for inventory, vendors, trading post, Mystic Forge, and more.";
@@ -187,6 +187,7 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(CRAFT_COLLAPSE_COMBO, ProcessKeybind, "CTRL+SHIFT+F10");
     APIDefs->InputBinds_RegisterWithString(GUILD_HALL, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(GUILD_HALL_COMBO, ProcessKeybind, "CTRL+SHIFT+F5");
+    APIDefs->InputBinds_RegisterWithString(GRACEFUL_QUIT, ProcessKeybind, "ALT+SHIFT+Q");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_CRAFT, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_CRAFT_ALL, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_WIZARD_VAULT, ProcessKeybind, "(null)");
@@ -234,6 +235,7 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(CAPTURE_CRAFT_COLLAPSE, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_CRAFT_CLOSE, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_GUILD_HALL, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(CAPTURE_EXIT_GAME, ProcessKeybind, "(null)");
 
     APIDefs->Log(LOGL_INFO, "MysticClicker", "Addon loaded.");
 }
@@ -305,6 +307,7 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(CRAFT_COLLAPSE_COMBO);
     APIDefs->InputBinds_Deregister(GUILD_HALL);
     APIDefs->InputBinds_Deregister(GUILD_HALL_COMBO);
+    APIDefs->InputBinds_Deregister(GRACEFUL_QUIT);
     APIDefs->InputBinds_Deregister(CAPTURE_CRAFT);
     APIDefs->InputBinds_Deregister(CAPTURE_CRAFT_ALL);
     APIDefs->InputBinds_Deregister(CAPTURE_WIZARD_VAULT);
@@ -352,6 +355,7 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(CAPTURE_CRAFT_COLLAPSE);
     APIDefs->InputBinds_Deregister(CAPTURE_CRAFT_CLOSE);
     APIDefs->InputBinds_Deregister(CAPTURE_GUILD_HALL);
+    APIDefs->InputBinds_Deregister(CAPTURE_EXIT_GAME);
 
     APIDefs->GUI_Deregister(RenderCaptureWindow);
     APIDefs->GUI_DeregisterCloseOnEscape("Mystic Clicker - Capture");

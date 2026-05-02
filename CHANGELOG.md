@@ -7,6 +7,31 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.11] - 2026-05-02 — Mystic Clicker GRACEFUL_QUIT macro + controller v19.2
+
+### Added
+
+- **Mystic Clicker `GRACEFUL_QUIT` keybind** (default `ALT+SHIFT+Q`) — replaces controller Menu-button Long_Press = `Alt+F4` force-quit. Flow: send `Esc` (open in-game menu) → 200 ms wait → click captured "Exit Game" position. GW2 closes via the normal shutdown path so Nexus runs `Unload` and `InputBinds.json` saves cleanly. Mitigates the InputBinds drift hypothesis where Alt+F4 force-quit skipped the Nexus save.
+- New capture target **"Exit Game"** in the Mystic Clicker Capture window — captures the in-game menu's "Exit to Character Select" button per-resolution.
+- New config keys `ExitGameX` / `ExitGameY` persisted to per-resolution `.cfg` (zeroed on resolution reset).
+- New Nexus binding identifier `CAPTURE_EXIT_GAME` (registered, no default key) so the capture entry surfaces in Nexus settings.
+
+### Changed
+
+- **Controller layout v19.2** — `button_escape` Long_Press: `LEFT_ALT + F4` → `LEFT_ALT + LEFT_SHIFT + Q` (label `Graceful Quit`). Snapshot saved as `configs/steam-controller/moonlight-gw2-og-v19.2.vdf`.
+
+### Files
+
+- `modules/mystic-clicker/shared.h` — `GRACEFUL_QUIT` + `CAPTURE_EXIT_GAME` constants; `g_ExitGameX/Y`; `SimulateGracefulQuit()` proto
+- `modules/mystic-clicker/entry.cpp` — register/deregister + version bump 3.6.10 → 3.6.11
+- `modules/mystic-clicker/keybinds.cpp` — dispatch `GRACEFUL_QUIT → SimulateGracefulQuit()`
+- `modules/mystic-clicker/input-sim.cpp` — `SimulateGracefulQuit()` implementation
+- `modules/mystic-clicker/capture-ui.cpp` — "Exit Game" capture target row
+- `modules/mystic-clicker/config.cpp` — read/write/reset `ExitGameX/Y`
+- `configs/gw2-keybinds/nexus-inputbinds.json` — `GRACEFUL_QUIT` (Code 16, Alt+Shift) + `CAPTURE_EXIT_GAME` (Code 0)
+- `configs/steam-controller/moonlight-gw2-og-template.vdf` — title v19.2, button_escape Long_Press updated
+- `configs/steam-controller/moonlight-gw2-og-v19.2.vdf` — new snapshot
+
 ## [3.6.10] - 2026-05-01 — Mystic Clicker capture window + Mystic Trading delivery box close on ESC
 
 ### Added

@@ -299,6 +299,10 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     {
         SimulateGuildHallCombo();
     }
+    else if (strcmp(aIdentifier, GRACEFUL_QUIT) == 0)
+    {
+        SimulateGracefulQuit();
+    }
     // === CAPTURE MODE ===
     else if (strcmp(aIdentifier, CAPTURE_MODE) == 0)
     {

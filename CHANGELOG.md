@@ -7,6 +7,18 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [controller v19.3] - 2026-05-02 — Utility Wheel: empty center, Settings moved to slot 16
+
+### Changed
+
+- **Utility Wheel (group id 63)** — `touch_menu_button_0` (center) removed; `Open Settings` (`F11`) moved to a new `touch_menu_button_16` on the ring. Center is now a no-op so accidental release in the middle of the wheel doesn't fire Settings — was getting in the way of every wheel trigger.
+- Snapshot saved as `configs/steam-controller/moonlight-gw2-og-v19.3.vdf`. Brackets balanced (921=921), groups 56, bindings 294 (unchanged: removed 1, added 1).
+
+### Files
+
+- `configs/steam-controller/moonlight-gw2-og-template.vdf` — title v19.3, Utility Wheel center removed + slot 16 added
+- `configs/steam-controller/moonlight-gw2-og-v19.3.vdf` — new snapshot
+
 ## [3.6.11] - 2026-05-02 — Mystic Clicker GRACEFUL_QUIT macro + controller v19.2
 
 ### Added

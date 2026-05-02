@@ -348,3 +348,36 @@ User needs to capture "Exit Game" position in each profile before the macro fire
 ### Steam-on-Deck reload caveat
 
 Steam keeps controller layouts in memory and writes-through on shutdown. After my deploys to `moonlight - gw2 steamos/controller_neptune.vdf`, if user shuts Steam down without first reloading, the in-memory pre-deploy state could clobber my changes. Mitigation: have user restart Steam (or open Steam Input UI and save) before next stream session. Same pattern as the `pkill -9 steam` rule in `vdf-editing-golden-rules.md` for shortcuts.vdf.
+
+## 2026-05-02 (PM) — Sunshine first-connect crashes fixed by removing prep-cmd
+
+User reported: first Moonlight connect from Deck/Apple TV often shows "session error" then works on retry. Investigation found 16 Sunshine crashes in the past week, all `Error reading events from display: Broken pipe` triggered by `sunshine-set-resolution.sh`'s `gamescope-mode` call. Sequence: prep-cmd runs → gamescope tears down to switch mode → Sunshine's wayland connection breaks → exit status 1 → ~10s gap (RestartSec=5 + ExecStartPre=sleep 5) before Sunshine accepts again. User's first-connect window times out during that gap.
+
+### Why the script became obsolete
+
+The split into 3 GW2 profiles (Local / Apple TV / Deck) gave each its own Wine prefix with permanent `LogPixels` baked into `compatdata/<appid>/pfx/user.reg`. The script used to flip Wine DPI per stream — now that's redundant because each profile has the right DPI saved per-prefix. And user now sets gamescope resolution manually in SteamOS Big Picture, so the `gamescope-mode` call was also redundant. The script was actively *worse* than nothing because it overwrote both stream profiles' DPI to match the connecting client (e.g. Apple TV connecting set Deck's prefix to 144 too, undoing the per-profile config).
+
+### Changes
+
+- **`~/.config/sunshine/apps.json`** (and `configs/bazzite/sunshine-apps.json` repo backup): removed `prep-cmd` block from `SteamOS Game Mode` and `GW2 - SteamOS` apps. No more script invocation.
+- **Deck prefix** (`compatdata/3111887265/pfx/user.reg`, `[Control Panel\Desktop]`): LogPixels `dword:00000090` (144) → `dword:00000060` (96). Reset to correct Deck-native DPI; this had been wrong since the 14:11:39 Apple TV connect that bumped it.
+- **Restarted `sunshine-gaming.service`** to pick up the new apps.json. Confirmed clean start, no crashes.
+- Backups: `apps.json.bak-pre-strip-*`, `user.reg.bak-pre-dpi96-*`.
+
+### Result
+
+Verified DPI state across all 3 prefixes:
+
+| Profile | LogPixels | Status |
+|---|---|---|
+| Apple TV (2879321470) | 0x90 = 144 | ✓ correct, unchanged |
+| Deck (3111887265) | 0x60 = 96 | ✓ corrected |
+| Local (1284210) | 0x60 = 96 | ✓ correct, unchanged |
+
+Each prefix now keeps its own DPI permanently — no more cross-profile bleed on connect. Sunshine no longer touches gamescope on connect → no more broken-pipe crashes → first-connect should be reliable from both Deck and Apple TV.
+
+`/var/home/Og/scripts/sunshine-set-resolution.sh` is now dead code on bazzite. Left in place for now (could be deleted in a future cleanup if confirmed unused).
+
+### Systemd unit speedup deferred
+
+Was about to drop `ExecStartPre=/bin/sleep 5` and reduce `RestartSec=5s` to `1s` to shrink the post-crash gap from ~10s to ~1s. Not needed anymore — with prep-cmd gone, there's nothing to crash from.

@@ -3,12 +3,7 @@
         {
             "image-path": "/home/Og/.config/sunshine/covers/steamos_cover.png",
             "name": "SteamOS Game Mode",
-            "output": "HDMI-A-1",
-            "prep-cmd": [
-                {
-                    "do": "/var/home/Og/scripts/sunshine-set-resolution.sh"
-                }
-            ]
+            "output": "HDMI-A-1"
         },
         {
             "image-path": "/home/Og/.config/sunshine/covers/active_session_cover.png",
@@ -19,12 +14,7 @@
             "image-path": "/home/Og/.config/sunshine/covers/gw2.png",
             "name": "GW2 - SteamOS",
             "cmd": "/var/home/Og/scripts/sunshine-wait-gw2.sh",
-            "output": "HDMI-A-1",
-            "prep-cmd": [
-                {
-                    "do": "/var/home/Og/scripts/sunshine-set-resolution.sh"
-                }
-            ]
+            "output": "HDMI-A-1"
         },
         {
             "image-path": "/home/Og/.config/sunshine/covers/gw2.png",

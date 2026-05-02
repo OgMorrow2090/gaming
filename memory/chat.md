@@ -311,3 +311,40 @@ User uses Capture Mode (Ctrl+Shift+C) → "Exit Game" → 5s countdown → click
 
 **Estimated effort:** ~1.5 hours coding + 30 min deploy + capture per profile
 
+
+## 2026-05-02 (AM) — GRACEFUL_QUIT shipped + Utility Wheel center cleared (v3.6.11 + v19.2 + v19.3)
+
+Implemented yesterday's plan and shipped a follow-up wheel cleanup. End-to-end deploys verified; user reports working in-game ("working a treat!").
+
+### Mystic Clicker v3.6.11 + controller v19.2 — GRACEFUL_QUIT replaces Alt+F4
+
+- **New keybind `GRACEFUL_QUIT`** (default `ALT+SHIFT+Q`, scancode 16+Alt+Shift). Verified no chord collision against `gamebinds.xml` (Q-no-modifier = MoveTurnLeft only) and against the 16 wheel slots in the controller VDF. Q with Ctrl is taken by `DEPOSIT_AND_SORT` — Alt+Shift was the cleanest free combo.
+- **Flow**: `SimulateKeyPress(VK_ESCAPE)` → `Sleep(200)` → `SimulateClickAt(g_ExitGameX, g_ExitGameY)`. Used `SimulateClickAt` not `SimulateRealClickAt` because the in-game menu is a GW2 UI surface, not a Nexus overlay.
+- **Per-resolution coords**: added `g_ExitGameX/Y` globals + `ExitGameX/ExitGameY` keys to the `.cfg` reader/writer/reset paths in `config.cpp`. Capture entry "Exit Game" added at the end of `s_Targets[]` in `capture-ui.cpp`. New `CAPTURE_EXIT_GAME` Nexus identifier registered (no default key) so it surfaces in Nexus settings.
+- **Controller v19.2**: `button_escape` Long_Press changed from `LEFT_ALT + F4` to `LEFT_ALT + LEFT_SHIFT + Q` (label "Graceful Quit"). Validation: brackets 921=921, groups 56, bindings 293→294 (replaced 2 with 3, net +1).
+
+### Controller v19.3 — Utility Wheel center cleared
+
+- User reported the wheel center fires every release-without-direction, triggering Open Settings unintentionally on every wheel use.
+- Removed `touch_menu_button_0` (was `F11, Open Settings`); added `touch_menu_button_16` with the same F11 binding so Settings is on the ring instead of the center. Wheel now has 16 ring slots, no center button. Validation: brackets 921=921, groups 56, bindings unchanged (294, removed 1 added 1).
+- Other 15 slots unchanged (Toggle Paths, Reset Windows, ArcDPS, Crafty Legend, Waypoint, Fishing, Skiff, Rift, Capture Mode, Community LFG, Hoard & Seek, Event Timers, Organizer, Game Wiki, Nexus) — muscle memory preserved.
+
+### Deploy
+
+- DLL + nexus-inputbinds.json deployed to all 4 GW2 profile dirs: bazzite Local play / Apple TV / Steam Deck + Deck native. SHA-256 matches across all 4 + source repo.
+- Controller VDFs deployed to:
+  - **Deck (active)**: `1284210/controller_neptune.vdf`, `moonlight - gw2 steamos/controller_neptune.vdf` (autosave URL preserved via local sed), `moonlight/og v19.X_0.vdf`
+  - **bazzite (parity, snapshots only — configset still points at v18.4.9)**: `moonlight/og v19.X_0.vdf`, `guild wars 2 (apple tv)/og v19.X_0.vdf`, `guild wars 2 (steam deck)/og v19.X_0.vdf`
+- All backups tagged `*-bak-pre-3611-*` / `*-bak-pre-v19[23]-*`. Bazzite configset update deferred — would require killing Steam mid-session.
+
+### Critical gotcha — JSON CRLF preservation
+
+When rewriting `nexus-inputbinds.json` via Python `json.dump`, the file got rewritten with LF endings even though the original used CRLF. This made the diff show 3802 lines changed (whole-file rewrite). Fix: `f.write(text.replace('\n', '\r\n').encode('utf-8'))`. Resulting diff: clean +18 lines (just the two new entries).
+
+### Open: capture step is per-resolution and user-driven
+
+User needs to capture "Exit Game" position in each profile before the macro fires (otherwise alerts "Exit Game position not set"). Capture flow: `Ctrl+Shift+C` → "Exit Game" → 5s countdown → `Esc` → hover Exit to Character Select → countdown clicks. Once per resolution: 1280×800 / 2560×1440 / 3840×1600.
+
+### Steam-on-Deck reload caveat
+
+Steam keeps controller layouts in memory and writes-through on shutdown. After my deploys to `moonlight - gw2 steamos/controller_neptune.vdf`, if user shuts Steam down without first reloading, the in-memory pre-deploy state could clobber my changes. Mitigation: have user restart Steam (or open Steam Input UI and save) before next stream session. Same pattern as the `pkill -9 steam` rule in `vdf-editing-golden-rules.md` for shortcuts.vdf.

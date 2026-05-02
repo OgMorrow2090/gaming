@@ -78,6 +78,26 @@ For future Mystic Clicker / Og Morrow controller releases, the deploy steps must
 
 If the configset only has `"moonlight"` and no `"moonlight - gw2"` (or vice versa), the SSH-deployed layout will only apply to whichever shortcut name has the matching configset entry.
 
+## Autosave files need a URL patch on deploy
+
+A third value mode exists: `autosave 1` for shortcuts where Steam Input UI saves changes. The active file lives at `<dir>/controller_neptune.vdf` and must contain a self-referential `autosave://` URL:
+
+```vdf
+"url"  "autosave:///home/deck/.local/share/Steam/steamapps/common/Steam Controller Configs/<userid>/config/<dir>/controller_neptune.vdf"
+```
+
+**Repo VDF templates use `usercloud://...` URLs.** When deploying a repo VDF on top of an autosave file (e.g. `moonlight - gw2 steamos/controller_neptune.vdf` on the Deck), patch the URL line to the autosave path before scp. The sed pattern must contain **literal tabs** (VDF's KeyValues field separator) — the `<TAB><TAB>` markers below stand for two real tab characters:
+
+```bash
+cp configs/steam-controller/moonlight-gw2-og-vX.Y.vdf /tmp/vX.Y-autosave.vdf
+sed -i '' 's|"url"<TAB><TAB>"usercloud://moonlight/og vX.Y_0"|"url"<TAB><TAB>"autosave:///home/deck/.local/share/Steam/steamapps/common/Steam Controller Configs/64793831/config/moonlight - gw2 steamos/controller_neptune.vdf"|' /tmp/vX.Y-autosave.vdf
+scp /tmp/vX.Y-autosave.vdf "deck@172.16.100.95:.../moonlight - gw2 steamos/controller_neptune.vdf"
+```
+
+For non-autosave paths (`1284210/controller_neptune.vdf`, `moonlight/og vX.Y_0.vdf`) deploy the unmodified repo template — the `usercloud://` URL is fine.
+
+Steam Input UI may rewrite the description to `#SettingsController_AutosaveDescription` on its next save; that's harmless. Steam keeps the layout in memory and writes-through on shutdown, so reload Steam (or open Steam Input UI and save) before next session to lock in the deploy.
+
 ## Lookup chain summary
 
 When Steam Input loads a layout for shortcut "X":

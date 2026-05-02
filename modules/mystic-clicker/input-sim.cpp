@@ -753,12 +753,23 @@ void SimulateTeleportFriendCombo()
 
 void SimulateTradingPostCombo()
 {
-    OpenInventoryAndDoubleClick(g_TradingPostIconX, g_TradingPostIconY, "Trading Post Combo: open inventory + double-click");
+    // Same pattern as Teleport Friend / Wizard Gobbler / Lounge Pass: VDF emits
+    // bare F7 (no `I`), DLL waits for Steam Input modifiers to release then
+    // synthesizes a clean `I` itself. Without this the chord double-emit can
+    // toggle inventory open then closed before the captured-slot double-click
+    // lands, which manifested as "TP open, close, sometimes open" intermittency.
+    std::thread([] {
+        WaitForChordModifiersRelease("Trading Post");
+        OpenInventoryDllAndDoubleClick(g_TradingPostIconX, g_TradingPostIconY, "Trading Post Combo: open inventory + double-click");
+    }).detach();
 }
 
 void SimulateBankCombo()
 {
-    OpenInventoryAndDoubleClick(g_BankIconX, g_BankIconY, "Bank Combo: open inventory + double-click");
+    std::thread([] {
+        WaitForChordModifiersRelease("Bank");
+        OpenInventoryDllAndDoubleClick(g_BankIconX, g_BankIconY, "Bank Combo: open inventory + double-click");
+    }).detach();
 }
 
 void SimulateWizardGobblerCombo()

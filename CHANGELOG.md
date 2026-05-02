@@ -7,6 +7,17 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.12] - 2026-05-02 — Mystic Clicker: TP + Bank combos use DLL-press-`I` (intermittency fix)
+
+### Fixed
+
+- **`SimulateTradingPostCombo` / `SimulateBankCombo`** — migrated to the same `WaitForChordModifiersRelease` + `OpenInventoryDllAndDoubleClick` pattern Teleport Friend / Wizard Gobbler / Lounge Pass / Merchant already use. Symptom was TP chord opening then closing inventory (sometimes opening), making the captured-slot double-click land on a closed panel. Root cause: the old `OpenInventoryAndDoubleClick` helper assumed the VDF chord pressed `I`, but the chords (bare F7 / F8) don't — and Steam Input's chord double-emit could land conflicting events. Now the DLL releases held modifiers and synthesizes `I` itself, exactly once per dispatch.
+
+### Files
+
+- `modules/mystic-clicker/input-sim.cpp` — TP and Bank combos rewritten
+- `modules/mystic-clicker/entry.cpp` — version bump 3.6.11 → 3.6.12
+
 ## [controller v19.3] - 2026-05-02 — Utility Wheel: empty center, Settings moved to slot 16
 
 ### Changed

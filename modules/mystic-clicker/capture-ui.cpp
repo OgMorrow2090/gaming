@@ -82,71 +82,113 @@ struct CaptureTarget {
     const char* description;
     int* posX;
     int* posY;
+    const char* category;
 };
 
 static CaptureTarget s_Targets[] = {
-    {"Deposit Materials", "Inventory deposit button",     &g_DepositX,      &g_DepositY},
-    {"Sort/Compact",      "Inventory sort button",        &g_SortX,         &g_SortY},
-    {"Bouncy Open",         "Right-click bouncy chest (combo step 1)", &g_ChestX, &g_ChestY},
-    {"Bouncy Accept",       "Click Accept dialog for bouncy chest (combo step 2)", &g_BouncyAcceptX, &g_BouncyAcceptY},
-    {"Bouncy Meta Progress","Meta progress dialog — between Accept and Meta Complete (combo step 3)", &g_BouncyMetaProgressX, &g_BouncyMetaProgressY},
-    {"Bouncy Meta Complete","Meta completion dialog — slight offset from Bouncy Accept (combo step 4)", &g_BouncyMetaCompleteX, &g_BouncyMetaCompleteY},
-    {"Exit Instance",     "Leave instance button",        &g_ExitInstanceX, &g_ExitInstanceY},
-    {"Accept 2",          "Accept combo slot 2 (originally Yes Dialog)", &g_YesDialogX, &g_YesDialogY},
-    {"Mystic Forge",      "Forge throw button",           &g_MysticForgeX,  &g_MysticForgeY},
-    {"Mystic Refill",     "Forge refill button",          &g_MysticRefillX, &g_MysticRefillY},
-    {"Vendor Buy",        "Buy from vendor",              &g_VendorX,       &g_VendorY},
-    {"Sell Junk",         "Sell junk to vendor",          &g_SellJunkX,     &g_SellJunkY},
-    {"Trading Post",      "TP collect button",            &g_TradingPostX,  &g_TradingPostY},
-    {"TP Remove",         "Cancel TP listing",            &g_TpRemoveX,     &g_TpRemoveY},
-    {"Craft",             "Craft single item button",     &g_CraftX,        &g_CraftY},
-    {"Craft All",         "Craft all items button",       &g_CraftAllX,     &g_CraftAllY},
-    {"Wizard Vault",      "Wizard Vault collect button",  &g_WizardVaultX,  &g_WizardVaultY},
-    {"Char Swap",         "Char Swap addon (overlay)",    &g_CharSwapX,     &g_CharSwapY},
-    {"TP Buy/Sell",       "Trading Post buy/sell button", &g_TpBuySellX,    &g_TpBuySellY},
-    {"Wizard Vault Complete", "Wizard Vault Complete button (combo 2nd click)", &g_WizardVaultCompleteX, &g_WizardVaultCompleteY},
-    {"Accept 1",          "Accept combo slot 1 (originally Chest Accept)", &g_AcceptX,       &g_AcceptY},
-    {"Accept 3",          "Accept combo slot 3", &g_GeneralAcceptX, &g_GeneralAcceptY},
-    {"Accept 4",          "Accept combo slot 4", &g_GeneralAccept2X, &g_GeneralAccept2Y},
-    {"Accept 5",          "Accept combo slot 5", &g_GeneralAccept3X, &g_GeneralAccept3Y},
-    {"Accept 6",          "Accept combo slot 6", &g_GeneralAccept4X, &g_GeneralAccept4Y},
-    {"Accept 7",          "Accept combo slot 7", &g_Accept7X,      &g_Accept7Y},
-    {"Accept 8",          "Accept combo slot 8", &g_Accept8X,      &g_Accept8Y},
-    {"Accept 9",          "Accept combo slot 9", &g_Accept9X,      &g_Accept9Y},
-    {"Accept 10",         "Accept combo slot 10", &g_Accept10X,    &g_Accept10Y},
-    {"Accept 11",         "Accept combo slot 11", &g_Accept11X,    &g_Accept11Y},
-    {"Accept 12",         "Accept combo slot 12", &g_Accept12X,    &g_Accept12Y},
-    {"Accept 13",         "Accept combo slot 13", &g_Accept13X,    &g_Accept13Y},
-    {"Accept 14",         "Accept combo slot 14", &g_Accept14X,    &g_Accept14Y},
-    {"Accept Yes (Final)","Final Yes click — fires LAST in Accept Combo (post-confirmation prompt)", &g_Accept15X, &g_Accept15Y},
-    {"Accept 16",         "Accept combo slot 16", &g_Accept16X,    &g_Accept16Y},
-    {"Accept 17",         "Accept combo slot 17", &g_Accept17X,    &g_Accept17Y},
-    {"Accept 18",         "Accept combo slot 18", &g_Accept18X,    &g_Accept18Y},
-    {"Accept 19",         "Accept combo slot 19", &g_Accept19X,    &g_Accept19Y},
-    {"Accept 20",         "Accept combo slot 20", &g_Accept20X,    &g_Accept20Y},
-    {"Merchant",           "Portable Merchant item in inventory (R1+DPad Right Double)", &g_MerchantX, &g_MerchantY},
-    {"Wizard Vault Daily Tab",  "WV Daily tab button (combo ensures Daily selected before clicks)", &g_WizardVaultDailyTabX, &g_WizardVaultDailyTabY},
-    {"Wizard Vault Weekly Tab", "WV Weekly tab button (combo switches tab after daily)", &g_WizardVaultWeeklyTabX, &g_WizardVaultWeeklyTabY},
-    {"Wizard Vault Special Tab", "WV Special tab button (combo runs same flow after weekly)", &g_WizardVaultSpecialTabX, &g_WizardVaultSpecialTabY},
-    {"LFG Search",        "Search tab inside LFG panel (combo 2nd click)", &g_LfgSearchX, &g_LfgSearchY},
-    {"Teleport to Friend", "Portable 'Teleport to Friend' icon in inventory (combo double-click target)", &g_TeleportFriendX, &g_TeleportFriendY},
-    {"Trading Post Icon",  "Portable Trading Post icon in inventory (combo double-click target)", &g_TradingPostIconX, &g_TradingPostIconY},
-    {"Bank Icon",          "Portable Bank icon in inventory (combo double-click target)", &g_BankIconX, &g_BankIconY},
-    {"Wizard Gobbler",     "Wizard Gobbler icon in inventory (R1+DPad Left Full)", &g_WizardGobblerX, &g_WizardGobblerY},
-    {"Wizard Portal Scroll","Wizard Portal Scroll icon in inventory (R1+DPad Left Hold)", &g_WizardPortalScrollX, &g_WizardPortalScrollY},
-    {"Lounge Pass",        "Lounge Pass icon in inventory (R1+DPad Left Double)", &g_LoungePassX, &g_LoungePassY},
-    {"Chat Waypoint",      "Pinged waypoint link in chat — single-click opens map (R1+DPad Down Full combo 1st)", &g_ChatWaypointX, &g_ChatWaypointY},
-    {"Map Waypoint",       "Waypoint on opened map — double-click to travel (R1+DPad Down Full combo 2nd)", &g_MapWaypointX, &g_MapWaypointY},
-    {"Party/Squad Bar",    "Party/Squad member bar — right-click target (R1+DPad Down Hold combo 1st)", &g_PartySquadBarX, &g_PartySquadBarY},
-    {"Leave Party Button", "Leave Party/Squad button in right-click menu (R1+DPad Down Hold combo 2nd)", &g_LeavePartyX, &g_LeavePartyY},
-    {"Mail Take All",     "Take All button in Mail panel (combo 2nd click)", &g_MailTakeAllX, &g_MailTakeAllY},
-    {"Craft Filter",      "Crafting filter button (combo 1st click)", &g_CraftFilterX, &g_CraftFilterY},
-    {"Craft Collapse",    "Crafting collapse-all button (combo 2nd click)", &g_CraftCollapseX, &g_CraftCollapseY},
-    {"Craft Close",       "Close button on Crafting window", &g_CraftCloseX, &g_CraftCloseY},
-    {"Guild Hall",        "Guild Hall button in Guild panel", &g_GuildHallX,    &g_GuildHallY},
-    {"Exit Game",         "Exit to Character Select button in in-game menu (Esc menu) — used by Graceful Quit", &g_ExitGameX, &g_ExitGameY},
+    // Mystic Forge
+    {"Mystic Forge",      "Forge throw button",           &g_MysticForgeX,  &g_MysticForgeY,  "Mystic Forge"},
+    {"Mystic Refill",     "Forge refill button",          &g_MysticRefillX, &g_MysticRefillY, "Mystic Forge"},
+
+    // Trading Post
+    {"TP Collect",        "TP collect button",            &g_TradingPostX,  &g_TradingPostY,  "Trading Post"},
+    {"TP Buy/Sell",       "Trading Post buy/sell button", &g_TpBuySellX,    &g_TpBuySellY,    "Trading Post"},
+    {"TP Cancel Listing", "Cancel TP listing",            &g_TpRemoveX,     &g_TpRemoveY,     "Trading Post"},
+    {"TP Portable Icon",  "Portable Trading Post icon in inventory (combo double-click target)", &g_TradingPostIconX, &g_TradingPostIconY, "Trading Post"},
+
+    // Bank & Inventory
+    {"Deposit Materials", "Inventory deposit button",     &g_DepositX,      &g_DepositY,      "Bank & Inventory"},
+    {"Sort/Compact",      "Inventory sort button",        &g_SortX,         &g_SortY,         "Bank & Inventory"},
+    {"Bank Portable Icon",     "Portable Bank icon in inventory (combo double-click target)", &g_BankIconX, &g_BankIconY, "Bank & Inventory"},
+    {"Merchant Portable Icon", "Portable Merchant item in inventory (R1+DPad Right Double)",  &g_MerchantX, &g_MerchantY, "Bank & Inventory"},
+
+    // Crafting
+    {"Single Craft",      "Craft single item button",     &g_CraftX,        &g_CraftY,        "Crafting"},
+    {"Craft All",         "Craft all items button",       &g_CraftAllX,     &g_CraftAllY,     "Crafting"},
+    {"Craft Filter",      "Crafting filter button (combo 1st click)", &g_CraftFilterX, &g_CraftFilterY,   "Crafting"},
+    {"Craft Collapse All","Crafting collapse-all button (combo 2nd click)", &g_CraftCollapseX, &g_CraftCollapseY, "Crafting"},
+    {"Close Crafting",    "Close button on Crafting window", &g_CraftCloseX, &g_CraftCloseY,   "Crafting"},
+
+    // Mail
+    {"Mail Take All",     "Take All button in Mail panel (combo 2nd click)", &g_MailTakeAllX, &g_MailTakeAllY, "Mail"},
+
+    // Wizard Vault
+    {"Wizard Vault Collect",     "Wizard Vault collect button",  &g_WizardVaultX,  &g_WizardVaultY,  "Wizard Vault"},
+    {"Wizard Vault Confirm",     "Wizard Vault Complete button (combo 2nd click)", &g_WizardVaultCompleteX, &g_WizardVaultCompleteY, "Wizard Vault"},
+    {"Wizard Vault Daily Tab",   "WV Daily tab button (combo ensures Daily selected before clicks)", &g_WizardVaultDailyTabX, &g_WizardVaultDailyTabY,   "Wizard Vault"},
+    {"Wizard Vault Weekly Tab",  "WV Weekly tab button (combo switches tab after daily)",            &g_WizardVaultWeeklyTabX, &g_WizardVaultWeeklyTabY, "Wizard Vault"},
+    {"Wizard Vault Special Tab", "WV Special tab button (combo runs same flow after weekly)",        &g_WizardVaultSpecialTabX, &g_WizardVaultSpecialTabY, "Wizard Vault"},
+
+    // Wizard Items
+    {"Wizard Gobbler",      "Wizard Gobbler icon in inventory (R1+DPad Left Full)",       &g_WizardGobblerX,      &g_WizardGobblerY,      "Wizard Items"},
+    {"Wizard Portal Scroll","Wizard Portal Scroll icon in inventory (R1+DPad Left Hold)", &g_WizardPortalScrollX, &g_WizardPortalScrollY, "Wizard Items"},
+
+    // Travel
+    {"Lounge Pass",          "Lounge Pass icon in inventory (R1+DPad Left Double)",                                       &g_LoungePassX,    &g_LoungePassY,    "Travel"},
+    {"Teleport to Friend",   "Portable 'Teleport to Friend' icon in inventory (combo double-click target)",               &g_TeleportFriendX, &g_TeleportFriendY, "Travel"},
+    {"Chat Waypoint (1st)",  "Pinged waypoint link in chat — single-click opens map (R1+DPad Down Full combo 1st)",       &g_ChatWaypointX,  &g_ChatWaypointY,  "Travel"},
+    {"Map Waypoint (2nd)",   "Waypoint on opened map — double-click to travel (R1+DPad Down Full combo 2nd)",             &g_MapWaypointX,   &g_MapWaypointY,   "Travel"},
+
+    // Bouncy Chest
+    {"Bouncy Open",         "Right-click bouncy chest (combo step 1)",                                                       &g_ChestX,             &g_ChestY,             "Bouncy Chest"},
+    {"Bouncy Accept",       "Click Accept dialog for bouncy chest (combo step 2)",                                           &g_BouncyAcceptX,      &g_BouncyAcceptY,      "Bouncy Chest"},
+    {"Bouncy Meta Progress","Meta progress dialog — between Accept and Meta Complete (combo step 3)",                       &g_BouncyMetaProgressX,&g_BouncyMetaProgressY,"Bouncy Chest"},
+    {"Bouncy Meta Complete","Meta completion dialog — slight offset from Bouncy Accept (combo step 4)",                     &g_BouncyMetaCompleteX,&g_BouncyMetaCompleteY,"Bouncy Chest"},
+
+    // Party
+    {"Party Bar (right-click)", "Party/Squad member bar — right-click target (R1+DPad Down Hold combo 1st)", &g_PartySquadBarX, &g_PartySquadBarY, "Party"},
+    {"Leave Party (in menu)",   "Leave Party/Squad button in right-click menu (R1+DPad Down Hold combo 2nd)", &g_LeavePartyX,    &g_LeavePartyY,    "Party"},
+
+    // Generic Accept Combo (numbered slots fire in sequence in SimulateGeneralAcceptCombo)
+    {"Accept 1 (Chest)",     "Accept combo slot 1 (originally Chest Accept)", &g_AcceptX,         &g_AcceptY,         "Generic Accept Combo"},
+    {"Accept 2 (Yes early)", "Accept combo slot 2 (originally Yes Dialog)",   &g_YesDialogX,      &g_YesDialogY,      "Generic Accept Combo"},
+    {"Accept 3",             "Accept combo slot 3",                           &g_GeneralAcceptX,  &g_GeneralAcceptY,  "Generic Accept Combo"},
+    {"Accept 4",             "Accept combo slot 4",                           &g_GeneralAccept2X, &g_GeneralAccept2Y, "Generic Accept Combo"},
+    {"Accept 5",             "Accept combo slot 5",                           &g_GeneralAccept3X, &g_GeneralAccept3Y, "Generic Accept Combo"},
+    {"Accept 6",             "Accept combo slot 6",                           &g_GeneralAccept4X, &g_GeneralAccept4Y, "Generic Accept Combo"},
+    {"Accept 7",             "Accept combo slot 7",                           &g_Accept7X,        &g_Accept7Y,        "Generic Accept Combo"},
+    {"Accept 8",             "Accept combo slot 8",                           &g_Accept8X,        &g_Accept8Y,        "Generic Accept Combo"},
+    {"Accept 9",             "Accept combo slot 9",                           &g_Accept9X,        &g_Accept9Y,        "Generic Accept Combo"},
+    {"Accept 10",            "Accept combo slot 10",                          &g_Accept10X,       &g_Accept10Y,       "Generic Accept Combo"},
+    {"Accept 11",            "Accept combo slot 11",                          &g_Accept11X,       &g_Accept11Y,       "Generic Accept Combo"},
+    {"Accept 12",            "Accept combo slot 12",                          &g_Accept12X,       &g_Accept12Y,       "Generic Accept Combo"},
+    {"Accept 13",            "Accept combo slot 13",                          &g_Accept13X,       &g_Accept13Y,       "Generic Accept Combo"},
+    {"Accept 14",            "Accept combo slot 14",                          &g_Accept14X,       &g_Accept14Y,       "Generic Accept Combo"},
+    {"Accept Yes (Final)",   "Final Yes click — fires LAST in Accept Combo (post-confirmation prompt)", &g_Accept15X, &g_Accept15Y, "Generic Accept Combo"},
+    {"Accept 16",            "Accept combo slot 16",                          &g_Accept16X,       &g_Accept16Y,       "Generic Accept Combo"},
+    {"Accept 17",            "Accept combo slot 17",                          &g_Accept17X,       &g_Accept17Y,       "Generic Accept Combo"},
+    {"Accept 18",            "Accept combo slot 18",                          &g_Accept18X,       &g_Accept18Y,       "Generic Accept Combo"},
+    {"Accept 19",            "Accept combo slot 19",                          &g_Accept19X,       &g_Accept19Y,       "Generic Accept Combo"},
+    {"Accept 20",            "Accept combo slot 20",                          &g_Accept20X,       &g_Accept20Y,       "Generic Accept Combo"},
+
+    // Misc
+    {"Vendor Buy",            "Buy from vendor",            &g_VendorX,       &g_VendorY,       "Misc"},
+    {"Sell Junk",             "Sell junk to vendor",        &g_SellJunkX,     &g_SellJunkY,     "Misc"},
+    {"LFG Search Tab",        "Search tab inside LFG panel (combo 2nd click)", &g_LfgSearchX, &g_LfgSearchY, "Misc"},
+    {"Character Swap",        "Char Swap addon (overlay)",  &g_CharSwapX,     &g_CharSwapY,     "Misc"},
+    {"Exit Instance",         "Leave instance button",      &g_ExitInstanceX, &g_ExitInstanceY, "Misc"},
+    {"Guild Hall (in panel)", "Guild Hall button in Guild panel", &g_GuildHallX, &g_GuildHallY,  "Misc"},
+    {"Exit Game",             "Exit to Character Select button in in-game menu (Esc menu) — used by Graceful Quit", &g_ExitGameX, &g_ExitGameY, "Misc"},
 };
 static constexpr int NUM_TARGETS = sizeof(s_Targets) / sizeof(s_Targets[0]);
+
+// Display order for category headers. Anything in s_Targets with a category
+// not in this list is silently dropped — keep them in sync.
+static const char* const s_Categories[] = {
+    "Mystic Forge",
+    "Trading Post",
+    "Bank & Inventory",
+    "Crafting",
+    "Mail",
+    "Wizard Vault",
+    "Wizard Items",
+    "Travel",
+    "Bouncy Chest",
+    "Party",
+    "Generic Accept Combo",
+    "Misc",
+};
+static constexpr int NUM_CATEGORIES = sizeof(s_Categories) / sizeof(s_Categories[0]);
 
 /**
  * PerformCapture - Called when countdown reaches zero
@@ -326,85 +368,120 @@ void RenderCaptureWindow()
             ImGui::Spacing();
         }
 
-        // Build sorted display order: uncaptured first, then captured; within each
-        // group A-Z by name. Rebuilt every frame — NUM_TARGETS is small so the
-        // insertion sort cost is negligible.
-        int order[NUM_TARGETS];
-        for (int i = 0; i < NUM_TARGETS; ++i) order[i] = i;
-        for (int i = 1; i < NUM_TARGETS; ++i)
+        // Render targets grouped by category under collapsing headers.
+        // Within each category: uncaptured first, then captured; alphabetic within each group.
+        // Categories default to collapsed; auto-expand the one containing the active countdown.
+        for (int c = 0; c < NUM_CATEGORIES; ++c)
         {
-            int cur = order[i];
-            bool curSet = (*s_Targets[cur].posX != 0 || *s_Targets[cur].posY != 0);
-            int j = i - 1;
-            while (j >= 0)
-            {
-                int prev = order[j];
-                bool prevSet = (*s_Targets[prev].posX != 0 || *s_Targets[prev].posY != 0);
-                bool swap = false;
-                if (!curSet && prevSet) swap = true;
-                else if (curSet == prevSet && strcmp(s_Targets[cur].name, s_Targets[prev].name) < 0) swap = true;
-                if (!swap) break;
-                order[j + 1] = prev;
-                --j;
-            }
-            order[j + 1] = cur;
-        }
+            const char* category = s_Categories[c];
 
-        // Target buttons — always visible, disabled during countdown
-        for (int idx = 0; idx < NUM_TARGETS; idx++)
-        {
-            int i = order[idx];
-            CaptureTarget& t = s_Targets[i];
-
-            char label[128];
-            if (*t.posX != 0 || *t.posY != 0)
-                sprintf_s(label, "%s  (%d, %d)", t.name, *t.posX, *t.posY);
-            else
-                sprintf_s(label, "%s  (not set)", t.name);
-
-            // Highlight the currently capturing target
-            if (s_CountdownActive && s_CountdownTarget == i)
+            // Collect indices of targets in this category.
+            int catIndices[NUM_TARGETS];
+            int catCount = 0;
+            for (int i = 0; i < NUM_TARGETS; ++i)
             {
-                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.5f, 0.0f, 0.9f));
-                ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.8f, 0.5f, 0.0f, 0.9f));
-                ImGui::Button(label, ImVec2(-1, 30));
-                ImGui::PopStyleColor(2);
+                if (strcmp(s_Targets[i].category, category) == 0)
+                    catIndices[catCount++] = i;
             }
-            else if (s_CountdownActive)
+            if (catCount == 0) continue;
+
+            // Sort within category: uncaptured first, then alphabetic by name.
+            for (int i = 1; i < catCount; ++i)
             {
-                // Disabled during countdown
-                ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.4f);
-                ImGui::Button(label, ImVec2(-1, 30));
-                ImGui::PopStyleVar();
-            }
-            else
-            {
-                if (ImGui::Button(label, ImVec2(-1, 30)))
+                int cur = catIndices[i];
+                bool curSet = (*s_Targets[cur].posX != 0 || *s_Targets[cur].posY != 0);
+                int j = i - 1;
+                while (j >= 0)
                 {
-                    s_CountdownActive = true;
-                    s_CountdownTarget = i;
-                    s_CountdownStart = std::chrono::steady_clock::now();
-                    s_ShowConfirmation = false;
-
-                    char logBuf[128];
-                    sprintf_s(logBuf, "Starting %ds countdown for %s", COUNTDOWN_SECONDS, t.name);
-                    APIDefs->Log(LOGL_INFO, "MysticClicker", logBuf);
+                    int prev = catIndices[j];
+                    bool prevSet = (*s_Targets[prev].posX != 0 || *s_Targets[prev].posY != 0);
+                    bool swap = false;
+                    if (!curSet && prevSet) swap = true;
+                    else if (curSet == prevSet && strcmp(s_Targets[cur].name, s_Targets[prev].name) < 0) swap = true;
+                    if (!swap) break;
+                    catIndices[j + 1] = prev;
+                    --j;
                 }
+                catIndices[j + 1] = cur;
+            }
 
-                // Right-click clears the captured position for this target.
-                if (ImGui::IsItemClicked(ImGuiMouseButton_Right) && (*t.posX != 0 || *t.posY != 0))
+            // Count uncaptured for the header label.
+            int unsetCount = 0;
+            bool catHasActive = false;
+            for (int i = 0; i < catCount; ++i)
+            {
+                int idx = catIndices[i];
+                if (*s_Targets[idx].posX == 0 && *s_Targets[idx].posY == 0) ++unsetCount;
+                if (s_CountdownActive && s_CountdownTarget == idx) catHasActive = true;
+            }
+
+            // Header label. The "###cat_%d" suffix gives the header a stable ImGui ID
+            // independent of the visible text, so the unset-count change doesn't reset
+            // the open/closed state.
+            char headerLabel[128];
+            if (unsetCount > 0)
+                sprintf_s(headerLabel, "%s  (%d unset)###cat_%d", category, unsetCount, c);
+            else
+                sprintf_s(headerLabel, "%s  (all set)###cat_%d", category, c);
+
+            // Auto-expand the category containing an active countdown so the
+            // highlighted button stays visible during the 5s wait.
+            if (catHasActive) ImGui::SetNextItemOpen(true);
+
+            if (!ImGui::CollapsingHeader(headerLabel)) continue;
+
+            for (int i = 0; i < catCount; ++i)
+            {
+                int idx = catIndices[i];
+                CaptureTarget& t = s_Targets[idx];
+
+                char label[128];
+                if (*t.posX != 0 || *t.posY != 0)
+                    sprintf_s(label, "%s  (%d, %d)", t.name, *t.posX, *t.posY);
+                else
+                    sprintf_s(label, "%s  (not set)", t.name);
+
+                if (s_CountdownActive && s_CountdownTarget == idx)
                 {
-                    *t.posX = 0;
-                    *t.posY = 0;
-                    SaveButtonPositions();
-                    sprintf_s(s_ConfirmMessage, "%s cleared", t.name);
-                    APIDefs->Log(LOGL_INFO, "MysticClicker", s_ConfirmMessage);
-                    s_ShowConfirmation = true;
-                    s_ConfirmStart = std::chrono::steady_clock::now();
+                    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.5f, 0.0f, 0.9f));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.8f, 0.5f, 0.0f, 0.9f));
+                    ImGui::Button(label, ImVec2(-1, 30));
+                    ImGui::PopStyleColor(2);
                 }
+                else if (s_CountdownActive)
+                {
+                    ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.4f);
+                    ImGui::Button(label, ImVec2(-1, 30));
+                    ImGui::PopStyleVar();
+                }
+                else
+                {
+                    if (ImGui::Button(label, ImVec2(-1, 30)))
+                    {
+                        s_CountdownActive = true;
+                        s_CountdownTarget = idx;
+                        s_CountdownStart = std::chrono::steady_clock::now();
+                        s_ShowConfirmation = false;
 
-                if (ImGui::IsItemHovered())
-                    ImGui::SetTooltip("%s\n(right-click to clear)", t.description);
+                        char logBuf[128];
+                        sprintf_s(logBuf, "Starting %ds countdown for %s", COUNTDOWN_SECONDS, t.name);
+                        APIDefs->Log(LOGL_INFO, "MysticClicker", logBuf);
+                    }
+
+                    if (ImGui::IsItemClicked(ImGuiMouseButton_Right) && (*t.posX != 0 || *t.posY != 0))
+                    {
+                        *t.posX = 0;
+                        *t.posY = 0;
+                        SaveButtonPositions();
+                        sprintf_s(s_ConfirmMessage, "%s cleared", t.name);
+                        APIDefs->Log(LOGL_INFO, "MysticClicker", s_ConfirmMessage);
+                        s_ShowConfirmation = true;
+                        s_ConfirmStart = std::chrono::steady_clock::now();
+                    }
+
+                    if (ImGui::IsItemHovered())
+                        ImGui::SetTooltip("%s\n(right-click to clear)", t.description);
+                }
             }
         }
 

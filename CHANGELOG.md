@@ -7,6 +7,40 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.13] - 2026-05-02 — Mystic Clicker: capture window grouped by category + clearer names
+
+### Changed
+
+- **Capture window** now groups targets under collapsing-header categories: Mystic Forge, Trading Post, Bank & Inventory, Crafting, Mail, Wizard Vault, Wizard Items, Travel, Bouncy Chest, Party, Generic Accept Combo, Misc. Headers default collapsed to reduce visual clutter as the list grew. Each header shows an "(N unset)" or "(all set)" suffix so you can tell at-a-glance which categories still need attention. Within each category the existing "uncaptured first, then alphabetic" sort still applies. The category containing an active 5-second capture countdown auto-expands so the highlighted button stays visible.
+- **Renamed display labels** for clarity (saved coordinates **not affected** — the `.cfg` file uses internal `g_*` variable keys, not display names):
+
+  | Before | After |
+  | --- | --- |
+  | Trading Post | TP Collect |
+  | TP Remove | TP Cancel Listing |
+  | Trading Post Icon | TP Portable Icon |
+  | Bank Icon | Bank Portable Icon |
+  | Merchant | Merchant Portable Icon |
+  | Craft | Single Craft |
+  | Craft Collapse | Craft Collapse All |
+  | Craft Close | Close Crafting |
+  | Wizard Vault | Wizard Vault Collect |
+  | Wizard Vault Complete | Wizard Vault Confirm |
+  | Chat Waypoint | Chat Waypoint (1st) |
+  | Map Waypoint | Map Waypoint (2nd) |
+  | Party/Squad Bar | Party Bar (right-click) |
+  | Leave Party Button | Leave Party (in menu) |
+  | Accept 1 | Accept 1 (Chest) |
+  | Accept 2 | Accept 2 (Yes early) |
+  | Char Swap | Character Swap |
+  | LFG Search | LFG Search Tab |
+  | Guild Hall | Guild Hall (in panel) |
+
+### Files
+
+- `modules/mystic-clicker/capture-ui.cpp` — `CaptureTarget` gains a `category` field; `s_Targets[]` repopulated with renames + categories; render loop iterates `s_Categories[]` and emits one `ImGui::CollapsingHeader` per group with auto-expand for active countdowns
+- `modules/mystic-clicker/entry.cpp` — version bump 3.6.12 → 3.6.13
+
 ## [3.6.12] - 2026-05-02 — Mystic Clicker: TP + Bank combos use DLL-press-`I` (intermittency fix)
 
 ### Fixed

@@ -1612,6 +1612,15 @@
 	},
 	{
 		"Alt": false,
+		"Code": 61,
+		"Ctrl": true,
+		"Identifier": "PATHING_TOGGLE_ALL",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
 		"Code": 67,
 		"Ctrl": false,
 		"Identifier": "PERSONAL_MARKER",
@@ -1818,13 +1827,13 @@
 		"Type": 1
 	},
 	{
-		"Alt": false,
-		"Code": 0,
+		"Alt": true,
+		"Code": 61,
 		"Ctrl": false,
 		"Identifier": "pathing-render-toggle",
 		"Passthrough": false,
-		"Shift": false,
-		"Type": 0
+		"Shift": true,
+		"Type": 1
 	},
 	{
 		"Alt": true,

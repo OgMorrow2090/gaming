@@ -1328,6 +1328,45 @@ void SimulateGracefulQuit()
     SimulateClickAt(g_ExitGameX, g_ExitGameY);
 }
 
+void SimulatePathingToggleAll()
+{
+    // Pathing addon (Nexus) ships three independent render-toggle keybinds:
+    //   Alt+Shift+F1 = pathing-render-minimap-toggle  (paths drawn on the minimap)
+    //   Alt+Shift+F2 = pathing-render-map-toggle      (paths drawn on the world map)
+    //   Alt+Shift+F3 = pathing-render-toggle          (paths drawn in the 3D scene)
+    // This macro fires all three with a 50 ms gap so a single bind toggles every
+    // layer at once. Default keybind is CTRL+F3 to match the controller Utility
+    // Wheel slot 1 ("Toggle Paths") which already emits that combo. Detached
+    // thread + WaitForChordModifiersRelease so the wheel-held Ctrl is released
+    // before the Alt+Shift sends start (otherwise GW2 would see Ctrl+Alt+Shift+Fn
+    // and the Pathing addon's exact-modifier match would miss).
+    std::thread([] {
+        WaitForChordModifiersRelease("Pathing Toggle All");
+        APIDefs->Log(LOGL_INFO, "MysticClicker", "Pathing Toggle All: Minimap + Map + World render");
+
+        auto sendAltShiftFn = [](WORD vk) {
+            INPUT k[6] = {};
+            WORD altScan   = (WORD)MapVirtualKey(VK_LMENU,  MAPVK_VK_TO_VSC);
+            WORD shiftScan = (WORD)MapVirtualKey(VK_LSHIFT, MAPVK_VK_TO_VSC);
+            WORD fnScan    = (WORD)MapVirtualKey(vk,         MAPVK_VK_TO_VSC);
+
+            k[0].type = INPUT_KEYBOARD; k[0].ki.wVk = VK_LMENU;  k[0].ki.wScan = altScan;   k[0].ki.dwFlags = KEYEVENTF_SCANCODE;
+            k[1].type = INPUT_KEYBOARD; k[1].ki.wVk = VK_LSHIFT; k[1].ki.wScan = shiftScan; k[1].ki.dwFlags = KEYEVENTF_SCANCODE;
+            k[2].type = INPUT_KEYBOARD; k[2].ki.wVk = vk;        k[2].ki.wScan = fnScan;    k[2].ki.dwFlags = KEYEVENTF_SCANCODE;
+            k[3].type = INPUT_KEYBOARD; k[3].ki.wVk = vk;        k[3].ki.wScan = fnScan;    k[3].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
+            k[4].type = INPUT_KEYBOARD; k[4].ki.wVk = VK_LSHIFT; k[4].ki.wScan = shiftScan; k[4].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
+            k[5].type = INPUT_KEYBOARD; k[5].ki.wVk = VK_LMENU;  k[5].ki.wScan = altScan;   k[5].ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
+            SendInput(6, k, sizeof(INPUT));
+        };
+
+        sendAltShiftFn(VK_F1);
+        Sleep(50);
+        sendAltShiftFn(VK_F2);
+        Sleep(50);
+        sendAltShiftFn(VK_F3);
+    }).detach();
+}
+
 void SimulateMysticForgeCombo()
 {
     // Check both positions are set

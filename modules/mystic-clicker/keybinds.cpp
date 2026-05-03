@@ -303,6 +303,10 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     {
         SimulateGracefulQuit();
     }
+    else if (strcmp(aIdentifier, PATHING_TOGGLE_ALL) == 0)
+    {
+        SimulatePathingToggleAll();
+    }
     // === CAPTURE MODE ===
     else if (strcmp(aIdentifier, CAPTURE_MODE) == 0)
     {

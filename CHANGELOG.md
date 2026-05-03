@@ -7,6 +7,24 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.15] - 2026-05-03 — Mystic Clicker: Pathing render-all macro + bind world render layer
+
+### Fixed
+
+- **Pathing addon's world-render toggle was unbound** (`pathing-render-toggle` had `Code=0` in `nexus-inputbinds.json`). The Utility Wheel's "Toggle Paths" slot has been emitting Ctrl+F3 to nothing for who-knows-how-long. Bound it to **Alt+Shift+F3**, matching the F1/F2 family that already works for minimap/map toggles.
+
+### Added
+
+- **`PATHING_TOGGLE_ALL` macro** (default `CTRL+F3`, the Utility Wheel slot 1 chord) — fires Alt+Shift+F1 → Alt+Shift+F2 → Alt+Shift+F3 in sequence with 50 ms gaps. Single keybind toggles all three Pathing render layers (minimap, map, world) at once. The three individual Nexus hotkeys remain available for layer-specific toggling. Detached thread + `WaitForChordModifiersRelease` so the wheel-held Ctrl is released before the Alt+Shift sends start (otherwise GW2 sees Ctrl+Alt+Shift+Fn and Pathing's exact-modifier match misses).
+
+### Files
+
+- `modules/mystic-clicker/shared.h` — `PATHING_TOGGLE_ALL` constant + `SimulatePathingToggleAll()` proto
+- `modules/mystic-clicker/entry.cpp` — register/deregister; version bump 3.6.14 → 3.6.15
+- `modules/mystic-clicker/keybinds.cpp` — dispatch
+- `modules/mystic-clicker/input-sim.cpp` — `SimulatePathingToggleAll()` implementation
+- `configs/gw2-keybinds/nexus-inputbinds.json` — `PATHING_TOGGLE_ALL` (Code 61 Ctrl) added; `pathing-render-toggle` unbound → Alt+Shift+F3
+
 ## [3.6.14] - 2026-05-02 — Mystic Clicker: shorten "Generic Accept Combo" header to fit on one line
 
 ### Changed

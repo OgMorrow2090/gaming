@@ -381,3 +381,53 @@ Each prefix now keeps its own DPI permanently — no more cross-profile bleed on
 ### Systemd unit speedup deferred
 
 Was about to drop `ExecStartPre=/bin/sleep 5` and reduce `RestartSec=5s` to `1s` to shrink the post-crash gap from ~10s to ~1s. Not needed anymore — with prep-cmd gone, there's nothing to crash from.
+
+## 2026-05-03 — Mystic Clicker v3.6.12 → v3.6.16 + controller v19.4
+
+Long session shipping five MC bumps + a major controller revision. End-state: 5 commits pushed, all 4 GW2 profiles deployed (DLL `0daaa396…`, JSON `8dcd5362…`), Deck VDF deployed to all 3 paths.
+
+### v3.6.12 — TP + Bank combos use DLL-press-`I` (intermittency fix)
+
+User reported TP combo "open then close inventory, sometimes open" — landed on the captured-slot double-click hitting a closed panel. Found that `SimulateTradingPostCombo` and `SimulateBankCombo` were the only two combos still calling the old `OpenInventoryAndDoubleClick` helper, which assumes the VDF chord pressed `I`. But the chords are bare F7 and F8 with no `I` — so inventory was at the mercy of Steam Input's chord double-emit. Migrated both to the proven `WaitForChordModifiersRelease` + `OpenInventoryDllAndDoubleClick` pattern (same as Teleport Friend, Wizard Gobbler, Lounge Pass, Merchant). DLL now synthesizes `I` itself, exactly once per dispatch.
+
+### v3.6.13 — Capture window grouped by category + clearer names
+
+Capture target list grew too big to scan at a glance. Added a `category` field to `CaptureTarget`, populated `s_Categories[]` with 12 group names, and refactored the render loop to emit one `ImGui::CollapsingHeader` per group (default collapsed). Each header shows `(N unset)` or `(all set)` so it's obvious which categories still need attention. Within-group sort still "uncaptured first then alphabetic". Active 5-second capture countdown auto-expands its category via `ImGui::SetNextItemOpen(true)` so the highlighted button stays visible. Uses `###cat_%d` ID suffix on the header label so the visible-text change (unset count) doesn't reset open/closed state.
+
+19 display-label renames (TP Collect, TP Cancel Listing, Single Craft, Wizard Vault Collect, Wizard Vault Confirm, etc.). **Saved coordinates are NOT affected** because `mystic-clicker.cfg` keys (e.g. `TradingPostX=`) are tied to the internal `g_*` variables, not display names — verified by spot-checking 12 keys in `config.cpp`.
+
+### v3.6.14 — Shorten "Generic Accept Combo" header
+
+The `(N unset)` suffix wrapped the header onto a second line. Renamed to "Generic Accept" — "Combo" was implied since these slots are only used by the Accept-Combo sequence. Single `replace_all` of 22 occurrences in capture-ui.cpp.
+
+### v3.6.15 — Pathing toggle-all macro + bind world render layer
+
+User asked why the Utility Wheel's "Toggle Paths" slot wasn't triggering the render. Found the chord (Ctrl+F3) was hitting nothing — Pathing addon's `pathing-render-toggle` had `Code=0` (unbound) in `nexus-inputbinds.json`. Bound it to `Alt+Shift+F3` (parity with the F1/F2 family that already worked for `pathing-render-minimap-toggle` and `pathing-render-map-toggle`). Added a new `PATHING_TOGGLE_ALL` macro (default `CTRL+F3` = the wheel chord) that fires Alt+Shift+F1, Alt+Shift+F2, Alt+Shift+F3 in sequence with 50 ms gaps so a single bind toggles all three render layers at once. Detached thread + `WaitForChordModifiersRelease` so the wheel-held Ctrl is released before the Alt+Shift sends start (otherwise GW2 sees Ctrl+Alt+Shift+Fn and Pathing's exact-modifier match would miss).
+
+`SendInput` with KEYEVENTF_SCANCODE for the modifier+Fn key sequence — same approach as `OpenInventoryDllAndDoubleClick` for reliability under Wine/Sunshine.
+
+### v3.6.16 + controller v19.4 — Remove brittle Leave Party Combo, slash-command alternative on chat wheel, Exit Instance moved
+
+User: "I can't get leave party work as there too many clicks UI move too much". The right-click-party-bar → click-Leave macro depended on two captured UI positions which moved per-resolution and per-instance — fundamentally brittle. Asked the GW2 wiki: GW2 has `/leave` (party only) and `/squadleave` / `/sqleave` (squad only) slash commands. Moved party-leaving to the chat (Commands) wheel as native slash-command-typing slots — no UI dependency.
+
+Removed entirely from MC: `LEAVE_PARTY_COMBO`, `SimulateLeavePartyCombo()`, two capture entries ("Party Bar (right-click)" + "Leave Party (in menu)"), four globals (`g_PartySquadBarX/Y` + `g_LeavePartyX/Y`), and three Nexus binding entries (`LEAVE_PARTY_COMBO`, `CAPTURE_PARTY_SQUAD_BAR`, `CAPTURE_LEAVE_PARTY`). The "Party" category disappeared from the capture window. Persisted `PartySquadBarX/Y`/`LeavePartyX/Y` keys in users' `mystic-clicker.cfg` files linger as unused; harmless.
+
+Controller v19.4 bundled changes:
+
+- Commands wheel slot 6 ("+"): replaced `LEFT_SHIFT + EQUALS + RETURN` with single `KEYPAD_PLUS + RETURN`. The `Shift+Equals` form was actually broken — Steam Input fires each `key_press` as a discrete keypress, not a chord, so Shift released before Equals fired and the slot was typing `=` not `+`.
+- Commands wheel slot 15 (NEW): `/leave` + Enter → leaves party.
+- Commands wheel slot 16 (NEW): `/squadleave` + Enter → leaves squad.
+- `touch_menu_button_count` 14 → 16.
+- R1 + DPad-Down Double_Press: `Shift+F10` (Leave Party Combo) → `Ctrl+E` (Exit Instance). A-Long-Press Exit Instance kept as redundant binding.
+
+VDF validation: brackets 931=931, groups 56, bindings 312 (up from 294: +18 from slot 15/16 additions and slot 6 simplification).
+
+### Sunshine first-connect crashes — fixed earlier in the day session
+
+User reported "first Moonlight connect from Deck/Apple TV often shows session error then works on retry". Investigation found 16 Sunshine crashes in the past week, all `Error reading events from display: Broken pipe` triggered by `sunshine-set-resolution.sh`'s `gamescope-mode` call tearing down gamescope, which broke Sunshine's wayland connection. Sunshine then exited status 1 → systemd `RestartSec=5s` + `ExecStartPre=sleep 5` = ~10 s gap before next Moonlight connect could land.
+
+Script became obsolete with the 3-profile split: each GW2 profile carries its own permanent Wine `LogPixels` in `compatdata/<appid>/pfx/user.reg`, and the user now sets gamescope mode manually in SteamOS Big Picture. The script was actively *worse* than nothing because it overwrote both stream profiles' DPI to match the connecting client (e.g. Apple TV connecting set Deck profile to 144 too). Stripped `prep-cmd` from `SteamOS Game Mode` and `GW2 - SteamOS` apps in `~/.config/sunshine/apps.json` (live + repo backup). One-time fix to Deck prefix LogPixels 144 → 96 (had drifted from a prior Apple TV connect). Sunshine restarted cleanly — no crashes since.
+
+### Important Steam Input gotcha worth remembering
+
+Multiple `binding` entries within a single `Full_Press > bindings` block fire as **discrete sequential keypresses**, NOT a held chord. This is fine for typing patterns like `T, Y, RETURN` → "ty\n", but breaks when you need a held modifier (e.g. `Shift+Equals` to type `+`). Workaround: pick a single-key alternative (`KEYPAD_PLUS` for `+`, etc.) or use a different binding mode. Worth a memory entry — likely to recur.

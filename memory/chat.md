@@ -431,3 +431,69 @@ Script became obsolete with the 3-profile split: each GW2 profile carries its ow
 ### Important Steam Input gotcha worth remembering
 
 Multiple `binding` entries within a single `Full_Press > bindings` block fire as **discrete sequential keypresses**, NOT a held chord. This is fine for typing patterns like `T, Y, RETURN` → "ty\n", but breaks when you need a held modifier (e.g. `Shift+Equals` to type `+`). Workaround: pick a single-key alternative (`KEYPAD_PLUS` for `+`, etc.) or use a different binding mode. Worth a memory entry — likely to recur.
+
+## 2026-05-04 (PM) — Moonlight stream-stuck diagnostic + TP/Bank chord double-`I` fix
+
+### Moonlight "stuck on GW2 character select" investigation
+
+User reported intermittent failure: Moonlight stream from bazzite shows GW2 frozen at character select with bazzite cursor visible and Nexus icons rendered but unclickable. GW2 itself was alive (478% CPU, addons cycling normally). Three contributing factors found:
+
+- **Dual Sunshine sessions** (`active sessions: 2`): Apple TV streaming to TV + Deck connected as controller → encoder forks, focus stalls. Will be moot once dedicated Steam Controller arrives ~2026-05-09 and Deck stops being used as a controller.
+- **Apple TV profile GFXSettings drift**: `RESOLUTION` was Deck-sized 1280×800 in compatdata `2879321470`. Fixed to 2560×1440 to match gamescope output and Wine LogPixels 144.
+- **Wrong Sunshine unit name**: `sunshine.service` is masked on bazzite; correct unit is `sunshine-gaming.service`. First restart attempt failed before I figured this out.
+
+Recovery played: SIGTERM Gw2-64.exe, restart sunshine-gaming, fix GFXSettings, single-client reconnect. User confirmed working but flagged it's intermittent and hard to fully verify — wants to revisit if it recurs after Steam Controller arrives.
+
+Created `memory/moonlight-stream-stuck-diagnostic.md` (project type) capturing the full playbook.
+
+### TP + Bank chord double-`I` flicker — fixed
+
+User reported Trading Post combo regressed to "rapidly opens and closes inventory" on Apple TV; other chords fine. Hashed `mystic-clicker.dll` on all 4 profiles (Steam install, Apple TV, Deck-bazzite, Deck-native) — all v3.6.16, same hash. So it wasn't a deployment gap.
+
+Root cause was in the controller VDF, not the DLL. The v3.6.12 migration moved `I` press inside the DLL (`OpenInventoryDllAndDoubleClick`), but the VDF chord bindings for Trading Post Combo (R1 + DPad-East Full_Press) and Bank Combo (R1 + DPad-East Long_Press) still emitted `key_press I, Open Inventory` alongside their `F7`/`F8` macro keys. Sequence:
+
+1. VDF presses `I` → inventory opens
+2. F7 fires `TRADING_POST_COMBO` → DLL `OpenInventoryDllAndDoubleClick`
+3. DLL releases modifiers, presses `I` → inventory closes (!)
+4. DLL sleep 600ms, double-click captured TP icon → panel is closed → flicker
+
+Removed both stale `key_press I, Open Inventory` lines (template lines 2142, 2150). TP and Bank chords now bare `F7`/`F8` matching post-migration pattern of Teleport Friend (bare F6).
+
+Apple TV exposed it more reliably than Deck because Apple TV's raw-HID path has higher input latency, making the DLL's `I` press more likely to register as distinct from the VDF's `I` press. On Deck (Steam Input local), the timing sometimes coalesced into a single `I` event by chance.
+
+### Live deploy structure clarified
+
+While deploying v19.5, mapped out the actual VDF deploy targets (previously fuzzy). Active layout files Steam Input reads:
+
+- bazzite Apple TV stream: `/home/Og/.local/share/Steam/steamapps/common/Steam Controller Configs/64793831/config/guild wars 2 (apple tv)/og v18.4.9_0.vdf`
+- bazzite Deck stream: same parent, `guild wars 2 (steam deck)/og v18.4.9_0.vdf`
+- bazzite moonlight: same parent, `moonlight/og v18.4.9_0.vdf`
+- Deck native: `/home/deck/.local/share/Steam/steamapps/common/Steam Controller Configs/64793831/config/1284210/controller_neptune.vdf`
+
+The configset `configset_controller_neptune.vdf` references `og v18.4.9_0` (CLOUD prefix) for all three bazzite profiles. The repo backup has the same. So the active filename is `og v18.4.9_0.vdf` even though it now contains v19.5 content — Steam Input reads by configset reference path, not by title parsing. URL field inside each file patched to match its actual location (`usercloud://<dir>/og v18.4.9_0`).
+
+Deployed v19.5 by overwriting `og v18.4.9_0.vdf` in place across the 3 bazzite paths + Deck native's `controller_neptune.vdf`. Backups saved at `*.bak-pre-v195-20260504`.
+
+### Files changed
+
+- `configs/steam-controller/moonlight-gw2-og-template.vdf` — title v19.4 → v19.5; removed 2 stale `I` press lines (TP + Bank chords)
+- `configs/steam-controller/moonlight-gw2-og-v19.5.vdf` — new snapshot
+- `CHANGELOG.md` — controller v19.5 entry
+- `memory/moonlight-stream-stuck-diagnostic.md` — new (project type)
+- `memory/MEMORY.md` — index entry for moonlight-stream-stuck-diagnostic
+
+### Live deploys
+
+- bazzite (Og@172.16.100.212): 3 paths overwritten + 3 backups created
+- Deck (deck@172.16.100.95): 1 path overwritten + 1 backup created
+- Live Wine prefix (Apple TV): GFXSettings `RESOLUTION` 1280×800 → 2560×1440 (one-time fix)
+
+### Commits
+
+- `fcb2bd7` — `docs(memory): Moonlight stuck-at-char-select diagnostic playbook`
+- `0843373` — `controller v19.5: fix TP + Bank chord rapid open/close flicker`
+
+### Open / next session
+
+- User to test TP/Bank chords after relaunching GW2 — should be a clean single-open + double-click, no flicker. If flicker persists on either, the active layout file Steam Input picked may differ from the 4 we updated; grep all VDFs for `key_press I, Open Inventory` to find any stragglers.
+- Steam Controller arrives ~2026-05-09. Once Deck is no longer needed as a TV controller, the dual-Sunshine-session symptom should stop. If "stuck character select" recurs after that, focus on causes 2 (GFXSettings drift) and 3 (`sunshine-gaming.service` unit-name confusion) per `memory/moonlight-stream-stuck-diagnostic.md`.

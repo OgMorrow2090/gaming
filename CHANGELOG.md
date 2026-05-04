@@ -7,6 +7,20 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [controller v19.5] - 2026-05-04 — Fix Trading Post + Bank chord double-`I` flicker
+
+### Fixed (controller VDF)
+
+- **Trading Post Combo** (R1 + DPad-East Full_Press) and **Bank Combo** (R1 + DPad-East Long_Press) chord bindings still emitted `key_press I, Open Inventory` alongside their `F7`/`F8` macro keys — leftover from before the v3.6.12 DLL migration to `OpenInventoryDllAndDoubleClick`. The DLL now presses `I` itself, so the duplicate VDF press caused: VDF opens inventory → DLL closes it → 600ms wait → double-click lands on closed panel = "rapid open/close flicker" reported on Apple TV.
+- Removed both stale `key_press I, Open Inventory` lines. TP and Bank chords are now bare `F7` and `F8` respectively, matching the post-migration pattern of Teleport Friend (bare F6).
+- Symptom may have intermittently affected Deck too — likely exposed more reliably under Apple TV's higher-latency raw-HID path.
+- Validation: brackets 931=931, snapshot saved as `configs/steam-controller/moonlight-gw2-og-v19.5.vdf`.
+
+### Deployed
+
+- bazzite: `moonlight/`, `guild wars 2 (apple tv)/`, `guild wars 2 (steam deck)/` → `og v18.4.9_0.vdf` (configset reference filename retained, URL field patched per-location).
+- Deck native: `1284210/controller_neptune.vdf`.
+
 ## [3.6.16] - 2026-05-03 — Remove brittle Leave Party Combo; chat wheel /leave + /squadleave; controller v19.4
 
 ### Removed (Mystic Clicker)

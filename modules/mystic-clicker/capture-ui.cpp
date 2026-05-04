@@ -135,10 +135,6 @@ static CaptureTarget s_Targets[] = {
     {"Bouncy Meta Progress","Meta progress dialog — between Accept and Meta Complete (combo step 3)",                       &g_BouncyMetaProgressX,&g_BouncyMetaProgressY,"Bouncy Chest"},
     {"Bouncy Meta Complete","Meta completion dialog — slight offset from Bouncy Accept (combo step 4)",                     &g_BouncyMetaCompleteX,&g_BouncyMetaCompleteY,"Bouncy Chest"},
 
-    // Party
-    {"Party Bar (right-click)", "Party/Squad member bar — right-click target (R1+DPad Down Hold combo 1st)", &g_PartySquadBarX, &g_PartySquadBarY, "Party"},
-    {"Leave Party (in menu)",   "Leave Party/Squad button in right-click menu (R1+DPad Down Hold combo 2nd)", &g_LeavePartyX,    &g_LeavePartyY,    "Party"},
-
     // Generic Accept (numbered slots fire in sequence in SimulateGeneralAcceptCombo)
     {"Accept 1 (Chest)",     "Accept combo slot 1 (originally Chest Accept)", &g_AcceptX,         &g_AcceptY,         "Generic Accept"},
     {"Accept 2 (Yes early)", "Accept combo slot 2 (originally Yes Dialog)",   &g_YesDialogX,      &g_YesDialogY,      "Generic Accept"},
@@ -184,7 +180,6 @@ static const char* const s_Categories[] = {
     "Wizard Items",
     "Travel",
     "Bouncy Chest",
-    "Party",
     "Generic Accept",
     "Misc",
 };

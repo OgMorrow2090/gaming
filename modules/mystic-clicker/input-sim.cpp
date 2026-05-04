@@ -828,29 +828,6 @@ void SimulateWaypointCombo()
     SimulateDoubleClickAt(g_MapWaypointX, g_MapWaypointY);
 }
 
-void SimulateLeavePartyCombo()
-{
-    // Right-click the party/squad bar to open the context menu → click Leave.
-    if (g_PartySquadBarX == 0 && g_PartySquadBarY == 0)
-    {
-        APIDefs->GUI_SendAlert("Party/Squad Bar position not set! Capture first");
-        return;
-    }
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Leave Party Combo: right-click party bar");
-    SimulateRightClickAt(g_PartySquadBarX, g_PartySquadBarY);
-
-    // Context menu animation.
-    Sleep(200);
-
-    if (g_LeavePartyX == 0 && g_LeavePartyY == 0)
-    {
-        APIDefs->GUI_SendAlert("Leave Party button position not set — menu opened, click skipped");
-        return;
-    }
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Leave Party Combo: click Leave button");
-    SimulateClickAt(g_LeavePartyX, g_LeavePartyY);
-}
-
 void SimulatePersonalMarker()
 {
     // Alt+LeftClick at current cursor position — places a personal marker on the

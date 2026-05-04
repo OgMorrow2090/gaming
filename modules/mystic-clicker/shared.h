@@ -85,7 +85,6 @@ constexpr const char* WIZARD_GOBBLER_COMBO = "WIZARD_GOBBLER_COMBO";           /
 constexpr const char* WIZARD_PORTAL_SCROLL_COMBO = "WIZARD_PORTAL_SCROLL_COMBO"; // press I → double-click Wizard Portal Scroll
 constexpr const char* LOUNGE_PASS_COMBO = "LOUNGE_PASS_COMBO";                  // press I → double-click Lounge Pass
 constexpr const char* WAYPOINT_COMBO = "WAYPOINT_COMBO";                        // click chat waypoint → wait → double-click map waypoint
-constexpr const char* LEAVE_PARTY_COMBO = "LEAVE_PARTY_COMBO";                  // right-click party bar → click Leave button
 constexpr const char* TELEPORT_FRIEND_COMBO = "TELEPORT_FRIEND_COMBO"; // press I → double-click captured portal icon
 constexpr const char* TRADING_POST_COMBO_KEY = "TRADING_POST_COMBO";   // press I → double-click captured portable TP icon
 constexpr const char* BANK_COMBO = "BANK_COMBO";                       // press I → double-click captured portable Bank icon
@@ -142,8 +141,6 @@ constexpr const char* CAPTURE_WIZARD_PORTAL_SCROLL = "CAPTURE_WIZARD_PORTAL_SCRO
 constexpr const char* CAPTURE_LOUNGE_PASS = "CAPTURE_LOUNGE_PASS";
 constexpr const char* CAPTURE_CHAT_WAYPOINT = "CAPTURE_CHAT_WAYPOINT";
 constexpr const char* CAPTURE_MAP_WAYPOINT = "CAPTURE_MAP_WAYPOINT";
-constexpr const char* CAPTURE_PARTY_SQUAD_BAR = "CAPTURE_PARTY_SQUAD_BAR";
-constexpr const char* CAPTURE_LEAVE_PARTY = "CAPTURE_LEAVE_PARTY";
 constexpr const char* CAPTURE_BOUNCY_ACCEPT = "CAPTURE_BOUNCY_ACCEPT";
 constexpr const char* CAPTURE_BOUNCY_META_COMPLETE = "CAPTURE_BOUNCY_META_COMPLETE";
 constexpr const char* CAPTURE_GUILD_HALL = "CAPTURE_GUILD_HALL";
@@ -207,7 +204,6 @@ void SimulateWizardGobblerCombo();      // open inventory → double-click Wizar
 void SimulateWizardPortalScrollCombo(); // open inventory → double-click Wizard Portal Scroll
 void SimulateLoungePassCombo();         // open inventory → double-click Lounge Pass
 void SimulateWaypointCombo();           // click chat waypoint → wait → double-click map waypoint
-void SimulateLeavePartyCombo();         // right-click party bar → click Leave button
 void SimulateTeleportFriendCombo();     // press I (open inventory) → delay → double-click Teleport to Friend
 void SimulateTradingPostCombo();        // press I (open inventory) → delay → double-click portable TP
 void SimulateBankCombo();               // press I (open inventory) → delay → double-click portable Bank
@@ -347,10 +343,6 @@ extern int g_ChatWaypointX;
 extern int g_ChatWaypointY;
 extern int g_MapWaypointX;
 extern int g_MapWaypointY;
-extern int g_PartySquadBarX;
-extern int g_PartySquadBarY;
-extern int g_LeavePartyX;
-extern int g_LeavePartyY;
 extern int g_MailTakeAllX;
 extern int g_MailTakeAllY;
 extern int g_CraftFilterX;

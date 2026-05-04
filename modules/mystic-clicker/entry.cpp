@@ -57,7 +57,7 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     AddonDef.Name = "Mystic Clicker";
     AddonDef.Version.Major = 3;
     AddonDef.Version.Minor = 6;
-    AddonDef.Version.Build = 15;
+    AddonDef.Version.Build = 16;
     AddonDef.Version.Revision = 0;
     AddonDef.Author = "OgMorrow2090";
     AddonDef.Description = "One-click hotkeys for inventory, vendors, trading post, Mystic Forge, and more.";
@@ -179,7 +179,6 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(WIZARD_PORTAL_SCROLL_COMBO, ProcessKeybind, "SHIFT+F2");
     APIDefs->InputBinds_RegisterWithString(LOUNGE_PASS_COMBO, ProcessKeybind, "SHIFT+F3");
     APIDefs->InputBinds_RegisterWithString(WAYPOINT_COMBO, ProcessKeybind, "SHIFT+F4");
-    APIDefs->InputBinds_RegisterWithString(LEAVE_PARTY_COMBO, ProcessKeybind, "SHIFT+F5");
     APIDefs->InputBinds_RegisterWithString(BOUNCY_META_COMPLETE, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(GENERAL_ACCEPT_COMBO, ProcessKeybind, "CTRL+SHIFT+F11");
     APIDefs->InputBinds_RegisterWithString(MAIL_COMBO, ProcessKeybind, "CTRL+SHIFT+F8");
@@ -227,8 +226,6 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(CAPTURE_LOUNGE_PASS, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_CHAT_WAYPOINT, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_MAP_WAYPOINT, ProcessKeybind, "(null)");
-    APIDefs->InputBinds_RegisterWithString(CAPTURE_PARTY_SQUAD_BAR, ProcessKeybind, "(null)");
-    APIDefs->InputBinds_RegisterWithString(CAPTURE_LEAVE_PARTY, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_BOUNCY_ACCEPT, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_BOUNCY_META_COMPLETE, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_MAIL_TAKE_ALL, ProcessKeybind, "(null)");
@@ -300,7 +297,6 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(WIZARD_PORTAL_SCROLL_COMBO);
     APIDefs->InputBinds_Deregister(LOUNGE_PASS_COMBO);
     APIDefs->InputBinds_Deregister(WAYPOINT_COMBO);
-    APIDefs->InputBinds_Deregister(LEAVE_PARTY_COMBO);
     APIDefs->InputBinds_Deregister(BOUNCY_META_COMPLETE);
     APIDefs->InputBinds_Deregister(GENERAL_ACCEPT_COMBO);
     APIDefs->InputBinds_Deregister(MAIL_COMBO);
@@ -348,8 +344,6 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(CAPTURE_LOUNGE_PASS);
     APIDefs->InputBinds_Deregister(CAPTURE_CHAT_WAYPOINT);
     APIDefs->InputBinds_Deregister(CAPTURE_MAP_WAYPOINT);
-    APIDefs->InputBinds_Deregister(CAPTURE_PARTY_SQUAD_BAR);
-    APIDefs->InputBinds_Deregister(CAPTURE_LEAVE_PARTY);
     APIDefs->InputBinds_Deregister(CAPTURE_BOUNCY_ACCEPT);
     APIDefs->InputBinds_Deregister(CAPTURE_BOUNCY_META_COMPLETE);
     APIDefs->InputBinds_Deregister(CAPTURE_MAIL_TAKE_ALL);

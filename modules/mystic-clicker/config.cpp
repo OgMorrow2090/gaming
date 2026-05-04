@@ -133,10 +133,6 @@ int g_ChatWaypointX = 0;
 int g_ChatWaypointY = 0;
 int g_MapWaypointX = 0;
 int g_MapWaypointY = 0;
-int g_PartySquadBarX = 0;
-int g_PartySquadBarY = 0;
-int g_LeavePartyX = 0;
-int g_LeavePartyY = 0;
 int g_MailTakeAllX = 0;
 int g_MailTakeAllY = 0;
 int g_CraftFilterX = 0;
@@ -522,14 +518,6 @@ void LoadButtonPositions()
             g_MapWaypointX = std::stoi(line.substr(13));
         if (line.find("MapWaypointY=") == 0)
             g_MapWaypointY = std::stoi(line.substr(13));
-        if (line.find("PartySquadBarX=") == 0)
-            g_PartySquadBarX = std::stoi(line.substr(15));
-        if (line.find("PartySquadBarY=") == 0)
-            g_PartySquadBarY = std::stoi(line.substr(15));
-        if (line.find("LeavePartyX=") == 0)
-            g_LeavePartyX = std::stoi(line.substr(12));
-        if (line.find("LeavePartyY=") == 0)
-            g_LeavePartyY = std::stoi(line.substr(12));
         if (line.find("BouncyMetaProgressX=") == 0)
             g_BouncyMetaProgressX = std::stoi(line.substr(20));
         if (line.find("BouncyMetaProgressY=") == 0)
@@ -712,10 +700,6 @@ void SaveButtonPositions()
     file << "ChatWaypointY=" << g_ChatWaypointY << "\n";
     file << "MapWaypointX=" << g_MapWaypointX << "\n";
     file << "MapWaypointY=" << g_MapWaypointY << "\n";
-    file << "PartySquadBarX=" << g_PartySquadBarX << "\n";
-    file << "PartySquadBarY=" << g_PartySquadBarY << "\n";
-    file << "LeavePartyX=" << g_LeavePartyX << "\n";
-    file << "LeavePartyY=" << g_LeavePartyY << "\n";
     file << "BouncyMetaProgressX=" << g_BouncyMetaProgressX << "\n";
     file << "BouncyMetaProgressY=" << g_BouncyMetaProgressY << "\n";
     file << "BouncyMetaCompleteX=" << g_BouncyMetaCompleteX << "\n";
@@ -873,10 +857,6 @@ void CheckResolutionChange()
         g_ChatWaypointY = 0;
         g_MapWaypointX = 0;
         g_MapWaypointY = 0;
-        g_PartySquadBarX = 0;
-        g_PartySquadBarY = 0;
-        g_LeavePartyX = 0;
-        g_LeavePartyY = 0;
         g_BouncyMetaProgressX = 0;
         g_BouncyMetaProgressY = 0;
         g_BouncyMetaCompleteX = 0;

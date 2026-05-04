@@ -1002,15 +1002,6 @@
 		"Alt": false,
 		"Code": 0,
 		"Ctrl": false,
-		"Identifier": "CAPTURE_LEAVE_PARTY",
-		"Passthrough": false,
-		"Shift": false,
-		"Type": 0
-	},
-	{
-		"Alt": false,
-		"Code": 0,
-		"Ctrl": false,
 		"Identifier": "CAPTURE_LFG_SEARCH",
 		"Passthrough": false,
 		"Shift": false,
@@ -1060,15 +1051,6 @@
 		"Passthrough": false,
 		"Shift": true,
 		"Type": 1
-	},
-	{
-		"Alt": false,
-		"Code": 0,
-		"Ctrl": false,
-		"Identifier": "CAPTURE_PARTY_SQUAD_BAR",
-		"Passthrough": false,
-		"Shift": false,
-		"Type": 0
 	},
 	{
 		"Alt": false,
@@ -1462,15 +1444,6 @@
 		"Code": 48,
 		"Ctrl": true,
 		"Identifier": "KEY_BOSSES_TOGGLE_RENDER",
-		"Passthrough": false,
-		"Shift": true,
-		"Type": 1
-	},
-	{
-		"Alt": false,
-		"Code": 68,
-		"Ctrl": false,
-		"Identifier": "LEAVE_PARTY_COMBO",
 		"Passthrough": false,
 		"Shift": true,
 		"Type": 1

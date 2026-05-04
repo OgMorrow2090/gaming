@@ -7,6 +7,39 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.16] - 2026-05-03 — Remove brittle Leave Party Combo; chat wheel /leave + /squadleave; controller v19.4
+
+### Removed (Mystic Clicker)
+
+- **`LEAVE_PARTY_COMBO` keybind + `SimulateLeavePartyCombo()`** — the right-click-party-bar → click-Leave macro depended on two captured UI positions and the GW2 party panel layout, which moves between resolutions and instances. Replaced by GW2's native slash commands (`/leave` and `/squadleave`) which work without UI position dependence.
+- Capture targets **"Party Bar (right-click)"** and **"Leave Party (in menu)"**; **"Party"** category dropped from the capture window (now empty).
+- Globals `g_PartySquadBarX/Y`, `g_LeavePartyX/Y` removed (declarations + read + write + reset paths).
+- Nexus bindings `LEAVE_PARTY_COMBO`, `CAPTURE_PARTY_SQUAD_BAR`, `CAPTURE_LEAVE_PARTY` removed from `nexus-inputbinds.json` (210 entries now).
+- Persisted `PartySquadBarX/Y`, `LeavePartyX/Y` keys in your `mystic-clicker.cfg` files will linger as unused — harmless, the new code just ignores them.
+
+### Changed (controller v19.4)
+
+- **Commands wheel** (group 120):
+  - **Slot 6 ("+")**: replaced `LEFT_SHIFT + EQUALS + RETURN` (broken — Steam Input fires each `key_press` discretely so Shift released before Equals) with single `KEYPAD_PLUS + RETURN`.
+  - **Slot 15 (NEW)**: types `/leave` + Enter — leaves party.
+  - **Slot 16 (NEW)**: types `/squadleave` + Enter — leaves squad.
+  - `touch_menu_button_count` 14 → 16.
+- **R1 + DPad-Down Double_Press**: was `Shift+F10` (Leave Party Combo). Now `Ctrl+E` (Exit Instance) — gives Exit Instance a controller binding alongside the existing A-Long-Press one (kept as redundant binding).
+- VDF title bumped to v19.4. Validation: brackets 931=931, 56 groups, 312 bindings (up from 294 with the slot 15/16 additions).
+- Snapshot saved as `configs/steam-controller/moonlight-gw2-og-v19.4.vdf`.
+
+### Files
+
+- `modules/mystic-clicker/shared.h` — remove `LEAVE_PARTY_COMBO`, `CAPTURE_PARTY_SQUAD_BAR`, `CAPTURE_LEAVE_PARTY` constants + globals + proto
+- `modules/mystic-clicker/entry.cpp` — remove register/deregister; version bump 3.6.15 → 3.6.16
+- `modules/mystic-clicker/keybinds.cpp` — remove dispatch
+- `modules/mystic-clicker/input-sim.cpp` — remove `SimulateLeavePartyCombo()`
+- `modules/mystic-clicker/config.cpp` — remove globals + read/write/reset
+- `modules/mystic-clicker/capture-ui.cpp` — remove capture entries + Party category
+- `configs/gw2-keybinds/nexus-inputbinds.json` — strip 3 entries
+- `configs/steam-controller/moonlight-gw2-og-template.vdf` — chat wheel slots 6/15/16 + R1+DDown Double; title v19.4
+- `configs/steam-controller/moonlight-gw2-og-v19.4.vdf` — new snapshot
+
 ## [3.6.15] - 2026-05-03 — Mystic Clicker: Pathing render-all macro + bind world render layer
 
 ### Fixed

@@ -267,10 +267,6 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     {
         SimulateWaypointCombo();
     }
-    else if (strcmp(aIdentifier, LEAVE_PARTY_COMBO) == 0)
-    {
-        SimulateLeavePartyCombo();
-    }
     else if (strcmp(aIdentifier, BOUNCY_META_COMPLETE) == 0)
     {
         SimulateBouncyMetaCompleteClick();

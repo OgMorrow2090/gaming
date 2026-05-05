@@ -497,3 +497,85 @@ Deployed v19.5 by overwriting `og v18.4.9_0.vdf` in place across the 3 bazzite p
 
 - User to test TP/Bank chords after relaunching GW2 — should be a clean single-open + double-click, no flicker. If flicker persists on either, the active layout file Steam Input picked may differ from the 4 we updated; grep all VDFs for `key_press I, Open Inventory` to find any stragglers.
 - Steam Controller arrives ~2026-05-09. Once Deck is no longer needed as a TV controller, the dual-Sunshine-session symptom should stop. If "stuck character select" recurs after that, focus on causes 2 (GFXSettings drift) and 3 (`sunshine-gaming.service` unit-name confusion) per `memory/moonlight-stream-stuck-diagnostic.md`.
+
+## 2026-05-05 — InputBinds drift recurrence + TP fix on Deck-stream + repo-as-source-of-truth tooling
+
+### InputBinds drift on Deck profile (incident #2)
+
+Drift recurred 3 days after the v19.2 GRACEFUL_QUIT mitigation. **Crucial new datapoint**: today's session ended with a fully clean shutdown sequence in Nexus.log (`[Core] SHUTDOWN END` with full addon Unload chain). Not Alt+F4. **Falsifies the Alt+F4 hypothesis** that drove v19.2.
+
+Same 23 binds drifted on Deck profile only; Apple TV stayed clean. Restored from Apple TV (canonical hash `8dcd5362a5830f20`). Forensic snapshots committed to `forensics/inputbinds-drift/*-20260505.*`.
+
+New strongest theory: drift entries cluster around addon-owned identifiers (CraftyLegend, Hoard__Seek, Community_LFG, Organizer, Mystic Clicker, NexusGameWiki) and several look like "default preset" patterns rather than collisions. Possibly an addon rewrites its keybind on first load when DLL version differs from the one that wrote the bindings the previous session. Need per-DLL hash + mtime snapshot for next-incident forensics.
+
+### Nexus version mistake
+
+Initial diagnosis claimed Nexus was 10 months out of date (`v2025.4.22.1050`). User asked why auto-update wasn't working. Investigation found the actual version (UTF-16 PE VersionInfo) is `v2026.2.17.1210` — current latest. The `v2025.4.22.1050` I grepped was a stale UTF-8 string elsewhere in the binary. Methodology fix: when reading a Windows DLL version, decode UTF-16LE first as authoritative; UTF-8 is fallback only.
+
+Auto-update **is** working — `[Updater] Installed Build of Nexus is up-to-date.` runs every game launch. So the InputBinds drift is happening on the latest Nexus version, suggesting an unfixed bug or a non-Nexus cause.
+
+### TP combo regressed on Deck-stream after restore
+
+User reported TP "rapidly opens and closes inventory" on Deck-stream-via-Moonlight after I restored InputBinds. Bank works, TP flickers — same flicker pattern as the original v19.5 fix.
+
+**Root cause**: yesterday's v19.5 deploy hit `1284210/controller_neptune.vdf` on Deck native (used for direct GW2 launch), but **NOT** the autosave file `moonlight - gw2 steamos/controller_neptune.vdf` (used by the "GW2 - SteamOS" Sunshine streaming flow). Plus historical `og v19.x_0.vdf` files in the `moonlight/` dir on Deck remained stale.
+
+Per [streaming-input-host-vs-client.md](streaming-input-host-vs-client.md): Deck-as-client does Steam Input locally, so chord emission comes from Deck native's layout, not bazzite's. We had patched the wrong file on Deck.
+
+Fix: enumerated 17 stale-pattern VDFs across Deck native and patched all. User confirmed TP working after `pkill steamwebhelper` forced Steam Input layout reload.
+
+Captured the lesson in new memory entry [controller-vdf-deploy-checklist.md](controller-vdf-deploy-checklist.md) — when changing controller VDF chord behavior, patch every stale-pattern file on every machine, not just the configset-referenced one. Two specific traps: historical `og v19.x_0.vdf` files in profile dirs (Steam Input UI may have any selected) and autosave files in `moonlight - gw2 steamos/`.
+
+### Repo-as-source-of-truth tooling
+
+User asked: can Nexus configs follow the same version-tracking pattern as controller VDFs, and can controller VDFs become repo-first too?
+
+Built two deploy scripts:
+
+**`scripts/deploy-nexus-config.sh`** — push canonical InputBinds/AddonConfig/GameBinds from `configs/gw2-keybinds/` to all 4 profiles in one shot. Pre-flight refuses if GW2 running anywhere, timestamped backups, SHA256 verified per target, unreachable hosts warned and skipped (not fatal). Verified end-to-end deploy: all reachable profiles match canonical hash.
+
+**`scripts/deploy-controller-vdf.sh`** — push canonical template VDF from `configs/steam-controller/` to every active Steam Input layout file across both machines. Filename filter (`controller_neptune.vdf` or `og v<version>_<N>.vdf`) skips pre-2025 legacy `og_<N>` exports. Per-location URL patching (autosave:// for `moonlight - gw2 steamos/`, usercloud:// elsewhere). Patched 7 newly-discovered bazzite stragglers.
+
+Snapshot pattern matches controller VDFs: `nexus-inputbinds-v1.json` is the immutable golden master of 2026-05-05 working state.
+
+**Workflow going forward**: edit canonical in repo → run deploy script → commit. Never edit on-device first.
+
+### Files changed today
+
+- `configs/steam-controller/moonlight-gw2-og-template.vdf` — title v19.4 → v19.5; removed 2 stale `key_press I` lines
+- `configs/steam-controller/moonlight-gw2-og-v19.5.vdf` — new snapshot
+- `configs/gw2-keybinds/nexus-inputbinds-v1.json` — golden master snapshot (new)
+- `scripts/deploy-nexus-config.sh` — new
+- `scripts/deploy-controller-vdf.sh` — new
+- `memory/controller-vdf-deploy-checklist.md` — new (project type)
+- `memory/nexus-inputbinds-per-profile-drift.md` — appended 2026-05-05 incident + falsified Alt+F4 hypothesis section
+- `memory/nexus-multi-deploy-rules.md` — added canonical-source workflow section pointing at script
+- `memory/MEMORY.md` — index entries
+- `forensics/inputbinds-drift/{inputbinds-broken-deck-20260505.json, backup-list-20260505.txt, nexus-load-deck-20260505.log}` — new
+- `CHANGELOG.md` — controller v19.5 entry + tooling 2026-05-05 entry
+
+### Live deploys at session end
+
+- Bazzite Og@172.16.100.212: 3 Nexus profiles canonical (`8dcd5362…f20`); 19 controller VDFs canonical (12 already-matching + 7 newly-patched), 43 historical/legacy skipped intentionally
+- Deck native deck@172.16.100.95: was asleep at end-of-session deploy attempt. **Pending**: re-run both scripts when Deck is awake to finish:
+  ```
+  ./scripts/deploy-nexus-config.sh
+  ./scripts/deploy-controller-vdf.sh
+  ```
+- Live one-time fixes earlier in day: GW2 Apple TV GFXSettings 1280×800 → 2560×1440, Sunshine ghost-session restart
+
+### Commits
+
+- `fcb2bd7` — Moonlight stuck-at-char-select diagnostic memory
+- `0843373` — controller v19.5 TP+Bank flicker fix
+- `69cb768` — chat log 2026-05-04 PM session
+- `75047bd` — InputBinds drift forensics + falsified Alt+F4 hypothesis
+- `4abac88` — deploy-nexus-config.sh + controller VDF deploy checklist
+- `cd6e22b` — deploy-controller-vdf.sh + nexus-inputbinds-v1 golden master + resilience
+
+### Open / next session
+
+- Re-run both deploy scripts when Deck is awake
+- TP fix verified working on Deck-stream after `pkill steamwebhelper` reload — **report any other chord regressions**
+- If InputBinds drift recurs (incident #3), capture per-addon DLL hash + mtime snapshot for forensic comparison (per memory action item)
+- Steam Controller for bazzite arrives ~2026-05-09; will eliminate the dual-Sunshine-session symptom from Apple-TV-stream + Deck-as-controller pattern

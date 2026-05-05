@@ -51,3 +51,27 @@ Before deploying any addon-related change:
 2. If universal: deploy to all three `addons/` dirs on bazzite, update all three repo backup dirs, single commit
 3. If per-profile: deploy to the one targeted profile, update only that backup dir
 4. Always commit + push the matching repo backup file(s) so the on-disk state and version control match
+
+## Canonical-source workflow for InputBinds / GameBinds / AddonConfig
+
+Repo source-of-truth files (canonical):
+
+| Repo path | Deploys to (on each profile) |
+| --- | --- |
+| `configs/gw2-keybinds/nexus-inputbinds.json` | `addons/Nexus/InputBinds.json` |
+| `configs/gw2-keybinds/nexus-addonconfig.json` | `addons/Nexus/AddonConfig.json` |
+| `configs/gw2-keybinds/gamebinds.xml` | `addons/Nexus/GameBinds.xml` |
+
+Use `scripts/deploy-nexus-config.sh` to push canonical source to **all 4 profiles in one shot** (3 bazzite + 1 Deck native):
+
+```bash
+./scripts/deploy-nexus-config.sh                # default: InputBinds.json only
+./scripts/deploy-nexus-config.sh --inputbinds   # explicit
+./scripts/deploy-nexus-config.sh --addonconfig
+./scripts/deploy-nexus-config.sh --gamebinds
+./scripts/deploy-nexus-config.sh --all          # all three
+```
+
+Pre-flight refuses if GW2 is running on any target (Nexus would overwrite our deploy on shutdown). Each existing target file is backed up with a timestamped suffix before overwriting. Hash is verified after every deploy.
+
+This script replaces the old "manually scp to four paths" pattern that caused drift between profiles. **When InputBinds drift between profiles in the future, fix the canonical repo file first, then run the script — never edit on-device first.**

@@ -149,6 +149,24 @@ Per [streaming-input-host-vs-client.md](streaming-input-host-vs-client.md), the 
 
 If the user reports "both Apple TV and Deck are broken the same way", that's the signal. Don't waste time investigating the bazzite-side Apple TV configset — fix the Deck-side controller layout (single source for both routes).
 
+## Recurrence — 2026-05-05 (Alt+F4 hypothesis falsified)
+
+Same 23-binding drift recurred on the Deck profile **3 days after** the v19.2 GRACEFUL_QUIT mitigation deployed (Esc → click Exit Game replacing Alt+F4). User reported it after a ~4-minute Deck Moonlight session ending at 07:18:39. Crucially, the Nexus.log captured a **fully clean shutdown sequence** for that session: every addon's `Unload`/`Stopping` logged in order, ending with `[Core] SHUTDOWN END`. **No force-quit signature.** The user used Logout, not Alt+F4.
+
+Yet the same 23 binds drifted. Apple TV profile (last touched same day) stayed clean. So **Alt+F4 was not the cause** — at least, not the dominant cause. The v19.2 GRACEFUL_QUIT mitigation can't fix this on its own.
+
+Forensic snapshots (broken state, addon backup list, Nexus shutdown log) saved to `forensics/inputbinds-drift/*-20260505.*` for analysis.
+
+What the diff looks like in this incident — patterns that may point at the real cause:
+
+- Several entries flipped `Type` 1↔0 in **both directions** (cleared AND newly bound), so it isn't a one-way "everything cleared" wipe
+- Entries that drifted match specific **addon-owned identifiers** — `CraftyLegend.KB_CRAFTY_TOGGLE`, `Hoard__Seek.KB_HOARD_TOGGLE`, `Community_LFG.0xFC56DD9F_ToggleLFG`, `Organizer.DEPOSIT_AND_SORT`, multiple Mystic Clicker entries (`BANK_COMBO`, `LOUNGE_PASS_COMBO`, `TRADING_POST`), `NexusGameWiki.Toggle`, `pathing-render-toggle`, `Toggle Event Timers`
+- Several modifier-only changes (e.g. `KB_CRAFTY_TOGGLE` Code 87 Ctrl → Code 38 Ctrl+Shift) that look like **addon defaults**, not collision-resolution
+
+**Strongest remaining theory**: an addon (or several) is rewriting its own keybind entry to its current default on first load when the addon DLL version differs from the one that wrote the bindings the previous session. This would explain why the entries cluster around specific addons and why the changes look like "default preset" patterns. Would require version-tracking each addon DLL across sessions to confirm.
+
+**Next-incident diagnostic to add**: capture each addon DLL's mtime + sha256 on the Deck profile vs Apple TV profile, compare against the prior session's snapshot. If a DLL changed between sessions and that addon's identifier drifted, causation.
+
 ## Open bug — root cause of the 23-binding drift remains unknown
 
 Honest assessment after the 2026-05-01 catastrophic-drift session: 23 entries differing between the Deck profile and Apple TV/canonical does **NOT** fit any single mechanism we identified. The wholesale-copy recovery worked, but we never proved the cause. Theories tested and ruled out:

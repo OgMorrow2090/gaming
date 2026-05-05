@@ -1,0 +1,34 @@
+2026-05-05 07:14:12.229  [Updater]       [INFO]      Installed Build of Nexus is up-to-date.
+2026-05-05 07:14:13.21   [Loader]           [INFO]      Loaded addon: Castbar_Clarity.dll
+2026-05-05 07:14:13.27   [Loader]           [INFO]      Loaded addon: Addon_Config_Backup_Tool.dll
+2026-05-05 07:14:13.28   [Addon Config Backup]  [DEBUG]     Deleted old file: /var/home/Og/Documents/Guild Wars 2/nexus-configs\backup-2026-05-01-20-10.zip
+2026-05-05 07:14:13.129  [Loader]               [INFO]      Loaded addon: Alter_Ego.dll
+2026-05-05 07:14:13.362  [Loader]               [INFO]      Loaded addon: Commands.dll
+2026-05-05 07:14:13.434  [Loader]               [INFO]      Loaded addon: Fast_Load.dll
+2026-05-05 07:14:13.465  [Loader]               [INFO]      Loaded addon: Anti_Camera_Smooth.dll
+2026-05-05 07:14:13.753  [Loader]               [INFO]      Loaded addon: Community_LFG.dll
+2026-05-05 07:14:13.760  [Loader]               [INFO]      Loaded addon: mystic-trading.dll
+2026-05-05 07:14:14.919  [Loader]               [INFO]      Loaded addon: ArcDPS.dll
+2026-05-05 07:14:14.931  [Loader]               [INFO]      Loaded addon: UnhideNPCs.dll
+2026-05-05 07:14:14.956  [Loader]               [INFO]      Loaded addon: Compass.dll
+2026-05-05 07:14:14.977  [Loader]               [INFO]      Loaded addon: CraftyLegend.dll
+2026-05-05 07:14:14.978  [Loader]               [INFO]      Loaded addon: CursorAnchor.dll
+2026-05-05 07:14:16.295  [Loader]               [INFO]      Loaded addon: VfxDenoiser.dll
+2026-05-05 07:14:16.412  [Loader]               [INFO]      Loaded addon: Peace_and_Quiet.dll
+2026-05-05 07:14:16.418  [Loader]               [INFO]      Loaded addon: Events_Alerts.dll
+2026-05-05 07:14:16.428  [Loader]               [INFO]      Loaded addon: Emotes.dll
+2026-05-05 07:14:16.440  [Loader]               [INFO]      Loaded addon: World_Bosses.dll
+2026-05-05 07:14:16.767  [Loader]               [INFO]      Loaded addon: Events_Chat.dll
+2026-05-05 07:14:16.782  [Loader]               [INFO]      Loaded addon: Event_Timers.dll
+2026-05-05 07:14:16.787  [Loader]               [INFO]      Loaded addon: Fast_Swap.dll
+2026-05-05 07:14:16.797  [Loader]               [INFO]      Loaded addon: gg.dll
+2026-05-05 07:14:16.845  [Loader]               [INFO]      Loaded addon: Hoard__Seek.dll
+2026-05-05 07:14:16.864  [Loader]               [INFO]      Loaded addon: KP_Sync.dll
+2026-05-05 07:14:16.866  [Loader]               [INFO]      Loaded addon: arcdps_integration64.dll
+2026-05-05 07:14:16.966  [Loader]               [INFO]      Loaded addon: mystic-clicker.dll
+2026-05-05 07:14:16.974  [Loader]               [INFO]      Loaded addon: NexusGameWiki.dll
+2026-05-05 07:14:17.86   [Loader]               [INFO]      Loaded addon: Organizer.dll
+2026-05-05 07:14:17.90   [Loader]               [INFO]      Loaded addon: True_World_Completion.dll
+2026-05-05 07:14:18.155  [Loader]               [INFO]      Loaded addon: RealTime_API.dll
+2026-05-05 07:14:18.210  [Loader]               [INFO]      Loaded addon: TaimiHUD.dll
+2026-05-05 07:14:20.57   [Loader]               [INFO]      Loaded addon: Transparent_Heart_Progress.dll

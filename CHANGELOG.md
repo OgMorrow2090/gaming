@@ -7,6 +7,40 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [tooling 2026-05-05] — Repo as source of truth for Nexus + controller deploys
+
+### Added
+
+- **`scripts/deploy-nexus-config.sh`** — push canonical `configs/gw2-keybinds/nexus-inputbinds.json` (and optionally `nexus-addonconfig.json`, `gamebinds.xml`) to all 4 profiles (3 bazzite + 1 Deck native) in one shot. Pre-flight refuses if GW2 is running on any reachable target. Timestamped backups + SHA256 verification per target. Unreachable hosts warned and skipped (so a sleeping Deck doesn't block bazzite-only deploys).
+- **`scripts/deploy-controller-vdf.sh`** — push canonical `configs/steam-controller/moonlight-gw2-og-template.vdf` to every active Steam Input layout file across both machines. Filename filter only patches files matching `controller_neptune.vdf` or `og v<version>_<N>.vdf`, skipping pre-2025 legacy `og_<N>` exports. Same pre-flight, backup, and verification as the Nexus script. Handles autosave URL pattern for `moonlight - gw2 steamos/`.
+- **`configs/gw2-keybinds/nexus-inputbinds-v1.json`** — golden master snapshot of the InputBinds canonical state confirmed working 2026-05-05 (TP + Bank combos verified post-v19.5). Mirrors the version-snapshot pattern used for controller VDFs. Future drift recoveries can restore from this if `nexus-inputbinds.json` itself drifts.
+
+### Workflow change
+
+**Going forward, both Nexus configs and controller VDFs are repo-first.**
+
+For Nexus changes:
+
+1. Edit `configs/gw2-keybinds/nexus-inputbinds.json` (or sibling) in repo
+2. Run `./scripts/deploy-nexus-config.sh` to push to all 4 profiles
+3. Commit the repo change
+4. Snapshot if hitting a stable version: `cp nexus-inputbinds.json nexus-inputbinds-vN.json`
+
+For controller VDF changes:
+
+1. Edit `configs/steam-controller/moonlight-gw2-og-template.vdf` in repo (bump title)
+2. Snapshot: `cp moonlight-gw2-og-template.vdf moonlight-gw2-og-vN.M.vdf`
+3. Run `./scripts/deploy-controller-vdf.sh` to push to every active layout file across both machines
+4. Commit
+
+Never edit on-device first — devices drift, repo loses ground truth.
+
+### Live state at end of 2026-05-05 deploy
+
+- All 3 bazzite Nexus profiles: `InputBinds.json` hash `8dcd5362a5830f20…` (matches `nexus-inputbinds-v1.json`)
+- All bazzite controller VDFs (12 already-matching + 7 newly-patched, 43 legacy skipped): canonical v19.5 template content, URL per-location patched
+- Deck native Nexus + controller: pending (Deck asleep at deploy time — re-run scripts when awake)
+
 ## [controller v19.5] - 2026-05-04 — Fix Trading Post + Bank chord double-`I` flicker
 
 ### Fixed (controller VDF)

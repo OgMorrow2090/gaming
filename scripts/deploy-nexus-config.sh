@@ -52,15 +52,29 @@ TARGETS=(
     "deck@172.16.100.95:/home/deck/.local/share/Steam/steamapps/common/Guild Wars 2/addons|deck-native"
 )
 
-echo "Pre-flight: checking GW2 not running on any target..."
+echo "Pre-flight: reachability + GW2 not running on any reachable target..."
+declare -a REACHABLE=()
+declare -a UNREACHABLE=()
 for entry in "${TARGETS[@]}"; do
     host="${entry%%:*}"
+    if ! ssh -o ConnectTimeout=5 -o BatchMode=yes "$host" 'true' 2>/dev/null; then
+        UNREACHABLE+=("$host")
+        continue
+    fi
     if ssh -o ConnectTimeout=4 -o BatchMode=yes "$host" 'pgrep -x Gw2-64.exe >/dev/null 2>&1' 2>/dev/null; then
         echo "ERROR: GW2 is running on $host — close it before deploying" >&2
         exit 2
     fi
+    REACHABLE+=("$entry")
 done
-echo "  OK"
+if [ "${#UNREACHABLE[@]}" -gt 0 ]; then
+    echo "  WARN: skipping unreachable host(s): ${UNREACHABLE[*]}"
+fi
+if [ "${#REACHABLE[@]}" -eq 0 ]; then
+    echo "ERROR: no reachable targets" >&2
+    exit 3
+fi
+echo "  OK — ${#REACHABLE[@]} reachable target(s)"
 echo
 
 TS=$(date +%Y%m%d-%H%M%S)
@@ -103,8 +117,8 @@ run_deploy() {
         echo "Skipping $target_filename ($src_path not found in repo)"
         return
     fi
-    echo "Deploying $src_basename -> $target_filename on all profiles..."
-    for entry in "${TARGETS[@]}"; do
+    echo "Deploying $src_basename -> $target_filename on all reachable profiles..."
+    for entry in "${REACHABLE[@]}"; do
         deploy_one "$src_path" "$target_filename" "${entry%%|*}" "${entry#*|}"
     done
     echo
@@ -120,3 +134,7 @@ if [ "$FAILED" -gt 0 ]; then
 fi
 
 echo "Deploy complete. Reload Nexus by relaunching GW2 on each profile to pick up the new config."
+if [ "${#UNREACHABLE[@]}" -gt 0 ]; then
+    echo "WARN: ${#UNREACHABLE[@]} host(s) skipped because unreachable: ${UNREACHABLE[*]}"
+    echo "      Re-run this script when those host(s) are awake to finish deployment."
+fi

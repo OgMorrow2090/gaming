@@ -74,6 +74,25 @@ Development plans for Guild Wars 2 Addons.
 
 ## 📋 Backlog
 
+### GW2 API Integration (planned 2026-05-09)
+
+Wire up `api.guildwars2.com` v2 so the addons can read live game/account/market state instead of being purely input-simulation. Three streams, each independently shippable:
+
+| Stream                       | Endpoints                                                                      | Use case                                                                                          | Priority |
+| ---------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- | -------- |
+| Mystic Forge / TP price feed | `/v2/commerce/prices`, `/v2/commerce/listings`                                 | Mystic-trading clicker shows live buy/sell margins so the operator knows if a forge is profitable | High     |
+| Account / character data     | `/v2/account`, `/v2/characters`, `/v2/account/materials`, `/v2/account/wallet` | Per-account API key (read-only scopes), surface bag/material storage state to drive smarter sorts | Medium   |
+| Wiki / item / recipe lookups | `/v2/items`, `/v2/recipes`, `/v2/skills`                                       | Item id → name/icon/rarity lookup so debug logs and UI labels are human-readable                  | Medium   |
+
+**Shared work** (do once, reuse across all three):
+
+- HTTP client in C++ (WinHTTP or libcurl-static) with TLS, gzip, retry-on-5xx, ETag/If-None-Match for cache friendliness
+- Local on-disk cache keyed by endpoint + query, JSON parser (nlohmann/json or RapidJSON)
+- API-key storage: encrypted via DPAPI under `%APPDATA%\Guild Wars 2 Addons\api.dat` (never plain text); UI to paste/clear key
+- Rate-limit handling — anet docs suggest 600 req/min/IP; back off on 429
+
+**Open questions (decide before starting first stream)**: which JSON lib (header-only vs vendored), whether to share a DLL across addons or duplicate per-addon, and whether to add a tiny GUI (ImGui via Nexus) or stay menu-driven.
+
 ### Future Addon Ideas
 
 | Idea                       | Description                        | Priority |

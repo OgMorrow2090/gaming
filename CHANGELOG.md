@@ -7,6 +7,24 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [unreleased] — Mystic Clicker: Copy Item Name macro
+
+### Added
+
+- **`COPY_ITEM_NAME` keybind** — hover an item in the GW2 inventory, press the hotkey, the item's display name lands on the Windows clipboard. Designed for the destroy-confirmation dialog ("Type the name of the item to destroy") so the user can paste rather than type long item names on a controller keyboard.
+- New module `modules/mystic-clicker/item-name.cpp` (~340 lines). Flow on dispatch (detached thread): wait for chord modifiers to release → drain modifiers → save cursor + clipboard → Esc → Enter (open fresh empty chat input) → restore cursor → SendInput Ctrl+LeftClick at cursor → Ctrl+A → Ctrl+C → Esc (close chat without sending) → parse base64 chat link → 24-bit item ID → cache lookup → on miss, GW2 API GET `/v2/items/<id>?lang=en` and persist → write item name to clipboard. On any failure: restore original clipboard, GUI alert, log entry.
+- Item-name cache at `addons/MysticClicker/item-name-cache.cfg` (id=name lines, append-only).
+- Default keybind: `(null)` — assign in Nexus options or by setting `Code` in `configs/gw2-keybinds/nexus-inputbinds.json` and deploying.
+
+### Build
+
+- Added `modules\mystic-clicker\item-name.cpp` to `mystic-clicker.vcxproj` ClCompile items.
+- Links against `wininet.lib` via `#pragma comment(lib, "wininet.lib")` in the new file (matches mystic-trading's pattern).
+
+### Caveat
+
+- Macro presses Esc once before opening chat (to close any chat-with-text safely). If a GW2 dialog is open at hotkey press, that Esc may close it. Run the macro before opening the destroy confirmation, not while it's already up.
+
 ## [tooling 2026-05-05] — Repo as source of truth for Nexus + controller deploys
 
 ### Added

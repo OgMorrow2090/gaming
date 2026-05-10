@@ -303,6 +303,10 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     {
         SimulatePathingToggleAll();
     }
+    else if (strcmp(aIdentifier, COPY_ITEM_NAME) == 0)
+    {
+        SimulateCopyItemName();
+    }
     // === CAPTURE MODE ===
     else if (strcmp(aIdentifier, CAPTURE_MODE) == 0)
     {

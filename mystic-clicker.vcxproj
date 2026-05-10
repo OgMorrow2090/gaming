@@ -102,6 +102,7 @@
     <ClCompile Include="modules\mystic-clicker\entry.cpp" />
     <ClCompile Include="modules\mystic-clicker\keybinds.cpp" />
     <ClCompile Include="modules\mystic-clicker\input-sim.cpp" />
+    <ClCompile Include="modules\mystic-clicker\item-name.cpp" />
     <ClCompile Include="modules\mystic-clicker\config.cpp" />
     <ClCompile Include="modules\mystic-clicker\capture-ui.cpp" />
     <ClCompile Include="modules\mystic-clicker\rescue.cpp" />

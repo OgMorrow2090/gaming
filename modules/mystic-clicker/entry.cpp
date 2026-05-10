@@ -188,6 +188,7 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(GUILD_HALL_COMBO, ProcessKeybind, "CTRL+SHIFT+F5");
     APIDefs->InputBinds_RegisterWithString(GRACEFUL_QUIT, ProcessKeybind, "ALT+SHIFT+Q");
     APIDefs->InputBinds_RegisterWithString(PATHING_TOGGLE_ALL, ProcessKeybind, "CTRL+F3");
+    APIDefs->InputBinds_RegisterWithString(COPY_ITEM_NAME, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_CRAFT, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_CRAFT_ALL, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_WIZARD_VAULT, ProcessKeybind, "(null)");

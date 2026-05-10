@@ -1153,6 +1153,15 @@
 	},
 	{
 		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "COPY_ITEM_NAME",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
 		"Code": 59,
 		"Ctrl": true,
 		"Identifier": "CRAFT",

@@ -508,15 +508,33 @@ void SimulateCopyItemName()
         auto isLetter = [](unsigned char c) {
             return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
         };
-        // Strict whitelist: any character outside this set disqualifies the
-        // whole line. Real GW2 item names use only letters, spaces, apostrophes,
-        // and hyphens (e.g. "Star-Bound Skirmisher", "Quaggan's Trinket").
-        // Tesseract's misreads of inventory icons typically include parens,
-        // brackets, periods, quotes — which all fail this gate.
+        // Strict whitelist: any character outside [A-Za-z space ' -] rejects
+        // the whole line. Real GW2 item names use only those (e.g.
+        // "Star-Bound Skirmisher", "Quaggan's Trinket"). Misreads of inventory
+        // icons commonly include parens, brackets, periods, quotes.
+        //
+        // Beyond the whitelist we apply two structural heuristics that catch
+        // all-letter noise:
+        //   - reject lines containing any 1-letter word (real item names never
+        //     have 1-char words; tesseract noise often does — "a fro")
+        //   - reject lines with ≥4 words averaging <3 letters/word
+        //     ("fowl owl all ay po rae")
         auto isCleanLine = [&](const std::string& s) {
             if (s.size() < 3) return false;
-            int letters = 0, words = 0;
+            // First non-space char must be a letter — item names start with
+            // capitalized words, never with " - ".
+            size_t firstNonSpace = 0;
+            while (firstNonSpace < s.size() && s[firstNonSpace] == ' ')
+                firstNonSpace++;
+            if (firstNonSpace >= s.size()) return false;
+            if (!isLetter((unsigned char)s[firstNonSpace])) return false;
+
+            int letters = 0, words = 0, minWordLen = 999, curWordLen = 0;
             bool inWord = false;
+            auto closeWord = [&]() {
+                if (inWord && curWordLen < minWordLen) minWordLen = curWordLen;
+                inWord = false; curWordLen = 0;
+            };
             for (char c : s)
             {
                 unsigned char u = (unsigned char)c;
@@ -525,18 +543,17 @@ void SimulateCopyItemName()
                 if (isLetter(u))
                 {
                     letters++;
-                    if (!inWord) { words++; inWord = true; }
+                    if (!inWord) { words++; inWord = true; curWordLen = 0; }
+                    curWordLen++;
                 }
                 else
                 {
-                    inWord = false;
+                    closeWord();
                 }
             }
+            closeWord();
             if (letters < 3) return false;
-            // Misread noise tends to be many short fake words ("fowl owl
-            // all ay po rae"). Real item names average 4+ letters per word.
-            // Threshold avg ≥ 3.0 catches the noise without rejecting things
-            // like "Pact Fleet Axe" (avg 3.67) or "Eye of Janthir" (avg 3.0).
+            if (minWordLen < 2) return false;
             if (words >= 4 && (double)letters / words < 3.0) return false;
             return true;
         };
@@ -576,20 +593,17 @@ void SimulateCopyItemName()
 
         WriteClipboardUtf8(best);
 
-        // Auto-paste into the focused textbox. The user clicked the textbox
-        // before pressing the chord, and our hotkey (F10) doesn't steal focus,
-        // so the textbox is still the active control.
-        Sleep(40);
-        SendCtrlV();
-
+        // No auto-paste — empirically SendInput Ctrl+V (whether scancode or
+        // VK-only) doesn't reach GW2's destroy-confirm textbox under the
+        // Apple TV stream + Steam Input chain. The user can manually Ctrl+V
+        // from the controller chord layer or keyboard, which works reliably.
         char msg[360];
         snprintf(msg, sizeof(msg),
-                 "Copy Item Name: \"%s\" → clipboard, Ctrl+V sent", best.c_str());
+                 "Copy Item Name: \"%s\" → clipboard ready", best.c_str());
         APIDefs->Log(LOGL_INFO, "MysticClicker", msg);
-        // GUI alert too — gives the user immediate feedback that capture
-        // succeeded and they can paste manually if auto-paste didn't land.
         char alert[300];
-        snprintf(alert, sizeof(alert), "Copy Item Name: %s", best.c_str());
+        snprintf(alert, sizeof(alert),
+                 "Item: %s — Ctrl+V to paste", best.c_str());
         APIDefs->GUI_SendAlert(alert);
     }).detach();
 }

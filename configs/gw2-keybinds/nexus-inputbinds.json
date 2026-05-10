@@ -1639,6 +1639,15 @@
 	},
 	{
 		"Alt": false,
+		"Code": 87,
+		"Ctrl": false,
+		"Identifier": "Show details of a hovered item",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
 		"Code": 64,
 		"Ctrl": false,
 		"Identifier": "TELEPORT_FRIEND_COMBO",

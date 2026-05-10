@@ -1153,7 +1153,7 @@
 	},
 	{
 		"Alt": false,
-		"Code": 88,
+		"Code": 68,
 		"Ctrl": false,
 		"Identifier": "COPY_ITEM_NAME",
 		"Passthrough": false,

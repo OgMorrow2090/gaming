@@ -7,6 +7,21 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [controller v19.7] — Fix v19.6 chord misfires (F12 → logout, Ctrl+Shift+X chord doesn't trigger addon)
+
+### Fixed
+
+- **Long_Press**: F12 was GW2's default Logout key — pressing fired the in-game logout dialog instead of reaching Nexus. Switched to **bare F10** (Code 68 in canonical InputBinds.json), unbound in GW2 native and in our addon stack.
+- **Double_Press**: Ctrl+Shift+X via 3 separate `key_press` lines hit the [Steam Input multi-binding fires sequentially](memory/steam-input-multi-binding-fires-sequentially.md) issue — Item Detail Popups' chord detection saw discrete Ctrl, Shift, X presses instead of a held chord, so the popup never fired. Switched to **bare F11**. Bare F11 is unused (only `Alt+F11` = Merchant Combo exists). User must reassign the Item Detail Popups bind to bare F11 in Nexus → Settings → Keybinds.
+
+### Pre-existing (unrelated to this change)
+
+- ArcDPS log warnings observed: `client executable in memory does not match executable on disk` (hash check warning, fires every launch on every profile, benign), and `received incompatible imgui context, using standalone` (Nexus + ArcDPS ImGui version mismatch — addon falls back to standalone ImGui, cosmetic). Not introduced by v19.6/v19.7.
+
+### Snapshot
+
+`configs/steam-controller/moonlight-gw2-og-v19.7.vdf` — frozen working state.
+
 ## [controller v19.6] — L1+DPad-East: Copy Item Name (Long) + Item Detail Popup (Double)
 
 ### Added

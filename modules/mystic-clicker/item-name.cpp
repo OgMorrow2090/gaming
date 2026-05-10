@@ -90,6 +90,26 @@ static bool ChatHasFocus()
     return (ctx->uiState & UI_STATE_TEXTBOX_HAS_FOCUS) != 0;
 }
 
+// Read the player's character name from MumbleLink. Returned as UTF-8.
+// We use this to filter out OCR hits on the character name overlay (e.g.
+// ArcDPS draws it in yellow at the top of the screen) which otherwise
+// passes our quality heuristics — it's a real name, just the wrong one.
+static std::string GetCharacterName()
+{
+    if (!APIDefs || !APIDefs->DataLink_Get) return "";
+    void* p = APIDefs->DataLink_Get("DL_MUMBLE_LINK");
+    if (!p) return "";
+    auto* mem = (MumbleLinkedMem*)p;
+    if (mem->uiVersion < 2) return "";
+    int needed = WideCharToMultiByte(CP_UTF8, 0, mem->name, -1,
+                                     nullptr, 0, nullptr, nullptr);
+    if (needed <= 1) return "";
+    std::string out(needed - 1, '\0');
+    WideCharToMultiByte(CP_UTF8, 0, mem->name, -1, out.data(), needed,
+                        nullptr, nullptr);
+    return out;
+}
+
 static std::string AddonDir()
 {
     if (!APIDefs || !APIDefs->Paths_GetAddonDirectory) return "";
@@ -569,21 +589,39 @@ void SimulateCopyItemName()
             return true;
         };
 
+        // Lowercase + strip non-letters → canonical form for fuzzy compare.
+        // Used to reject OCR hits on the character-name overlay (the same
+        // canonical form catches "Morrowmage", "morrow mage", "Morrowmage."
+        // etc). Substring match handles partial OCR misreads.
+        auto canon = [](const std::string& s) {
+            std::string o;
+            for (char c : s) {
+                unsigned char u = (unsigned char)c;
+                if (u >= 'A' && u <= 'Z') o += (char)(u + 32);
+                else if (u >= 'a' && u <= 'z') o += (char)u;
+            }
+            return o;
+        };
+        std::string charName = GetCharacterName();
+        std::string canonChar = canon(charName);
+
         std::vector<std::string> cleanLines;
         std::stringstream ss(ocr.text);
         std::string line;
         while (std::getline(ss, line))
         {
-            // Strip CR/whitespace ends, then trim leading/trailing non-letter
-            // junk so e.g. ". Display Unit" / ": Golem Right Arm" become the
-            // bare item-name candidates.
             while (!line.empty() &&
                    (line.back() == '\r' || line.back() == ' ' ||
                     line.back() == '\t' || line.back() == '\n'))
                 line.pop_back();
             std::string trimmed = trimToLetters(line);
-            if (isCleanLine(trimmed))
-                cleanLines.push_back(trimmed);
+            if (!isCleanLine(trimmed)) continue;
+            // Reject anything that looks like the player's own character
+            // name (ArcDPS overlay etc draw it in yellow too).
+            if (!canonChar.empty() &&
+                canon(trimmed).find(canonChar) != std::string::npos)
+                continue;
+            cleanLines.push_back(trimmed);
         }
 
         std::string best;

@@ -579,3 +579,73 @@ Snapshot pattern matches controller VDFs: `nexus-inputbinds-v1.json` is the immu
 - TP fix verified working on Deck-stream after `pkill steamwebhelper` reload — **report any other chord regressions**
 - If InputBinds drift recurs (incident #3), capture per-addon DLL hash + mtime snapshot for forensic comparison (per memory action item)
 - Steam Controller for bazzite arrives ~2026-05-09; will eliminate the dual-Sunshine-session symptom from Apple-TV-stream + Deck-as-controller pattern
+
+## 2026-05-10 — Mystic Clicker COPY_ITEM_NAME OCR pipeline
+
+Built end-to-end OCR-based "copy hovered item name to clipboard" macro for the destroy-confirm dialog, after a long debugging arc through three different fundamental architectural failures.
+
+### Architecture (final)
+
+```
+F10 / L1+DPad-East Long_Press
+    │
+    ▼
+Mystic Clicker DLL (in GW2 Wine process)
+    │  capture D3D11 back buffer via Nexus APIDefs->SwapChain
+    │  apply yellow-pixel filter (R≥180, G≥150, B≤100)
+    │  write BMP to /tmp/gw2-ocr-input-<TS>.bmp
+    │  touch /tmp/gw2-ocr-input-<TS>.ready
+    ▼
+gw2-ocr-daemon.service (host-side, OUTSIDE sandbox)
+    │  poll /tmp at 10 Hz for *.ready files
+    │  /usr/bin/tesseract <bmp> <out> -l eng --psm 6
+    │  touch /tmp/gw2-ocr-done-<TS>
+    ▼
+DLL polls for done marker, reads .txt, runs:
+    │  trim leading/trailing non-letter chars per line
+    │  whitelist [A-Za-z space ' -]
+    │  reject 1-letter words, single-word <4 letters, low avg word length
+    │  reject lines containing player's character name (MumbleLink)
+    │  concatenate clean lines (handles wrapped item names)
+    ▼
+WriteClipboardUtf8(item_name) + GUI_SendAlert
+User: manual Ctrl+V into the textbox (auto-paste doesn't reach textbox under Apple TV stream)
+```
+
+### Three architectural dead-ends (and what saved each)
+
+1. **`start /unix /wait /usr/bin/tesseract` from Wine** — broken in Proton 11.0 ("Could not translate the specified Unix filename to a DOS filename"). Fixed by introducing the host-side daemon with a /tmp file-rendezvous protocol (BMP + .ready trigger / .txt + .done marker). New script `scripts/gw2-ocr-daemon.sh` + systemd user unit `configs/bazzite/gw2-ocr-daemon.service`.
+
+2. **`BitBlt(GetDC(NULL))` from inside Wine** — returns all-black on bazzite because GW2 renders via DXVK → Vulkan → gamescope, bypassing Wine's GDI desktop surface entirely. Confirmed by inspecting raw forensic captures. Fixed by reading directly from `IDXGISwapChain` (exposed at `APIDefs->SwapChain`) on a Nexus `RT_PostRender` callback. New module `modules/mystic-clicker/screen-capture.{h,cpp}`.
+
+3. **Yellow filter caught inventory icons + overlays** — first failure was 700×500 capture missing the yellow text (it sits ~400px right of cursor in textbox at 2560×1440); bumped to 1800×900. Then tesseract noise from inventory icons (`"fall cal call oa"`, `"a fro"`, `"el Ao Woe"`) was passing the longest-line picker. And ArcDPS character-name overlay (`"Morrowmage"`) was real but wrong. Fixed via the line filter pipeline now documented in `memory/ocr-line-filter-tuning.md` — trim, whitelist, structural heuristics, character-name blacklist via MumbleLink.
+
+### Files added/changed
+
+| File | Purpose |
+| --- | --- |
+| `modules/mystic-clicker/screen-capture.{h,cpp}` | NEW — D3D11 swap-chain capture on render thread |
+| `modules/mystic-clicker/ocr.{h,cpp}` | OCR pipeline: capture → BMP → daemon rendezvous |
+| `modules/mystic-clicker/item-name.cpp` | COPY_ITEM_NAME macro: yellow filter + line filter + clipboard |
+| `modules/mystic-clicker/entry.cpp` | Register/deregister screen-capture hook |
+| `mystic-clicker.vcxproj` | Add screen-capture.cpp to build |
+| `scripts/gw2-ocr-daemon.sh` | NEW — host-side tesseract worker (polling, no inotify) |
+| `configs/bazzite/gw2-ocr-daemon.service` | NEW — systemd user unit |
+| `memory/d3d11-back-buffer-capture-vs-gdi.md` | NEW — why GDI BitBlt is dead |
+| `memory/ocr-line-filter-tuning.md` | NEW — line filter heuristics + rationale |
+| `memory/mystic-clicker-build-and-deploy.md` | Updated — daemon section added |
+| `memory/feedback_always_watch_and_deploy_dll.md` | NEW — verify CI+watcher+4-profile-hash before "done" |
+
+### Infra changes (bazzite)
+
+- `rpm-ostree install tesseract` — done earlier this session (reboot 13:13)
+- `~/scripts/gw2-ocr-daemon.sh` installed (committed clean polling version)
+- `~/.config/systemd/user/gw2-ocr-daemon.service` enabled + started
+- Verified `systemctl --user is-active gw2-ocr-daemon` = `active`
+
+### Open / next session
+
+- Final test: relaunch GW2, open destroy popup, click textbox, F10 — should put correct item name on clipboard with no Morrowmage prefix and no inventory-icon noise. Deployed DLL hash: `b7bc71e2a1412f7f` (commit `7bf668e`).
+- Manual Ctrl+V is the documented paste path; auto-paste was removed because `SendInput(Ctrl+V)` doesn't reach GW2's destroy-confirm textbox under Apple TV stream + Steam Input chain.
+- ArcDPS font-size reduction is an alternative noise-reducer but no longer needed (character name now blacklisted via MumbleLink).
+- If a new noise pattern emerges for an item, the daemon doesn't keep snapshots anymore (clean version restored). Re-add the `cp "$bmp" "$DEBUG/last.bmp"` lines to the daemon for one-off debugging.

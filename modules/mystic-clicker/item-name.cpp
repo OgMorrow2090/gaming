@@ -508,32 +508,40 @@ void SimulateCopyItemName()
         auto isLetter = [](unsigned char c) {
             return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
         };
-        // Strict whitelist: any character outside [A-Za-z space ' -] rejects
-        // the whole line. Real GW2 item names use only those (e.g.
-        // "Star-Bound Skirmisher", "Quaggan's Trinket"). Misreads of inventory
-        // icons commonly include parens, brackets, periods, quotes.
-        //
-        // Beyond the whitelist we apply two structural heuristics that catch
-        // all-letter noise:
-        //   - reject lines containing any 1-letter word (real item names never
-        //     have 1-char words; tesseract noise often does — "a fro")
-        //   - reject lines with ≥4 words averaging <3 letters/word
-        //     ("fowl owl all ay po rae")
+
+        // Strip leading/trailing non-letter chars. Tesseract often prefixes
+        // genuine item-name lines with stray garbage like ": " ". " "* "
+        // (misreads of decorative dialog characters), and trails with similar
+        // junk. Without this trim, "" Display Unit" and ": Golem Right Arm"
+        // get rejected by the whitelist and the real text is lost.
+        auto trimToLetters = [&](const std::string& s) -> std::string {
+            size_t start = 0;
+            while (start < s.size() && !isLetter((unsigned char)s[start]))
+                start++;
+            if (start >= s.size()) return "";
+            size_t end = s.size();
+            while (end > start && !isLetter((unsigned char)s[end - 1]))
+                end--;
+            return s.substr(start, end - start);
+        };
+
+        // Strict whitelist + structural heuristics for "looks like a real
+        // GW2 item name" after trimming has been applied:
+        //   - whitelist [A-Za-z space ' -]
+        //   - min word length ≥ 2 (no single-letter words like "a")
+        //   - single-word lines must be ≥4 letters ("Skin" yes, "Woe" no)
+        //   - multi-word lines: avg letters/word ≥ 3.0
+        //   - multi-word lines containing a 2-letter word (the/of):
+        //     avg ≥ 3.5 — this catches noise like "fall cal call oa"
+        //     (4 words, avg 3.25, has 2-letter word "oa") while still
+        //     accepting "Eye of Janthir" (avg 4) and "Bag of Holding" (3.67)
         auto isCleanLine = [&](const std::string& s) {
             if (s.size() < 3) return false;
-            // First non-space char must be a letter — item names start with
-            // capitalized words, never with " - ".
-            size_t firstNonSpace = 0;
-            while (firstNonSpace < s.size() && s[firstNonSpace] == ' ')
-                firstNonSpace++;
-            if (firstNonSpace >= s.size()) return false;
-            if (!isLetter((unsigned char)s[firstNonSpace])) return false;
-
-            int letters = 0, words = 0, minWordLen = 999, curWordLen = 0;
+            int letters = 0, words = 0, minWordLen = 999, curLen = 0;
             bool inWord = false;
             auto closeWord = [&]() {
-                if (inWord && curWordLen < minWordLen) minWordLen = curWordLen;
-                inWord = false; curWordLen = 0;
+                if (inWord && curLen < minWordLen) minWordLen = curLen;
+                inWord = false; curLen = 0;
             };
             for (char c : s)
             {
@@ -543,8 +551,8 @@ void SimulateCopyItemName()
                 if (isLetter(u))
                 {
                     letters++;
-                    if (!inWord) { words++; inWord = true; curWordLen = 0; }
-                    curWordLen++;
+                    if (!inWord) { words++; inWord = true; curLen = 0; }
+                    curLen++;
                 }
                 else
                 {
@@ -554,7 +562,10 @@ void SimulateCopyItemName()
             closeWord();
             if (letters < 3) return false;
             if (minWordLen < 2) return false;
-            if (words >= 4 && (double)letters / words < 3.0) return false;
+            if (words == 1 && letters < 4) return false;
+            double avg = (double)letters / words;
+            if (words >= 2 && avg < 3.0) return false;
+            if (minWordLen == 2 && avg < 3.5) return false;
             return true;
         };
 
@@ -563,17 +574,16 @@ void SimulateCopyItemName()
         std::string line;
         while (std::getline(ss, line))
         {
+            // Strip CR/whitespace ends, then trim leading/trailing non-letter
+            // junk so e.g. ". Display Unit" / ": Golem Right Arm" become the
+            // bare item-name candidates.
             while (!line.empty() &&
                    (line.back() == '\r' || line.back() == ' ' ||
                     line.back() == '\t' || line.back() == '\n'))
                 line.pop_back();
-            size_t start = 0;
-            while (start < line.size() &&
-                   (line[start] == ' ' || line[start] == '\t'))
-                start++;
-            line = line.substr(start);
-            if (isCleanLine(line))
-                cleanLines.push_back(line);
+            std::string trimmed = trimToLetters(line);
+            if (isCleanLine(trimmed))
+                cleanLines.push_back(trimmed);
         }
 
         std::string best;

@@ -263,6 +263,13 @@ OcrResult OcrScreenRegion(int x, int y, int w, int h, const OcrOptions& opts)
 
     if (opts.colorTarget != OcrColorTarget::None)
     {
+        // Forensics: dump the RAW (pre-filter) image too so we can verify
+        // (a) the capture region included what we expected and (b) inspect
+        // the actual screen-space color of the target text. Path mirrors the
+        // filtered BMP but with `-raw` suffix.
+        std::string rawPath = std::string("Z:/tmp/gw2-ocr-input-")
+                            + suffix + "-raw.bmp";
+        WriteBmp(rawPath, pixels, w, h);
         ApplyColorIsolation(pixels, w, h, opts);
     }
 

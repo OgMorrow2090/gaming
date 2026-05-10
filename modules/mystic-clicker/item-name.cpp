@@ -452,12 +452,16 @@ void SimulateCopyItemName()
         int waited = 0;
         while (ModifiersHeld() != 0 && waited < 1500) { Sleep(50); waited += 50; }
 
-        // Capture a region around the cursor large enough to include both the
-        // textbox and the yellow item name above it. GW2 destroy popup is
-        // ~400-500px wide and the item name sits ~30-80px above the textbox,
-        // so 700x500 around the cursor (textbox) reliably catches it.
-        const int CAPTURE_W = 700;
-        const int CAPTURE_H = 500;
+        // Capture a region big enough to cover the whole destroy popup. At
+        // 2560×1440 (Apple TV stream) the dialog is ~1100px wide and the
+        // yellow item name sits in the top-right, often 400+px right of the
+        // textbox. A 1800×900 region centered on the cursor (textbox) gives
+        // 900px on each horizontal side — comfortably covers the entire
+        // dialog regardless of where in the textbox the user clicked.
+        // Higher pixel count (≈4.9 MB BGR) but tesseract still runs in
+        // <500ms on the host-side daemon.
+        const int CAPTURE_W = 1800;
+        const int CAPTURE_H = 900;
 
         OcrOptions opts;
         opts.colorTarget = OcrColorTarget::Yellow;  // GW2 destroy-dialog item-name color

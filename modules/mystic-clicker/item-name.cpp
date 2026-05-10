@@ -480,10 +480,34 @@ void SimulateCopyItemName()
             return;
         }
 
-        // The yellow filter already zapped non-yellow pixels, so anything
-        // tesseract returns is item-name text. Defensive longest-line pick
-        // handles spurious newlines / blank lines from OCR noise.
-        std::string best;
+        // Tesseract typically returns several lines. Some are clean item-name
+        // text ("Pact Fleet Axe", "Skin") and some are noise from inventory
+        // icons whose yellow accents survived the color filter ("[ oa cat
+        // atl po en"). We need to:
+        //   1. Reject lines that are mostly garbage (non-letter chars dominate)
+        //   2. Keep clean lines (letters + spaces + a few common punctuators)
+        //   3. Concatenate them — GW2 wraps long item names mid-string in the
+        //      destroy dialog, so the name often spans two lines.
+        auto isLetter = [](unsigned char c) {
+            return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+        };
+        auto isAllowed = [&](unsigned char c) {
+            return isLetter(c) || c == ' ' || c == '\'' || c == '-';
+        };
+        auto isCleanLine = [&](const std::string& s) {
+            if (s.size() < 3) return false;
+            int letters = 0, allowed = 0, total = 0;
+            for (char c : s)
+            {
+                total++;
+                if (isLetter((unsigned char)c)) letters++;
+                if (isAllowed((unsigned char)c)) allowed++;
+            }
+            // Need at least 3 letters AND 80% of chars must be allowed
+            return letters >= 3 && allowed * 5 >= total * 4;
+        };
+
+        std::vector<std::string> cleanLines;
         std::stringstream ss(ocr.text);
         std::string line;
         while (std::getline(ss, line))
@@ -497,9 +521,15 @@ void SimulateCopyItemName()
                    (line[start] == ' ' || line[start] == '\t'))
                 start++;
             line = line.substr(start);
+            if (isCleanLine(line))
+                cleanLines.push_back(line);
+        }
 
-            if (line.size() > best.size())
-                best = line;
+        std::string best;
+        for (size_t i = 0; i < cleanLines.size(); i++)
+        {
+            if (i > 0) best += " ";
+            best += cleanLines[i];
         }
 
         if (best.empty())

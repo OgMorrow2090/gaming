@@ -379,21 +379,28 @@ void SimulateCopyItemName()
 
         std::string savedClipboard = ReadClipboardUtf8();
 
-        // Esc to cancel any open chat or stale dialog state, then Enter to
-        // land in a fresh chat input.
-        SendKeyScancode(VK_ESCAPE);
-        Sleep(60);
+        // Open chat. The user's typical state is "inventory open, item hovered,
+        // chat closed" — Enter opens chat without affecting inventory or cursor.
+        // We deliberately do NOT send Esc first: in GW2 Esc closes inventory,
+        // which would lose the cursor-over-item state we depend on.
         SendKeyScancode(VK_RETURN);
-        Sleep(180);  // GW2 chat-open animation
+        Sleep(220);  // GW2 chat-open animation; needs to settle before click.
 
         // Cursor may have drifted while we waited — snap back to where the
         // user was hovering when they pressed the hotkey.
         SetCursorPos(cursor.x, cursor.y);
         Sleep(40);
 
+        // Clear any text the user already had typed in chat input (rare but
+        // safe). If chat was empty, Ctrl+A + Backspace are harmless no-ops.
+        SendKeyChord(VK_LCONTROL, 'A');
+        Sleep(20);
+        SendKeyScancode(VK_BACK);
+        Sleep(20);
+
         // Ctrl+LeftClick → GW2 inserts `[&AgEAAAAA]` into chat input.
         SendCtrlLeftClickAtCursor();
-        Sleep(120);
+        Sleep(140);
 
         // Select all in chat input.
         SendKeyChord(VK_LCONTROL, 'A');
@@ -401,7 +408,7 @@ void SimulateCopyItemName()
 
         // Copy.
         SendKeyChord(VK_LCONTROL, 'C');
-        Sleep(120);
+        Sleep(140);
 
         // Esc closes chat input WITHOUT sending whatever's in it.
         SendKeyScancode(VK_ESCAPE);

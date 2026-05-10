@@ -2,22 +2,28 @@
  * ocr.cpp
  *
  * Reusable OCR utility for Mystic Clicker. Captures a region of the screen,
- * optionally pre-filters by color, spawns Linux Tesseract via Wine's
- * `start /unix` to run native OCR, then reads and returns the text.
+ * optionally pre-filters by color, asks a host-side daemon to run tesseract,
+ * then reads and returns the text.
  *
- * Designed so other macros can call OcrScreenRegion(...) for their own
- * uses (e.g. reading TP value off an item tooltip, reading dialog text,
- * scraping addon-rendered overlays, etc.).
+ * Why a daemon and not direct Wine spawn:
+ *   GW2 runs inside Steam Linux Runtime's pressure-vessel sandbox. Wine's
+ *   `start /unix` is broken in Proton 11.0 ("Could not translate the
+ *   specified Unix filename to a DOS filename"), so we cannot directly
+ *   exec /usr/bin/tesseract from inside the sandbox.
  *
- * Why Linux Tesseract instead of a bundled Windows build:
- *   - bazzite already has libtesseract; we just need /usr/bin/tesseract via
- *     `rpm-ostree install tesseract` (~5 MB layered package, no addon bloat)
- *   - Wine can spawn the Linux ELF via cmd.exe's `start /unix <path>` extension
+ *   Instead, scripts/gw2-ocr-daemon.sh runs as a systemd user unit OUTSIDE
+ *   the sandbox. It watches /tmp via inotify, runs tesseract on incoming
+ *   BMPs, and writes results back to /tmp. /tmp is bind-mounted into the
+ *   sandbox so both sides see the same files — no IPC needed beyond plain
+ *   files.
  *
- * Files used (all under /tmp on bazzite, accessible to Wine via Z:\tmp\):
- *   /tmp/gw2-ocr-input-<TS>.bmp   — screenshot we capture
- *   /tmp/gw2-ocr-input-<TS>.bmp   — same path used as input to tesseract
- *   /tmp/gw2-ocr-output-<TS>.txt  — tesseract output (we read this)
+ * Protocol (matched by scripts/gw2-ocr-daemon.sh):
+ *   DLL writes  /tmp/gw2-ocr-input-<TS>.bmp        — captured screen region
+ *   daemon writes /tmp/gw2-ocr-output-<TS>.txt     — tesseract output
+ *   daemon touches /tmp/gw2-ocr-done-<TS>          — completion marker
+ *
+ * The DLL accesses /tmp via Wine's Z: drive (Z:\ → /). Wait + read are
+ * pure file I/O — no Win32 process spawning required.
  */
 
 #include "shared.h"
@@ -205,31 +211,25 @@ static void ApplyColorIsolation(std::vector<uint8_t>& pixels, int w, int h,
 }
 
 // ---------------------------------------------------------------------------
-// Spawn Linux tesseract via Wine `start /unix`. Blocks until done.
+// Wait for the host-side daemon to finish OCR.
+//
+// We've already written the BMP at this point; the daemon's inotify watcher
+// will pick it up, run tesseract, and touch a "done" marker. We poll for
+// that marker. If the marker never appears within the budget, the daemon
+// is probably not running — log a clear hint about how to start it.
 // ---------------------------------------------------------------------------
 
-static bool RunTesseract(const std::string& bmpPath,
-                         const std::string& outBase,  // tesseract appends .txt
-                         const OcrOptions& opts)
+static bool WaitForOcrDone(const std::string& doneMarker, int timeoutMs)
 {
-    // bmpPath/outBase are Linux paths (e.g. /tmp/gw2-ocr-...). Tesseract is
-    // a Linux ELF, so we don't translate paths into Wine-style — we hand the
-    // Linux binary Linux paths directly via Wine's `start /unix` extension.
-    char cmd[1024];
-    snprintf(cmd, sizeof(cmd),
-             "cmd.exe /c start /unix /wait /usr/bin/tesseract \"%s\" \"%s\" -l %s --psm %d 2>/tmp/gw2-ocr-stderr.log",
-             bmpPath.c_str(), outBase.c_str(), opts.lang.c_str(), opts.psm);
-
-    int rc = system(cmd);
-    if (rc != 0)
+    int waited = 0;
+    while (waited < timeoutMs)
     {
-        char buf[256];
-        snprintf(buf, sizeof(buf),
-                 "RunTesseract: system() returned %d for cmd: %.180s", rc, cmd);
-        if (APIDefs) APIDefs->Log(LOGL_WARNING, "MysticClicker", buf);
-        return false;
+        if (GetFileAttributesA(doneMarker.c_str()) != INVALID_FILE_ATTRIBUTES)
+            return true;
+        Sleep(50);
+        waited += 50;
     }
-    return true;
+    return false;
 }
 
 // ---------------------------------------------------------------------------
@@ -245,9 +245,9 @@ OcrResult OcrScreenRegion(int x, int y, int w, int h, const OcrOptions& opts)
     char suffix[32];
     snprintf(suffix, sizeof(suffix), "%lld", (long long)now);
 
-    std::string bmpPath  = std::string("/tmp/gw2-ocr-input-")  + suffix + ".bmp";
-    std::string outBase  = std::string("/tmp/gw2-ocr-output-") + suffix;
-    std::string outTxt   = outBase + ".txt";
+    std::string bmpPath   = std::string("/tmp/gw2-ocr-input-")  + suffix + ".bmp";
+    std::string outTxt    = std::string("/tmp/gw2-ocr-output-") + suffix + ".txt";
+    std::string doneMark  = std::string("/tmp/gw2-ocr-done-")   + suffix;
 
     std::vector<uint8_t> pixels;
     if (!CaptureScreenRegion(x, y, w, h, pixels))
@@ -261,8 +261,8 @@ OcrResult OcrScreenRegion(int x, int y, int w, int h, const OcrOptions& opts)
         ApplyColorIsolation(pixels, w, h, opts);
     }
 
-    // Wine maps Z: → Linux root, so /tmp/foo === Z:\tmp\foo from the Wine side.
-    // Tesseract runs as a Linux process and reads/writes /tmp directly.
+    // Wine maps Z: → Linux root, so /tmp/foo from the host == Z:\tmp\foo from
+    // inside Wine. The host-side daemon picks up the BMP via inotify on /tmp.
     if (!WriteBmp(std::string("Z:") + bmpPath, pixels, w, h))
     {
         out.error = "BMP write failed";
@@ -275,9 +275,13 @@ OcrResult OcrScreenRegion(int x, int y, int w, int h, const OcrOptions& opts)
         if (APIDefs) APIDefs->Log(LOGL_DEBUG, "MysticClicker", msg);
     }
 
-    if (!RunTesseract(bmpPath, outBase, opts))
+    // Wait for the daemon's done marker. 3s budget — typical tesseract run on
+    // a 700×500 region is ~150-300ms, plus inotify dispatch and FS sync.
+    if (!WaitForOcrDone(std::string("Z:") + doneMark, 3000))
     {
-        out.error = "tesseract spawn failed";
+        out.error = "OCR timed out — gw2-ocr-daemon.service not running on bazzite?";
+        if (APIDefs) APIDefs->Log(LOGL_WARNING, "MysticClicker",
+            "OCR timed out. Start the daemon: systemctl --user enable --now gw2-ocr-daemon");
         if (!opts.keepArtifacts)
         {
             DeleteFileA((std::string("Z:") + bmpPath).c_str());
@@ -285,7 +289,7 @@ OcrResult OcrScreenRegion(int x, int y, int w, int h, const OcrOptions& opts)
         return out;
     }
 
-    // Read the text output file (Linux path /tmp/...txt → Wine Z:\tmp\....txt).
+    // Read the text output file the daemon wrote.
     std::ifstream f(std::string("Z:") + outTxt);
     if (f.is_open())
     {
@@ -303,6 +307,7 @@ OcrResult OcrScreenRegion(int x, int y, int w, int h, const OcrOptions& opts)
     {
         DeleteFileA((std::string("Z:") + bmpPath).c_str());
         DeleteFileA((std::string("Z:") + outTxt).c_str());
+        DeleteFileA((std::string("Z:") + doneMark).c_str());
     }
 
     return out;

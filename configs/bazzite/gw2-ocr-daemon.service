@@ -1,0 +1,13 @@
+[Unit]
+Description=Mystic Clicker OCR daemon (host-side tesseract worker)
+Documentation=file://%h/scripts/gw2-ocr-daemon.sh
+After=default.target
+
+[Service]
+Type=simple
+ExecStart=%h/scripts/gw2-ocr-daemon.sh
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=default.target

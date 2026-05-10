@@ -27,7 +27,6 @@
 #include <sstream>
 #include <chrono>
 #include <cstdio>
-#include <algorithm>
 
 // ---------------------------------------------------------------------------
 // BMP writer (BI_RGB, 24 bpp). Manual to avoid GDI+ dependency.
@@ -172,9 +171,11 @@ static void ApplyColorIsolation(std::vector<uint8_t>& pixels, int w, int h,
         bool keep = false;
         if (opts.colorTarget == OcrColorTarget::AnyRaritySaturated)
         {
-            // Saturated colored = (max - min) > threshold AND brightness above floor
-            int mx = std::max({(int)r,(int)g,(int)b});
-            int mn = std::min({(int)r,(int)g,(int)b});
+            // Saturated colored = (max - min) > threshold AND brightness above floor.
+            // Manual min/max because windows.h defines `max`/`min` as macros that
+            // collide with std::max/std::min initializer-list overloads.
+            int mx = r; if (g > mx) mx = g; if (b > mx) mx = b;
+            int mn = r; if (g < mn) mn = g; if (b < mn) mn = b;
             int sat = mx - mn;
             keep = (sat >= opts.saturationFloor) && (mx >= opts.brightnessFloor);
         }

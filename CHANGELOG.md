@@ -7,6 +7,31 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [controller v19.6] — L1+DPad-East: Copy Item Name (Long) + Item Detail Popup (Double)
+
+### Added
+
+- **L1 + DPad-East Long_Press** → emits `F12`, which is now the COPY_ITEM_NAME hotkey (set in `configs/gw2-keybinds/nexus-inputbinds.json`, Code 88, no modifiers). Triggers the Mystic Clicker chat-link → GW2 API → clipboard macro from the previous entry.
+- **L1 + DPad-East Double_Press** → emits `Ctrl+Shift+X`, the default hotkey of the community-made `Item_Detail_Popups.dll` addon ([lorkano/item_detail_popups](https://github.com/lorkanoo/item_detail_popups)). Hover an item, double-tap dpad-east while holding L1, popup appears with wiki/GW2 API details. The addon registers its bind via Nexus default (not via persisted JSON entry), so sending the keystroke is sufficient even if InputBinds.json doesn't list the addon's identifier.
+
+### Changed
+
+- VDF title bumped v19.5 → v19.6.
+- Both new activators added to L1 layer dpad group (id 30) — overrides what would otherwise fall through to the base preset's `Long_Press → Deposit & Sort`. Tap (Full_Press) of L1+DPad-East still emits the existing `S, U, M` sequence.
+- COPY_ITEM_NAME canonical InputBinds entry: `Code: 0` → `Code: 88` (F12).
+
+### Deploy
+
+After GW2 is closed on every reachable target:
+
+1. `./scripts/deploy-controller-vdf.sh` — pushes v19.6 template to all active layout files
+2. `./scripts/deploy-nexus-config.sh` — pushes the F12 bind for COPY_ITEM_NAME to all 4 profiles
+3. Restart GW2 (full quit + relaunch is the safe path for the new Mystic Clicker DLL with the COPY_ITEM_NAME bind)
+
+### Validation
+
+VDF brackets 937=937 balanced. JSON valid. Snapshot at `configs/steam-controller/moonlight-gw2-og-v19.6.vdf`.
+
 ## [unreleased] — Mystic Clicker: Copy Item Name macro
 
 ### Added

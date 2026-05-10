@@ -9,6 +9,7 @@
  */
 
 #include "shared.h"
+#include "screen-capture.h"
 #include "imgui/imgui.h"
 #include <cstring>
 
@@ -122,6 +123,9 @@ void AddonLoad(AddonAPI_t* aApi)
     // Register capture window render callback
     APIDefs->GUI_Register(RT_Render, RenderCaptureWindow);
     APIDefs->GUI_RegisterCloseOnEscape("Mystic Clicker - Capture", &g_ShowCaptureWindow);
+
+    // Register the D3D11 back-buffer screen-capture hook (used by OCR macros).
+    RegisterScreenCaptureHook();
 
     // Capture mode keybind
     APIDefs->InputBinds_RegisterWithString(CAPTURE_MODE, ProcessKeybind, "CTRL+SHIFT+C");
@@ -356,6 +360,7 @@ void AddonUnload()
 
     APIDefs->GUI_Deregister(RenderCaptureWindow);
     APIDefs->GUI_DeregisterCloseOnEscape("Mystic Clicker - Capture");
+    DeregisterScreenCaptureHook();
     APIDefs->InputBinds_Deregister(CAPTURE_MODE);
     APIDefs->InputBinds_Deregister(RESET_WINDOWS);
 

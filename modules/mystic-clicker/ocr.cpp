@@ -32,6 +32,7 @@
 
 #include "shared.h"
 #include "ocr.h"
+#include "screen-capture.h"
 #include <vector>
 #include <fstream>
 #include <sstream>
@@ -106,51 +107,18 @@ static bool WriteBmp(const std::string& path,
 }
 
 // ---------------------------------------------------------------------------
-// Screen capture: BitBlt the requested rect into a BGR buffer.
+// Screen capture: read pixels from GW2's D3D11 swap-chain back buffer.
+//
+// Why not BitBlt(GetDC(nullptr)): GW2 renders via DXVK → Vulkan → gamescope
+// on bazzite. The Wine GDI desktop surface is empty as far as the game's
+// content is concerned — BitBlt comes back all-black. Reading the back
+// buffer through Nexus's IDXGISwapChain is the only thing that works.
 // ---------------------------------------------------------------------------
 
 static bool CaptureScreenRegion(int x, int y, int w, int h,
                                 std::vector<uint8_t>& outPixels)
 {
-    HDC hdcScreen = GetDC(nullptr);
-    if (!hdcScreen) return false;
-    HDC hdcMem = CreateCompatibleDC(hdcScreen);
-    HBITMAP hBmp = CreateCompatibleBitmap(hdcScreen, w, h);
-    HGDIOBJ oldBmp = SelectObject(hdcMem, hBmp);
-
-    BOOL ok = BitBlt(hdcMem, 0, 0, w, h, hdcScreen, x, y, SRCCOPY);
-
-    bool result = false;
-    if (ok)
-    {
-        BITMAPINFO bi{};
-        bi.bmiHeader.biSize        = sizeof(BITMAPINFOHEADER);
-        bi.bmiHeader.biWidth       = w;
-        bi.bmiHeader.biHeight      = -h;  // top-down
-        bi.bmiHeader.biPlanes      = 1;
-        bi.bmiHeader.biBitCount    = 24;
-        bi.bmiHeader.biCompression = BI_RGB;
-
-        int rowStride = ((w * 3 + 3) / 4) * 4;
-        std::vector<uint8_t> tmp(rowStride * h);
-        if (GetDIBits(hdcMem, hBmp, 0, h, tmp.data(), &bi, DIB_RGB_COLORS))
-        {
-            outPixels.resize(w * h * 3);
-            for (int row = 0; row < h; row++)
-            {
-                memcpy(&outPixels[row * w * 3],
-                       &tmp[row * rowStride],
-                       w * 3);
-            }
-            result = true;
-        }
-    }
-
-    SelectObject(hdcMem, oldBmp);
-    DeleteObject(hBmp);
-    DeleteDC(hdcMem);
-    ReleaseDC(nullptr, hdcScreen);
-    return result;
+    return CaptureBackBufferRegion(x, y, w, h, outPixels, 300);
 }
 
 // ---------------------------------------------------------------------------

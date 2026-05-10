@@ -96,3 +96,15 @@ GitHub Actions cloud runners can't reach `172.16.100.x` private LAN IPs. Three w
 
 - Build infra also covers `mystic-trading` — same pattern. Could extend the deploy script to handle trading too if/when it iterates fast.
 - Companion deploy scripts: `scripts/deploy-nexus-config.sh` (canonical InputBinds JSON), `scripts/deploy-controller-vdf.sh` (Steam Input layout). Same 4-target list, same pre-flight pattern. Don't yet have watchers — those configs change less often.
+
+## OCR side-channel: gw2-ocr-daemon (host-side tesseract worker)
+
+The COPY_ITEM_NAME macro can't spawn `/usr/bin/tesseract` from inside the GW2 sandbox because Wine's `start /unix` is broken in Proton 11.0 ("Could not translate the specified Unix filename to a DOS filename"). Fix is a **host-side daemon** that runs OUTSIDE the sandbox and reads/writes via /tmp (bind-mounted into the sandbox).
+
+- `scripts/gw2-ocr-daemon.sh` — polls /tmp at 10 Hz, runs tesseract on `gw2-ocr-input-<TS>.bmp` files when their `.ready` marker appears, writes `gw2-ocr-output-<TS>.txt` + touches `gw2-ocr-done-<TS>`.
+- `configs/bazzite/gw2-ocr-daemon.service` — systemd user unit (target: `default.target`).
+- Install: `install -m 755 scripts/gw2-ocr-daemon.sh ~/scripts/`, `install -m 644 configs/bazzite/gw2-ocr-daemon.service ~/.config/systemd/user/`, `systemctl --user daemon-reload && systemctl --user enable --now gw2-ocr-daemon`.
+- Logs: `~/.local/state/gw2-ocr-daemon.log`.
+- Bazzite-only — Steam Deck native install doesn't have rpm-ostree-installed tesseract; OCR macros simply time out on that profile.
+
+If the macro reports "OCR timed out — gw2-ocr-daemon.service not running on bazzite?", the daemon stopped or was never enabled. `systemctl --user status gw2-ocr-daemon` to check.

@@ -362,6 +362,23 @@ static void SendKeyChord(WORD modVk, WORD vk)
     SendInput(4, in, sizeof(INPUT));
 }
 
+// VK-only Ctrl+V (no scancode flag). Many GW2 textbox controls (including
+// the destroy-confirm dialog) only honour shortcut events that arrive as
+// translated VK rather than raw scancodes. SendKeyChord's scancode mode
+// works for some chords (e.g. Ctrl+A is intercepted as MYSTIC_FORGE_COMBO)
+// but does NOT trigger paste. Empirically: VK-only chord paste works.
+static void SendCtrlV()
+{
+    INPUT in[4] = {};
+    in[0].type = INPUT_KEYBOARD;
+    in[0].ki.wVk = VK_LCONTROL;
+    in[1].type = INPUT_KEYBOARD;
+    in[1].ki.wVk = 'V';
+    in[2] = in[1]; in[2].ki.dwFlags = KEYEVENTF_KEYUP;
+    in[3] = in[0]; in[3].ki.dwFlags = KEYEVENTF_KEYUP;
+    SendInput(4, in, sizeof(INPUT));
+}
+
 // Send Shift+Home as an extended-key VK chord. Used to select chat input
 // contents from current cursor position back to the start. We deliberately
 // avoid Ctrl+A (which is the standard "select all") because in this user's
@@ -491,20 +508,37 @@ void SimulateCopyItemName()
         auto isLetter = [](unsigned char c) {
             return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
         };
-        auto isAllowed = [&](unsigned char c) {
-            return isLetter(c) || c == ' ' || c == '\'' || c == '-';
-        };
+        // Strict whitelist: any character outside this set disqualifies the
+        // whole line. Real GW2 item names use only letters, spaces, apostrophes,
+        // and hyphens (e.g. "Star-Bound Skirmisher", "Quaggan's Trinket").
+        // Tesseract's misreads of inventory icons typically include parens,
+        // brackets, periods, quotes — which all fail this gate.
         auto isCleanLine = [&](const std::string& s) {
             if (s.size() < 3) return false;
-            int letters = 0, allowed = 0, total = 0;
+            int letters = 0, words = 0;
+            bool inWord = false;
             for (char c : s)
             {
-                total++;
-                if (isLetter((unsigned char)c)) letters++;
-                if (isAllowed((unsigned char)c)) allowed++;
+                unsigned char u = (unsigned char)c;
+                bool ok = isLetter(u) || u == ' ' || u == '\'' || u == '-';
+                if (!ok) return false;
+                if (isLetter(u))
+                {
+                    letters++;
+                    if (!inWord) { words++; inWord = true; }
+                }
+                else
+                {
+                    inWord = false;
+                }
             }
-            // Need at least 3 letters AND 80% of chars must be allowed
-            return letters >= 3 && allowed * 5 >= total * 4;
+            if (letters < 3) return false;
+            // Misread noise tends to be many short fake words ("fowl owl
+            // all ay po rae"). Real item names average 4+ letters per word.
+            // Threshold avg ≥ 3.0 catches the noise without rejecting things
+            // like "Pact Fleet Axe" (avg 3.67) or "Eye of Janthir" (avg 3.0).
+            if (words >= 4 && (double)letters / words < 3.0) return false;
+            return true;
         };
 
         std::vector<std::string> cleanLines;
@@ -546,11 +580,16 @@ void SimulateCopyItemName()
         // before pressing the chord, and our hotkey (F10) doesn't steal focus,
         // so the textbox is still the active control.
         Sleep(40);
-        SendKeyChord(VK_LCONTROL, 'V');
+        SendCtrlV();
 
         char msg[360];
         snprintf(msg, sizeof(msg),
-                 "Copy Item Name: \"%s\" copied + pasted", best.c_str());
+                 "Copy Item Name: \"%s\" → clipboard, Ctrl+V sent", best.c_str());
         APIDefs->Log(LOGL_INFO, "MysticClicker", msg);
+        // GUI alert too — gives the user immediate feedback that capture
+        // succeeded and they can paste manually if auto-paste didn't land.
+        char alert[300];
+        snprintf(alert, sizeof(alert), "Copy Item Name: %s", best.c_str());
+        APIDefs->GUI_SendAlert(alert);
     }).detach();
 }

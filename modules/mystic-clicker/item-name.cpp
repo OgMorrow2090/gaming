@@ -26,15 +26,74 @@
  */
 
 #include "shared.h"
+#include "ocr.h"
 #include <wininet.h>
 #include <thread>
 #include <string>
 #include <vector>
 #include <fstream>
+#include <sstream>
 #include <unordered_map>
 #include <mutex>
 
 #pragma comment(lib, "wininet.lib")
+
+// ============================================================================
+// MumbleLink — detect whether GW2 chat input currently has focus
+//
+// Reading the GW2 context's uiState bitfield is the only way to tell whether
+// our `Enter` keystroke would (a) open chat fresh (chat was closed) or
+// (b) send whatever's sitting in the chat input (chat was already focused).
+// Without this check, a previous test attempt that left a chat link in the
+// input would get publicly broadcast on the next macro run.
+//
+// MumbleLink layout: standard 1364-byte struct exposed by GW2 via shared
+// memory. The 256-byte `context` blob contains a GW2-specific struct whose
+// 49th byte begins the uiState uint32. Bit 5 = TextboxHasFocus.
+// ============================================================================
+
+#pragma pack(push, 1)
+struct GW2MumbleContext
+{
+    unsigned char serverAddress[28];
+    uint32_t mapId;
+    uint32_t mapType;
+    uint32_t shardId;
+    uint32_t instance;
+    uint32_t buildId;
+    uint32_t uiState;          // bit 5 = TEXTBOX_HAS_FOCUS
+    // (rest of fields ignored)
+};
+struct MumbleLinkedMem
+{
+    uint32_t uiVersion;
+    uint32_t uiTick;
+    float fAvatarPosition[3];
+    float fAvatarFront[3];
+    float fAvatarTop[3];
+    wchar_t name[256];
+    float fCameraPosition[3];
+    float fCameraFront[3];
+    float fCameraTop[3];
+    wchar_t identity[256];
+    uint32_t context_len;
+    unsigned char context[256];
+    // wchar_t description[2048];  // unused
+};
+#pragma pack(pop)
+
+static const uint32_t UI_STATE_TEXTBOX_HAS_FOCUS = 1u << 5;
+
+static bool ChatHasFocus()
+{
+    if (!APIDefs || !APIDefs->DataLink_Get) return false;
+    void* p = APIDefs->DataLink_Get("DL_MUMBLE_LINK");
+    if (!p) return false;
+    auto* mem = (MumbleLinkedMem*)p;
+    if (mem->uiVersion < 2) return false;
+    auto* ctx = (GW2MumbleContext*)mem->context;
+    return (ctx->uiState & UI_STATE_TEXTBOX_HAS_FOCUS) != 0;
+}
 
 static std::string AddonDir()
 {
@@ -381,93 +440,92 @@ static int ModifiersHeld()
 }
 
 // ============================================================================
-// Public entry point
+// Public entry point — OCR-based capture
+//
+// Old approach (chat-link → API) kept hitting input-pipeline conflicts:
+// Enter sometimes sent pending chat text, Ctrl+A collided with MYSTIC_FORGE_COMBO,
+// modifier timing was flaky on Wine + Sunshine. Replaced with a screen-capture
+// + Tesseract pipeline that needs zero input simulation. User hovers an item,
+// presses the hotkey, the tooltip is OCR'd in place, the rarity-colored item
+// name is isolated and copied to the clipboard. Inventory stays open.
+//
+// Requires `tesseract` package on bazzite (rpm-ostree install tesseract +
+// reboot, ~5 MB layered). See modules/mystic-clicker/ocr.cpp for the
+// reusable OCR primitives.
 // ============================================================================
 
 void SimulateCopyItemName()
 {
     std::thread([] {
-        // Wait for chord modifiers to release before we drive any input.
+        // Wait for chord modifiers to release before any keyboard simulation
+        // would have run. We don't drive the keyboard here, but if other
+        // chords overlap, briefly waiting prevents capturing a transitional
+        // tooltip state.
         int waited = 0;
-        while (ModifiersHeld() != 0 && waited < 3000) { Sleep(50); waited += 50; }
-        DrainModifiers();
-        Sleep(80);
+        while (ModifiersHeld() != 0 && waited < 1500) { Sleep(50); waited += 50; }
 
-        POINT cursor;
-        GetCursorPos(&cursor);
+        // Generous capture rectangle around the cursor — covers the GW2
+        // tooltip whether it appears above-right (typical) or above-left
+        // (when item is on right edge of inventory). 700x500 is enough for
+        // even long item names + a few stat lines worth of context.
+        const int CAPTURE_W = 700;
+        const int CAPTURE_H = 500;
 
-        std::string savedClipboard = ReadClipboardUtf8();
+        OcrOptions opts;
+        opts.colorTarget = OcrColorTarget::AnyRaritySaturated;
+        opts.psm = 6;  // assume uniform block of text
+        opts.lang = "eng";
 
-        // Open chat. The user's typical state is "inventory open, item hovered,
-        // chat closed" — Enter opens chat without affecting inventory or cursor.
-        // We deliberately do NOT send Esc first: in GW2 Esc closes inventory,
-        // which would lose the cursor-over-item state we depend on.
-        SendKeyScancode(VK_RETURN);
-        Sleep(220);  // GW2 chat-open animation; needs to settle before click.
+        OcrResult ocr = OcrAroundCursor(CAPTURE_W, CAPTURE_H, opts);
 
-        // Cursor may have drifted while we waited — snap back to where the
-        // user was hovering when they pressed the hotkey.
-        SetCursorPos(cursor.x, cursor.y);
-        Sleep(40);
+        if (!ocr.success)
+        {
+            char buf[256];
+            snprintf(buf, sizeof(buf),
+                     "Copy Item Name: OCR failed — %s", ocr.error.c_str());
+            APIDefs->Log(LOGL_WARNING, "MysticClicker", buf);
+            APIDefs->GUI_SendAlert("Copy Item Name: OCR failed");
+            return;
+        }
 
-        // Ctrl+LeftClick → GW2 inserts `[&AgEAAAAA]` into chat input.
-        // We do NOT pre-clear via Ctrl+A + Backspace because Ctrl+A is bound
-        // to MYSTIC_FORGE_COMBO in this user's canonical Nexus binds — pressing
-        // it fires the Forge macro instead. Assumes chat was empty when Enter
-        // opened it (the typical case).
-        SendCtrlLeftClickAtCursor();
-        Sleep(140);
+        // Pick the most likely item-name line from tesseract's output. The
+        // color filter has already zapped white text, so what remains is
+        // (mostly) the rarity-colored name. But OCR may produce blank lines
+        // and misread fragments — take the longest non-empty line.
+        std::string best;
+        std::stringstream ss(ocr.text);
+        std::string line;
+        while (std::getline(ss, line))
+        {
+            // Trim trailing CR / spaces.
+            while (!line.empty() &&
+                   (line.back() == '\r' || line.back() == ' ' ||
+                    line.back() == '\t' || line.back() == '\n'))
+                line.pop_back();
+            // Trim leading spaces.
+            size_t start = 0;
+            while (start < line.size() &&
+                   (line[start] == ' ' || line[start] == '\t'))
+                start++;
+            line = line.substr(start);
 
-        // Select chat input contents: cursor sits at end of inserted link →
-        // Shift+Home selects backward to start. Same effect as Ctrl+A but
-        // avoids the Forge Combo conflict.
-        SendShiftHome();
-        Sleep(30);
+            if (line.size() > best.size())
+                best = line;
+        }
 
-        // Copy.
-        SendKeyChord(VK_LCONTROL, 'C');
-        Sleep(140);
-
-        // Esc closes chat input WITHOUT sending whatever's in it.
-        SendKeyScancode(VK_ESCAPE);
-        Sleep(50);
-
-        std::string clip = ReadClipboardUtf8();
-
-        uint32_t itemId = 0;
-        if (!ParseGw2ItemLink(clip, itemId))
+        if (best.empty())
         {
             APIDefs->Log(LOGL_WARNING, "MysticClicker",
-                "Copy Item Name: clipboard didn't contain a chat link — hover an item in inventory before pressing the hotkey");
-            APIDefs->GUI_SendAlert("Copy Item Name: hover an item first");
-            WriteClipboardUtf8(savedClipboard);
+                "Copy Item Name: OCR returned no readable text — hover an item with its tooltip visible");
+            APIDefs->GUI_SendAlert("Copy Item Name: no item text detected");
             return;
         }
 
-        std::string name = LookupCache(itemId);
-        if (name.empty())
-        {
-            char url[160];
-            sprintf_s(url, "https://api.guildwars2.com/v2/items/%u?lang=en", itemId);
-            std::string json = HttpGet(url);
-            name = ExtractJsonName(json);
-            if (!name.empty()) StoreCache(itemId, name);
-        }
+        WriteClipboardUtf8(best);
 
-        if (name.empty())
-        {
-            char buf[160];
-            sprintf_s(buf, "Copy Item Name: API lookup failed for item %u", itemId);
-            APIDefs->Log(LOGL_WARNING, "MysticClicker", buf);
-            APIDefs->GUI_SendAlert("Copy Item Name: lookup failed (no network?)");
-            WriteClipboardUtf8(savedClipboard);
-            return;
-        }
-
-        WriteClipboardUtf8(name);
-
-        char msg[320];
-        sprintf_s(msg, "Copy Item Name: %s [id=%u] copied to clipboard", name.c_str(), itemId);
+        char msg[360];
+        snprintf(msg, sizeof(msg),
+                 "Copy Item Name: \"%s\" copied to clipboard", best.c_str());
         APIDefs->Log(LOGL_INFO, "MysticClicker", msg);
     }).detach();
 }

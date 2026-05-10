@@ -1,28 +1,23 @@
 /**
  * item-name.cpp
  *
- * Copy-Item-Name macro: hover an item in inventory, press the hotkey, the
- * item's display name lands on the Windows clipboard. Lets the user paste it
- * into GW2's "type the item name to confirm destroy" dialog rather than
- * typing long names on a controller keyboard.
+ * Copy-Item-Name macro — destroy-dialog flow:
+ *   1. User initiates a destroy: GW2 pops the "Type the item's name to confirm"
+ *      dialog. Inside the dialog, the item name is rendered in YELLOW.
+ *   2. User clicks into the textbox (so it has keyboard focus) and presses the
+ *      macro hotkey (L1+DPad-East Long_Press → F10).
+ *   3. We OCR a region around the cursor with a yellow-pixel filter, isolating
+ *      the item name. Whatever lands on top is written to the clipboard.
+ *   4. We send Ctrl+V — the focused textbox receives the paste, item name fills
+ *      in, user clicks Confirm.
  *
- * Flow on dispatch (detached thread):
- *   1. Save current cursor pos + clipboard (for restore on failure).
- *   2. Wait for any chord-held modifiers to release (chord may have been
- *      Ctrl+Shift+something).
- *   3. Esc → small wait → Enter to land in a fresh empty chat input. Esc-
- *      then-Enter avoids accidentally sending whatever the user had typed
- *      previously in chat.
- *   4. Restore cursor to its captured position, send Ctrl+LeftClick via
- *      SendInput. GW2 inserts the item chat link `[&AgEAAAAA]` into chat.
- *   5. Ctrl+A → Ctrl+C → Esc. Clipboard now holds the chat link.
- *   6. Parse: base64-decode the bytes between `[&` and `]`. Item link starts
- *      with 0x02; bytes [2..4] (little-endian) are the 24-bit item ID.
- *   7. Cache lookup at addons/MysticClicker/item-name-cache.cfg. On miss,
- *      HTTP GET https://api.guildwars2.com/v2/items/<id>?lang=en, parse
- *      `"name":"..."`, persist to cache.
- *   8. Write item name to clipboard. On any failure: restore original
- *      clipboard + GUI alert.
+ * Why "yellow" filter (not the old AnyRaritySaturated):
+ *   In the destroy popup the item name is yellow regardless of the item's
+ *   rarity, so a tight yellow filter is rock-solid here. (Tooltip-OCR would
+ *   want AnyRaritySaturated, but that's a different macro.)
+ *
+ * Requires `tesseract` package on bazzite (rpm-ostree install tesseract).
+ * Reusable OCR primitives live in modules/mystic-clicker/ocr.{h,cpp}.
  */
 
 #include "shared.h"
@@ -440,40 +435,33 @@ static int ModifiersHeld()
 }
 
 // ============================================================================
-// Public entry point — OCR-based capture
+// Public entry point — OCR yellow item name in destroy popup, paste into
+// focused textbox.
 //
-// Old approach (chat-link → API) kept hitting input-pipeline conflicts:
-// Enter sometimes sent pending chat text, Ctrl+A collided with MYSTIC_FORGE_COMBO,
-// modifier timing was flaky on Wine + Sunshine. Replaced with a screen-capture
-// + Tesseract pipeline that needs zero input simulation. User hovers an item,
-// presses the hotkey, the tooltip is OCR'd in place, the rarity-colored item
-// name is isolated and copied to the clipboard. Inventory stays open.
-//
-// Requires `tesseract` package on bazzite (rpm-ostree install tesseract +
-// reboot, ~5 MB layered). See modules/mystic-clicker/ocr.cpp for the
-// reusable OCR primitives.
+// Pre-conditions caller is responsible for: destroy popup is visible, textbox
+// has focus (user clicked it). We OCR around the cursor (which is in / near
+// the textbox), isolate yellow pixels (the item name), then Ctrl+V paste.
 // ============================================================================
 
 void SimulateCopyItemName()
 {
     std::thread([] {
-        // Wait for chord modifiers to release before any keyboard simulation
-        // would have run. We don't drive the keyboard here, but if other
-        // chords overlap, briefly waiting prevents capturing a transitional
-        // tooltip state.
+        // Wait for any chord-held modifiers to release. Until they do, our
+        // Ctrl+V would land on top of the user's still-held chord and either
+        // misfire or get eaten. 1.5s budget is plenty for human release time.
         int waited = 0;
         while (ModifiersHeld() != 0 && waited < 1500) { Sleep(50); waited += 50; }
 
-        // Generous capture rectangle around the cursor — covers the GW2
-        // tooltip whether it appears above-right (typical) or above-left
-        // (when item is on right edge of inventory). 700x500 is enough for
-        // even long item names + a few stat lines worth of context.
+        // Capture a region around the cursor large enough to include both the
+        // textbox and the yellow item name above it. GW2 destroy popup is
+        // ~400-500px wide and the item name sits ~30-80px above the textbox,
+        // so 700x500 around the cursor (textbox) reliably catches it.
         const int CAPTURE_W = 700;
         const int CAPTURE_H = 500;
 
         OcrOptions opts;
-        opts.colorTarget = OcrColorTarget::AnyRaritySaturated;
-        opts.psm = 6;  // assume uniform block of text
+        opts.colorTarget = OcrColorTarget::Yellow;  // GW2 destroy-dialog item-name color
+        opts.psm = 6;                                // uniform block of text
         opts.lang = "eng";
 
         OcrResult ocr = OcrAroundCursor(CAPTURE_W, CAPTURE_H, opts);
@@ -488,21 +476,18 @@ void SimulateCopyItemName()
             return;
         }
 
-        // Pick the most likely item-name line from tesseract's output. The
-        // color filter has already zapped white text, so what remains is
-        // (mostly) the rarity-colored name. But OCR may produce blank lines
-        // and misread fragments — take the longest non-empty line.
+        // The yellow filter already zapped non-yellow pixels, so anything
+        // tesseract returns is item-name text. Defensive longest-line pick
+        // handles spurious newlines / blank lines from OCR noise.
         std::string best;
         std::stringstream ss(ocr.text);
         std::string line;
         while (std::getline(ss, line))
         {
-            // Trim trailing CR / spaces.
             while (!line.empty() &&
                    (line.back() == '\r' || line.back() == ' ' ||
                     line.back() == '\t' || line.back() == '\n'))
                 line.pop_back();
-            // Trim leading spaces.
             size_t start = 0;
             while (start < line.size() &&
                    (line[start] == ' ' || line[start] == '\t'))
@@ -516,16 +501,22 @@ void SimulateCopyItemName()
         if (best.empty())
         {
             APIDefs->Log(LOGL_WARNING, "MysticClicker",
-                "Copy Item Name: OCR returned no readable text — hover an item with its tooltip visible");
+                "Copy Item Name: no yellow text found — make sure the destroy popup is visible");
             APIDefs->GUI_SendAlert("Copy Item Name: no item text detected");
             return;
         }
 
         WriteClipboardUtf8(best);
 
+        // Auto-paste into the focused textbox. The user clicked the textbox
+        // before pressing the chord, and our hotkey (F10) doesn't steal focus,
+        // so the textbox is still the active control.
+        Sleep(40);
+        SendKeyChord(VK_LCONTROL, 'V');
+
         char msg[360];
         snprintf(msg, sizeof(msg),
-                 "Copy Item Name: \"%s\" copied to clipboard", best.c_str());
+                 "Copy Item Name: \"%s\" copied + pasted", best.c_str());
         APIDefs->Log(LOGL_INFO, "MysticClicker", msg);
     }).detach();
 }

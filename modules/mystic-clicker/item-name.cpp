@@ -308,6 +308,25 @@ static void SendKeyChord(WORD modVk, WORD vk)
     SendInput(4, in, sizeof(INPUT));
 }
 
+// Send Shift+Home as an extended-key VK chord. Used to select chat input
+// contents from current cursor position back to the start. We deliberately
+// avoid Ctrl+A (which is the standard "select all") because in this user's
+// canonical InputBinds, Ctrl+A is bound to MYSTIC_FORGE_COMBO — pressing it
+// would fire the Forge macro instead of selecting chat text, closing the
+// inventory and breaking the macro.
+static void SendShiftHome()
+{
+    INPUT in[4] = {};
+    in[0].type = INPUT_KEYBOARD;
+    in[0].ki.wVk = VK_LSHIFT;
+    in[1].type = INPUT_KEYBOARD;
+    in[1].ki.wVk = VK_HOME;
+    in[1].ki.dwFlags = KEYEVENTF_EXTENDEDKEY;  // Home is in the extended-key block
+    in[2] = in[1]; in[2].ki.dwFlags = KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP;
+    in[3] = in[0]; in[3].ki.dwFlags = KEYEVENTF_KEYUP;
+    SendInput(4, in, sizeof(INPUT));
+}
+
 static void SendCtrlLeftClickAtCursor()
 {
     INPUT in[4] = {};
@@ -391,19 +410,18 @@ void SimulateCopyItemName()
         SetCursorPos(cursor.x, cursor.y);
         Sleep(40);
 
-        // Clear any text the user already had typed in chat input (rare but
-        // safe). If chat was empty, Ctrl+A + Backspace are harmless no-ops.
-        SendKeyChord(VK_LCONTROL, 'A');
-        Sleep(20);
-        SendKeyScancode(VK_BACK);
-        Sleep(20);
-
         // Ctrl+LeftClick → GW2 inserts `[&AgEAAAAA]` into chat input.
+        // We do NOT pre-clear via Ctrl+A + Backspace because Ctrl+A is bound
+        // to MYSTIC_FORGE_COMBO in this user's canonical Nexus binds — pressing
+        // it fires the Forge macro instead. Assumes chat was empty when Enter
+        // opened it (the typical case).
         SendCtrlLeftClickAtCursor();
         Sleep(140);
 
-        // Select all in chat input.
-        SendKeyChord(VK_LCONTROL, 'A');
+        // Select chat input contents: cursor sits at end of inserted link →
+        // Shift+Home selects backward to start. Same effect as Ctrl+A but
+        // avoids the Forge Combo conflict.
+        SendShiftHome();
         Sleep(30);
 
         // Copy.

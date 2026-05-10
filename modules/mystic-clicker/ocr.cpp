@@ -19,8 +19,12 @@
  *
  * Protocol (matched by scripts/gw2-ocr-daemon.sh):
  *   DLL writes  /tmp/gw2-ocr-input-<TS>.bmp        — captured screen region
+ *   DLL touches /tmp/gw2-ocr-input-<TS>.ready      — "BMP complete" trigger
  *   daemon writes /tmp/gw2-ocr-output-<TS>.txt     — tesseract output
  *   daemon touches /tmp/gw2-ocr-done-<TS>          — completion marker
+ *
+ * The .ready trigger exists because the daemon polls /tmp; without it we'd
+ * race the DLL's std::ofstream close and OCR a partial BMP.
  *
  * The DLL accesses /tmp via Wine's Z: drive (Z:\ → /). Wait + read are
  * pure file I/O — no Win32 process spawning required.
@@ -246,6 +250,7 @@ OcrResult OcrScreenRegion(int x, int y, int w, int h, const OcrOptions& opts)
     snprintf(suffix, sizeof(suffix), "%lld", (long long)now);
 
     std::string bmpPath   = std::string("/tmp/gw2-ocr-input-")  + suffix + ".bmp";
+    std::string readyMark = std::string("/tmp/gw2-ocr-input-")  + suffix + ".ready";
     std::string outTxt    = std::string("/tmp/gw2-ocr-output-") + suffix + ".txt";
     std::string doneMark  = std::string("/tmp/gw2-ocr-done-")   + suffix;
 
@@ -263,29 +268,48 @@ OcrResult OcrScreenRegion(int x, int y, int w, int h, const OcrOptions& opts)
 
     // Wine maps Z: → Linux root, so /tmp/foo from the host == Z:\tmp\foo from
     // inside Wine. The host-side daemon picks up the BMP via inotify on /tmp.
-    if (!WriteBmp(std::string("Z:") + bmpPath, pixels, w, h))
+    std::string bmpFullPath = std::string("Z:") + bmpPath;
+    if (!WriteBmp(bmpFullPath, pixels, w, h))
     {
-        out.error = "BMP write failed";
+        out.error = "BMP write failed: " + bmpFullPath;
+        if (APIDefs)
+        {
+            char msg[400];
+            snprintf(msg, sizeof(msg),
+                     "BMP write failed for path: %s", bmpFullPath.c_str());
+            APIDefs->Log(LOGL_WARNING, "MysticClicker", msg);
+        }
         return out;
     }
-    if (opts.keepArtifacts)
+    // Always log what we just wrote — helps diagnose path-translation issues
+    // when the daemon doesn't see the file. Will downgrade to DEBUG once stable.
+    if (APIDefs)
     {
-        char msg[300];
-        snprintf(msg, sizeof(msg), "OCR captured to %s", bmpPath.c_str());
-        if (APIDefs) APIDefs->Log(LOGL_DEBUG, "MysticClicker", msg);
+        char msg[400];
+        snprintf(msg, sizeof(msg),
+                 "OCR wrote BMP: %s (%d×%d, %zu bytes BGR)",
+                 bmpFullPath.c_str(), w, h, pixels.size());
+        APIDefs->Log(LOGL_INFO, "MysticClicker", msg);
     }
 
-    // Wait for the daemon's done marker. 3s budget — typical tesseract run on
-    // a 700×500 region is ~150-300ms, plus inotify dispatch and FS sync.
+    // Touch the .ready marker AFTER the BMP is fully written. The daemon polls
+    // /tmp every 100ms looking for these markers; without it we'd race its
+    // poll vs. our std::ofstream close and OCR a partial BMP.
+    {
+        std::ofstream ready(std::string("Z:") + readyMark);
+        // ofstream's destructor closes/flushes — file exists once we leave scope.
+    }
+
+    // Wait for the daemon's done marker. 3s budget covers daemon poll latency
+    // (≤100ms) + tesseract runtime (~150-300ms on a 700×500 region) + FS sync.
     if (!WaitForOcrDone(std::string("Z:") + doneMark, 3000))
     {
         out.error = "OCR timed out — gw2-ocr-daemon.service not running on bazzite?";
         if (APIDefs) APIDefs->Log(LOGL_WARNING, "MysticClicker",
-            "OCR timed out. Start the daemon: systemctl --user enable --now gw2-ocr-daemon");
-        if (!opts.keepArtifacts)
-        {
-            DeleteFileA((std::string("Z:") + bmpPath).c_str());
-        }
+            "OCR timed out. Check daemon: systemctl --user status gw2-ocr-daemon. "
+            "Forensics: BMP and ready marker preserved on disk for inspection.");
+        // Intentionally DON'T delete on timeout — leave forensics for debugging.
+        // The daemon will clean stale entries on next successful run.
         return out;
     }
 

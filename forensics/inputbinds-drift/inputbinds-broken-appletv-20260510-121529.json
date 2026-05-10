@@ -1,0 +1,1919 @@
+[
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/barbecue",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/beckon",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/bless",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/bloodstoneboogie",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/blowkiss",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/bow",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/breakdance",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/channel",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/cheer",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/cower",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/crabdance",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/crossarms",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/cry",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/dance",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/drink",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/facepalm",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/geargrind",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/gg",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/heroic",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/hiss",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/kneel",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/laugh",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/magicjuggle",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/magictrick",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/no",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/paper",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/petalthrow",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/playdead",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/point",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/ponder",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/posecover",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/posehigh",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/poselow",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/posetwist",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/possessed",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/readbook",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/rock",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/rockout",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/sad",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/salute",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/scissors",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/serve",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/shiver",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/shiverplus",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/shocked",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/shrug",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/shuffle",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/sipcoffee",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/sit",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/sleep",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/step",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/stretch",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/surprised",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/talk",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/thank",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/threaten",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/thumbsdown",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/thumbsup",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/unleash",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/wave",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "/yes",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 16,
+		"Ctrl": true,
+		"Identifier": "0xFC56DD9F_ToggleLFG",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 61,
+		"Ctrl": true,
+		"Identifier": "ACCEPT",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_10",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_11",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_12",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_13",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_14",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_15",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_16",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_17",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_18",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_19",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_20",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_7",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_8",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "ACCEPT_9",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "BANK_COMBO",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "BOUNCY_ACCEPT",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "BOUNCY_META_COMPLETE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_10",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_11",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_12",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_13",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_14",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_15",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_16",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_17",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_18",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_19",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_20",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_7",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_8",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_ACCEPT_9",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_BANK_ICON",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_BOUNCY_ACCEPT",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_BOUNCY_META_COMPLETE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_CHAR_SWAP",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_CHAT_WAYPOINT",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_CRAFT",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_CRAFT_ALL",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_CRAFT_CLOSE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_CRAFT_COLLAPSE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_CRAFT_FILTER",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_EXIT_GAME",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_GENERAL_ACCEPT",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_GENERAL_ACCEPT_2",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_GENERAL_ACCEPT_3",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_GENERAL_ACCEPT_4",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_GUILD_HALL",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_LFG_SEARCH",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_LOUNGE_PASS",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_MAIL_TAKE_ALL",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_MAP_WAYPOINT",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_MERCHANT",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 46,
+		"Ctrl": true,
+		"Identifier": "CAPTURE_MODE",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_TELEPORT_FRIEND",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_TP_BUY_SELL",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_TRADING_POST_ICON",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_WIZARD_GOBBLER",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_WIZARD_PORTAL_SCROLL",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_WIZARD_VAULT",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_WIZARD_VAULT_COMPLETE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_WIZARD_VAULT_DAILY_TAB",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_WIZARD_VAULT_SPECIAL_TAB",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CAPTURE_WIZARD_VAULT_WEEKLY_TAB",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 62,
+		"Ctrl": true,
+		"Identifier": "CHAR_SWAP",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "COPY_ITEM_NAME",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 59,
+		"Ctrl": true,
+		"Identifier": "CRAFT",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 60,
+		"Ctrl": true,
+		"Identifier": "CRAFT_ALL",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 67,
+		"Ctrl": true,
+		"Identifier": "CRAFT_CLOSE",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 68,
+		"Ctrl": true,
+		"Identifier": "CRAFT_COLLAPSE_COMBO",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 37,
+		"Ctrl": true,
+		"Identifier": "Copy KP ID to clipboard",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "CursorAnchor.Center",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "DEPOSIT_AND_SORT",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 32,
+		"Ctrl": true,
+		"Identifier": "DEPOSIT_MATERIALS",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 18,
+		"Ctrl": true,
+		"Identifier": "EXIT_INSTANCE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 66,
+		"Ctrl": false,
+		"Identifier": "FASTSWAP_TOGGLE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "GENERAL_ACCEPT",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 65,
+		"Ctrl": true,
+		"Identifier": "GENERAL_ACCEPT_2",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "GENERAL_ACCEPT_3",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "GENERAL_ACCEPT_4",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 87,
+		"Ctrl": true,
+		"Identifier": "GENERAL_ACCEPT_COMBO",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": true,
+		"Code": 16,
+		"Ctrl": false,
+		"Identifier": "GRACEFUL_QUIT",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "GUILD_HALL",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 63,
+		"Ctrl": true,
+		"Identifier": "GUILD_HALL_COMBO",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "KB_ADDONS",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 18,
+		"Ctrl": true,
+		"Identifier": "KB_ALTER_EGO_TOGGLE",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "KB_ALTER_EGO_TRACKER",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "KB_COMPASS_TOGGLEVIS",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 38,
+		"Ctrl": true,
+		"Identifier": "KB_CRAFTY_TOGGLE",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "KB_DEBUG",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "KB_HOARD_TOGGLE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "KB_LOG",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 24,
+		"Ctrl": true,
+		"Identifier": "KB_MENU",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "KB_MUMBLEOVERLAY",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "KB_OPTIONS",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 37,
+		"Ctrl": true,
+		"Identifier": "KB_SUDOKU",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 35,
+		"Ctrl": true,
+		"Identifier": "KB_TOGGLEHIDEUI",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 24,
+		"Ctrl": true,
+		"Identifier": "KEY_BOSSES_TOGGLE_NOTIFICATION",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 48,
+		"Ctrl": true,
+		"Identifier": "KEY_BOSSES_TOGGLE_RENDER",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 64,
+		"Ctrl": true,
+		"Identifier": "LFG_COMBO",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 61,
+		"Ctrl": false,
+		"Identifier": "LOUNGE_PASS_COMBO",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 66,
+		"Ctrl": true,
+		"Identifier": "MAIL_COMBO",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": true,
+		"Code": 87,
+		"Ctrl": false,
+		"Identifier": "MERCHANT_COMBO",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": true,
+		"Identifier": "MT_RESET_WINDOWS",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 0
+	},
+	{
+		"Alt": true,
+		"Code": 20,
+		"Ctrl": false,
+		"Identifier": "MT_TOGGLE_DASHBOARD",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": true,
+		"Code": 32,
+		"Ctrl": false,
+		"Identifier": "MT_TOGGLE_DELIVERY",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": true,
+		"Code": 33,
+		"Ctrl": false,
+		"Identifier": "MT_TOGGLE_FLIPLIST",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 33,
+		"Ctrl": true,
+		"Identifier": "MYSTIC_FORGE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 50,
+		"Ctrl": true,
+		"Identifier": "MYSTIC_FORGE_COMBO",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 19,
+		"Ctrl": true,
+		"Identifier": "MYSTIC_REFILL",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 30,
+		"Ctrl": true,
+		"Identifier": "NexusGameWiki.Toggle",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 48,
+		"Ctrl": true,
+		"Identifier": "OPEN_CHEST",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 88,
+		"Ctrl": true,
+		"Identifier": "OPEN_CHEST_COMBO",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": true,
+		"Code": 37,
+		"Ctrl": false,
+		"Identifier": "ORG_KEYBIND",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 33,
+		"Ctrl": true,
+		"Identifier": "Open search",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 61,
+		"Ctrl": true,
+		"Identifier": "PATHING_TOGGLE_ALL",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 67,
+		"Ctrl": false,
+		"Identifier": "PERSONAL_MARKER",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "RESET_WINDOWS",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 36,
+		"Ctrl": true,
+		"Identifier": "SELL_JUNK",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 31,
+		"Ctrl": true,
+		"Identifier": "SORT_INVENTORY",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 45,
+		"Ctrl": true,
+		"Identifier": "Show details of a hovered item",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 64,
+		"Ctrl": false,
+		"Identifier": "TELEPORT_FRIEND_COMBO",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 59,
+		"Ctrl": true,
+		"Identifier": "TP_BUY_SELL",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 20,
+		"Ctrl": true,
+		"Identifier": "TP_REMOVE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "TRADING_POST",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 65,
+		"Ctrl": false,
+		"Identifier": "TRADING_POST_COMBO",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": true,
+		"Code": 18,
+		"Ctrl": false,
+		"Identifier": "Toggle Event Timers",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "Toggle Toast Notifications",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "Toggle Upcoming Panel",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 22,
+		"Ctrl": true,
+		"Identifier": "VENDOR_BUY",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 62,
+		"Ctrl": false,
+		"Identifier": "WAYPOINT_COMBO",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 59,
+		"Ctrl": false,
+		"Identifier": "WIZARD_GOBBLER_COMBO",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 60,
+		"Ctrl": false,
+		"Identifier": "WIZARD_PORTAL_SCROLL_COMBO",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 62,
+		"Ctrl": true,
+		"Identifier": "WIZARD_VAULT",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 60,
+		"Ctrl": true,
+		"Identifier": "WIZARD_VAULT_COMBO",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "WIZARD_VAULT_COMPLETE",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 21,
+		"Ctrl": true,
+		"Identifier": "YES_DIALOG",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": true,
+		"Code": 38,
+		"Ctrl": false,
+		"Identifier": "marker-window-toggle",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": true,
+		"Code": 60,
+		"Ctrl": false,
+		"Identifier": "pathing-render-map-toggle",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": true,
+		"Code": 59,
+		"Ctrl": false,
+		"Identifier": "pathing-render-minimap-toggle",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "pathing-render-toggle",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": true,
+		"Code": 49,
+		"Ctrl": false,
+		"Identifier": "pathing-window-toggle",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": true,
+		"Code": 50,
+		"Ctrl": false,
+		"Identifier": "primary-window-toggle",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "timer-key-reset",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "timer-key-trigger-0",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "timer-key-trigger-1",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "timer-key-trigger-2",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "timer-key-trigger-3",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": false,
+		"Code": 0,
+		"Ctrl": false,
+		"Identifier": "timer-key-trigger-4",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 0
+	},
+	{
+		"Alt": true,
+		"Code": 37,
+		"Ctrl": false,
+		"Identifier": "timer-window-toggle",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
+	}
+]

@@ -60,3 +60,47 @@ if "$REPO_ROOT/scripts/deploy-mystic-clicker-dll.sh" >> "$LOG_FILE" 2>&1; then
 else
     log "deploy FAILED for $LATEST_SHA — will retry next tick"
 fi
+
+# ---------------------------------------------------------------------------
+# InputBinds drift self-heal
+#
+# Nexus rewrites InputBinds.json on shutdown of the actively-played profile
+# with drift toward addon-registration defaults (incident pattern documented
+# in memory/nexus-inputbinds-per-profile-drift.md). Once per tick, after the
+# DLL deploy, check each profile's InputBinds.json hash against canonical
+# and re-run deploy-nexus-config.sh if any drifted. The deploy script itself
+# pre-flights GW2 closure on each host, so this is safe even when GW2 is
+# running on some profile.
+# ---------------------------------------------------------------------------
+
+CANONICAL_HASH=$(shasum -a 256 "$REPO_ROOT/configs/gw2-keybinds/nexus-inputbinds.json" | cut -c1-16)
+
+declare -a DRIFT_TARGETS=(
+    "Og@172.16.100.212:/home/Og/.local/share/Steam/steamapps/common/Guild Wars 2/addons/Nexus/InputBinds.json|local"
+    "Og@172.16.100.212:/home/Og/Games/gw2-appletv/addons/Nexus/InputBinds.json|apple-tv"
+    "Og@172.16.100.212:/home/Og/Games/gw2-deck/addons/Nexus/InputBinds.json|deck-bazzite"
+    "deck@172.16.100.95:/home/deck/.local/share/Steam/steamapps/common/Guild Wars 2/addons/Nexus/InputBinds.json|deck-native"
+)
+
+DRIFTED=0
+for entry in "${DRIFT_TARGETS[@]}"; do
+    target="${entry%|*}"
+    label="${entry##*|}"
+    host="${target%%:*}"
+    path="${target#*:}"
+    remote_hash=$(ssh -o ConnectTimeout=4 -o BatchMode=yes "$host" "sha256sum '$path' 2>/dev/null | cut -c1-16" 2>/dev/null || echo "")
+    [ -z "$remote_hash" ] && continue   # host unreachable or file missing — skip silently
+    if [ "$remote_hash" != "$CANONICAL_HASH" ]; then
+        log "InputBinds drift on $label (remote=$remote_hash vs canonical=$CANONICAL_HASH)"
+        DRIFTED=1
+    fi
+done
+
+if [ "$DRIFTED" = 1 ]; then
+    log "restoring canonical InputBinds via deploy-nexus-config.sh..."
+    if "$REPO_ROOT/scripts/deploy-nexus-config.sh" >> "$LOG_FILE" 2>&1; then
+        log "InputBinds restore OK"
+    else
+        log "InputBinds restore FAILED (likely GW2 running) — will retry next tick"
+    fi
+fi

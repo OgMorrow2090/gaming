@@ -205,6 +205,42 @@ grep -E "Loaded addon|Updater|Backup" "$HOME/Games/gw2-deck/addons/Nexus/Nexus.l
 
 Then commit those snapshots to the repo for forensic analysis. The current memory is "we know the recovery, we don't know the cause."
 
+## Recurrence — 2026-05-10 (incident #3, on Apple TV — every-session pattern confirmed)
+
+User played GW2 on Apple TV stream for **2 minutes** (12:12:16 launched → 12:14:32 shutdown), shutdown was a fully clean `WM_DESTROY` (no Alt+F4, full unload chain in Nexus.log). InputBinds.json on Apple TV was rewritten **1 second later** at 12:14:33 with 24 binds drifted. Other 3 profiles (Local, Deck-bazzite, Deck-native) stayed clean (canonical hash `e131e8aa92faf805`).
+
+This **falsifies the GRACEFUL_QUIT/Alt+F4 hypothesis again** — drift happens on every normal shutdown, not just force-quits. The pattern is now: **any GW2 session on a profile = drift on that profile's InputBinds.json on next save**.
+
+### Per-addon DLL snapshot captured (incident #2 action item complete)
+
+Saved at `forensics/inputbinds-drift/addon-snapshot-appletv-20260510-121529.txt`. Notable: `mystic-clicker.dll` changed hash from earlier today (new CI build deployed by launchd watcher 4 minutes before GW2 launch — `edfcfe67d80f76fa`). Other DLLs unchanged.
+
+Checking the "DLL version change triggers drift" theory: Mystic Clicker DID change before this session, and 12 of 24 drifted entries belong to Mystic Clicker (`DEPOSIT_MATERIALS`, `DEPOSIT_AND_SORT`, `MYSTIC_FORGE`, `MYSTIC_FORGE_COMBO`, `BANK_COMBO`, `COPY_ITEM_NAME`, `RESET_WINDOWS`, `TRADING_POST`, `WAYPOINT_COMBO`, `WIZARD_GOBBLER_COMBO`, `WIZARD_PORTAL_SCROLL_COMBO`, `LOUNGE_PASS_COMBO`). **But the other 12 drifted entries belong to addons whose DLLs did NOT change today** — Hoard, CraftyLegend, NexusGameWiki, Organizer, Pathing, Mystic Trading, Fast Swap, Community LFG, Event Timers, Nexus core. So the DLL-change hypothesis is **partially supported but not the whole story**.
+
+### Drift pattern in this incident
+
+Most drifted entries match the addon's registration default (per the addon's `InputBinds_RegisterWithString` call) — e.g. `DEPOSIT_MATERIALS` Code 33 (Ctrl+F user-customized) → Code 32 (Ctrl+D = MysticClicker default), `MYSTIC_FORGE` Code 0 (user unbound) → Code 33+Ctrl (= MysticClicker default `CTRL+F`). Some entries went to 0 (matching `(null)` defaults). Some have unexplained shifts (e.g. `TRADING_POST` Code 24+Ctrl → 0 even though MysticClicker's default is `CTRL+O`).
+
+The strongest fitting hypothesis: **Nexus's `InputBinds_RegisterWithString` on addon load sometimes overwrites the user's stored value with the addon's default, then writes back the new (default) value on shutdown.** Whether this is a Nexus bug, a load-order race, or a "first-time-after-update" code path is unclear without instrumenting Nexus itself.
+
+### No on-disk Nexus state file
+
+Only `InputBinds.json`, `AddonConfig.json`, `Settings.json` in the Nexus dir — no binary cache that could hold stale state. So Nexus reads InputBinds.json from disk every load. Whatever's overwriting must be in-memory between load and save.
+
+### Operational workaround
+
+Until a Nexus-level fix exists, **InputBinds.json must be re-deployed from canonical after every GW2 session on the affected profile**. Two options:
+
+1. Manual: run `./scripts/deploy-nexus-config.sh` after every play session
+2. Automatic: extend the Mac launchd watcher (`scripts/watch-mystic-clicker.sh`) to also check InputBinds.json hash per profile and auto-restore canonical when drift is detected and GW2 is not running
+
+Option 2 is the practical fix — drift becomes self-healing within 5 minutes.
+
+### Forensics committed
+
+- `forensics/inputbinds-drift/inputbinds-broken-appletv-20260510-121529.json` — drifted state at incident
+- `forensics/inputbinds-drift/addon-snapshot-appletv-20260510-121529.txt` — all addon DLL hashes + mtimes for cross-incident comparison
+
 ## Long-term mitigation
 
 If this recurs more than once or twice, mitigation options:

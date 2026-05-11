@@ -2,6 +2,59 @@
 
 Append-only log of agent sessions on this repo. Read at session start for continuity. Entries are summaries — not full transcripts.
 
+## 2026-05-11 — Bazzite-in-lounge LG migration; NVIDIA Linux dead-end; AMD GPU ordered
+
+Long session continuing from the PC physical move into the lounge plugged directly to the LG G5 OLED via HDMI 2.1. Goal restated multiple times: **get 1280×800@90 to appear in the SteamOS resolution dropdown for Deck Moonlight streaming, while keeping LG 4K@165 native for couch play.** Hours of attempts; ultimately decided the only realistic fix is GPU swap.
+
+### Topology now (vs pre-move state)
+
+- Pre-move: NVIDIA RTX 3080 Ti, no physical monitor — `video=DP-1:e drm.edid_firmware=DP-1:edid.bin` virtual DP connector with a generated `edid-virtual-display.bin` providing 1280×800@90 + 4K@120. (User originally thought "nothing plugged in"; this is what was happening.) Worked for Steam BPM dropdown but **commit `56e28e2` (Apr 29) reverted because Sunshine KMS capture from DP-1 fails on NVIDIA proprietary** — virtual framebuffers aren't dmabuf-exposed the same as HDMI.
+- Post-move: LG G5 plugged into HDMI-A-1, no virtual outputs, no dummy. EDID is the LG's. LG EDID does not advertise 1280×800.
+
+### What we tried this session, in order, all failed on NVIDIA
+
+1. `drm.edid_firmware=HDMI-A-1:edid.bin` to inject 1280×800@90 DTD into LG's EDID — kernel logged "Direct firmware load failed -2" (ostree firmware_class.path /usr/local mount-order issue at early DRM init). Even when EDID does load, Steam BPM filters out 16:10 modes when preferred mode (DTD1) is 16:9. Confirmed not viable for our purpose.
+2. vkms virtual card1 — gamescope only binds card0 on NVIDIA proprietary; `WLR_DRM_DEVICES`, `--prefer-output Virtual-1` both ignored. Sunshine's KMS capture also can't dmabuf-import vkms CPU framebuffers on NVIDIA.
+3. Physical HDMI Evanlak dummy on HDMI-A-2 alongside LG on HDMI-A-1 — **caused `nvidia-modeset: HDMI FRL link training failed` warnings in dmesg every 20-30s.** Multi-sink HDMI 2.1 contention. LG signal flickered (purple/red colour cycle). Unplugging the Evanlak restored stability.
+4. Per-mode `--prefer-output HDMI-A-1` (LG) vs `HDMI-A-2` (Evanlak) switching in `gamescope-wrapper` — same FRL contention class. Even when only one sink is "active", NVIDIA pre-allocates resources for both during driver init.
+5. After Evanlak unplug + cold reboot + static `--prefer-output HDMI-A-1` wrapper + 4K@60 + HDR stripped + no `--immediate-flips` — **still flickering**. Indicates the issue is now NVIDIA driver state corruption from a day of churn, not the live config. Full power-off (drain capacitors) was the next escalation; user did this and report continued to evening play.
+
+### Architectural decision: AMD GPU
+
+Concluded the underlying conflict is **NVIDIA proprietary on Bazzite + multi-output + virtual displays + Sunshine capture is structurally broken**. Every workaround hit the same wall class. AMD's open-source amdgpu driver doesn't have these limitations (vkms + Sunshine works, virtual connector capture works, multi-sink HDMI 2.1 clean).
+
+User ordered **Sapphire PULSE RX 9070 XT 16GB** from Scan (£629.99 inc VAT, Scan code LN154765, mfr 11348-03-20G), delivery 2026-05-12. PSU verified at 1200W with spare 8-pin PCIe cables. Z390 board PCIe 3.0 x16 backward-compatible (small 2-3% perf loss vs PCIe 5.0).
+
+### Today's emergency wrapper state on bazzite (replace tomorrow)
+
+`~/bin/gamescope-wrapper` rewritten as "safe mode": HDR flags stripped, no `--immediate-flips` on lower modes, static `--prefer-output HDMI-A-1`, modes capped at 1080p60/1080p120/4k60/4k120/4k165. To survive tonight's GW2 session.
+
+### Pre-move "no dummy, just kernel args" history (corrected understanding)
+
+The April 13 backup (`configs/bazzite/display-backup-2026-04-13/`) shows kernel args `drm.edid_firmware=HDMI-A-2:edid.bin video=HDMI-A-2:e` were enabled, with EDID identifying as "Evanlak8K V2" — so an Evanlak WAS physically plugged in. User remembers it differently (says nothing was plugged in). Combination of both is possible: the Evanlak was on HDMI-A-2 AND the kernel was attempting a custom EDID override on the same connector (which silently failed per the README, falling back to the dummy's EDID). Either way the working state involved EITHER physical Evanlak EDID OR (later, commit `b7ff66e`) a virtual DP-1 with custom EDID.
+
+### Open items for 2026-05-12 (post-GPU-swap session)
+
+- Power down, swap RTX 3080 Ti → RX 9070 XT
+- `rpm-ostree rebase ostree-image-signed:docker://ghcr.io/ublue-os/bazzite-deck:stable`
+- Verify amdgpu loads, gamescope-session clean, Sunshine VAAPI works
+- Re-enable original goal: 1280×800@90 in SteamOS dropdown via vkms or `video=HDMI-A-2:e` virtual connector — should actually work this time
+- Re-write `gamescope-wrapper` from scratch on the clean AMD stack
+- Full plan in `docs/migration-to-amd.md`
+
+### Files modified this session
+
+- `memory/nvidia-gamescope-state-flicker.md` (NEW) — driver state churn → HDMI flicker
+- `memory/MEMORY.md` — added index entry for above
+- `configs/bazzite/sunshine-apps.json` — drop GW2-SteamOS prep-cmd (was already committed in 49f221e but live state had diverged again)
+- `docs/migration-to-amd.md` (NEW) — full 2026-05-12 runbook
+
+### Hardware ordered/identified
+
+- Sapphire PULSE RX 9070 XT 16GB — £629.99 inc VAT from Scan (LN154765)
+- AM4 + 5800X3D path discussed as future CPU upgrade (~£400 incl mobo+cooler, keeps existing 64GB DDR4-3200)
+- 90° HDMI 2.1 certified angled connectors recommended for cable strain relief (Cable Matters or Lindy)
+
 ## 2026-04-29 (PM) — Per-mode resolution switching, gamescope xwayland constraint, GW2 - SteamOS hybrid app
 
 Long second-half session continuing morning Sunshine work. User wanted per-stream-client resolution switching (Deck → 1280x800, Apple TV → higher) with GW2 settings auto-adapted, plus a clean way to access Big Picture mid-session to change res.

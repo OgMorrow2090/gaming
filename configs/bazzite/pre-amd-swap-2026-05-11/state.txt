@@ -1,0 +1,87 @@
+=== rpm-ostree status ===
+State: idle
+Deployments:
+● ostree-image-signed:docker://ghcr.io/ublue-os/bazzite-deck-nvidia:stable
+                   Digest: sha256:5c69c75f571b87aa1e22f105d91381f58c4a890bd0030f482243c3b1e5a078db
+                  Version: 43.20260420 (2026-04-20T05:59:06Z)
+          LayeredPackages: fail2ban tesseract
+
+  ostree-image-signed:docker://ghcr.io/ublue-os/bazzite-deck-nvidia:stable
+                   Digest: sha256:5c69c75f571b87aa1e22f105d91381f58c4a890bd0030f482243c3b1e5a078db
+                  Version: 43.20260420 (2026-04-20T05:59:06Z)
+          LayeredPackages: fail2ban tesseract
+
+=== kargs ===
+ostree=/ostree/boot.0/default/9d98ff0a6f8ab0edf99240d83d23d94d46be325171fe3b6664c7adf662d02a52/0 rhgb quiet root=UUID=fda00fbb-887a-4e32-8184-502d1b798d3f vconsole.keymap=gb rootflags=subvol=root rw bluetooth.disable_ertm=1 nvidia-drm.modeset=1 firmware_class.path=/usr/local/lib/firmware
+
+=== gamescope-mode ===
+4k165
+
+=== gamescope-wrapper ===
+#!/bin/bash
+# gamescope-wrapper: TEMP SAFE-MODE for 2026-05-11 evening play
+# - HDR flags stripped (eliminate SDR/HDR renegotiation flicker)
+# - immediate-flips removed
+# - default mode forces 1080p60 baseline (lowest stress on NVIDIA HDMI)
+# Will be replaced after AMD GPU swap arrives 2026-05-12.
+
+MODE_FILE="$HOME/.config/gamescope-mode"
+MODE="default"
+[ -f "$MODE_FILE" ] && MODE=$(cat "$MODE_FILE" 2>/dev/null | tr -d "[:space:]")
+
+# Strip HDR + prefer-output from upstream args.
+ORIG_ARGS=("$@")
+ARGS=()
+skip=0
+for arg in "${ORIG_ARGS[@]}"; do
+  if [ "$skip" -eq 1 ]; then skip=0; continue; fi
+  case "$arg" in
+    --hdr-enabled|--hdr-itm-enable|--hdr-debug-force-output|--hdr-debug-force-support|--hdr-debug-heatmap) continue ;;
+    --prefer-output) skip=1; continue ;;
+  esac
+  ARGS+=("$arg")
+done
+
+case "$MODE" in
+  4k165)     exec /usr/bin/gamescope "${ARGS[@]}" --prefer-output HDMI-A-1 -W 3840 -H 2160 -r 165 -o 165 --immediate-flips ;;
+  4k120)     exec /usr/bin/gamescope "${ARGS[@]}" --prefer-output HDMI-A-1 -W 3840 -H 2160 -r 120 -o 120 --immediate-flips ;;
+  2k120)     exec /usr/bin/gamescope "${ARGS[@]}" --prefer-output HDMI-A-1 -W 2560 -H 1440 -r 120 -o 120 --immediate-flips ;;
+  4k60)      exec /usr/bin/gamescope "${ARGS[@]}" --prefer-output HDMI-A-1 -W 3840 -H 2160 -r 60 -o 60 ;;
+  4k30)      exec /usr/bin/gamescope "${ARGS[@]}" --prefer-output HDMI-A-1 -W 3840 -H 2160 -r 30 -o 30 ;;
+  2k60)      exec /usr/bin/gamescope "${ARGS[@]}" --prefer-output HDMI-A-1 -W 2560 -H 1440 -r 60 -o 60 ;;
+  1080p120)  exec /usr/bin/gamescope "${ARGS[@]}" --prefer-output HDMI-A-1 -W 1920 -H 1080 -r 120 -o 120 ;;
+  1080p60)   exec /usr/bin/gamescope "${ARGS[@]}" --prefer-output HDMI-A-1 -W 1920 -H 1080 -r 60 -o 60 ;;
+  default|*) exec /usr/bin/gamescope "${ARGS[@]}" --prefer-output HDMI-A-1 -W 1920 -H 1080 -r 60 -o 60 ;;
+esac
+
+=== gpu lspci ===
+01:00.0 VGA compatible controller [0300]: NVIDIA Corporation GA102 [GeForce RTX 3080 Ti] [10de:2208] (rev a1)
+
+=== layered packages ===
+      "requested-packages" : [
+        "fail2ban",
+        "tesseract"
+--
+      "requested-packages" : [
+
+=== sunshine config ===
+# Explicit stream capabilities — ensures Moonlight clients see full range.
+fps = [30, 60, 90, 120]
+resolutions = [
+    1280x720,
+    1280x800,
+    1920x1080,
+    2560x1080,
+    2560x1440,
+    3840x2160
+]
+
+# Force H.264 for testing 4K@120 — HEVC Main Level 5.1 caps at 4K@60
+# on Moonlight-tvOS, but H.264 Level 6.0 is more widely supported.
+# Setting hevc_mode to 0 disables HEVC; client will use H.264.
+hevc_mode = 0
+
+# Use NVENC, realistic preset for low-latency streaming
+encoder = nvenc
+
+# Disable virtual gamepad emulation (no Xbox controller in Steam list).

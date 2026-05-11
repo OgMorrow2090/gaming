@@ -2,6 +2,33 @@
 
 Planned execution: **2026-05-12** (Tuesday) — GPU arrives via Scan delivery.
 
+## Final scope (locked 2026-05-11 evening)
+
+**GPU swap only. CPU/mobo/RAM/case/PSU/NVMe stays.** All upgrade discussion
+beyond the GPU (5700X3D AM4 bridge, 9800X3D AM5 platform refresh, Terra SFF
+case, etc.) is deferred. Reasoning:
+
+1. The session's actual pain points (Steam Link black screen, Sunshine HDR
+   capture, vkms incompatibility, multi-sink HDMI FRL flicker) are ALL
+   GPU-driver-side and resolve with the AMD swap alone.
+2. GW2 framerate in WvW/meta is a separate problem the user has not flagged
+   as actively bothering them. CPU upgrade can be revisited any time in 2026-2028
+   if needed.
+3. AM4 5700X3D bridge would cost ~£400 for ~50-55% GW2 perf gain but adds
+   end-of-life-socket sunk cost. AM5 9800X3D refresh in 2028 has potential
+   £100-150 savings from DDR5 price drops by then.
+4. Total spend today: £630 (GPU already ordered from Scan).
+
+If GW2 stutters in WvW/zergs become genuinely annoying post-GPU-swap, the AM4
+5700X3D bridge spec is documented below as a "future option" — not part of
+this migration.
+
+**Keeping (no spend):** NZXT H400 case, 1200W ATX PSU, 64GB DDR4-3200 RAM,
+NVMe SSDs, Intel X550 10GbE optical NIC, current i9-9900K + Z390 mobo.
+
+**Swapping:** NVIDIA RTX 3080 Ti → Sapphire PULSE RX 9070 XT 16GB.
+Plus bazzite OS rebase from `bazzite-deck-nvidia:stable` to `bazzite-deck:stable`.
+
 ## Context
 
 Today's (2026-05-11) Bazzite-in-lounge session uncovered hard architectural
@@ -198,8 +225,44 @@ deployment until you next `rpm-ostree cleanup -p`. To roll back:
 
 ## Future considerations (deferred — not in this migration scope)
 
-- CPU + motherboard refresh to AM4 + Ryzen 7 5800X3D
-  (keep existing 64GB DDR4-3200) — GW2 specifically benefits from X3D cache
-- Or AM5 platform refresh with 9800X3D + DDR5 — bigger jump, ~£1500 total
+### CPU upgrade options if GW2 framerate becomes actively bothersome
+
+**AM4 bridge build (~£400, ~50-55% GW2 perf gain over 9900K, keeps DDR4):**
+
+| Item | Choice | Price |
+| --- | --- | --- |
+| CPU | Ryzen 7 5700X3D (not 5800X3D — overpriced now at £539 new vs 5700X3D £190) | £190 |
+| Mobo | MSI MAG B550M Mortar MAX WiFi (WiFi 6E + BT 5.3) | £130 |
+| Cooler | Arctic Liquid Freezer III 240 AIO (or Thermalright Peerless Assassin 120 SE air at £35) | £80 |
+| **Total** | | **£400** |
+
+Keep existing case, PSU, RAM, NVMe, NIC. 10GbE NIC fits B550 mobo's PCIe 3.0 x4
+slot below the 2.5-slot GPU.
+
+**AM5 platform refresh (~£700-750 new RAM, ~£600-650 net after selling DDR4):**
+
+| Item | Choice | Price |
+| --- | --- | --- |
+| CPU | Ryzen 7 9800X3D | £380 |
+| Mobo | B650M microATX (e.g. MSI MAG B650M Mortar) | £170 |
+| RAM | 32GB DDR5-6000 (sell existing 64GB DDR4-3200, recover ~£100) | £130 |
+| Cooler | Arctic Liquid Freezer III 240 | £80 |
+| **Total** | | **£760 (or £660 after DDR4 resale)** |
+
+9800X3D is ~85-95% GW2 perf gain over 9900K vs ~50-55% for 5700X3D. Future
+upgrade path on AM5 (Zen 6 X3D in 2027+).
+
+### 5800X3D explicitly NOT recommended
+
+The Ryzen 7 5800X3D's used-market price has surged in 2026 ($600-800 USD,
+£400-600 UK) — often *more* expensive than the 9800X3D new at £380. Buy
+5700X3D for AM4 or 9800X3D for AM5; skip 5800X3D entirely.
+
+### Other deferred ideas
+
 - 90° HDMI 2.1 angled connectors for cable strain relief (Cable Matters or
-  Lindy, FRL-certified)
+  Lindy, FRL-certified) — ~£15-20 each
+- Fractal Design Terra SFF cube case rebuild — requires SFX-L PSU swap (+£200)
+  and is borderline-tight for the PULSE 9070 XT (320mm vs 322mm clearance);
+  not worthwhile vs the current NZXT H400 (~37L, equivalent volume to Fractal
+  Define 7 Mini)

@@ -7,9 +7,10 @@
 #
 # Mapping:
 #   client width <= 1280  → deck     (1280x800@90, Steam Deck native)
-#   client width <= 2560  → 2k120    (2560x1440@120, iPad / 2K Apple TV)
-#   client width >= 3840  → 4k120    (3840x2160@120, 4K Apple TV)
-#   anything else         → 4k120    (default)
+#   client width <= 1920  → 1080p144
+#   client width <= 2560  → 2k120    (2560x1440@120)
+#   client width >= 3840  → 4k165    (3840x2160@165, LG G5 native via HDMI 2.1)
+#   anything else         → 4k165    (default — LG G5 in living room)
 #
 # If the current mode already matches, the script exits immediately — no
 # gamescope restart, no extra latency. If a switch IS needed, gamescope-session
@@ -32,20 +33,20 @@ if [ -n "${1:-}" ]; then
     MODE="$1"
     echo "  mode forced via argument: $MODE"
 else
-    # Apple TV (3840) maps to 2k120 not 4k120: NVIDIA driver caps 4K@120 over
-    # the HDMI dongle (TMDS 600 MHz), so 4K never exceeds 60 fps anyway, while
-    # 2k120 reliably delivers 90+ fps in GW2 and Moonlight upscales cleanly to
-    # the Apple TV's 4K panel.
+    # Bazzite now plugs directly into the LG G5 over HDMI 2.1 (no dongle).
+    # Default any large/unknown width to 4k165 so a disconnect from a stream
+    # restores the LG to its native 4K@165 + VRR mode.
     WIDTH="${SUNSHINE_CLIENT_WIDTH:-3840}"
     case "$WIDTH" in
         1280|''|0) MODE=deck     ;;
         1920)      MODE=1080p144 ;;
         2560)      MODE=2k120    ;;
-        3840)      MODE=2k120    ;;
+        3840)      MODE=4k165    ;;
         *)
             if   [ "$WIDTH" -le 1280 ]; then MODE=deck
             elif [ "$WIDTH" -le 1920 ]; then MODE=1080p144
-            else                             MODE=2k120
+            elif [ "$WIDTH" -le 2560 ]; then MODE=2k120
+            else                             MODE=4k165
             fi
             ;;
     esac
@@ -57,8 +58,11 @@ fi
 case "$MODE" in
     deck)     DPI=96  ;;  # Steam Deck native, 100% UI
     1080p144) DPI=96  ;;  # 1080p, 100% UI
+    1080p165) DPI=96  ;;  # 1080p high refresh, 100% UI
     2k120)    DPI=144 ;;  # 1440p, 150% UI
+    2k165)    DPI=144 ;;  # 1440p high refresh, 150% UI
     4k120)    DPI=192 ;;  # 4K, 200% UI
+    4k165)    DPI=144 ;;  # 4K LG G5 native — 150% UI reads well at 65" couch distance
     *)        DPI=96  ;;
 esac
 

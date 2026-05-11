@@ -6,11 +6,19 @@
 #   "prep-cmd": [{"do": "/var/home/Og/scripts/sunshine-set-resolution.sh"}]
 #
 # Mapping:
-#   client width <= 1280  → deck     (1280x800@90, Steam Deck native)
+#   client width <= 1280  → deck     (gamescope nested 1280x800; output to
+#                                     LG stays 4K so the LG accepts the
+#                                     signal — see wrapper for the dual-config
+#                                     `-w/-h` vs `-W/-H` split)
 #   client width <= 1920  → 1080p144
 #   client width <= 2560  → 2k120    (2560x1440@120)
 #   client width >= 3840  → 4k165    (3840x2160@165, LG G5 native via HDMI 2.1)
 #   anything else         → 4k165    (default — LG G5 in living room)
+#
+# Note: deck-vkms (vkms virtual output) was attempted but blocked by NVIDIA +
+# gamescope architecture — gamescope binds only to the primary DRM card, and
+# Sunshine's KMS capture can't dmabuf-import vkms CPU framebuffers. Left for
+# reference in the wrapper but not used by this script.
 #
 # If the current mode already matches, the script exits immediately — no
 # gamescope restart, no extra latency. If a switch IS needed, gamescope-session
@@ -56,14 +64,15 @@ fi
 # scales its UI accordingly — this is the gamescope-2K-canvas compensation.
 # We do NOT touch GFXSettings.xml here; the user manages GW2 settings manually.
 case "$MODE" in
-    deck)     DPI=96  ;;  # Steam Deck native, 100% UI
-    1080p144) DPI=96  ;;  # 1080p, 100% UI
-    1080p165) DPI=96  ;;  # 1080p high refresh, 100% UI
-    2k120)    DPI=144 ;;  # 1440p, 150% UI
-    2k165)    DPI=144 ;;  # 1440p high refresh, 150% UI
-    4k120)    DPI=192 ;;  # 4K, 200% UI
-    4k165)    DPI=144 ;;  # 4K LG G5 native — 150% UI reads well at 65" couch distance
-    *)        DPI=96  ;;
+    deck)      DPI=96  ;;  # Steam Deck native (HDMI-A-1 letterbox path), 100% UI
+    deck-vkms) DPI=96  ;;  # Steam Deck via vkms Virtual-1, 100% UI
+    1080p144)  DPI=96  ;;  # 1080p, 100% UI
+    1080p165)  DPI=96  ;;  # 1080p high refresh, 100% UI
+    2k120)     DPI=144 ;;  # 1440p, 150% UI
+    2k165)     DPI=144 ;;  # 1440p high refresh, 150% UI
+    4k120)     DPI=192 ;;  # 4K, 200% UI
+    4k165)     DPI=144 ;;  # 4K LG G5 native — 150% UI reads well at 65" couch distance
+    *)         DPI=96  ;;
 esac
 
 # Three GW2 profiles on bazzite:

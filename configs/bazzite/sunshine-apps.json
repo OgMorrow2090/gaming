@@ -23,18 +23,6 @@
             "output": "HDMI-A-1"
         },
         {
-            "image-path": "/home/Og/.config/sunshine/covers/gw2.png",
-            "name": "Guild Wars 2 (Apple TV)",
-            "cmd": "/var/home/Og/scripts/launch-gw2-appletv.sh",
-            "output": "HDMI-A-1"
-        },
-        {
-            "image-path": "/home/Og/.config/sunshine/covers/gw2.png",
-            "name": "Guild Wars 2 (Steam Deck)",
-            "cmd": "/var/home/Og/scripts/launch-gw2-deck.sh",
-            "output": "HDMI-A-1"
-        },
-        {
             "image-path": "/home/Og/.config/sunshine/covers/killgame_cover.png",
             "name": "Kill Game",
             "cmd": "/var/home/Og/scripts/kill-game.sh",

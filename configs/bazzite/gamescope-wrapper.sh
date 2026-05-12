@@ -26,7 +26,6 @@ case "$MODE" in
   4k165)     exec /usr/bin/gamescope "${ARGS[@]}" --prefer-output HDMI-A-1 -W 3840 -H 2160 -r 165 -o 165 --immediate-flips ;;
   4k120)     exec /usr/bin/gamescope "${ARGS[@]}" --prefer-output HDMI-A-1 -W 3840 -H 2160 -r 120 -o 120 --immediate-flips ;;
   2k120)     exec /usr/bin/gamescope "${ARGS[@]}" --prefer-output HDMI-A-1 -W 2560 -H 1440 -r 120 -o 120 --immediate-flips ;;
-  deck)      exec /usr/bin/gamescope "${ARGS[@]}" --prefer-output HDMI-A-2 -W 1280 -H 800 -r 90 -o 90 --immediate-flips ;;
   4k60)      exec /usr/bin/gamescope "${ARGS[@]}" --prefer-output HDMI-A-1 -W 3840 -H 2160 -r 60 -o 60 ;;
   4k30)      exec /usr/bin/gamescope "${ARGS[@]}" --prefer-output HDMI-A-1 -W 3840 -H 2160 -r 30 -o 30 ;;
   2k60)      exec /usr/bin/gamescope "${ARGS[@]}" --prefer-output HDMI-A-1 -W 2560 -H 1440 -r 60 -o 60 ;;

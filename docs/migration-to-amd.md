@@ -294,6 +294,48 @@ wrapper. Either cherry-pick from earlier git history or hand-edit to add the
 HDR flags back to each mode + uncomment immediate-flips on the high-refresh
 modes.
 
+### 5. HDMI-CEC: trigger LG input switch from bazzite (Steam Controller 2 button)
+
+**Goal:** pressing the Steam button on the Steam Controller 2 (launched 2026-05-04)
+should auto-switch the LG G5 HDMI input to bazzite's port — mirroring the
+Apple TV behaviour (its remote already switches LG to Apple TV via CEC).
+
+**Why this matters more on AMD:**
+
+- NVIDIA stripped HDMI-CEC silicon from consumer cards years ago → guaranteed
+  no native CEC on the RTX 3080 Ti
+- AMDGPU has CEC support in the kernel (since 4.20). RDNA 4 native HDMI CEC
+  status undocumented for consumer reports — test after swap. Worst case
+  use a Pulse-Eight USB-CEC adapter (£40-50) for guaranteed CEC.
+
+**Test native AMD CEC first:**
+
+```bash
+sudo rpm-ostree install cec-utils libcec
+sudo systemctl reboot
+cec-ctl --list-devices                       # GPU should expose a CEC adapter
+cec-ctl --to 0 --image-view-on               # should switch LG input to bazzite
+```
+
+If `cec-ctl --list-devices` shows a `/dev/cec0` adapter → native CEC works.
+If empty → buy a Pulse-Eight USB-CEC Pro adapter, plug it in via USB + sit it
+in the HDMI chain, repeat.
+
+**Wire it up via Steam Input:**
+
+Bind Steam Controller 2's Steam button to run `cec-ctl --to 0 --image-view-on`
+via a Steam Input layered keybind → desktop script. Or use a generic hotkey
+daemon if Steam Input layering proves fiddly.
+
+**Bonus CEC ideas once basic switching works:**
+
+| Trigger | CEC command | Effect |
+| --- | --- | --- |
+| Steam button on SC2 | `cec-ctl --to 0 --image-view-on` | LG switches to bazzite |
+| Sunshine session start | Same | LG wakes + switches to bazzite for couch viewing of stream |
+| Sunshine session end | `cec-ctl --to 0 --standby` (optional) | LG sleeps after stream done |
+| GW2 exit (script hook) | Switch to Apple TV input | Reverses current Apple TV → bazzite default flow |
+
 ### 4. Restore the deck mode in the wrapper (Moonlight is the chosen path)
 
 **Decision 2026-05-12: stick with Moonlight + Sunshine for ALL streaming

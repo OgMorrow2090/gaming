@@ -294,14 +294,38 @@ wrapper. Either cherry-pick from earlier git history or hand-edit to add the
 HDR flags back to each mode + uncomment immediate-flips on the high-refresh
 modes.
 
-### 4. Restore (or rebuild) the deck mode in the wrapper
+### 4. Restore the deck mode in the wrapper (Moonlight is the chosen path)
 
-For Steam Link / Sunshine streaming to the Deck. The safe-mode wrapper
-removed it; on AMD it should come back. Note that on AMD with virtual
-connector support, you may not need the `deck` mode at all if Steam Link's
-client-resolution negotiation works (test first — Linux gamescope hosts
-have known issues with auto-negotiation per Steam-for-Linux issue #6577,
-so manual mode switching may still be required).
+**Decision 2026-05-12: stick with Moonlight + Sunshine for ALL streaming
+clients (Deck + Apple TV). Steam Link not pursued** because:
+
+- Linux gamescope hosts don't auto-negotiate client resolution
+  (Steam-for-Linux issue #6577) — manual mode switching required either way
+- Sunshine prep-cmd hooks are more powerful than Steam Remote Play has
+- Apple TV Moonlight client significantly more mature than Steam Link tvOS
+- Existing infrastructure (apps.json, sunshine-wait-gw2.sh, controller VDFs)
+  is already tuned and working
+
+So restore the `deck` mode in the wrapper:
+
+```bash
+deck)     exec /usr/bin/gamescope "${ARGS[@]}" --prefer-output HDMI-A-1 \
+            -W 1280 -H 800 -r 90 -o 90 --immediate-flips ;;
+```
+
+Workflow per stream session:
+
+```bash
+~/bin/gamescope-mode deck      # switch BEFORE opening Moonlight on the Deck
+# Open Moonlight on Deck → Sunshine GW2 app → play
+
+~/bin/gamescope-mode 4k165     # back to couch play after stream ends
+```
+
+Same pattern as before the AMD swap, but on AMD the mode switch is clean
+(no NVIDIA driver-state flicker class). The "never change mode mid-stream"
+rule from `memory/nvidia-gamescope-state-flicker.md` still applies as a
+general best practice though.
 
 ## Future considerations (deferred — not in this migration scope)
 

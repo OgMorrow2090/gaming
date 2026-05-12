@@ -77,12 +77,14 @@ PSU verified: 1200W with 2× free 8-pin PCIe connectors. Case clearance fine
 - [ ] `rpm-ostree status` — confirm current image is `bazzite-deck-nvidia:stable`
 - [ ] `git -C ~/Developer/GitHub/ogmorrow2090/guildwars2 status` — clean tree
 - [ ] Snapshot current state for rollback:
+
   ```bash
   ssh Og@172.16.100.212 'rpm-ostree status > ~/pre-amd-rpm-ostree-status.txt
   ps -ef | grep gamescope > ~/pre-amd-gamescope-procs.txt
   cat ~/bin/gamescope-wrapper > ~/pre-amd-wrapper.sh
   cat ~/.config/gamescope-mode > ~/pre-amd-mode.txt'
   ```
+
 - [ ] Confirm Sapphire 9070 XT physically in hand, verify HDMI 2.1 certified
       cable available
 - [ ] Confirm 1200W PSU has 2× free 8-pin PCIe cables (or 3× if current 3080 Ti
@@ -127,6 +129,7 @@ sudo systemctl reboot
 Download is ~3-5 GB. Takes 5-10 min.
 
 After reboot:
+
 - [ ] `rpm-ostree status` — confirm new image is `bazzite-deck:stable`
 - [ ] Re-layer if missing: `sudo rpm-ostree install fail2ban tesseract`
   - (These are currently layered; verify they survived rebase)
@@ -171,6 +174,7 @@ sudo systemctl reboot
 ```
 
 After reboot:
+
 - vkms appears as `/dev/dri/card1` with `Virtual-1` connector
 - Add wrapper case for `deck` mode: `--prefer-output Virtual-1 -W 1280 -H 800 -r 90 -o 90`
 - Steam BPM resolution dropdown shows 1280×800@90 when in `deck` mode
@@ -190,6 +194,7 @@ sudo systemctl reboot'
 ```
 
 After reboot:
+
 - HDMI-A-2 force-enabled as virtual connector with custom EDID
 - Same wrapper approach as Path A but using `HDMI-A-2` instead of `Virtual-1`
 
@@ -222,6 +227,81 @@ deployment until you next `rpm-ostree cleanup -p`. To roll back:
   Mfr code: 11348-03-20G)
 - **£629.99** inc VAT, free next-day delivery
 - Ordered: 2026-05-11, ETA 2026-05-12
+
+## Post-rebase follow-up tasks (do AFTER AMD is stable, not blocking the swap)
+
+### 1. Block-level nightly clone from nvme0 (OS) to nvme1 (spare 4TB)
+
+The spare 4TB SN850X (serial 24127W4A0Q10, currently unmounted) is earmarked
+for disaster-recovery cloning. Bazzite is btrfs (`subvol=root`), so btrfs
+send/receive is the right tool. Use **btrbk** for automation.
+
+```bash
+# 1. Format the spare drive
+sudo mkfs.btrfs -L bazzite_clone /dev/nvme1n1
+
+# 2. Mount, layer btrbk via rpm-ostree
+sudo mkdir -p /mnt/clone
+sudo mount /dev/nvme1n1 /mnt/clone
+sudo rpm-ostree install btrbk
+sudo systemctl reboot
+
+# 3. Configure /etc/btrbk/btrbk.conf — primary subvols to snapshot:
+#    /var (rpm-ostree state, layered packages, container images)
+#    /var/home (user data — /home is a bind mount to /var/home on bazzite)
+#    Skip /usr (ostree-managed, reproducible via rebase anyway)
+# 4. Enable the timer
+sudo systemctl enable --now btrbk.timer
+```
+
+Recovery flow: if nvme0 fails, boot from a Fedora/Bazzite USB, mount nvme1,
+btrfs receive the latest snapshot to a new drive, or swap nvme1 → nvme0 slot
+and reboot. Add this drive entry to `/etc/fstab` with `noauto,nofail` so a
+missing drive doesn't block boot.
+
+### 2. Prevent NVIDIA drivers from ever returning
+
+Mostly automatic on the AMD image rebase, but explicit belt-and-braces:
+
+```bash
+# Verify nothing NVIDIA remains post-rebase
+rpm -qa | grep -i nvidia    # should be empty
+lsmod | grep nvidia          # should be empty
+ls /etc/modprobe.d/ | grep -i nvidia  # check stale config
+
+# Optional explicit blacklist (defense in depth — protects against
+# accidentally layering a CUDA package or similar)
+sudo tee /etc/modprobe.d/blacklist-nvidia.conf <<'EOF'
+# Post-AMD-swap 2026-05-12: ensure nvidia modules cannot load.
+blacklist nvidia
+blacklist nvidia_drm
+blacklist nvidia_modeset
+blacklist nvidia_uvm
+install nvidia /bin/false
+install nvidia_drm /bin/false
+install nvidia_modeset /bin/false
+EOF
+```
+
+The bazzite-deck (AMD) image doesn't ship NVIDIA drivers, so this is paranoid
+but harmless. Useful if you ever experiment with VM/GPU-passthrough scenarios.
+
+### 3. Re-enable HDR + immediate-flips in gamescope-wrapper
+
+The current wrapper is "safe-mode" with HDR stripped — needed only for NVIDIA's
+HDR-renegotiation flicker. On AMD, restore the full HDR + immediate-flips
+wrapper. Either cherry-pick from earlier git history or hand-edit to add the
+HDR flags back to each mode + uncomment immediate-flips on the high-refresh
+modes.
+
+### 4. Restore (or rebuild) the deck mode in the wrapper
+
+For Steam Link / Sunshine streaming to the Deck. The safe-mode wrapper
+removed it; on AMD it should come back. Note that on AMD with virtual
+connector support, you may not need the `deck` mode at all if Steam Link's
+client-resolution negotiation works (test first — Linux gamescope hosts
+have known issues with auto-negotiation per Steam-for-Linux issue #6577,
+so manual mode switching may still be required).
 
 ## Future considerations (deferred — not in this migration scope)
 

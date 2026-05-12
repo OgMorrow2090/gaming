@@ -1,8 +1,16 @@
 ---
 name: GW2 Wine DPI is per-profile and FIXED, not per-mode dynamic
-description: Each GW2 profile (local/Apple TV/Deck) has its own Wine prefix and a single target stream resolution, so Wine LogPixels should be set ONCE per profile to match — not dynamically updated by Sunshine prep-cmd on every mode change.
+description: HISTORICAL — multi-profile setup was consolidated 2026-05-12. Single main install at appid 1284210 only. Kept for context on why dynamic Sunshine prep-cmd DPI swaps were a dead end.
 type: feedback
 ---
+
+<!-- markdownlint-disable MD041 -->
+
+> **ARCHIVED 2026-05-12** — the Apple TV (2879321470) and Steam Deck (3111887265) non-Steam profiles were **deleted** in commit `feb5225` along with their Wine prefixes. There is now only the single main Steam GW2 install (appid 1284210). The "fixed per profile, not dynamic per mode" rule still applies in spirit to the one remaining prefix: its LogPixels is user-tuned for the LG at couch distance and is NOT auto-touched by any Sunshine prep-cmd. **Current value: 0xC0 (192 DPI / 200%)** with `MouseSensitivity="16"` (set 2026-05-12 for couch readability on 4K LG). Captures in `mystic-clicker-3840x2160.cfg` were originally recorded at 0x90 (150%) under the deleted Apple TV profile — re-record if needed at the new scale.
+
+---
+
+## Original memo (now historical)
 
 The Apple TV non-Steam profile (appid 2879321470) and Steam Deck non-Steam profile (appid 3111887265) each have their own Wine prefix under `~/.local/share/Steam/steamapps/compatdata/<appid>/pfx`. Each profile is dedicated to one streaming target — Apple TV always streams at 4K, Deck always streams at 1280×800@90. So Wine LogPixels (which GW2 reads at startup to scale UI) should be set ONCE per profile, not dynamically updated by Sunshine prep-cmd on every mode change.
 

@@ -2,6 +2,88 @@
 
 Append-only log of agent sessions on this repo. Read at session start for continuity. Entries are summaries — not full transcripts.
 
+## 2026-05-12 — AMD RX 9070 XT swap day + consolidation to single GW2 install
+
+Day-long session across the GPU physical swap, post-rebase clean-up, original 1280×800@90 Deck-streaming goal achieved then re-evaluated, and final consolidation down to a single GW2 install + native Deck install.
+
+### GPU swap + Bazzite rebase
+
+Sapphire PULSE RX 9070 XT installed, NVIDIA modules blacklisted as part of `rpm-ostree rebase ostree-image-signed:docker://ghcr.io/ublue-os/bazzite-deck:stable`. amdgpu loaded clean, gamescope-session healthy, Sunshine VAAPI streaming working out of the box. No more HDMI FRL training failures, no driver-state flicker.
+
+### Original Deck-stream goal solved — then deprecated
+
+1. Got `1280×800@90` into SteamOS BPM dropdown via virtual HDMI-A-2 + custom EDID (`configs/bazzite/edid-virtual-display.bin`). Commit `2f00fbf`. **AMD's open driver exposes virtual connectors cleanly; vkms-on-NVIDIA-proprietary dead-end from 2026-05-11 confirmed as NVIDIA-specific.**
+1. Tried per-client gamescope mode auto-switch via Sunshine prep-cmd (`0e10dfe`). **Caused Sunshine crashes mid-stream on AMD** — reverted in `b3a020f`. Cemented rule: never change gamescope-mode mid-stream.
+1. Profile DPI memo updated from "Deck = 0x60 (96 DPI)" to "Deck = 0x120 (288 DPI = 300%)" to compensate for the 4K-source → 720p-Deck-downscale architecture (commit `9d4b0cd`).
+1. **User then pivoted entirely**: play GW2 native on the actual Steam Deck (no Moonlight), keep Apple TV streaming via existing GW2 - SteamOS Sunshine app. The "1280×800@90 in BPM" hunt that drove the whole 5/11 + 5/12 push was solved AND then made irrelevant by the architectural change.
+
+### Consolidation (commit `feb5225`)
+
+- **Deleted** non-Steam shortcuts `Guild Wars 2 (Apple TV)` (appid 2879321470) and `Guild Wars 2 (Steam Deck)` (appid 3111887265) from `shortcuts.vdf`, their Wine prefixes, their addon dirs, and their per-profile Sunshine entries. ~1.2 GB freed.
+- **Removed** virtual HDMI-A-2 kernel args + custom EDID firmware tracking via `rpm-ostree initramfs-etc --untrack`. Boot kargs cleaned with `--delete-if-present` for each variant (had previously double-prefixed itself: `firmware_class.path=firmware_class.path=/etc/firmware`).
+- Mystic Clicker deck-tuned config (`mystic-clicker-1280x800.cfg`, MD5 `66eebbf646aa653c82f9c0b48674b796`) deployed to the actual Steam Deck at `/home/deck/.local/share/Steam/steamapps/common/Guild Wars 2/addons/MysticClicker/` so the user doesn't have to re-record captures.
+- Memory: `per-profile-fixed-dpi.md` and `multi-gw2-installs.md` marked **ARCHIVED** at top. `MEMORY.md` index entries updated to reflect archive status.
+
+### Wrapper-script bypass for Steam compat-tool save bug (`b91afb5`)
+
+During the time the non-Steam profiles still existed, Steam's `CompatToolMapping` in `config.vdf` kept reverting empty for the new shortcuts (user-set via BPM → not persisted). Workaround: changed shortcut `Exe` to point at bash wrappers (`~/scripts/launch-gw2-{appletv,deck}.sh`) that invoke Proton directly. Steam preserves the Exe field. Wrappers deleted as part of consolidation.
+
+### HDMI-CEC prep for Steam Controller 2 (`7ae768e`)
+
+Ordered UGREEN DP→HDMI 2.1 adapter for arrival 2026-05-13/14. The HDMI on RDNA 4 lacks the kernel patches to do 4K@120/144 with HDR + VRR over direct HDMI — DP→HDMI active adapter unlocks the full pipe. UGREEN exposes CEC pin (confirmed via Reddit thread). Created `scripts/switch-lg-to-bazzite.sh`:
+
+```bash
+cec-ctl --to 0 --image-view-on
+cec-ctl --to 0 --active-source phys-addr=0.0.0.0
+```
+
+To be wired to Steam Controller 2's Steam button (arriving similarly) for one-press LG input switching, mirroring how Apple TV remote already does it. Not yet testable — adapter not arrived.
+
+### Today's late-session tuning (post-consolidation)
+
+GW2 native on bazzite on LG at couch distance, captures from old Apple TV profile no longer align because DPI/UI scale doesn't match. Wine LogPixels iteration on the main Steam prefix (`compatdata/1284210/pfx/user.reg`):
+
+| Step | Value | Result |
+| --- | --- | --- |
+| Start | `0x90` (144 DPI / 150%) | UI too small for couch viewing |
+| Bump 1 | `0xA8` (168 DPI / 175%) | User wanted to test like-for-like with old Apple TV captures first |
+| Revert | `0x90` (150%) | Confirmed captures matched old Apple TV scale at 150% |
+| Final | **`0xC0` (192 DPI / 200%)** | User picked bigger UI over capture compat — captures need re-record |
+
+Also bumped `MouseSensitivity` from default `"10"` to **`"16"`** (Wine range 1–20, +60% over default) for faster cursor tracking from couch distance. Both changes applied while GW2 was running (PID 42472), force-killed via `pkill -KILL` and confirmed `pgrep Gw2-64.exe` empty — Wine reads these at process start so next launch picks them up.
+
+### Other small bits
+
+- DP→HDMI active adapters (UGREEN PS186, Club3D CAC-1085 MCDP2900) pass **audio** natively via TMDS; CEC is a separate dedicated pin. Both routes work independently.
+- AMD-specific Proton launch options: assessed and **nothing meaningful to add**. Current `WINEDLLOVERRIDES="d3d11=n,b" DXVK_ASYNC=1 %command% -provider Portal` is fine. `DXVK_ASYNC=1` is a silent no-op on DXVK 2.x (GPL replaces it) but harmless. Optional: `MESA_SHADER_CACHE_MAX_SIZE=4G` if cache ceiling becomes an issue.
+- GW2's single-threaded engine is the real perf bottleneck on AMD; no env var fixes that.
+
+### Open / next session
+
+- UGREEN DP→HDMI adapter arrival (1–2 days): test `/dev/cec0` appearance + `switch-lg-to-bazzite.sh` from SSH while watching Apple TV, then validate 4K@120-144 + HDR + VRR over the adapter pipe.
+- Steam Controller 2 arrival (1–2 days): bind Steam button → CEC switch script via Steam Input.
+- DPI fine-tune: user may iterate above 0xC0 if 200% still feels small at couch distance. Higher hex options: `0xD8` (225%), `0xF0` (250%), `0x108` (275%). Mouse can max at `"20"`.
+- Possible Mystic Clicker capture re-record at new 200% scale (only needed if user wants the addon working again — it's not blocking).
+- Staged rpm-ostree reboot not urgent; the kargs changes are already in effect post-untrack.
+
+### Files modified this session block (across 2026-05-12)
+
+- `docs/migration-to-amd.md` — full AMD runbook iterated throughout day
+- `configs/bazzite/gamescope-wrapper.sh` — modes consolidated; `deck` mode added then removed
+- `configs/bazzite/sunshine-apps.json` — per-profile entries removed; prep-cmd removed
+- `configs/bazzite/edid-virtual-display.bin` — custom EDID for virtual HDMI-A-2 (added, then removed during consolidation)
+- `scripts/sunshine-set-resolution.sh` — DPI swap logic dropped; left as mode-switch only
+- `scripts/switch-lg-to-bazzite.sh` (NEW) — HDMI-CEC LG input switch, ready for UGREEN+SC2 arrival
+- `memory/nvidia-gamescope-state-flicker.md` — power-drain workflow + "never change mode mid-stream" rule
+- `memory/per-profile-fixed-dpi.md` — **ARCHIVED** notice + main-install state
+- `memory/multi-gw2-installs.md` — **ARCHIVED** notice
+- `memory/MEMORY.md` — index entries updated to reflect archived files
+- Live Wine prefix `compatdata/1284210/pfx/user.reg`: `LogPixels=0xC0`, `MouseSensitivity="16"` (not in repo — per-prefix state)
+
+### 4K@60 ceiling caveat (honest)
+
+User correctly noted "you assured this would solve my problems, now capped at 60Hz" after first AMD boot — AMD's HDMI direct out can't hit 4K@120/144 with current kernel without DSC patches that haven't landed in stable. Acknowledged having oversold the swap. The DP→HDMI active adapter is the route around it, and the practical streaming flow (Apple TV stream + bazzite local at 4K@60-120) is fine either way.
+
 ## 2026-05-11 — Bazzite-in-lounge LG migration; NVIDIA Linux dead-end; AMD GPU ordered
 
 Long session continuing from the PC physical move into the lounge plugged directly to the LG G5 OLED via HDMI 2.1. Goal restated multiple times: **get 1280×800@90 to appear in the SteamOS resolution dropdown for Deck Moonlight streaming, while keeping LG 4K@165 native for couch play.** Hours of attempts; ultimately decided the only realistic fix is GPU swap.

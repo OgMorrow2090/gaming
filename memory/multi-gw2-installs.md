@@ -1,10 +1,14 @@
 ---
 name: Multi GW2 installs — Local + Apple TV + Steam Deck profiles
-description: Three parallel GW2 profiles on bazzite. Steam GW2 (1284210) is earmarked for local desktop play with Steam Controller; non-Steam shortcuts at ~/Games/gw2-appletv/ (2879321470) and ~/Games/gw2-deck/ (3111887265) are for Apple TV and Steam Deck Moonlight streams respectively. All share Gw2.dat + bin64/ + d3d11.dll via symlink; each has its own addons/ + Wine prefix.
+description: HISTORICAL — multi-install setup was consolidated to single Steam GW2 install on 2026-05-12. Kept as a reference for the wiring patterns (binary VDF, compat-tool mapping, prefix seeding) in case profiles ever get recreated.
 type: project
 ---
 
 <!-- markdownlint-disable MD041 -->
+
+> **ARCHIVED 2026-05-12** — both non-Steam shortcuts (Apple TV `2879321470` and Steam Deck `3111887265`) were deleted in commit `feb5225` along with their Wine prefixes, addon dirs, and Sunshine entries (~1.2 GB freed). Reasons: streaming flow is now Apple-TV-only via the existing `GW2 - SteamOS` Sunshine app + main Steam GW2 (Steam Deck went native — see `/home/deck/...` install on the deck itself), and the dual-Proton tracking became more friction than the per-profile state isolation was worth. The repo backup dirs `configs/gw2-keybinds/{apple-tv,deck}/` are now historical snapshots. Everything below is the original setup memo, preserved as a recipe.
+
+---
 
 Created 2026-04-30. User wanted parallel GW2 settings (Nexus keybinds, Mystic Clicker resolution config, GFXSettings, addon UI positions) per stream client without manually re-editing GW2 every time. Started as dual (Steam GW2 = Deck, Apple TV non-Steam) and was extended to triple (Steam GW2 repurposed for local play, separate non-Steam shortcuts for Apple TV and Deck) so the Steam GW2 install can be tuned for ultrawide local play with Steam Controller without affecting either stream profile.
 

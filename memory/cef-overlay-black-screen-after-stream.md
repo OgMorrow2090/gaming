@@ -29,7 +29,9 @@ Big Picture and gamescope are alive underneath — the CEF window is just sittin
 
 - **Diagnostic tell:** if you can right-click and see "Forward" / "Print..." / "Back" in the context menu, it's a CEF overlay — not a display pipeline failure. Don't waste time on EDID/gamescope-mode troubleshooting.
 
-- **Potential mitigations to investigate:**
+- **Next step:** Wait for DP-to-HDMI dongle arrival — the hotplug/EDID handshake may behave differently over DisplayPort→HDMI vs native HDMI, potentially eliminating the issue. Don't investigate CEC or gamescope workarounds until tested with the new cable path.
+
+- **If issue persists after DP dongle, investigate:**
   - Whether CEC (HDMI-CEC) signals from the LG TV are triggering the issue — try disabling CEC on bazzite
   - Whether disabling Steam's built-in browser overlay reduces the chance of a CEF window being available to steal the top surface
   - Whether a gamescope update addresses the surface z-order race

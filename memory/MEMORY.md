@@ -27,3 +27,4 @@ Index of memory entries for this repo. Each line points at one file in `memory/`
 - [Bazzite repurpose plan (~2028)](project-bazzite-repurpose-plan.md) — when new TV PC purchased, repurpose current i9-9900K as combined Docker server (replacing thing-pi) + headless Sunshine streaming server
 - [Moonlight client-side app cache](moonlight-client-app-cache.md) — Moonlight caches Sunshine app list locally; `moonlight list` reads cache not server; clear `1\apps\*` entries in config or open GUI to refresh after Sunshine app changes
 - [CEF overlay black screen after stream](cef-overlay-black-screen-after-stream.md) — after ending Apple TV stream + switching TV input to bazzite, CEF overlay covers Big Picture; restart gamescope-session to fix
+- [Bazzite performance tuning](bazzite-performance-tuning.md) — custom TuneD `gaming-performance` profile, 5GHz all-core, GPU high, all sleep masked; PPD override needed to survive reboot

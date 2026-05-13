@@ -831,3 +831,84 @@ Continuation of 2026-05-12 AMD swap. Audited all scripts and systemd timers on b
 - **DP→HDMI adapter + Steam Controller 2**: blocked on delivery (~today/tomorrow). Test CEC `/dev/cec0`, `switch-lg-to-bazzite.sh`, 4K@120-144 + HDR + VRR
 - **Nexus UI scaling**: user testing GlobalScale 1.5 + FontSize 16 in-game
 - **Mystic Clicker re-capture**: user will redo at 200% DPI
+
+## 2026-05-13 (PM) — Bazzite display audit, Sunshine/Moonlight cleanup, Deck non-Steam games
+
+Session focused on post-reboot hygiene: display audit, Sunshine config fixes, Moonlight app list trim, and rebuilding the Deck's non-Steam game library.
+
+### Display audit
+
+Removed `deck-vkms` virtual display mode from `gamescope-wrapper` and `gamescope-mode` on bazzite. Was a holdover from the NVIDIA virtual-display era — no longer needed on AMD with the single-install architecture. Live files + repo synced.
+
+### Sunshine config fixes
+
+Three issues found and fixed in `~/.config/sunshine/sunshine.conf`:
+
+1. **Xbox controller injection**: `controllers = 0` was silently ignored — Sunshine renamed the option to `controller` (singular) in newer versions. Changed to `controller = 0`. Confirmed via Sunshine logs: `Unrecognized configurable option [controllers]` no longer appears.
+
+2. **System default apps leaking**: Sunshine was serving Desktop, Low Res Desktop, and Steam Big Picture alongside user apps. Added `file_apps = /home/Og/.config/sunshine/apps.json` to suppress system defaults from `/usr/share/sunshine/apps.json`.
+
+3. **Correct service name**: `sunshine-gaming.service` (user unit), not `sunshine.service` (masked system unit). Already known from prior session but still tripped me up initially.
+
+### Sunshine apps trimmed to 3
+
+Rewrote `~/.config/sunshine/apps.json` to contain exactly:
+
+- **SteamOS** — lands in Big Picture
+- **Reboot Game** — runs `kill-game.sh`
+- **Reboot Bazzite** — runs `reboot.sh`
+
+Removed: SteamOS Game Mode, Active Session, GW2 - SteamOS, Guild Wars 2, Kill Game, Reboot (old names).
+
+### Sunshine wrapper scripts removed
+
+Deleted from bazzite (`~/scripts/`) and repo (`scripts/`):
+
+- `sunshine-launch-gw2.sh` — direct GW2 launcher (obsolete since consolidation)
+- `sunshine-wait-gw2.sh` — GW2 wait-for-exit wrapper (obsolete)
+- `sunshine-set-resolution.sh` — per-client Wine DPI swap (obsolete since 2026-05-02 prep-cmd removal)
+
+### Moonlight client-side app cache discovery
+
+Despite Sunshine correctly serving the new 3-app list (confirmed via `curl -u sunshine:admin123 https://localhost:47990/api/apps`), Moonlight on the Deck kept showing the old 6-app list. Root cause: **Moonlight caches the app list in its config file** at `~/.var/app/com.moonlight_stream.Moonlight/config/Moonlight Game Streaming Project/Moonlight.conf` under the `[hosts]` section (`1\apps\1\name=...` etc). The `moonlight list` CLI command reads this cache, NOT the server.
+
+Fix: removed all `1\apps\*` entries from the Moonlight config. Next GUI connection to bazzite will re-fetch the current 3-app list. Created memory entry `moonlight-client-app-cache.md`.
+
+### Deck non-Steam games rebuilt
+
+Steam Cloud sync made `shortcuts.vdf` manipulation unreliable — entries written to the file got wiped on Steam restart because Cloud had synced the "empty" state after user manually removed stale entries (VS Code, Chrome, GW2 Addon Loader) through the UI.
+
+Used `steamos-add-to-steam` (native SteamOS tool that sends `steam://addnonsteamgame/` URL to running Steam client) instead. Created 3 launcher scripts on Deck:
+
+- `~/bin/moonlight-steamos.sh` → `flatpak run com.moonlight_stream.Moonlight stream 172.16.100.212 "SteamOS"`
+- `~/bin/moonlight-reboot-game.sh` → `... "Reboot Game"`
+- `~/bin/moonlight-reboot-bazzite.sh` → `... "Reboot Bazzite"`
+
+All 3 successfully added via `steamos-add-to-steam`. User confirmed working.
+
+### Sunshine web UI password
+
+Set Sunshine web UI password to `admin123` during debugging (via `sunshine --creds sunshine admin123`). Used for API verification only. Consider changing to a stronger password in a future session.
+
+### Repo commit
+
+`6e8f4f7` — bazzite cleanup: fix controller injection, trim Sunshine to 3 apps, remove wrappers. 6 files changed: 3 configs modified, 3 scripts deleted.
+
+### Files changed
+
+| File | Change |
+| --- | --- |
+| `configs/bazzite/sunshine.conf` | `controllers` → `controller`; added `file_apps` |
+| `configs/bazzite/sunshine-apps.json` | 6 apps → 3 apps (SteamOS, Reboot Game, Reboot Bazzite) |
+| `configs/bazzite/gamescope-wrapper.sh` | Removed `deck-vkms` mode |
+| `scripts/sunshine-launch-gw2.sh` | DELETED |
+| `scripts/sunshine-wait-gw2.sh` | DELETED |
+| `scripts/sunshine-set-resolution.sh` | DELETED |
+| `memory/moonlight-client-app-cache.md` | NEW |
+
+### Open / next session
+
+- **DP→HDMI adapter + Steam Controller 2**: still pending delivery. Test CEC, 4K@120-144 + HDR + VRR
+- **Rename Deck non-Steam entries**: script filenames show as-is (moonlight-steamos.sh etc); user can rename via Steam UI for cleaner names
+- **Sunshine web UI password**: change from `admin123` to something stronger
+- **Moonlight app cache on other clients**: Apple TV, Mac mini, MacBook Air may also have stale cached app lists — clear on next connect or when issues arise

@@ -6,7 +6,7 @@ type: feedback
 
 <!-- markdownlint-disable MD041 -->
 
-> **ARCHIVED 2026-05-12** — the Apple TV (2879321470) and Steam Deck (3111887265) non-Steam profiles were **deleted** in commit `feb5225` along with their Wine prefixes. There is now only the single main Steam GW2 install (appid 1284210). The "fixed per profile, not dynamic per mode" rule still applies in spirit to the one remaining prefix: its LogPixels is user-tuned for the LG at couch distance and is NOT auto-touched by any Sunshine prep-cmd. **Current value: 0xC0 (192 DPI / 200%)** with `MouseSensitivity="16"` (set 2026-05-12 for couch readability on 4K LG). Captures in `mystic-clicker-3840x2160.cfg` were originally recorded at 0x90 (150%) under the deleted Apple TV profile — re-record if needed at the new scale.
+> **ARCHIVED 2026-05-12** — the Apple TV (2879321470) and Steam Deck (3111887265) non-Steam profiles were **deleted** in commit `feb5225` along with their Wine prefixes. There is now only the single main Steam GW2 install (appid 1284210). The "fixed per profile, not dynamic per mode" rule still applies in spirit to the one remaining prefix: its LogPixels is user-tuned for the LG at couch distance and is NOT auto-touched by any Sunshine prep-cmd. **Current value: 0x90 (144 DPI / 150%)** with `MouseSensitivity="20"` (reverted 2026-05-13 from 0xC0/200% because 200% caused login-screen flicker). Nexus `GlobalScale` bumped to 2.0 / `FontSize` 20 to compensate for the lower Wine DPI. Captures in `mystic-clicker-3840x2160.cfg` were originally recorded at 0x90 (150%) — now matches again.
 
 ---
 

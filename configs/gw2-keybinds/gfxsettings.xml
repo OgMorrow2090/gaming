@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GSA_SDK Version="2.1.18431650.0">
+    <APPLICATION>
+        <DISPLAYNAME Value="Guild Wars 2"/>
+        <VERSIONNAME Value="Build 200598"/>
+        <INSTALLPATH Value="S:\common\Guild Wars 2\"/>
+        <CONFIGPATH Value="C:\users\steamuser\AppData\Roaming\Guild Wars 2"/>
+        <EXECUTABLE Value="Gw2-64.exe"/>
+        <EXECCMD Value="&quot;S:\common\Guild Wars 2\Gw2-64.exe&quot; -provider Steam -provider Portal"/>
+    </APPLICATION>
+    <GAMESETTINGS>
+        <RESOLUTION Width="3840" Height="2160" RefreshRate="0"/>
+        <OPTION Name="frameLimit" Registered="True" Type="Enum" Value="unlimited">
+            <ENUM EnumValue="unlimited"/>
+            <ENUM EnumValue="60"/>
+            <ENUM EnumValue="30"/>
+            <ENUM EnumValue="120"/>
+            <ENUM EnumValue="144"/>
+        </OPTION>
+        <OPTION Name="shadowsPreset" Registered="True" Type="Enum" Value="off">
+            <ENUM EnumValue="off"/>
+            <ENUM EnumValue="low"/>
+            <ENUM EnumValue="medium"/>
+            <ENUM EnumValue="high"/>
+            <ENUM EnumValue="ultra"/>
+            <ENUM EnumValue="custom"/>
+        </OPTION>
+        <OPTION Name="reflections" Registered="True" Type="Enum" Value="none">
+            <ENUM EnumValue="none"/>
+            <ENUM EnumValue="terrain"/>
+            <ENUM EnumValue="all"/>
+        </OPTION>
+        <OPTION Name="charModelLimit" Registered="True" Type="Enum" Value="lowest">
+            <ENUM EnumValue="lowest"/>
+            <ENUM EnumValue="low"/>
+            <ENUM EnumValue="medium"/>
+            <ENUM EnumValue="high"/>
+            <ENUM EnumValue="highest"/>
+        </OPTION>
+        <OPTION Name="shadowsCascadeCount" Registered="True" Type="Enum" Value="0">
+            <ENUM EnumValue="0"/>
+            <ENUM EnumValue="1"/>
+            <ENUM EnumValue="2"/>
+            <ENUM EnumValue="3"/>
+        </OPTION>
+        <OPTION Name="antiAliasing" Registered="True" Type="Enum" Value="smaa_high">
+            <ENUM EnumValue="none"/>
+            <ENUM EnumValue="fxaa"/>
+            <ENUM EnumValue="smaa_low"/>
+            <ENUM EnumValue="smaa_high"/>
+        </OPTION>
+        <OPTION Name="screenMode" Registered="True" Type="Enum" Value="fullscreen">
+            <ENUM EnumValue="windowed"/>
+            <ENUM EnumValue="fullscreen"/>
+            <ENUM EnumValue="windowed_fullscreen"/>
+        </OPTION>
+        <OPTION Name="textureDetail" Registered="True" Type="Enum" Value="high">
+            <ENUM EnumValue="low"/>
+            <ENUM EnumValue="medium"/>
+            <ENUM EnumValue="high"/>
+        </OPTION>
+        <OPTION Name="animation" Registered="True" Type="Enum" Value="high">
+            <ENUM EnumValue="low"/>
+            <ENUM EnumValue="medium"/>
+            <ENUM EnumValue="high"/>
+        </OPTION>
+        <OPTION Name="shadowsResolution" Registered="True" Type="Enum" Value="none">
+            <ENUM EnumValue="none"/>
+            <ENUM EnumValue="512"/>
+            <ENUM EnumValue="1024"/>
+            <ENUM EnumValue="2048"/>
+        </OPTION>
+        <OPTION Name="charModelQuality" Registered="True" Type="Enum" Value="high">
+            <ENUM EnumValue="lowest"/>
+            <ENUM EnumValue="low"/>
+            <ENUM EnumValue="medium"/>
+            <ENUM EnumValue="high"/>
+            <ENUM EnumValue="highest"/>
+        </OPTION>
+        <OPTION Name="environment" Registered="True" Type="Enum" Value="high">
+            <ENUM EnumValue="low"/>
+            <ENUM EnumValue="medium"/>
+            <ENUM EnumValue="high"/>
+        </OPTION>
+        <OPTION Name="lodDistance" Registered="True" Type="Enum" Value="high">
+            <ENUM EnumValue="low"/>
+            <ENUM EnumValue="medium"/>
+            <ENUM EnumValue="high"/>
+            <ENUM EnumValue="ultra"/>
+        </OPTION>
+        <OPTION Name="postProc" Registered="True" Type="Enum" Value="custom">
+            <ENUM EnumValue="low"/>
+            <ENUM EnumValue="medium"/>
+            <ENUM EnumValue="high"/>
+            <ENUM EnumValue="custom"/>
+        </OPTION>
+        <OPTION Name="sampling" Registered="True" Type="Enum" Value="native">
+            <ENUM EnumValue="subsample"/>
+            <ENUM EnumValue="native"/>
+            <ENUM EnumValue="supersample"/>
+        </OPTION>
+        <OPTION Name="shaders" Registered="True" Type="Enum" Value="high">
+            <ENUM EnumValue="low"/>
+            <ENUM EnumValue="medium"/>
+            <ENUM EnumValue="high"/>
+        </OPTION>
+        <OPTION Name="gamma" Registered="True" Type="Float" Value="1">
+            <RANGE MinValue="0.5" MaxValue="3.5" NumSteps="0"/>
+        </OPTION>
+        <OPTION Name="effectLod" Registered="True" Type="Bool" Value="true"/>
+        <OPTION Name="highResCharacter" Registered="True" Type="Bool" Value="true"/>
+        <OPTION Name="bestTextureFiltering" Registered="True" Type="Bool" Value="true"/>
+        <OPTION Name="depthBlur" Registered="True" Type="Bool" Value="true"/>
+        <OPTION Name="verticalSync" Registered="True" Type="Bool" Value="false"/>
+        <OPTION Name="dpiScaling" Registered="True" Type="Bool" Value="true"/>
+        <OPTION Name="screenspaceShadows" Registered="True" Type="Bool" Value="true"/>
+    </GAMESETTINGS>
+</GSA_SDK>

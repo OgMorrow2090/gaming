@@ -111,7 +111,7 @@
 		"AllowPrereleases": false,
 		"IsDisabledUntilUpdate": false,
 		"IsFavorite": false,
-		"IsLoaded": true,
+		"IsLoaded": false,
 		"IsPausingUpdates": false,
 		"Name": "arcdps",
 		"Signature": -617263

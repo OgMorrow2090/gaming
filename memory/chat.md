@@ -912,3 +912,41 @@ Set Sunshine web UI password to `admin123` during debugging (via `sunshine --cre
 - **Rename Deck non-Steam entries**: script filenames show as-is (moonlight-steamos.sh etc); user can rename via Steam UI for cleaner names
 - **Sunshine web UI password**: change from `admin123` to something stronger
 - **Moonlight app cache on other clients**: Apple TV, Mac mini, MacBook Air may also have stale cached app lists — clear on next connect or when issues arise
+
+## 2026-05-13 PM — GW2 login flicker fix + DPI tuning + performance check
+
+### What was done
+
+- **GW2 login screen flicker investigation**: user reported flickering on login window that started after 2026-05-12 DPI bump to 0xC0 (200%). No flicker on character select or in-game.
+- **screenMode fix**: changed GFXSettings.xml `screenMode` from `fullscreen` to `windowed_fullscreen` — fullscreen is documented as problematic under gamescope (GW2 tries to call SetDisplayMode, fails inconsistently). Did not fix the flicker alone.
+- **Wine LogPixels reverted**: dropped from 0xC0 (200%) back to 0x90 (150%) in both `[Control Panel\\Desktop]` and `[Software\\Wine\\Fonts]` sections of user.reg. User reported flicker started after this DPI was increased; reverting to test.
+- **Nexus GlobalScale bumped**: increased from 1.5 to 2.0 and FontSize from 16 to 20 in Nexus Settings.json to compensate for lower Wine DPI — user was happy with GW2 native UI at 150% but Nexus addons were too small.
+- **SteamOS beta / NTSync research**: user asked about kernel improvements for GW2. Key finding: NTSync (Windows NT synchronization primitives in Linux kernel) is already active on bazzite (kernel 6.17, `/dev/ntsync` loaded with 3820 refs). Deck is on SteamOS 3.7.24 / kernel 6.11 — needs 3.8.x beta for NTSync on native Deck games.
+- **Bazzite performance profiling**: checked system load during idle and WvW zerg:
+  - Idle: GW2 336% CPU, GPU 20%, 78% CPU idle
+  - Zerg: GW2 300% CPU, GPU 42%, 79% CPU idle
+  - i9-9900K boosting to 4.6 GHz — GW2's single-threaded renderer is the bottleneck, not hardware
+  - Sunshine input handling is negligible — local controller won't improve FPS, only input latency (~5-10ms saved)
+
+### Live config changes on bazzite
+
+| File | Change |
+| --- | --- |
+| GFXSettings.Gw2-64.exe.xml | `screenMode` fullscreen → windowed_fullscreen |
+| user.reg (appid 1284210) | `LogPixels` 0xC0 → 0x90 (both Desktop + Wine\\Fonts sections) |
+| Nexus Settings.json | `GlobalScale` 1.5 → 2.0, `FontSize` 16 → 20 |
+
+### Repo changes
+
+| File | Change |
+| --- | --- |
+| `configs/gw2-keybinds/nexus-settings.json` | Backed up with new GlobalScale/FontSize |
+| `configs/gw2-keybinds/gfxsettings.xml` | Backed up with windowed_fullscreen |
+| `memory/per-profile-fixed-dpi.md` | Updated current value to 0x90/150% |
+
+### Open / next session
+
+- **Login flicker**: user testing whether 0x90 DPI resolves it — confirm next session
+- **Nexus scaling**: user said "can go much larger" — may want GlobalScale > 2.0 next session
+- **SteamOS 3.8 beta on Deck**: user plays native games on Deck too; 3.8.x would bring NTSync for those
+- **DP→HDMI adapter + Steam Controller 2**: still pending delivery

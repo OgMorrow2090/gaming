@@ -1,8 +1,8 @@
 [Unit]
-Description=Check for Proton GE updates daily at 2am
+Description=Check for Proton GE updates weekly
 
 [Timer]
-OnCalendar=*-*-* 02:00:00
+OnCalendar=Mon *-*-* 02:00:00
 Persistent=true
 
 [Install]

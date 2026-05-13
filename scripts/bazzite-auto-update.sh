@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # bazzite-auto-update.sh — Automated OS + Flatpak updates with alert reporting
 # Runs via systemd timer at 1am daily on Shaun-Bazzite
-# Updates: rpm-ostree (OS/kernel/NVIDIA drivers), flatpak apps
+# Updates: rpm-ostree (OS/kernel/drivers), flatpak apps
 # Reports results to alerts.itinyk.app, reboots if updates applied
 
 set -euo pipefail
@@ -55,7 +55,7 @@ updates_applied=false
 reboot_needed=false
 summary=""
 
-# --- rpm-ostree (OS, kernel, NVIDIA drivers) ---
+# --- rpm-ostree (OS, kernel, drivers) ---
 echo "[rpm-ostree] Checking for updates..."
 ostree_output=$(sudo_cmd rpm-ostree upgrade 2>&1) || true
 echo "$ostree_output"

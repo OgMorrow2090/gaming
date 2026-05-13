@@ -18,6 +18,5 @@ case "$MODE" in
   1080p165)  exec /usr/bin/gamescope "$@" --prefer-output HDMI-A-1 -W 1920 -H 1080 -r 165 -o 165 --immediate-flips ;;
   1080p144)  exec /usr/bin/gamescope "$@" --prefer-output HDMI-A-1 -W 1920 -H 1080 -r 144 -o 144 --immediate-flips ;;
   deck)      exec /usr/bin/gamescope "$@" --prefer-output HDMI-A-2 -W 1280 -H 800  -r 90  -o 90  --immediate-flips ;;
-  deck-vkms) exec /usr/bin/gamescope "$@" -W 1280 -H 800  -r 90  -o 90  --immediate-flips ;;
   default|*) exec /usr/bin/gamescope "$@" --prefer-output HDMI-A-1 -W 3840 -H 2160 -r 60  -o 60  --immediate-flips ;;
 esac

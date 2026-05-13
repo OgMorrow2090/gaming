@@ -1,0 +1,9 @@
+[Unit]
+Description=Nightly btrfs clone nvme1 → nvme0
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/btrfs-nightly-clone.sh
+Nice=19
+IOSchedulingClass=idle

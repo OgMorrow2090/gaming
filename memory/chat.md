@@ -784,3 +784,50 @@ User: manual Ctrl+V into the textbox (auto-paste doesn't reach textbox under App
 - Manual Ctrl+V is the documented paste path; auto-paste was removed because `SendInput(Ctrl+V)` doesn't reach GW2's destroy-confirm textbox under Apple TV stream + Steam Input chain.
 - ArcDPS font-size reduction is an alternative noise-reducer but no longer needed (character name now blacklisted via MumbleLink).
 - If a new noise pattern emerges for an item, the daemon doesn't keep snapshots anymore (clean version restored). Re-add the `cp "$bmp" "$DEBUG/last.bmp"` lines to the daemon for one-off debugging.
+
+## 2026-05-13 — Post-AMD script audit + cleanup
+
+Continuation of 2026-05-12 AMD swap. Audited all scripts and systemd timers on bazzite for NVIDIA-specific or stale multi-profile references.
+
+### Confirmed working (no changes needed)
+
+- `btrfs-nightly-clone.sh` + timer (03:00 daily) — hardware-agnostic
+- `bazzite-auto-update.sh` + timer (01:00 daily) — rpm-ostree handles AMD drivers
+- `sunshine-set-resolution.sh` — calls gamescope-mode, no GPU references
+- `sunshine-launch-gw2.sh` / `sunshine-wait-gw2.sh` — pgrep-based, hardware-agnostic
+- `gw2-ocr-daemon.sh` — running, tesseract-based
+- `kill-game.sh` / `reboot.sh` / `bazzite-reboot-notify.sh` — generic
+- `power-button-reboot.sh` — event2 still correct for power button
+- `gw2-backup-sync.sh` — rclone to gdrive, hourly timer, paths valid
+- `gamescope-mode` / `switch-lg-to-bazzite.sh` — hardware-agnostic
+
+### Issues fixed
+
+1. **Deleted `sync-gw2-exe.sh`** (bazzite + repo) — referenced deleted `~/Games/gw2-appletv/` and `~/Games/gw2-deck/` dirs. Dead code since multi-profile consolidation.
+
+2. **Updated `gamescope-wrapper`** (bazzite + repo) — removed NVIDIA HDR-strip workaround + safe-mode comments. Passes upstream `$@` through unmodified (HDR works on AMD). Aligned all modes with `gamescope-mode`: added `2k165`, `1080p165`, `1080p144`, `deck`, `deck-vkms`. Default changed from 1080p60 to 4k60.
+
+3. **Created `proton-ge-update.timer`** (bazzite + repo) — weekly Monday 02:00. Service existed but had no trigger. Enabled, first run confirmed GE-Proton10-34 up to date.
+
+4. **Cleaned NVIDIA references** from `bazzite-auto-update.sh` comments (bazzite + repo).
+
+### User confirmations
+
+- OCR F10 test: working (closes item from 2026-05-10)
+- DPI locked at 0xC0 (200%) + MouseSensitivity 20 — user happy, no more tuning
+- Nexus UI scaling (GlobalScale 1.5, FontSize 16) + Mystic Clicker re-capture — user will test/redo themselves
+
+### Files changed
+
+| File | Change |
+| --- | --- |
+| `scripts/sync-gw2-exe.sh` | DELETED (repo + bazzite) |
+| `configs/bazzite/gamescope-wrapper.sh` | Rewrote: AMD modes, no HDR strip |
+| `configs/bazzite/proton-ge-update.timer` | Daily → weekly Monday 02:00 |
+| `scripts/bazzite-auto-update.sh` | Comment cleanup (NVIDIA → generic) |
+
+### Open / next session
+
+- **DP→HDMI adapter + Steam Controller 2**: blocked on delivery (~today/tomorrow). Test CEC `/dev/cec0`, `switch-lg-to-bazzite.sh`, 4K@120-144 + HDR + VRR
+- **Nexus UI scaling**: user testing GlobalScale 1.5 + FontSize 16 in-game
+- **Mystic Clicker re-capture**: user will redo at 200% DPI

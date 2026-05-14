@@ -1,29 +1,40 @@
 ---
-name: cec-controller-wake-script
-description: CEC wake script uses silence-detection on hidraw0 (not button filtering) because Steam exclusively grabs all button data. Triggers on controller sleep→wake transition only.
+name: controller-wake-tv-script
+description: WebOS network API replaces CEC for TV input switching on controller wake. Silence-detection on hidraw0 unchanged. Direct HDMI has no CEC adapter — AMD GPU native HDMI doesn't expose /dev/cec*.
 metadata:
   type: project
 ---
 
-The CEC wake script (`~/bin/cec-controller-wake.sh` on bazzite) is Python, not bash. It detects when the Steam Controller wakes from sleep by monitoring hidraw0 for a silence→data transition.
+The controller wake script (`~/bin/controller-wake-tv.py` on bazzite) switches the LG TV to bazzite's HDMI input via the **WebOS SSAP API** over the local network when the Steam Controller wakes from sleep.
 
-**Why silence-detection, not button filtering:**
-- Steam/gamescope exclusively grabs ALL button data — bytes 7-8 in `0x42` reports are always `00,00`
-- The Steam button is intercepted by controller firmware and produces no standard HID report at all
-- Neither hidraw (5 devices) nor evdev (Mouse, Keyboard, Xbox 360 pad virtual devices) expose any button presses while gamescope runs
-- Only `0x7b` sensor/IMU reports (13 bytes, ~2/sec) are visible, and they flow continuously while controller is awake, stop when it sleeps
+**Why WebOS instead of CEC:**
+- Switched from UGREEN DP-to-HDMI dongle to direct HDMI 2.1 (GPU native port) after discovering dongle didn't pass audio
+- AMD GPU's native HDMI port does NOT expose a CEC adapter — no `/dev/cec*` device exists
+- LG TV firmware update (2026-05-14) fixed HDMI 2.1 negotiation, enabling 4K@120Hz + FreeSync + audio on direct HDMI — dongle no longer needed
+- WebOS API (`aiowebostv` library) provides the same input-switching capability over LAN
 
-**Key design decisions:**
-- `ever_seen_data` gate: CEC only fires after data has been observed at least once, then silence, then data resumes. Prevents false triggers on boot where no prior data baseline exists.
-- No boot grace period needed (the `ever_seen_data` gate handles it)
-- 30-second silence threshold = controller asleep
-- 60-second cooldown between CEC sends
+**TV connection details:**
+- IP: 172.16.100.44 (WebOS/4.1.0)
+- MAC: 6c:15:db:8d:a5:a6
+- Client key: 2c37f5beb73ad7247415b32263c9501f
+- Bazzite input: HDMI_2
+- Apple TV input: HDMI_1
 
-**What it does NOT prevent:** TV switching to bazzite on reboot/gamescope start. That's gamescope's display pipeline initializing the HDMI output — independent of CEC commands. User accepts this.
+**Silence-detection (unchanged from CEC version):**
+- Monitors `/dev/hidraw0` for Steam Controller data (0x42 reports at ~267/sec when awake)
+- `ever_seen_data` gate: only triggers after data observed → silence → data resumes
+- 30-second silence threshold = controller powered off
+- 60-second cooldown between triggers
+- Controller takes ~35 seconds to actually power down after holding Steam button
+
+**Dependencies (pip install --user):**
+- `aiowebostv` — WebOS WebSocket client
+- `wakeonlan` — WOL magic packet (sent before WebOS connect in case TV is in standby)
 
 **How to apply:**
-- Config backup: `configs/bazzite/cec-controller-wake.sh`
-- Service unit: `configs/bazzite/cec-controller-wake.service`
-- Deploy: `scp` to `~/bin/cec-controller-wake.sh`, `systemctl --user restart cec-controller-wake.service`
+- Script: `scp configs/bazzite/controller-wake-tv.py Og@172.16.100.212:~/bin/`
+- Service: `scp configs/bazzite/controller-wake-tv.service Og@172.16.100.212:~/.config/systemd/user/`
+- Enable: `systemctl --user enable --now controller-wake-tv.service`
+- Old CEC script removed from bazzite (2026-05-14)
 
-Related: [[cef-overlay-black-screen-after-stream]], [[streaming-input-host-vs-client]]
+Related: [[streaming-input-host-vs-client]]

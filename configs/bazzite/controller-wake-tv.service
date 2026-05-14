@@ -1,0 +1,12 @@
+[Unit]
+Description=Switch TV to bazzite when Steam Controller wakes
+After=gamescope-session-plus@steam.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 %h/bin/controller-wake-tv.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

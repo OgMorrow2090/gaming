@@ -27,4 +27,5 @@ Index of memory entries for this repo. Each line points at one file in `memory/`
 - [Bazzite repurpose plan (~2028)](project-bazzite-repurpose-plan.md) — when new TV PC purchased, repurpose current i9-9900K as combined Docker server (replacing thing-pi) + headless Sunshine streaming server
 - [Moonlight client-side app cache](moonlight-client-app-cache.md) — Moonlight caches Sunshine app list locally; `moonlight list` reads cache not server; clear `1\apps\*` entries in config or open GUI to refresh after Sunshine app changes
 - [CEF overlay black screen on TV input switch](cef-overlay-black-screen-after-stream.md) — any TV input switch back to bazzite can trigger CEF overlay covering BPM; may self-recover in ~15 min, or restart gamescope-session
+- [CEC controller wake script](cec-controller-wake-script.md) — silence-detection on hidraw0 (not button filtering); Steam grabs all button data exclusively; triggers on controller sleep→wake only
 - [Bazzite performance tuning](bazzite-performance-tuning.md) — custom TuneD `gaming-performance` profile, 5GHz all-core, GPU high, all sleep masked; PPD override needed to survive reboot

@@ -1,0 +1,11 @@
+[Unit]
+Description=CEC wake TV on Steam Controller connect
+After=gamescope-session-plus@steam.service
+
+[Service]
+ExecStart=%h/bin/cec-controller-wake.sh
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

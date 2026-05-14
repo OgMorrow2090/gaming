@@ -1,8 +1,8 @@
 #!/bin/bash
 # gamescope-mode: switch gamescope output mode and restart the session.
-# Usage: gamescope-mode <4k120|4k60|2k120|deck|1080p144|default>
+# Usage: gamescope-mode <mode>
 set -e
-MODES=(4k120 4k60 2k120 deck 1080p144 default)
+MODES=(4k165 4k120 4k60 2k165 2k120 deck 1080p165 1080p144 default)
 if [ $# -ne 1 ] || [[ ! " ${MODES[*]} " =~ " $1 " ]]; then
     echo "Usage: gamescope-mode <mode>" >&2
     echo "  Modes: ${MODES[*]}" >&2

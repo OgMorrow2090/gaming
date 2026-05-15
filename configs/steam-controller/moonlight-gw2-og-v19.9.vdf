@@ -1,7 +1,7 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2410"
+	"revision"		"2411"
 	"title"		"Guild Wars 2 - Og v19.9"
 	"description"		"#SettingsController_AutosaveDescription"
 	"creator"		"76561198025059559"
@@ -12,7 +12,7 @@
 	"controller_caps"		"1096859647"
 	"major_revision"		"0"
 	"minor_revision"		"0"
-	"Timestamp"		"-680536876"
+	"Timestamp"		"-678439724"
 	"actions"
 	{
 		"Default"
@@ -243,8 +243,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Accept Combo, , "
 							"binding"		"key_press LEFT_SHIFT, Accept Combo, , "
+							"binding"		"key_press LEFT_CONTROL, Accept Combo, , "
 							"binding"		"key_press F11, Accept Combo, , "
 						}
 					}
@@ -265,7 +265,6 @@
 						}
 						"settings"
 						{
-							"haptic_intensity"		"0"
 							"delay_start"		"25"
 						}
 					}
@@ -273,8 +272,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Open Chest Combo, , "
 							"binding"		"key_press LEFT_SHIFT, Open Chest Combo, , "
+							"binding"		"key_press LEFT_CONTROL, Open Chest Combo, , "
 							"binding"		"key_press F12, Open Chest Combo, , "
 						}
 						"settings"
@@ -287,8 +286,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Accept, , "
 							"binding"		"key_press LEFT_SHIFT, Accept, , "
+							"binding"		"key_press LEFT_CONTROL, Accept, , "
 							"binding"		"key_press F3, Accept, , "
 						}
 					}
@@ -325,7 +324,6 @@
 						"settings"
 						{
 							"repeat_rate"		"99"
-							"haptic_intensity"		"0"
 						}
 					}
 				}
@@ -346,7 +344,6 @@
 						"settings"
 						{
 							"repeat_rate"		"99"
-							"haptic_intensity"		"0"
 						}
 					}
 				}
@@ -367,7 +364,6 @@
 						"settings"
 						{
 							"repeat_rate"		"99"
-							"haptic_intensity"		"0"
 						}
 					}
 				}
@@ -388,7 +384,6 @@
 						"settings"
 						{
 							"repeat_rate"		"99"
-							"haptic_intensity"		"0"
 						}
 					}
 				}
@@ -458,7 +453,6 @@
 						"settings"
 						{
 							"repeat_rate"		"99"
-							"haptic_intensity"		"0"
 						}
 					}
 				}
@@ -479,7 +473,6 @@
 						"settings"
 						{
 							"repeat_rate"		"99"
-							"haptic_intensity"		"0"
 						}
 					}
 				}
@@ -500,7 +493,6 @@
 						"settings"
 						{
 							"repeat_rate"		"99"
-							"haptic_intensity"		"0"
 						}
 					}
 				}
@@ -521,7 +513,6 @@
 						"settings"
 						{
 							"repeat_rate"		"99"
-							"haptic_intensity"		"0"
 						}
 					}
 				}
@@ -573,7 +564,6 @@
 						"settings"
 						{
 							"repeat_rate"		"99"
-							"haptic_intensity"		"0"
 						}
 					}
 					"Long_Press"
@@ -615,7 +605,6 @@
 						"settings"
 						{
 							"repeat_rate"		"99"
-							"haptic_intensity"		"0"
 						}
 					}
 				}
@@ -641,8 +630,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Wizard Vault Combo, , "
 							"binding"		"key_press LEFT_SHIFT, Wizard Vault Combo, , "
+							"binding"		"key_press LEFT_CONTROL, Wizard Vault Combo, , "
 							"binding"		"key_press F2, Wizard Vault Combo, , "
 						}
 					}
@@ -650,8 +639,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Mail Combo, , "
 							"binding"		"key_press LEFT_SHIFT, Mail Combo, , "
+							"binding"		"key_press LEFT_CONTROL, Mail Combo, , "
 							"binding"		"key_press F8, Mail Combo, , "
 						}
 						"settings"
@@ -686,17 +675,13 @@
 						{
 							"binding"		"key_press H, Hero Panel, , "
 						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
-						}
 					}
 					"Long_Press"
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Guild Hall Combo, , "
 							"binding"		"key_press LEFT_SHIFT, Guild Hall Combo, , "
+							"binding"		"key_press LEFT_CONTROL, Guild Hall Combo, , "
 							"binding"		"key_press F5, Guild Hall Combo, , "
 						}
 						"settings"
@@ -741,13 +726,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, LFG Combo, , "
 							"binding"		"key_press LEFT_SHIFT, LFG Combo, , "
+							"binding"		"key_press LEFT_CONTROL, LFG Combo, , "
 							"binding"		"key_press F6, LFG Combo, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
 						}
 					}
 				}
@@ -780,10 +761,6 @@
 						{
 							"binding"		"key_press E, Toggle Action Camera, , "
 						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
-						}
 					}
 				}
 				"disabled_activators"
@@ -813,8 +790,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, General Accept 2, , "
 							"binding"		"key_press LEFT_SHIFT, General Accept 2, , "
+							"binding"		"key_press LEFT_CONTROL, General Accept 2, , "
 							"binding"		"key_press F7, General Accept 2, , "
 						}
 					}
@@ -854,8 +831,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Craft Collapse Combo, , "
 							"binding"		"key_press LEFT_SHIFT, Craft Collapse Combo, , "
+							"binding"		"key_press LEFT_CONTROL, Craft Collapse Combo, , "
 							"binding"		"key_press F10, Craft Collapse Combo, , "
 						}
 					}
@@ -892,8 +869,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, General Accept Combo, , "
 							"binding"		"key_press LEFT_SHIFT, General Accept Combo, , "
+							"binding"		"key_press LEFT_CONTROL, General Accept Combo, , "
 							"binding"		"key_press F11, General Accept Combo, , "
 						}
 					}
@@ -986,7 +963,6 @@
 						"settings"
 						{
 							"hold_repeats"		"1"
-							"haptic_intensity"		"0"
 						}
 					}
 				}
@@ -1459,6 +1435,10 @@
 							"binding"		"key_press U, , "
 							"binding"		"key_press M, , "
 						}
+						"settings"
+						{
+							"hold_repeats"		"0"
+						}
 					}
 					"Long_Press"
 					{
@@ -1636,8 +1616,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Close Crafting, , "
 							"binding"		"key_press LEFT_SHIFT, Close Crafting, , "
+							"binding"		"key_press LEFT_CONTROL, Close Crafting, , "
 							"binding"		"key_press F9, Close Crafting, , "
 						}
 					}
@@ -1662,8 +1642,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, TP Buy/Sell, , "
 							"binding"		"key_press LEFT_SHIFT, TP Buy/Sell, , "
+							"binding"		"key_press LEFT_CONTROL, TP Buy/Sell, , "
 							"binding"		"key_press F1, TP Buy/Sell, , "
 						}
 					}
@@ -1725,10 +1705,6 @@
 							"binding"		"key_press LEFT_CONTROL, Vendor, , "
 							"binding"		"key_press V, Vendor, , "
 						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
-						}
 					}
 				}
 				"disabled_activators"
@@ -1773,20 +1749,12 @@
 						{
 							"binding"		"key_press LEFT_CONTROL, Springer, , "
 						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
-						}
 					}
 					"Full_Press"
 					{
 						"bindings"
 						{
 							"binding"		"key_press KEYPAD_2, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
 						}
 					}
 				}
@@ -1804,20 +1772,12 @@
 						{
 							"binding"		"key_press LEFT_CONTROL, Roller Beetle, , "
 						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
-						}
 					}
 					"Full_Press"
 					{
 						"bindings"
 						{
 							"binding"		"key_press KEYPAD_6, Warclaw Mount, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
 						}
 					}
 				}
@@ -1835,20 +1795,12 @@
 						{
 							"binding"		"key_press LEFT_CONTROL, Skyscale, , "
 						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
-						}
 					}
 					"Full_Press"
 					{
 						"bindings"
 						{
 							"binding"		"key_press KEYPAD_8, Siege Turtle Mount, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
 						}
 					}
 				}
@@ -1866,20 +1818,12 @@
 						{
 							"binding"		"key_press LEFT_CONTROL, Raptor, , "
 						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
-						}
 					}
 					"Full_Press"
 					{
 						"bindings"
 						{
 							"binding"		"key_press KEYPAD_1, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
 						}
 					}
 				}
@@ -1897,20 +1841,12 @@
 						{
 							"binding"		"key_press LEFT_CONTROL, Jackal, , "
 						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
-						}
 					}
 					"Full_Press"
 					{
 						"bindings"
 						{
 							"binding"		"key_press KEYPAD_4, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
 						}
 					}
 				}
@@ -1928,20 +1864,12 @@
 						{
 							"binding"		"key_press LEFT_CONTROL, Griffon, , "
 						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
-						}
 					}
 					"Full_Press"
 					{
 						"bindings"
 						{
 							"binding"		"key_press KEYPAD_5, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
 						}
 					}
 				}
@@ -1959,20 +1887,12 @@
 						{
 							"binding"		"key_press LEFT_CONTROL, Warclaw, , "
 						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
-						}
 					}
 					"Full_Press"
 					{
 						"bindings"
 						{
 							"binding"		"key_press KEYPAD_7, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
 						}
 					}
 				}
@@ -1990,20 +1910,12 @@
 						{
 							"binding"		"key_press LEFT_CONTROL, Skimmer, , "
 						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
-						}
 					}
 					"Full_Press"
 					{
 						"bindings"
 						{
 							"binding"		"key_press KEYPAD_3, Jackal Mount, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
 						}
 					}
 				}
@@ -2021,20 +1933,12 @@
 						{
 							"binding"		"key_press LEFT_CONTROL, Siege Turtle, , "
 						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
-						}
 					}
 					"Full_Press"
 					{
 						"bindings"
 						{
 							"binding"		"key_press KEYPAD_9, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
 						}
 					}
 				}
@@ -2068,8 +1972,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Wizard Vault Combo, , "
 							"binding"		"key_press LEFT_SHIFT, Wizard Vault Combo, , "
+							"binding"		"key_press LEFT_CONTROL, Wizard Vault Combo, , "
 							"binding"		"key_press F2, Wizard Vault Combo, , "
 						}
 					}
@@ -2077,8 +1981,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Char Swap, , "
 							"binding"		"key_press LEFT_SHIFT, Char Swap, , "
+							"binding"		"key_press LEFT_CONTROL, Char Swap, , "
 							"binding"		"key_press F4, Char Swap, , "
 						}
 					}
@@ -2146,7 +2050,7 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press F8, Bank Combo, , "
+							"binding"		"xinput_button B, Bank Combo, , "
 						}
 					}
 					"Double_Press"
@@ -2267,10 +2171,6 @@
 						{
 							"binding"		"mouse_wheel SCROLL_UP, , "
 						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
-						}
 					}
 				}
 				"disabled_activators"
@@ -2286,10 +2186,6 @@
 						"bindings"
 						{
 							"binding"		"mouse_wheel SCROLL_DOWN, , "
-						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
 						}
 					}
 				}
@@ -2404,7 +2300,6 @@
 						}
 						"settings"
 						{
-							"haptic_intensity"		"0"
 							"delay_end"		"400"
 							"interruptable"		"0"
 						}
@@ -2453,8 +2348,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Reset Windows, , "
 							"binding"		"key_press LEFT_SHIFT, Reset Windows, , "
+							"binding"		"key_press LEFT_CONTROL, Reset Windows, , "
 							"binding"		"key_press INSERT, Reset Windows, , "
 						}
 					}
@@ -2471,8 +2366,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_ALT, ArcDPS, , "
 							"binding"		"key_press LEFT_SHIFT, ArcDPS, , "
+							"binding"		"key_press LEFT_ALT, ArcDPS, , "
 							"binding"		"key_press T, ArcDPS, , "
 						}
 					}
@@ -2570,8 +2465,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Capture Mode, , "
 							"binding"		"key_press LEFT_SHIFT, Capture Mode, , "
+							"binding"		"key_press LEFT_CONTROL, Capture Mode, , "
 							"binding"		"key_press C, Capture Mode, , "
 						}
 					}
@@ -3248,8 +3143,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_ALT, Graceful Quit, , "
 							"binding"		"key_press LEFT_SHIFT, Graceful Quit, , "
+							"binding"		"key_press LEFT_ALT, Graceful Quit, , "
 							"binding"		"key_press Q, Graceful Quit, , "
 						}
 						"settings"
@@ -3299,10 +3194,6 @@
 						{
 							"binding"		"controller_action hold_layer 2 1 1, , "
 						}
-						"settings"
-						{
-							"haptic_intensity"		"0"
-						}
 					}
 				}
 				"disabled_activators"
@@ -3339,7 +3230,6 @@
 						{
 							"hold_repeats"		"1"
 							"repeat_rate"		"50"
-							"haptic_intensity"		"0"
 						}
 					}
 				}
@@ -3398,7 +3288,6 @@
 						{
 							"hold_repeats"		"1"
 							"repeat_rate"		"50"
-							"haptic_intensity"		"0"
 						}
 					}
 				}

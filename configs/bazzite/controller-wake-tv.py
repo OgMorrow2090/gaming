@@ -6,7 +6,7 @@ Silence-detection on hidraw: sensor/IMU reports stop when the controller
 sleeps and resume when it wakes. Only triggers after data has been seen
 at least once (eliminates false triggers on boot/gamescope start).
 """
-import asyncio, os, select, time, syslog
+import asyncio, os, select, subprocess, time, syslog
 from aiowebostv import WebOsClient
 from wakeonlan import send_magic_packet
 
@@ -20,18 +20,28 @@ SILENCE_THRESHOLD = 30
 COOLDOWN = 60
 
 async def switch_tv():
-    try:
-        send_magic_packet(TV_MAC)
-        await asyncio.sleep(2)
-        client = WebOsClient(TV_IP, TV_CLIENT_KEY)
-        await asyncio.wait_for(client.connect(), timeout=10)
-        await client.set_input(TV_INPUT)
-        await client.disconnect()
-    except Exception as e:
-        syslog.syslog(syslog.LOG_ERR, f"WebOS switch failed: {e}")
-        return
-    syslog.syslog(syslog.LOG_INFO,
-                  f"Steam Controller wake — switched TV to {TV_INPUT} via WebOS")
+    send_magic_packet(TV_MAC)
+    for attempt in range(4):
+        wait = [3, 5, 8, 12][attempt]
+        await asyncio.sleep(wait)
+        try:
+            client = WebOsClient(TV_IP, TV_CLIENT_KEY)
+            await asyncio.wait_for(client.connect(), timeout=10)
+            await client.set_input(TV_INPUT)
+            await client.disconnect()
+            syslog.syslog(syslog.LOG_INFO,
+                          f"Steam Controller wake — switched TV to {TV_INPUT} via WebOS (attempt {attempt + 1})")
+            await asyncio.sleep(3)
+            subprocess.run(["pkill", "steamwebhelper"],
+                           capture_output=True, timeout=5)
+            syslog.syslog(syslog.LOG_INFO, "Killed steamwebhelper to clear CEF overlay (Steam auto-restarts it)")
+            return
+        except Exception as e:
+            syslog.syslog(syslog.LOG_WARNING,
+                          f"WebOS attempt {attempt + 1}/4 failed: {e}")
+            if attempt < 3:
+                send_magic_packet(TV_MAC)
+    syslog.syslog(syslog.LOG_ERR, "WebOS switch failed after 4 attempts")
 
 last_data = time.monotonic()
 last_trigger = 0.0

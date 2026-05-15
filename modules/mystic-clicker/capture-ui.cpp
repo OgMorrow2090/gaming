@@ -366,9 +366,9 @@ void RenderCaptureWindow()
             ImGui::Spacing();
         }
 
-        // Render targets grouped by category under collapsing headers.
-        // Within each category: uncaptured first, then captured; alphabetic within each group.
-        // Categories default to collapsed; auto-expand the one containing the active countdown.
+        float closeReserve = 30.0f * g_UIScale;
+        ImGui::BeginChild("##targets_scroll", ImVec2(0, -closeReserve), false);
+
         for (int c = 0; c < NUM_CATEGORIES; ++c)
         {
             const char* category = s_Categories[c];
@@ -501,7 +501,7 @@ void RenderCaptureWindow()
             }
         }
 
-        ImGui::Spacing();
+        ImGui::EndChild();
 
         if (ImGui::Button("Close", ImVec2(-1, 25.0f * g_UIScale)))
         {

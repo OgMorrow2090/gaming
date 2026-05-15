@@ -1017,6 +1017,8 @@ void LoadConfig()
             g_LockFlipList = (atoi(line.substr(15).c_str()) != 0);
         if (line.find("lock_delivery=") == 0)
             g_LockDelivery = (atoi(line.substr(14).c_str()) != 0);
+        if (line.find("window_opacity=") == 0)
+            g_WindowOpacity = (float)atof(line.substr(15).c_str());
     }
 }
 
@@ -1043,6 +1045,7 @@ void SaveConfig()
     f << "flip_limit=" << g_FlipLimit << "\n";
     f << "lock_flip_list=" << (g_LockFlipList ? 1 : 0) << "\n";
     f << "lock_delivery=" << (g_LockDelivery ? 1 : 0) << "\n";
+    f << "window_opacity=" << g_WindowOpacity << "\n";
     if (!existingKey.empty())
         f << "api_key=" << existingKey << "\n";
 }

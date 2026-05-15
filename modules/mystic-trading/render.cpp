@@ -632,6 +632,16 @@ void RenderDeliveryBox()
     {
         if (ImGui::MenuItem(g_LockDelivery ? "Unlock" : "Lock"))
             g_LockDelivery = !g_LockDelivery;
+        ImGui::Separator();
+        ImGui::TextDisabled("Appearance:");
+        ImGui::SetNextItemWidth(120);
+        ImGui::SliderFloat("Text Size##del", &g_FontScale, 0.7f, 2.0f, "%.1f");
+        ImGui::SetNextItemWidth(120);
+        ImGui::SliderFloat("Icon Size##del", &g_IconScale, 0.5f, 3.0f, "%.1f");
+        ImGui::SetNextItemWidth(120);
+        ImGui::SliderFloat("Row Height##del", &g_RowScale, 0.7f, 2.0f, "%.1f");
+        ImGui::SetNextItemWidth(120);
+        ImGui::SliderFloat("Opacity##del", &g_WindowOpacity, 0.3f, 1.0f, "%.2f");
         ImGui::EndPopup();
     }
 
@@ -689,6 +699,20 @@ void RenderDashboard()
     ImGui::SetWindowFontScale(g_FontScale);
     EnableDragAnywhere();
     TrackWindowState(g_WinDashboard, s_LastChangeDash, s_PendingSaveDash);
+
+    if (ImGui::BeginPopupContextWindow("##DashCtx"))
+    {
+        ImGui::TextDisabled("Appearance:");
+        ImGui::SetNextItemWidth(120);
+        ImGui::SliderFloat("Text Size##dash", &g_FontScale, 0.7f, 2.0f, "%.1f");
+        ImGui::SetNextItemWidth(120);
+        ImGui::SliderFloat("Icon Size##dash", &g_IconScale, 0.5f, 3.0f, "%.1f");
+        ImGui::SetNextItemWidth(120);
+        ImGui::SliderFloat("Row Height##dash", &g_RowScale, 0.7f, 2.0f, "%.1f");
+        ImGui::SetNextItemWidth(120);
+        ImGui::SliderFloat("Opacity##dash", &g_WindowOpacity, 0.3f, 1.0f, "%.2f");
+        ImGui::EndPopup();
+    }
 
     std::lock_guard<std::mutex> lock(g_DataMutex);
 
@@ -823,6 +847,16 @@ void RenderFlipList()
         if (ImGui::MenuItem("20 items", nullptr, g_FlipLimit == 20)) g_FlipLimit = 20;
         if (ImGui::MenuItem("50 items", nullptr, g_FlipLimit == 50)) g_FlipLimit = 50;
         if (ImGui::MenuItem("100 items", nullptr, g_FlipLimit == 100)) g_FlipLimit = 100;
+        ImGui::Separator();
+        ImGui::TextDisabled("Appearance:");
+        ImGui::SetNextItemWidth(120);
+        ImGui::SliderFloat("Text Size", &g_FontScale, 0.7f, 2.0f, "%.1f");
+        ImGui::SetNextItemWidth(120);
+        ImGui::SliderFloat("Icon Size", &g_IconScale, 0.5f, 3.0f, "%.1f");
+        ImGui::SetNextItemWidth(120);
+        ImGui::SliderFloat("Row Height", &g_RowScale, 0.7f, 2.0f, "%.1f");
+        ImGui::SetNextItemWidth(120);
+        ImGui::SliderFloat("Opacity", &g_WindowOpacity, 0.3f, 1.0f, "%.2f");
         ImGui::EndPopup();
     }
 

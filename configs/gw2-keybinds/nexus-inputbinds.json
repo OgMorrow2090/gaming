@@ -1396,12 +1396,12 @@
 	},
 	{
 		"Alt": false,
-		"Code": 0,
-		"Ctrl": false,
+		"Code": 63,
+		"Ctrl": true,
 		"Identifier": "KB_MENU",
 		"Passthrough": false,
 		"Shift": false,
-		"Type": 0
+		"Type": 1
 	},
 	{
 		"Alt": false,
@@ -1485,8 +1485,8 @@
 		"Type": 1
 	},
 	{
-		"Alt": true,
-		"Code": 87,
+		"Alt": false,
+		"Code": 67,
 		"Ctrl": false,
 		"Identifier": "MERCHANT_COMBO",
 		"Passthrough": false,

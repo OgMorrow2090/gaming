@@ -2046,23 +2046,22 @@
 							"binding"		"key_press F7, Trading Post Combo, , "
 						}
 					}
-					"Long_Press"
-					{
-						"bindings"
-						{
-							"binding"		"xinput_button B, Bank Combo, , "
-						}
-					}
 					"Double_Press"
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_ALT, Merchant Combo, , "
-							"binding"		"key_press F11, Merchant Combo, , "
+							"binding"		"key_press F9, Merchant Combo, , "
 						}
 						"settings"
 						{
 							"double_tap_time"		"500"
+						}
+					}
+					"Long_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press F8, Bank Combo, , "
 						}
 					}
 				}

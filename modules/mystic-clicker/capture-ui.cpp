@@ -275,8 +275,8 @@ void RenderCaptureWindow()
     {
         g_CaptureWinX = 100.0f;
         g_CaptureWinY = 100.0f;
-        g_CaptureWinW = 380.0f;
-        g_CaptureWinH = 600.0f;
+        g_CaptureWinW = 380.0f * g_UIScale;
+        g_CaptureWinH = 600.0f * g_UIScale;
         g_ResetWindowsFlag = false;
         SaveButtonPositions();
     }
@@ -294,10 +294,13 @@ void RenderCaptureWindow()
     if (g_CaptureWinW > 0.0f && g_CaptureWinH > 0.0f)
         ImGui::SetNextWindowSize(ImVec2(g_CaptureWinW, g_CaptureWinH), posCond);
     else
-        ImGui::SetNextWindowSize(ImVec2(380, 0), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize(ImVec2(380.0f * g_UIScale, 0), ImGuiCond_FirstUseEver);
 
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8.0f * g_UIScale, 4.0f * g_UIScale));
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4.0f * g_UIScale, 3.0f * g_UIScale));
     if (ImGui::Begin("Mystic Clicker - Capture", &g_ShowCaptureWindow, 0))
     {
+        ImGui::SetWindowFontScale(g_UIScale);
         EnableDragAnywhere();
 
         // Show countdown banner if active
@@ -315,16 +318,16 @@ void RenderCaptureWindow()
             {
                 // Countdown banner at top of window
                 ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.8f, 0.5f, 0.0f, 0.9f));
-                ImGui::BeginChild("##countdown_banner", ImVec2(-1, 60), true);
+                ImGui::BeginChild("##countdown_banner", ImVec2(-1, 60.0f * g_UIScale), true);
 
                 char countText[64];
                 sprintf_s(countText, "Capturing: %s", s_Targets[s_CountdownTarget].name);
                 ImGui::Text("%s", countText);
 
-                ImGui::SetWindowFontScale(2.0f);
-                ImGui::SameLine(ImGui::GetWindowWidth() - 60);
+                ImGui::SetWindowFontScale(2.0f * g_UIScale);
+                ImGui::SameLine(ImGui::GetWindowWidth() - 60.0f * g_UIScale);
                 ImGui::Text("%d", remaining);
-                ImGui::SetWindowFontScale(1.0f);
+                ImGui::SetWindowFontScale(g_UIScale);
 
                 ImGui::Text("Move cursor to target position...");
 
@@ -333,7 +336,7 @@ void RenderCaptureWindow()
 
                 ImGui::Spacing();
 
-                if (ImGui::Button("Cancel Capture", ImVec2(-1, 25)))
+                if (ImGui::Button("Cancel Capture", ImVec2(-1, 25.0f * g_UIScale)))
                 {
                     s_CountdownActive = false;
                     s_CountdownTarget = -1;
@@ -348,7 +351,7 @@ void RenderCaptureWindow()
         if (s_ShowConfirmation && !s_CountdownActive)
         {
             ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.0f, 0.6f, 0.0f, 0.9f));
-            ImGui::BeginChild("##confirm_banner", ImVec2(-1, 35), true);
+            ImGui::BeginChild("##confirm_banner", ImVec2(-1, 35.0f * g_UIScale), true);
             ImGui::Text("%s", s_ConfirmMessage);
             ImGui::EndChild();
             ImGui::PopStyleColor();
@@ -436,22 +439,23 @@ void RenderCaptureWindow()
                 else
                     sprintf_s(label, "%s  (not set)", t.name);
 
+                float btnH = 30.0f * g_UIScale;
                 if (s_CountdownActive && s_CountdownTarget == idx)
                 {
                     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.5f, 0.0f, 0.9f));
                     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.8f, 0.5f, 0.0f, 0.9f));
-                    ImGui::Button(label, ImVec2(-1, 30));
+                    ImGui::Button(label, ImVec2(-1, btnH));
                     ImGui::PopStyleColor(2);
                 }
                 else if (s_CountdownActive)
                 {
                     ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.4f);
-                    ImGui::Button(label, ImVec2(-1, 30));
+                    ImGui::Button(label, ImVec2(-1, btnH));
                     ImGui::PopStyleVar();
                 }
                 else
                 {
-                    if (ImGui::Button(label, ImVec2(-1, 30)))
+                    if (ImGui::Button(label, ImVec2(-1, btnH)))
                     {
                         s_CountdownActive = true;
                         s_CountdownTarget = idx;
@@ -484,7 +488,22 @@ void RenderCaptureWindow()
         ImGui::Separator();
         ImGui::Spacing();
 
-        if (ImGui::Button("Close", ImVec2(-1, 25)))
+        if (ImGui::CollapsingHeader("Settings###settings"))
+        {
+            ImGui::Text("UI Scale");
+            ImGui::SameLine();
+            float prevScale = g_UIScale;
+            ImGui::SetNextItemWidth(-1);
+            ImGui::SliderFloat("##uiscale", &g_UIScale, 0.5f, 3.0f, "%.1f");
+            if (g_UIScale != prevScale)
+            {
+                SaveButtonPositions();
+            }
+        }
+
+        ImGui::Spacing();
+
+        if (ImGui::Button("Close", ImVec2(-1, 25.0f * g_UIScale)))
         {
             g_ShowCaptureWindow = false;
             s_CountdownActive = false;
@@ -517,6 +536,7 @@ void RenderCaptureWindow()
         }
     }
     ImGui::End();
+    ImGui::PopStyleVar(2);
 }
 
 void ResetWindowPositions()

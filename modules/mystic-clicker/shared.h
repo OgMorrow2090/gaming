@@ -34,6 +34,9 @@ extern float g_CaptureWinW;
 extern float g_CaptureWinH;
 extern bool g_ResetWindowsFlag;
 
+// UI scaling (per-resolution, saved in config)
+extern float g_UIScale;
+
 // Keybind identifiers - Actions
 constexpr const char* DEPOSIT_MATERIALS = "DEPOSIT_MATERIALS";
 constexpr const char* SORT_INVENTORY = "SORT_INVENTORY";

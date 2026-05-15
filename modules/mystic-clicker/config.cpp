@@ -152,6 +152,7 @@ float g_CaptureWinY = 0.0f;
 float g_CaptureWinW = 0.0f;
 float g_CaptureWinH = 0.0f;
 bool g_ResetWindowsFlag = false;
+float g_UIScale = 1.0f;
 
 // Resolution tracking
 static int g_CurrentResWidth = 0;
@@ -558,6 +559,11 @@ void LoadButtonPositions()
             g_CaptureWinW = (float)std::stod(line.substr(12));
         if (line.find("CaptureWinH=") == 0)
             g_CaptureWinH = (float)std::stod(line.substr(12));
+        if (line.find("UIScale=") == 0)
+        {
+            float val = (float)std::stod(line.substr(8));
+            if (val >= 0.5f && val <= 3.0f) g_UIScale = val;
+        }
     }
 
     file.close();
@@ -720,6 +726,7 @@ void SaveButtonPositions()
     file << "CaptureWinY=" << g_CaptureWinY << "\n";
     file << "CaptureWinW=" << g_CaptureWinW << "\n";
     file << "CaptureWinH=" << g_CaptureWinH << "\n";
+    file << "UIScale=" << g_UIScale << "\n";
 
     file.close();
     
@@ -1106,6 +1113,11 @@ void CheckResolutionChange()
                     g_CaptureWinW = (float)std::stod(line.substr(12));
                 if (line.find("CaptureWinH=") == 0)
                     g_CaptureWinH = (float)std::stod(line.substr(12));
+                if (line.find("UIScale=") == 0)
+                {
+                    float val = (float)std::stod(line.substr(8));
+                    if (val >= 0.5f && val <= 3.0f) g_UIScale = val;
+                }
             }
             file.close();
 

@@ -301,7 +301,7 @@ void RenderCaptureWindow()
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4.0f * g_UIScale, 3.0f * g_UIScale));
     if (ImGui::Begin("Mystic Clicker - Capture", &g_ShowCaptureWindow, 0))
     {
-        ImGui::SetWindowFontScale(g_UIScale);
+        ImGui::SetWindowFontScale(g_UIScale * 0.85f);
         EnableDragAnywhere();
 
         // Show countdown banner if active
@@ -325,10 +325,10 @@ void RenderCaptureWindow()
                 sprintf_s(countText, "Capturing: %s", s_Targets[s_CountdownTarget].name);
                 ImGui::Text("%s", countText);
 
-                ImGui::SetWindowFontScale(2.0f * g_UIScale);
+                ImGui::SetWindowFontScale(2.0f * g_UIScale * 0.85f);
                 ImGui::SameLine(ImGui::GetWindowWidth() - 60.0f * g_UIScale);
                 ImGui::Text("%d", remaining);
-                ImGui::SetWindowFontScale(g_UIScale);
+                ImGui::SetWindowFontScale(g_UIScale * 0.85f);
 
                 ImGui::Text("Move cursor to target position...");
 
@@ -439,9 +439,9 @@ void RenderCaptureWindow()
 
                 char label[128];
                 if (*t.posX != 0 || *t.posY != 0)
-                    sprintf_s(label, "%s  (%d, %d)", t.name, *t.posX, *t.posY);
+                    sprintf_s(label, "%s (%d,%d)", t.name, *t.posX, *t.posY);
                 else
-                    sprintf_s(label, "%s  (not set)", t.name);
+                    sprintf_s(label, "%s (-)", t.name);
 
                 float btnH = 30.0f * g_UIScale;
                 if (s_CountdownActive && s_CountdownTarget == idx)

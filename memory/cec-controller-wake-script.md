@@ -27,6 +27,11 @@ The controller wake script (`~/bin/controller-wake-tv.py` on bazzite) switches t
 - 60-second cooldown between triggers
 - Controller takes ~35 seconds to actually power down after holding Steam button
 
+**TV WOL prerequisite:**
+
+- LG TV must have **"WoL"** enabled (Settings → General → Devices) — without this, the WiFi radio powers down completely in standby and WOL magic packets never arrive
+- Confirmed working 2026-05-15: TV off → WOL → TV powers on → WebOS switches input
+
 **Dependencies (pip install --user):**
 - `aiowebostv` — WebOS WebSocket client
 - `wakeonlan` — WOL magic packet (sent before WebOS connect in case TV is in standby)

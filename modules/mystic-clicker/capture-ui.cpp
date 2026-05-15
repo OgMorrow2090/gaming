@@ -275,7 +275,7 @@ void RenderCaptureWindow()
     {
         g_CaptureWinX = 100.0f;
         g_CaptureWinY = 100.0f;
-        g_CaptureWinW = 380.0f * g_UIScale;
+        g_CaptureWinW = 450.0f * g_UIScale;
         g_CaptureWinH = 600.0f * g_UIScale;
         g_ResetWindowsFlag = false;
         SaveButtonPositions();
@@ -294,8 +294,9 @@ void RenderCaptureWindow()
     if (g_CaptureWinW > 0.0f && g_CaptureWinH > 0.0f)
         ImGui::SetNextWindowSize(ImVec2(g_CaptureWinW, g_CaptureWinH), posCond);
     else
-        ImGui::SetNextWindowSize(ImVec2(380.0f * g_UIScale, 0), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize(ImVec2(450.0f * g_UIScale, 0), ImGuiCond_FirstUseEver);
 
+    ImGui::SetNextWindowSizeConstraints(ImVec2(400.0f * g_UIScale, 200.0f), ImVec2(10000.0f, 10000.0f));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8.0f * g_UIScale, 4.0f * g_UIScale));
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4.0f * g_UIScale, 3.0f * g_UIScale));
     if (ImGui::Begin("Mystic Clicker - Capture", &g_ShowCaptureWindow, 0))

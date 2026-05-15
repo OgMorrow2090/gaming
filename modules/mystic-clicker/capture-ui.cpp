@@ -359,16 +359,19 @@ void RenderCaptureWindow()
             ImGui::Spacing();
         }
 
-        // Instructions
+        // Instructions + Close at top (always visible, never clipped by scroll)
         if (!s_CountdownActive)
         {
+            if (ImGui::Button("Close Panel", ImVec2(-1, 25.0f * g_UIScale)))
+            {
+                g_ShowCaptureWindow = false;
+                s_CountdownActive = false;
+                s_CountdownTarget = -1;
+            }
             ImGui::Text("Click target, move cursor in %ds.", COUNTDOWN_SECONDS);
             ImGui::Separator();
             ImGui::Spacing();
         }
-
-        float closeReserve = 30.0f * g_UIScale;
-        ImGui::BeginChild("##targets_scroll", ImVec2(0, -closeReserve), false);
 
         for (int c = 0; c < NUM_CATEGORIES; ++c)
         {
@@ -500,15 +503,6 @@ void RenderCaptureWindow()
             {
                 SaveButtonPositions();
             }
-        }
-
-        ImGui::EndChild();
-
-        if (ImGui::Button("Close", ImVec2(-1, 25.0f * g_UIScale)))
-        {
-            g_ShowCaptureWindow = false;
-            s_CountdownActive = false;
-            s_CountdownTarget = -1;
         }
 
         // Persist position/size if moved/resized. Debounce to 1 second after

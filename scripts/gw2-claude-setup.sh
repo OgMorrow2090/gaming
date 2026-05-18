@@ -32,10 +32,10 @@ if [ ! -f "$CFGDIR/config.env" ]; then
 ANTHROPIC_API_KEY=
 
 # Optional. Model used to read the screen.
-#   claude-opus-4-7   — most capable (default)
-#   claude-sonnet-4-6 — cheaper, still strong vision
-#   claude-haiku-4-5  — cheapest/fastest; good for high-frequency simple reads
-GW2_CLAUDE_MODEL=claude-opus-4-7
+#   claude-haiku-4-5  — cheapest/fastest, solid vision (default — ~0.2c/read)
+#   claude-sonnet-4-6 — stronger reading, mid cost
+#   claude-opus-4-7   — most capable; use when coin-digit precision matters
+GW2_CLAUDE_MODEL=claude-haiku-4-5
 EOF
     chmod 600 "$CFGDIR/config.env"
     echo ""

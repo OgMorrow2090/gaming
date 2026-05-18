@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2412"
-	"title"		"Guild Wars 2 - Og v20.0"
+	"revision"		"2413"
+	"title"		"Guild Wars 2 - Og v21.0"
 	"description"		"#SettingsController_AutosaveDescription"
 	"creator"		"76561198025059559"
 	"progenitor"		"usercloud://1284210/controller_neptune"
@@ -2011,14 +2011,6 @@
 							"binding"		"key_press F6, Teleport to Friend, , "
 						}
 					}
-					"Long_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_SHIFT, Waypoint Combo, , "
-							"binding"		"key_press F9, Waypoint Combo, , "
-						}
-					}
 					"Double_Press"
 					{
 						"bindings"
@@ -3171,8 +3163,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_ALT, Claude Read, , "
-							"binding"		"key_press F10, Claude Read, , "
+							"binding"		"key_press LEFT_SHIFT, Waypoint Combo, , "
+							"binding"		"key_press F9, Waypoint Combo, , "
 						}
 						"settings"
 						{
@@ -3380,7 +3372,16 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press INSERT, Toggle Language, , "
+							"binding"		"key_press LEFT_ALT, Mystic AI Capture, , "
+							"binding"		"key_press F10, Mystic AI Capture, , "
+						}
+					}
+					"Long_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_SHIFT, Mystic AI Read Book, , "
+							"binding"		"key_press F10, Mystic AI Read Book, , "
 						}
 					}
 				}

@@ -7,6 +7,30 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-18] — Controller layout Og v21.0 — Mystic AI chords + Waypoint→Menu
+
+### Changed
+
+- **`configs/gw2-keybinds/controller_neptune.vdf`** — Triton controller layout
+  (GW2 app 1284210 autosave) bumped v20.0 → **v21.0**, four surgical chord edits:
+  - **Menu long-press**: `Alt+F10` "Claude Read" → `Shift+F9` **Waypoint Combo**
+    (moved from R1+DPad-Down long-press).
+  - **R1+Menu tap**: `Insert` "Toggle Language" → `Alt+F10` **Mystic AI Capture**.
+  - **R1+Menu long-press**: added — `Shift+F10` **Mystic AI Read Book**.
+  - **R1+DPad-Down long-press**: Waypoint Combo removed (relocated to Menu).
+  - Toggle Language dropped (user's call); R1+DPad-Down single (Teleport to
+    Friend) / double (Exit Instance) untouched.
+- Validated per the VDF golden rules: 56 groups, 313 bindings, braces 908=908,
+  all radial menus ≤16, 3498 lines (+1 vs v20.0); diff 14 ins / 13 del.
+
+### Notes
+
+- Pairs with the Nexus keybinds: `Alt+F10`=Capture, `Shift+F10`=Read Book,
+  `Shift+F9`=Waypoint Combo are all bound in `nexus-inputbinds.json`.
+- v21 is a Steam-Input autosave file — deploying it needs Steam stopped on
+  bazzite during the file swap, then a Steam restart, or the shutdown
+  write-back clobbers it.
+
 ## [2026-05-18] — Mystic AI keybinds assigned + deployed to bazzite
 
 ### Changed

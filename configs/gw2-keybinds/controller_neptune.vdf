@@ -286,9 +286,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, Accept, , "
-							"binding"		"key_press LEFT_CONTROL, Accept, , "
-							"binding"		"key_press F3, Accept, , "
+							"binding"		"key_press LEFT_SHIFT, Accept 1, , "
+							"binding"		"key_press LEFT_CONTROL, Accept 1, , "
+							"binding"		"key_press F3, Accept 1, , "
 						}
 					}
 				}
@@ -790,9 +790,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, General Accept 2, , "
-							"binding"		"key_press LEFT_CONTROL, General Accept 2, , "
-							"binding"		"key_press F7, General Accept 2, , "
+							"binding"		"key_press LEFT_SHIFT, Accept 4, , "
+							"binding"		"key_press LEFT_CONTROL, Accept 4, , "
+							"binding"		"key_press F7, Accept 4, , "
 						}
 					}
 					"Long_Press"
@@ -869,9 +869,9 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_SHIFT, General Accept Combo, , "
-							"binding"		"key_press LEFT_CONTROL, General Accept Combo, , "
-							"binding"		"key_press F11, General Accept Combo, , "
+							"binding"		"key_press LEFT_SHIFT, Accept Combo, , "
+							"binding"		"key_press LEFT_CONTROL, Accept Combo, , "
+							"binding"		"key_press F11, Accept Combo, , "
 						}
 					}
 					"Long_Press"
@@ -2331,6 +2331,22 @@
 					{
 						"bindings"
 						{
+							"binding"		"key_press HOME, Home Instance Portal, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_2"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
 							"binding"		"key_press LEFT_CONTROL, Toggle Paths, , "
 							"binding"		"key_press F3, Toggle Paths, , "
 						}
@@ -2340,7 +2356,7 @@
 				{
 				}
 			}
-			"touch_menu_button_2"
+			"touch_menu_button_3"
 			{
 				"activators"
 				{
@@ -2358,7 +2374,7 @@
 				{
 				}
 			}
-			"touch_menu_button_3"
+			"touch_menu_button_4"
 			{
 				"activators"
 				{
@@ -2376,7 +2392,7 @@
 				{
 				}
 			}
-			"touch_menu_button_4"
+			"touch_menu_button_5"
 			{
 				"activators"
 				{
@@ -2393,7 +2409,7 @@
 				{
 				}
 			}
-			"touch_menu_button_5"
+			"touch_menu_button_6"
 			{
 				"activators"
 				{
@@ -2409,7 +2425,7 @@
 				{
 				}
 			}
-			"touch_menu_button_6"
+			"touch_menu_button_7"
 			{
 				"activators"
 				{
@@ -2425,7 +2441,7 @@
 				{
 				}
 			}
-			"touch_menu_button_7"
+			"touch_menu_button_8"
 			{
 				"activators"
 				{
@@ -2441,7 +2457,7 @@
 				{
 				}
 			}
-			"touch_menu_button_8"
+			"touch_menu_button_9"
 			{
 				"activators"
 				{
@@ -2457,7 +2473,7 @@
 				{
 				}
 			}
-			"touch_menu_button_9"
+			"touch_menu_button_10"
 			{
 				"activators"
 				{
@@ -2475,7 +2491,7 @@
 				{
 				}
 			}
-			"touch_menu_button_10"
+			"touch_menu_button_11"
 			{
 				"activators"
 				{
@@ -2492,7 +2508,7 @@
 				{
 				}
 			}
-			"touch_menu_button_11"
+			"touch_menu_button_12"
 			{
 				"activators"
 				{
@@ -2509,7 +2525,7 @@
 				{
 				}
 			}
-			"touch_menu_button_12"
+			"touch_menu_button_13"
 			{
 				"activators"
 				{
@@ -2526,7 +2542,7 @@
 				{
 				}
 			}
-			"touch_menu_button_13"
+			"touch_menu_button_14"
 			{
 				"activators"
 				{
@@ -2543,7 +2559,7 @@
 				{
 				}
 			}
-			"touch_menu_button_14"
+			"touch_menu_button_15"
 			{
 				"activators"
 				{
@@ -2560,7 +2576,7 @@
 				{
 				}
 			}
-			"touch_menu_button_15"
+			"touch_menu_button_16"
 			{
 				"activators"
 				{
@@ -2577,7 +2593,7 @@
 				{
 				}
 			}
-			"touch_menu_button_16"
+			"touch_menu_button_17"
 			{
 				"activators"
 				{

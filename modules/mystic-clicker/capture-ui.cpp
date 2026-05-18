@@ -137,8 +137,8 @@ static CaptureTarget s_Targets[] = {
     {"Bouncy Meta Complete","Meta completion dialog — slight offset from Bouncy Accept (combo step 4)",                     &g_BouncyMetaCompleteX,&g_BouncyMetaCompleteY,"Bouncy Chest"},
 
     // Generic Accept (numbered slots fire in sequence in SimulateGeneralAcceptCombo)
-    {"Accept 1 (Chest)",     "Accept combo slot 1 (originally Chest Accept)", &g_AcceptX,         &g_AcceptY,         "Generic Accept"},
-    {"Accept 2 (Yes early)", "Accept combo slot 2 (originally Yes Dialog)",   &g_YesDialogX,      &g_YesDialogY,      "Generic Accept"},
+    {"Accept 1",             "Accept combo slot 1",                           &g_AcceptX,         &g_AcceptY,         "Generic Accept"},
+    {"Accept 2",             "Accept combo slot 2",                           &g_YesDialogX,      &g_YesDialogY,      "Generic Accept"},
     {"Accept 3",             "Accept combo slot 3",                           &g_GeneralAcceptX,  &g_GeneralAcceptY,  "Generic Accept"},
     {"Accept 4",             "Accept combo slot 4",                           &g_GeneralAccept2X, &g_GeneralAccept2Y, "Generic Accept"},
     {"Accept 5",             "Accept combo slot 5",                           &g_GeneralAccept3X, &g_GeneralAccept3Y, "Generic Accept"},
@@ -151,7 +151,7 @@ static CaptureTarget s_Targets[] = {
     {"Accept 12",            "Accept combo slot 12",                          &g_Accept12X,       &g_Accept12Y,       "Generic Accept"},
     {"Accept 13",            "Accept combo slot 13",                          &g_Accept13X,       &g_Accept13Y,       "Generic Accept"},
     {"Accept 14",            "Accept combo slot 14",                          &g_Accept14X,       &g_Accept14Y,       "Generic Accept"},
-    {"Accept Yes (Final)",   "Final Yes click — fires LAST in Accept Combo (post-confirmation prompt)", &g_Accept15X, &g_Accept15Y, "Generic Accept"},
+    {"Accept 15 (Yes)",      "Accept combo slot 15 — final Yes, fires LAST in Accept Combo", &g_Accept15X, &g_Accept15Y, "Generic Accept"},
     {"Accept 16",            "Accept combo slot 16",                          &g_Accept16X,       &g_Accept16Y,       "Generic Accept"},
     {"Accept 17",            "Accept combo slot 17",                          &g_Accept17X,       &g_Accept17Y,       "Generic Accept"},
     {"Accept 18",            "Accept combo slot 18",                          &g_Accept18X,       &g_Accept18Y,       "Generic Accept"},

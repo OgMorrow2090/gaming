@@ -408,10 +408,10 @@ void SimulateYesDialogClick()
 {
     if (g_YesDialogX == 0 && g_YesDialogY == 0)
     {
-        APIDefs->GUI_SendAlert("Accept 2 (Yes) position not set! Capture first");
+        APIDefs->GUI_SendAlert("Accept 2 position not set! Capture first");
         return;
     }
-    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept 2 (Yes)");
+    APIDefs->Log(LOGL_INFO, "MysticClicker", "Clicking Accept 2");
     SimulateClickAt(g_YesDialogX, g_YesDialogY);
 }
 
@@ -1127,8 +1127,8 @@ void SimulateGeneralAcceptCombo()
     // Skip any position that hasn't been captured. 100ms between clicks.
     struct Slot { int x; int y; const char* name; };
     Slot slots[20] = {
-        { g_AcceptX,          g_AcceptY,          "Accept Combo: 1 (Chest)" },
-        { g_YesDialogX,       g_YesDialogY,       "Accept Combo: 2 (Yes early)" },
+        { g_AcceptX,          g_AcceptY,          "Accept Combo: 1" },
+        { g_YesDialogX,       g_YesDialogY,       "Accept Combo: 2" },
         { g_GeneralAcceptX,   g_GeneralAcceptY,   "Accept Combo: 3" },
         { g_GeneralAccept2X,  g_GeneralAccept2Y,  "Accept Combo: 4" },
         { g_GeneralAccept3X,  g_GeneralAccept3Y,  "Accept Combo: 5" },
@@ -1146,7 +1146,7 @@ void SimulateGeneralAcceptCombo()
         { g_Accept18X,        g_Accept18Y,        "Accept Combo: 18" },
         { g_Accept19X,        g_Accept19Y,        "Accept Combo: 19" },
         { g_Accept20X,        g_Accept20Y,        "Accept Combo: 20" },
-        { g_Accept15X,        g_Accept15Y,        "Accept Combo: Yes (final)" },
+        { g_Accept15X,        g_Accept15Y,        "Accept Combo: 15 (Yes)" },
     };
 
     int fired = 0;

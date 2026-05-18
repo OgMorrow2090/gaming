@@ -95,18 +95,29 @@ caps at 2576px long edge — larger frames are downscaled.
   Esc-to-stop; read/stop toggle on one control; and a **headless** trigger —
   CLAUDE_READ_SCREEN no longer opens the capture panel, the answer just comes
   back as speech.
+- **Phase 4 (done — Mystic AI module, 2026-05-18)**: the addon side spun out of
+  Mystic Clicker into its own Nexus addon, **Mystic AI** (`modules/mystic-ai/`,
+  `mystic-ai.dll`, signature `-54323`). The trigger is redesigned as a
+  freeze-frame **drag-select** capture — a hotkey freezes the frame, the player
+  drags a box over the text, the crop is sent to the daemon, the answer is
+  shown in a panel anchored to the box and read aloud. A **Book** button saves
+  the selection as a static region the `MYSTIC_AI_READ_BOOK` keybind re-reads
+  with no drag. Keybinds `MYSTIC_AI_CAPTURE` / `MYSTIC_AI_READ_BOOK` (unbound).
+  Mystic Clicker 3.6.25 dropped `claude-vision.{h,cpp}`, the Ask-Claude UI and
+  `CLAUDE_READ_SCREEN`. Phase 2 of the Mystic AI plan (Check-TP / wiki /
+  research / OCR-to-clipboard side-panel actions) is not yet built.
 - **Phase 3 (later, opt-in, ToS-gated)**: closed-loop — Claude returns a
   structured action, the addon executes it. ArenaNet ToS risk lives here; keep it
   a separate explicit toggle, off by default.
 
 ## Controller trigger
 
-`CLAUDE_READ_SCREEN` is registered unbound. To trigger a screen read from the
-controller with no keyboard: in the Steam Input config, add an activator on a
-spare button (currently the map-button long-hold → `Alt+F10`) that sends the
-key assigned to `CLAUDE_READ_SCREEN` in Nexus. As of v3.6.22 the read runs
-**headless** — no capture panel opens; the answer comes back as speech. Press
-the same control again, or Esc, to stop a read/playback in progress.
+Mystic AI registers `MYSTIC_AI_CAPTURE` (freeze-frame drag-select read) and
+`MYSTIC_AI_READ_BOOK` (static book-region read), both unbound. Bind them in
+Nexus, then in the Steam Input config add activators on spare buttons that send
+those keys — `MYSTIC_AI_READ_BOOK` suits a double-press for hands-free book
+reading. Pressing the bound key again, or Esc, cancels a capture / stops a read
+or playback. (Mystic Clicker's old `CLAUDE_READ_SCREEN` keybind is gone.)
 
 ## ArenaNet ToS
 

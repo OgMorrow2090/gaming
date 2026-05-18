@@ -50,7 +50,7 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
 {
     // Signature must be unique per addon — Mystic Clicker is -54321, Mystic
     // Trading is -54322.
-    AddonDef.Signature  = -54323;
+    AddonDef.Signature  = static_cast<uint32_t>(-54323);
     AddonDef.APIVersion = NEXUS_API_VERSION;
 
     AddonDef.Name             = "Mystic AI";

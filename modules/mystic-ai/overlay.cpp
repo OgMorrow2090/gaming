@@ -456,12 +456,15 @@ bool IconButton(const char* iconId, const char* fallback, const char* tip, float
 {
     bool clicked = false;
     Texture_t* tex = iconId ? Icons::Get(iconId) : nullptr;
+    // The vendored ImGui predates the str_id ImageButton overload, so the
+    // button derives its ID from the texture; PushID keeps it unique per icon.
+    ImGui::PushID(iconId);
     if (tex && tex->Resource)
-        clicked = ImGui::ImageButton(iconId, (ImTextureID)(intptr_t)tex->Resource,
-                                     ImVec2(sz, sz));
+        clicked = ImGui::ImageButton((ImTextureID)(intptr_t)tex->Resource, ImVec2(sz, sz));
     else
         clicked = ImGui::Button(fallback,
                                 ImVec2(0, sz + ImGui::GetStyle().FramePadding.y * 2.0f));
+    ImGui::PopID();
     if (tip && ImGui::IsItemHovered())
         ImGui::SetTooltip("%s", tip);
     return clicked;

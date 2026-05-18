@@ -69,15 +69,27 @@ caps at 2576px long edge — larger frames are downscaled.
 
 ## Status / next phases
 
-- **Phase 1 (done)**: daemon + setup + service in the repo and on bazzite. Works
-  standalone via `--analyze` today. Needs `ANTHROPIC_API_KEY` in config.env, then
-  `systemctl --user enable --now gw2-claude-daemon.service`.
-- **Phase 2 (needs addon recompile)**: Mystic Clicker writes `gw2-claude-*`
-  requests + surfaces a "read this / ask Claude" action in-window. C++ change,
-  built via the GitHub Actions pipeline.
+- **Phase 1 (done)**: daemon + setup + service in the repo and live on bazzite.
+  `ANTHROPIC_API_KEY` deployed from `op://wednesday-pi/anthropic/api-key`, model
+  `claude-haiku-4-5`, `gw2-claude-daemon.service` enabled. End-to-end verified.
+- **Phase 2 (done — mystic-clicker v3.6.17)**: `claude-vision.{h,cpp}` in the
+  addon. "Ask Claude" header in the capture window — Read Screen / Read Tooltip /
+  List Items / Read Dialog buttons. Async state machine: capture on a detached
+  worker thread (avoids deadlocking the render thread), `Poll()` per-frame.
+  `CLAUDE_READ_SCREEN` keybind (unbound by default) — bind it to a controller
+  long-hold for no-keyboard triggering. Built via GitHub Actions.
 - **Phase 3 (later, opt-in, ToS-gated)**: closed-loop — Claude returns a
   structured action, the addon executes it. ArenaNet ToS risk lives here; keep it
   a separate explicit toggle, off by default.
+
+## Controller trigger
+
+`CLAUDE_READ_SCREEN` is registered unbound. To trigger a screen read from the
+controller with no keyboard: in the Steam Input config, add a **Long_Press**
+activator on the View / left-menu button that sends the key assigned to
+`CLAUDE_READ_SCREEN` in Nexus. The keybind opens the capture panel and fires the
+"Read Screen" preset; the answer appears under the auto-expanded "Ask Claude"
+header.
 
 ## ArenaNet ToS
 

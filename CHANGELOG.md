@@ -7,6 +7,36 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-18] — Mystic AI: new addon (Phase 1), spun out of Mystic Clicker
+
+### Added
+
+- **Mystic AI** — a new Nexus addon (`modules/mystic-ai/`, `mystic-ai.dll`,
+  signature `-54323`, v1.0.0). The Claude-vision screen reader, spun out of
+  Mystic Clicker into its own addon. Phase 1:
+  - **Freeze-frame drag-select capture** — the `MYSTIC_AI_CAPTURE` keybind
+    freezes the current frame (macOS-screenshot style); drag a box over any
+    text and Claude reads it aloud. Freezing *at key-press* keeps a hovered
+    tooltip captured even after the mouse moves off it.
+  - **Box-anchored panel** — the answer + action buttons appear right at the
+    selection box, so the mouse barely moves.
+  - **Static book region** — a **Book** button saves the selection as a fixed
+    region; the `MYSTIC_AI_READ_BOOK` keybind re-reads it with no drag.
+  - GW2-style icons embedded in the DLL as Win32 resources; a Nexus Quick
+    Access shortcut; per-resolution settings (`mystic-ai-<W>x<H>.cfg` — UI
+    scale, panel opacity, book region).
+  - `MYSTIC_AI_CAPTURE` / `MYSTIC_AI_READ_BOOK` keybinds, unbound by default.
+  - `mystic-ai.vcxproj` + solution entry + a CI build-matrix entry — GitHub
+    Actions now builds all three addon DLLs.
+
+### Changed
+
+- **Mystic Clicker 3.6.25** — the Claude-vision feature is removed
+  (`claude-vision.{h,cpp}`, the "Ask Claude" capture-window header, the
+  `CLAUDE_READ_SCREEN` keybind). It now lives in Mystic AI; Mystic Clicker
+  keeps the one-click hotkeys. `screen-capture` / `ocr` stay (still used by
+  Mystic Clicker's own macros).
+
 ## [2026-05-18] — controller v20.0, Claude screen-reader voice + headless read
 
 ### Added

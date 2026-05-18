@@ -16,6 +16,8 @@ jobs:
             vcxproj: mystic-clicker.vcxproj
           - name: mystic-trading
             vcxproj: mystic-trading.vcxproj
+          - name: mystic-ai
+            vcxproj: mystic-ai.vcxproj
 
     steps:
       - uses: actions/checkout@v4

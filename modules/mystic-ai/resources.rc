@@ -1,0 +1,14 @@
+#include "resource.h"
+
+// Embedded GW2-style icon PNGs. Loaded into Nexus textures by icons.cpp via
+// Textures_GetOrCreateFromResource so Mystic AI ships as a single DLL.
+
+IDR_MAI_QA        RCDATA "assets\\qa.png"
+IDR_MAI_QA_HOVER  RCDATA "assets\\qa_hover.png"
+IDR_MAI_READ      RCDATA "assets\\read.png"
+IDR_MAI_TP        RCDATA "assets\\tp.png"
+IDR_MAI_WIKI      RCDATA "assets\\wiki.png"
+IDR_MAI_RESEARCH  RCDATA "assets\\research.png"
+IDR_MAI_COPY      RCDATA "assets\\copy.png"
+IDR_MAI_STOP      RCDATA "assets\\stop.png"
+IDR_MAI_BOOK      RCDATA "assets\\book.png"

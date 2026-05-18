@@ -1,0 +1,150 @@
+/**
+ * config.cpp
+ *
+ * Per-resolution settings for Mystic AI, saved to resolution-specific files
+ * (mystic-ai-2560x1440.cfg, mystic-ai-1280x800.cfg, ...) in the addon
+ * directory — so a 4K profile and a Steam Deck profile keep separate UI scale
+ * and book regions, exactly like Mystic Clicker's per-resolution configs.
+ */
+
+#include "shared.h"
+#include <fstream>
+#include <string>
+#include <cstdio>
+#include <cstdlib>
+
+// --- Settings state (declared in shared.h) ---
+float g_UIScale      = 1.0f;
+float g_PanelOpacity = 0.92f;
+int   g_BookRegionX  = 0;
+int   g_BookRegionY  = 0;
+int   g_BookRegionW  = 0;
+int   g_BookRegionH  = 0;
+
+namespace {
+
+std::string g_ConfigDir;
+int         g_ResW = 0;
+int         g_ResH = 0;
+
+void CurrentResolution(int& w, int& h)
+{
+    if (GameWindow != nullptr)
+    {
+        RECT r;
+        if (GetClientRect(GameWindow, &r))
+        {
+            w = r.right - r.left;
+            h = r.bottom - r.top;
+            return;
+        }
+    }
+    w = GetSystemMetrics(SM_CXSCREEN);
+    h = GetSystemMetrics(SM_CYSCREEN);
+}
+
+std::string ConfigPath(int w, int h)
+{
+    char buf[512];
+    sprintf_s(buf, "%s\\mystic-ai-%dx%d.cfg", g_ConfigDir.c_str(), w, h);
+    return std::string(buf);
+}
+
+// Reset to defaults. The book region is pixel-coordinate data — meaningless
+// across a resolution change — so it always resets with everything else.
+void ResetDefaults()
+{
+    g_UIScale      = 1.0f;
+    g_PanelOpacity = 0.92f;
+    g_BookRegionX  = 0;
+    g_BookRegionY  = 0;
+    g_BookRegionW  = 0;
+    g_BookRegionH  = 0;
+}
+
+bool ReadConfig(const std::string& path)
+{
+    std::ifstream f(path);
+    if (!f.is_open()) return false;
+
+    std::string line;
+    while (std::getline(f, line))
+    {
+        if (line.rfind("UIScale=", 0) == 0)
+        {
+            float v = (float)atof(line.substr(8).c_str());
+            if (v >= 0.5f && v <= 3.0f) g_UIScale = v;
+        }
+        else if (line.rfind("PanelOpacity=", 0) == 0)
+        {
+            float v = (float)atof(line.substr(13).c_str());
+            if (v >= 0.2f && v <= 1.0f) g_PanelOpacity = v;
+        }
+        else if (line.rfind("BookRegionX=", 0) == 0) g_BookRegionX = atoi(line.substr(12).c_str());
+        else if (line.rfind("BookRegionY=", 0) == 0) g_BookRegionY = atoi(line.substr(12).c_str());
+        else if (line.rfind("BookRegionW=", 0) == 0) g_BookRegionW = atoi(line.substr(12).c_str());
+        else if (line.rfind("BookRegionH=", 0) == 0) g_BookRegionH = atoi(line.substr(12).c_str());
+    }
+    return true;
+}
+
+}  // namespace
+
+void SetConfigPath(const char* addonDir)
+{
+    if (addonDir == nullptr) return;
+    g_ConfigDir = std::string(addonDir);
+    CreateDirectoryA(addonDir, nullptr);
+}
+
+void LoadSettings()
+{
+    if (g_ConfigDir.empty()) return;
+    CurrentResolution(g_ResW, g_ResH);
+    ResetDefaults();
+    if (ReadConfig(ConfigPath(g_ResW, g_ResH)) && APIDefs)
+    {
+        char buf[256];
+        sprintf_s(buf, "Mystic AI: loaded settings for %dx%d", g_ResW, g_ResH);
+        APIDefs->Log(LOGL_INFO, "MysticAI", buf);
+    }
+}
+
+void SaveSettings()
+{
+    if (g_ConfigDir.empty()) return;
+    if (g_ResW == 0 || g_ResH == 0) CurrentResolution(g_ResW, g_ResH);
+
+    std::ofstream f(ConfigPath(g_ResW, g_ResH));
+    if (!f.is_open())
+    {
+        if (APIDefs)
+            APIDefs->Log(LOGL_WARNING, "MysticAI", "Mystic AI: could not save settings");
+        return;
+    }
+    f << "# Resolution: " << g_ResW << "x" << g_ResH << "\n";
+    f << "UIScale="      << g_UIScale      << "\n";
+    f << "PanelOpacity=" << g_PanelOpacity << "\n";
+    f << "BookRegionX="  << g_BookRegionX  << "\n";
+    f << "BookRegionY="  << g_BookRegionY  << "\n";
+    f << "BookRegionW="  << g_BookRegionW  << "\n";
+    f << "BookRegionH="  << g_BookRegionH  << "\n";
+}
+
+void CheckResolutionChange()
+{
+    int w, h;
+    CurrentResolution(w, h);
+    if (w == g_ResW && h == g_ResH) return;
+
+    if (APIDefs)
+    {
+        char buf[256];
+        sprintf_s(buf, "Mystic AI: resolution %dx%d -> %dx%d", g_ResW, g_ResH, w, h);
+        APIDefs->Log(LOGL_INFO, "MysticAI", buf);
+    }
+    g_ResW = w;
+    g_ResH = h;
+    ResetDefaults();
+    ReadConfig(ConfigPath(w, h));
+}

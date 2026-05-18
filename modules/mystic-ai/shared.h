@@ -1,0 +1,40 @@
+#pragma once
+
+#include <windows.h>
+#include "Nexus.h"
+
+// ImGui forward declaration
+struct ImGuiContext;
+
+// --- Globals (set in AddonLoad) ---
+extern AddonAPI_t*       APIDefs;
+extern AddonDefinition_t AddonDef;
+extern HMODULE           SelfModule;   // this DLL's handle — for resource-embedded icons
+extern HWND              GameWindow;
+extern ImGuiContext*     ImGuiCtx;
+
+// --- Keybind identifiers ---
+constexpr const char* MYSTIC_AI_CAPTURE   = "MYSTIC_AI_CAPTURE";   // freeze-frame drag-select read
+constexpr const char* MYSTIC_AI_READ_BOOK = "MYSTIC_AI_READ_BOOK"; // read the saved book region
+
+// --- Keybind handler (keybinds.cpp) ---
+void ProcessKeybind(const char* aIdentifier, bool aIsRelease);
+
+// --- Render + overlay (overlay.cpp) ---
+void RenderMysticAI();   // RT_Render callback
+void ToggleCapture();    // start, or cancel, the freeze-frame drag-select capture
+void ReadBookRegion();   // capture + read the saved book region (no drag)
+void ShutdownOverlay();  // release the frozen-frame texture — called from AddonUnload
+
+// --- Config (config.cpp) ---
+void SetConfigPath(const char* addonDir);
+void LoadSettings();
+void SaveSettings();
+void CheckResolutionChange();
+
+// Per-resolution settings, persisted to mystic-ai-<W>x<H>.cfg.
+extern float g_UIScale;       // UI scale, 0.5 .. 3.0
+extern float g_PanelOpacity;  // results panel background opacity, 0.2 .. 1.0
+// Saved "book region" — a fixed screen rectangle the Read-Book keybind re-reads
+// with no drag. Pixel coords in the game window's client space. W/H == 0 = unset.
+extern int   g_BookRegionX, g_BookRegionY, g_BookRegionW, g_BookRegionH;

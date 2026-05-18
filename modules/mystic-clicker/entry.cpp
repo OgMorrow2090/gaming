@@ -58,7 +58,7 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     AddonDef.Name = "Mystic Clicker";
     AddonDef.Version.Major = 3;
     AddonDef.Version.Minor = 6;
-    AddonDef.Version.Build = 24;
+    AddonDef.Version.Build = 25;
     AddonDef.Version.Revision = 0;
     AddonDef.Author = "OgMorrow2090";
     AddonDef.Description = "One-click hotkeys for inventory, vendors, trading post, Mystic Forge, and more.";
@@ -193,7 +193,6 @@ void AddonLoad(AddonAPI_t* aApi)
     APIDefs->InputBinds_RegisterWithString(GRACEFUL_QUIT, ProcessKeybind, "ALT+SHIFT+Q");
     APIDefs->InputBinds_RegisterWithString(PATHING_TOGGLE_ALL, ProcessKeybind, "CTRL+F3");
     APIDefs->InputBinds_RegisterWithString(COPY_ITEM_NAME, ProcessKeybind, "(null)");
-    APIDefs->InputBinds_RegisterWithString(CLAUDE_READ_SCREEN, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_CRAFT, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_CRAFT_ALL, ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(CAPTURE_WIZARD_VAULT, ProcessKeybind, "(null)");
@@ -312,7 +311,6 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(GUILD_HALL_COMBO);
     APIDefs->InputBinds_Deregister(GRACEFUL_QUIT);
     APIDefs->InputBinds_Deregister(PATHING_TOGGLE_ALL);
-    APIDefs->InputBinds_Deregister(CLAUDE_READ_SCREEN);
     APIDefs->InputBinds_Deregister(CAPTURE_CRAFT);
     APIDefs->InputBinds_Deregister(CAPTURE_CRAFT_ALL);
     APIDefs->InputBinds_Deregister(CAPTURE_WIZARD_VAULT);

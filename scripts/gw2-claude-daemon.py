@@ -32,6 +32,7 @@ Standalone test mode (no addon needed):
 Config: ~/.config/gw2-claude/config.env  (KEY=VALUE lines, mode 600)
     ANTHROPIC_API_KEY=sk-ant-...           (required)
     GW2_CLAUDE_MODEL=claude-haiku-4-5       (optional)
+    GW2_CLAUDE_RESEARCH_MODEL=claude-sonnet-4-6  (optional — Research action)
     GW2_CLAUDE_TTS=on                       (optional — on/off, default on)
     GW2_CLAUDE_TTS_ENGINE=auto              (optional — auto/piper/elevenlabs)
     GW2_CLAUDE_TTS_GAIN_DB=12               (optional — loudness boost, dB)
@@ -51,6 +52,7 @@ import subprocess
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 
 CONFIG_PATH = os.path.expanduser("~/.config/gw2-claude/config.env")
@@ -72,6 +74,15 @@ EL_DEFAULT_VOICE = "pNInz6obpgDQGcFmaJgB"  # placeholder preset; pick a playful 
 
 MAX_LONG_EDGE = 2576
 IMAGE_EXTS = (".png", ".jpg", ".jpeg", ".bmp", ".webp", ".gif")
+
+# Phase 2 action endpoints / paths.
+GW2_API = "https://api.guildwars2.com/v2"
+GW2TP_ITEMS_NAMES = "http://api.gw2tp.com/1/bulk/items-names.json"
+WIKI_API = "https://wiki.guildwars2.com/api.php"
+WIKI_LIBRARY = os.path.expanduser(
+    "~/.local/share/Steam/steamapps/common/Guild Wars 2/addons/NexusGameWiki/library.json")
+ITEM_NAME_CACHE = os.path.expanduser("~/.cache/gw2-claude/items-names.json")
+ITEM_NAME_CACHE_TTL = 86400  # re-fetch gw2tp's item list at most once a day
 
 DEFAULT_PROMPT = (
     "Transcribe all visible text in this Guild Wars 2 screenshot. Preserve "
@@ -375,6 +386,220 @@ def find_image(suffix):
     return None
 
 
+# ---------------------------------------------------------------------------
+# Phase 2 actions. The addon prefixes the .prompt file with "@action:<name>"
+# to ask for something richer than a plain read — a Trading Post price, a wiki
+# favourite, or AI research with web search.
+# ---------------------------------------------------------------------------
+
+def _http_get(url, timeout=20):
+    """GET a URL and return the raw body bytes."""
+    req = urllib.request.Request(url, headers={"User-Agent": "gw2-claude-daemon"})
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        return resp.read()
+
+
+def _http_get_json(url, timeout=20):
+    """GET a URL and parse the body as JSON."""
+    return json.loads(_http_get(url, timeout).decode("utf-8", "replace"))
+
+
+def claude_identify(client, model, image_path, instruction):
+    """One short vision call — pulls an item / topic name out of a crop."""
+    png = prepare_image(image_path)
+    b64 = base64.standard_b64encode(png).decode("ascii")
+    resp = client.messages.create(
+        model=model,
+        max_tokens=120,
+        messages=[{
+            "role": "user",
+            "content": [
+                {"type": "image", "source": {"type": "base64",
+                 "media_type": "image/png", "data": b64}},
+                {"type": "text", "text": instruction},
+            ],
+        }],
+    )
+    text = "".join(b.text for b in resp.content
+                    if getattr(b, "type", None) == "text").strip()
+    # Models sometimes wrap the name in quotes or add a trailing period.
+    return text.strip("\"'.‘’“” ").strip()
+
+
+def format_coins(copper):
+    """Render a copper amount as 'N gold N silver N copper' (GW2 coin)."""
+    try:
+        c = int(copper)
+    except (TypeError, ValueError):
+        return "an unknown amount"
+    g, c = divmod(c, 10000)
+    s, c = divmod(c, 100)
+    parts = []
+    if g:
+        parts.append("%d gold" % g)
+    if s:
+        parts.append("%d silver" % s)
+    if c or not parts:
+        parts.append("%d copper" % c)
+    return " ".join(parts)
+
+
+def load_item_name_map():
+    """Lowercased GW2 item name -> item id, from gw2tp's bulk list. Cached on
+    disk for a day so gw2tp is hit at most once daily."""
+    fresh = (os.path.exists(ITEM_NAME_CACHE)
+             and time.time() - os.path.getmtime(ITEM_NAME_CACHE) < ITEM_NAME_CACHE_TTL)
+    if not fresh:
+        try:
+            data = _http_get(GW2TP_ITEMS_NAMES, 30)
+            os.makedirs(os.path.dirname(ITEM_NAME_CACHE), exist_ok=True)
+            with open(ITEM_NAME_CACHE, "wb") as f:
+                f.write(data)
+        except Exception as e:  # noqa: BLE001
+            log("WARN: gw2tp item-name fetch failed: %s" % e)
+    try:
+        with open(ITEM_NAME_CACHE, "rb") as f:
+            raw = json.load(f)
+    except Exception:  # noqa: BLE001
+        return {}
+    # gw2tp returns {"items": [[id, "Name"], ...]} (or a bare list of pairs).
+    rows = raw.get("items") if isinstance(raw, dict) else raw
+    out = {}
+    for row in rows or []:
+        if isinstance(row, (list, tuple)) and len(row) >= 2:
+            out[str(row[1]).strip().lower()] = row[0]
+    return out
+
+
+def action_trading_post(client, model, image_path):
+    """Identify the item in the crop and report its Trading Post prices."""
+    name = claude_identify(client, model, image_path,
+        "This is a Guild Wars 2 screenshot of a single item — an inventory "
+        "slot, a tooltip, or a listing. Reply with ONLY that item's exact "
+        "in-game name: no quotes, no extra words. If you cannot tell, reply "
+        "NONE.")
+    if not name or name.upper() == "NONE":
+        return "I couldn't make out an item name in that selection."
+
+    item_id = load_item_name_map().get(name.lower())
+    if item_id is None:
+        return ("I couldn't find %s on the Trading Post — it may be "
+                "account-bound or not tradeable." % name)
+    try:
+        price = _http_get_json("%s/commerce/prices/%s" % (GW2_API, item_id), 15)
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            return "%s has no Trading Post listings right now." % name
+        return "The Trading Post API didn't answer for %s (HTTP %s)." % (name, e.code)
+    except Exception as e:  # noqa: BLE001
+        return "I couldn't reach the Trading Post for %s right now." % name
+
+    buy = price.get("buys", {}).get("unit_price", 0)
+    sell = price.get("sells", {}).get("unit_price", 0)
+    return "%s. Highest buy order, %s. Lowest sell listing, %s." % (
+        name, format_coins(buy), format_coins(sell))
+
+
+def _add_wiki_favorite(page_id, title):
+    """Append a favourite to NexusGameWiki's library.json. Returns False if it
+    was already there, or on failure."""
+    data = {"favorites": [], "recent": []}
+    try:
+        with open(WIKI_LIBRARY) as f:
+            loaded = json.load(f)
+        if isinstance(loaded, dict):
+            data = loaded
+    except (OSError, ValueError):
+        pass
+    favs = data.setdefault("favorites", [])
+    if any(isinstance(f, dict) and f.get("pageId") == page_id for f in favs):
+        return False
+    favs.append({"pageId": page_id, "savedAt": int(time.time()), "title": title})
+    try:
+        os.makedirs(os.path.dirname(WIKI_LIBRARY), exist_ok=True)
+        with open(WIKI_LIBRARY, "w") as f:
+            json.dump(data, f, indent=2)
+    except OSError as e:
+        log("WARN: could not write %s: %s" % (WIKI_LIBRARY, e))
+        return False
+    return True
+
+
+def action_wiki_fav(client, model, image_path):
+    """Identify the subject of the crop and add its wiki page to the
+    NexusGameWiki favourites."""
+    term = claude_identify(client, model, image_path,
+        "This is a Guild Wars 2 screenshot. Reply with ONLY the name of the "
+        "main item, skill, NPC, or place shown — the thing worth looking up on "
+        "the wiki — with no quotes or extra words. If unclear, reply NONE.")
+    if not term or term.upper() == "NONE":
+        return "I couldn't tell what to look up on the wiki."
+
+    try:
+        url = ("%s?action=query&list=search&srsearch=%s&srlimit=1&format=json"
+               % (WIKI_API, urllib.parse.quote(term)))
+        hits = _http_get_json(url, 15).get("query", {}).get("search", [])
+    except Exception as e:  # noqa: BLE001
+        return "I couldn't reach the GW2 wiki to look up %s." % term
+    if not hits:
+        return "I found no wiki page for %s." % term
+
+    page_id = hits[0].get("pageid")
+    title = hits[0].get("title", term)
+    if _add_wiki_favorite(page_id, title):
+        return "Added %s to your wiki favourites." % title
+    return "%s is already in your wiki favourites." % title
+
+
+RESEARCH_SYSTEM = (
+    "You are a Guild Wars 2 helper. The player has shown you a region of their "
+    "screen. Identify the main item, skill, trait, NPC, event, or place and "
+    "explain it in depth — what it is, how it is obtained or used, and a "
+    "useful tip or two — drawing on the GW2 wiki and current web sources. "
+    "Answer as ONE concise spoken explanation: a paragraph or two of plain, "
+    "conversational text. No markdown, no bullet points, and no preamble such "
+    "as 'I'll look that up' — just the explanation."
+)
+
+
+def action_research(client, cfg, image_path, question):
+    """Web-search-backed deep explanation of whatever is in the crop."""
+    research_model = cfg.get("GW2_CLAUDE_RESEARCH_MODEL") or "claude-sonnet-4-6"
+    png = prepare_image(image_path)
+    b64 = base64.standard_b64encode(png).decode("ascii")
+    user_text = "Research what is shown here and explain it."
+    if question:
+        user_text += " The player also asks: " + question
+    content = [
+        {"type": "image", "source": {"type": "base64",
+         "media_type": "image/png", "data": b64}},
+        {"type": "text", "text": user_text},
+    ]
+
+    def _call(tools):
+        kwargs = {
+            "model": research_model,
+            "max_tokens": 2048,
+            "system": RESEARCH_SYSTEM,
+            "messages": [{"role": "user", "content": content}],
+        }
+        if tools:
+            kwargs["tools"] = tools
+        resp = client.messages.create(**kwargs)
+        return "".join(b.text for b in resp.content
+                        if getattr(b, "type", None) == "text").strip()
+
+    try:
+        text = _call([{"type": "web_search_20250305", "name": "web_search",
+                       "max_uses": 5}])
+    except Exception as e:  # noqa: BLE001
+        # Web search may not be enabled for the org — fall back to a plain
+        # knowledge-based answer rather than failing the whole request.
+        log("WARN: research web search failed (%s) — answering without it" % e)
+        text = _call(None)
+    return text or "(no research result)"
+
+
 def run_daemon(client, model, cfg):
     log("daemon starting (pid=%d model=%s tts=%s)" % (
         os.getpid(), model, cfg.get("GW2_CLAUDE_TTS", "on")))
@@ -405,20 +630,39 @@ def run_daemon(client, model, cfg):
             question = None
             try:
                 with open(prompt_path) as f:
-                    question = f.read().strip()
+                    question = f.read()
             except FileNotFoundError:
                 pass
 
-            # A fresh read supersedes whatever is being spoken.
+            # The addon may prefix the prompt with "@action:<name>" on the
+            # first line to request a Phase 2 action instead of a plain read.
+            action = "read"
+            if question and question.lstrip().startswith("@action:"):
+                first, _, rest = question.lstrip().partition("\n")
+                action = first.strip()[len("@action:"):].strip().lower() or "read"
+                question = rest.strip()
+            elif question is not None:
+                question = question.strip()
+            if action != "read":
+                log("request=%s action=%s" % (suffix, action))
+
+            # A fresh request supersedes whatever is being spoken.
             stop_speaking()
 
             ok = True
             try:
-                result = analyze(client, model, image_path, question)
+                if action == "trading-post":
+                    result = action_trading_post(client, model, image_path)
+                elif action == "wiki-fav":
+                    result = action_wiki_fav(client, model, image_path)
+                elif action == "research":
+                    result = action_research(client, cfg, image_path, question)
+                else:
+                    result = analyze(client, model, image_path, question)
             except Exception as e:  # noqa: BLE001
                 result = "ERROR: %s" % e
                 ok = False
-                log("ERROR request=%s %s" % (suffix, e))
+                log("ERROR request=%s action=%s %s" % (suffix, action, e))
 
             with open(out_path, "w") as f:
                 f.write(result)

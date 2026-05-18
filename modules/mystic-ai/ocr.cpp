@@ -209,7 +209,7 @@ static bool WaitForOcrDone(const std::string& doneMarker, int timeoutMs)
 // Public entry points
 // ---------------------------------------------------------------------------
 
-OcrResult OcrScreenRegion(int x, int y, int w, int h, const OcrOptions& opts)
+OcrResult OcrPixels(std::vector<uint8_t> pixels, int w, int h, const OcrOptions& opts)
 {
     OcrResult out{};
 
@@ -222,13 +222,6 @@ OcrResult OcrScreenRegion(int x, int y, int w, int h, const OcrOptions& opts)
     std::string readyMark = std::string("/tmp/gw2-ocr-input-")  + suffix + ".ready";
     std::string outTxt    = std::string("/tmp/gw2-ocr-output-") + suffix + ".txt";
     std::string doneMark  = std::string("/tmp/gw2-ocr-done-")   + suffix;
-
-    std::vector<uint8_t> pixels;
-    if (!CaptureScreenRegion(x, y, w, h, pixels))
-    {
-        out.error = "screen capture failed";
-        return out;
-    }
 
     if (opts.colorTarget != OcrColorTarget::None)
     {
@@ -311,6 +304,19 @@ OcrResult OcrScreenRegion(int x, int y, int w, int h, const OcrOptions& opts)
     }
 
     return out;
+}
+
+// Capture a screen rectangle, then OCR it.
+OcrResult OcrScreenRegion(int x, int y, int w, int h, const OcrOptions& opts)
+{
+    std::vector<uint8_t> pixels;
+    if (!CaptureScreenRegion(x, y, w, h, pixels))
+    {
+        OcrResult out{};
+        out.error = "screen capture failed";
+        return out;
+    }
+    return OcrPixels(std::move(pixels), w, h, opts);
 }
 
 OcrResult OcrAroundCursor(int width, int height, const OcrOptions& opts)

@@ -107,6 +107,7 @@
     <ClCompile Include="modules\mystic-ai\overlay.cpp" />
     <ClCompile Include="modules\mystic-ai\config.cpp" />
     <ClCompile Include="modules\mystic-ai\icons.cpp" />
+    <ClCompile Include="modules\mystic-ai\copytext.cpp" />
     <ClCompile Include="include\imgui\imgui.cpp" />
     <ClCompile Include="include\imgui\imgui_draw.cpp" />
     <ClCompile Include="include\imgui\imgui_widgets.cpp" />
@@ -123,6 +124,7 @@
     <ClInclude Include="modules\mystic-ai\screen-capture.h" />
     <ClInclude Include="modules\mystic-ai\ocr.h" />
     <ClInclude Include="modules\mystic-ai\icons.h" />
+    <ClInclude Include="modules\mystic-ai\copytext.h" />
     <ClInclude Include="modules\mystic-ai\resource.h" />
     <ClInclude Include="include\Nexus.h" />
     <ClInclude Include="include\imgui\imgui.h" />

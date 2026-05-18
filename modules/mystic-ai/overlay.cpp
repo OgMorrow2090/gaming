@@ -24,6 +24,7 @@
 #include "claude-vision.h"
 #include "screen-capture.h"
 #include "icons.h"
+#include "copytext.h"
 #include "imgui/imgui.h"
 #include <d3d11.h>
 #include <dxgi.h>
@@ -76,6 +77,11 @@ ImVec2 g_dragA{0, 0}, g_dragB{0, 0};
 ImVec4 g_boxDisp{0, 0, 0, 0};
 int    g_selX = 0, g_selY = 0, g_selW = 0, g_selH = 0;
 bool   g_haveSel = false;
+
+// The drag-selected crop, kept through the Review session so the action
+// buttons (Read / TP / Wiki / Research / Copy) can re-send it.
+std::vector<uint8_t> g_lastCrop;
+int                  g_lastCropW = 0, g_lastCropH = 0;
 
 // --- Box-anchored panel ----------------------------------------------------
 ImVec4 g_anchor{0, 0, 0, 0};   // box the panel anchors to (display coords)
@@ -195,10 +201,13 @@ void CaptureWorker()
 // frame, never mid-frame — this frame's draw list may still reference it.
 void ExitToIdle(bool stopRead)
 {
-    g_mode       = MODE_IDLE;
-    g_dragging   = false;
-    g_haveSel    = false;
+    g_mode        = MODE_IDLE;
+    g_dragging    = false;
+    g_haveSel     = false;
     g_needRelease = true;
+    g_lastCrop.clear();
+    g_lastCrop.shrink_to_fit();
+    CopyText::Reset();
     if (stopRead) ClaudeVision::Stop();
 }
 
@@ -348,9 +357,13 @@ void FinishSelection(ImVec2 disp)
     g_reposPanel = true;
     g_panelOpen  = true;
 
+    g_lastCrop  = crop;        // keep the crop so the action buttons can re-send it
+    g_lastCropW = cw;
+    g_lastCropH = ch;
+
     g_dragging = false;
     g_mode = MODE_REVIEW;
-    ClaudeVision::RequestPixels("Drag Read", DRAG_PROMPT, std::move(crop), cw, ch);
+    ClaudeVision::RequestPixels("Read", DRAG_PROMPT, std::move(crop), cw, ch);
 }
 
 // ---------------------------------------------------------------------------
@@ -518,16 +531,62 @@ void DrawPanel(bool reviewMode)
             ImGui::TextDisabled("Idle.");
         }
 
+        // Copy Text (OCR) runs independently of the Claude-backed actions.
+        CopyText::State copySt = CopyText::GetState();
+        if (copySt == CopyText::State::Working)
+            ImGui::TextColored(ImVec4(1.0f, 0.82f, 0.2f, 1.0f), "Copying text (OCR)...");
+        else if (copySt == CopyText::State::Done)
+            ImGui::TextColored(ImVec4(0.5f, 0.9f, 0.5f, 1.0f),
+                "Copied to clipboard: %s", CopyText::GetResult().c_str());
+        else if (copySt == CopyText::State::Error)
+            ImGui::TextColored(ImVec4(1.0f, 0.6f, 0.4f, 1.0f),
+                "Copy Text: %s", CopyText::GetResult().c_str());
+
         ImGui::Spacing();
         ImGui::Separator();
         ImGui::Spacing();
 
         // --- action buttons, sitting right at the box ---
-        float bsz   = 26.0f * g_UIScale;
-        float btnH  = bsz + ImGui::GetStyle().FramePadding.y * 2.0f;
+        float bsz  = 26.0f * g_UIScale;
+        float btnH = bsz + ImGui::GetStyle().FramePadding.y * 2.0f;
+        bool  busy = (cs == ClaudeVision::State::Waiting)
+                     || (copySt == CopyText::State::Working);
 
-        if (reviewMode && g_haveSel)
+        if (busy)
         {
+            ImGui::TextDisabled("Working...");
+            if (speaking || cs == ClaudeVision::State::Waiting)
+            {
+                ImGui::SameLine();
+                if (IconButton(Icons::STOP, "Stop", "Stop the read / stop speaking.", bsz))
+                    ClaudeVision::Stop();
+            }
+        }
+        else if (reviewMode && g_haveSel && !g_lastCrop.empty())
+        {
+            // Actions on the captured selection — the buttons sit at the box.
+            if (IconButton(Icons::READ, "Read", "Read the selection aloud again.", bsz))
+                ClaudeVision::RequestPixels("Read", DRAG_PROMPT,
+                                            g_lastCrop, g_lastCropW, g_lastCropH);
+            ImGui::SameLine();
+            if (IconButton(Icons::TP, "TP", "Check this item's Trading Post price.", bsz))
+                ClaudeVision::RequestPixels("Trading Post", "@action:trading-post",
+                                            g_lastCrop, g_lastCropW, g_lastCropH);
+            ImGui::SameLine();
+            if (IconButton(Icons::WIKI, "Wiki", "Add this to your GW2 wiki favorites.", bsz))
+                ClaudeVision::RequestPixels("Wiki", "@action:wiki-fav",
+                                            g_lastCrop, g_lastCropW, g_lastCropH);
+            ImGui::SameLine();
+            if (IconButton(Icons::RESEARCH, "Research",
+                           "Research this with the GW2 wiki and the web.", bsz))
+                ClaudeVision::RequestPixels("Research", "@action:research",
+                                            g_lastCrop, g_lastCropW, g_lastCropH);
+            ImGui::SameLine();
+            if (IconButton(Icons::COPY, "Copy",
+                           "OCR the selection to the clipboard (no AI) - paste it "
+                           "into GW2's destroy-confirm box.", bsz))
+                CopyText::Request(g_lastCrop, g_lastCropW, g_lastCropH);
+            ImGui::SameLine();
             if (IconButton(Icons::BOOK, "Book",
                     "Save this selection as the static book region. The Read Book "
                     "keybind then re-reads it with no drag.", bsz))
@@ -539,14 +598,6 @@ void DrawPanel(bool reviewMode)
                     APIDefs->GUI_SendAlert("Mystic AI: book region saved. Use the "
                                            "Read Book keybind to re-read it.");
             }
-            ImGui::SameLine();
-        }
-
-        if (speaking || cs == ClaudeVision::State::Waiting)
-        {
-            if (IconButton(Icons::STOP, "Stop", "Stop the read / stop speaking.", bsz))
-                ClaudeVision::Stop();
-            ImGui::SameLine();
         }
 
         if (ImGui::Button("Close", ImVec2(0.0f, btnH)))

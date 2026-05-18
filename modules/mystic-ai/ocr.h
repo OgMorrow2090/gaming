@@ -34,6 +34,11 @@ struct OcrResult {
 // tesseract`), return the text. Reusable from any Mystic Clicker macro.
 OcrResult OcrScreenRegion(int x, int y, int w, int h, const OcrOptions& opts);
 
+// OCR an already-captured 24-bit BGR region (top-down, row-major) — no screen
+// capture of its own. Mystic AI's "Copy Text" action uses this on the
+// drag-selected crop.
+OcrResult OcrPixels(std::vector<uint8_t> pixels, int w, int h, const OcrOptions& opts);
+
 // Convenience: rectangle of given size centered on the cursor.
 OcrResult OcrAroundCursor(int width, int height, const OcrOptions& opts);
 

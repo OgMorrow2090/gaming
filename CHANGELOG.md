@@ -7,6 +7,37 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-18] — Mystic AI Phase 2: side-panel actions (TP / Wiki / Research / Copy)
+
+### Added
+
+- **Mystic AI 1.1.0 — capture-panel action buttons.** After a drag-select
+  capture, the box-anchored panel gains a row of GW2-icon buttons that act on
+  the selection:
+  - **Check TP Prices** — the daemon identifies the item and reports its
+    Trading Post buy/sell price (GW2 API; item name → ID via gw2tp.com's
+    bulk list, cached a day).
+  - **Add to Wiki** — resolves the subject via the GW2 wiki search API and
+    appends it to NexusGameWiki's `library.json` favourites (de-duplicated).
+  - **Research** — a web-search-backed deep explanation (Claude + the
+    server-side `web_search` tool; `GW2_CLAUDE_RESEARCH_MODEL`, default
+    `claude-sonnet-4-6`).
+  - **Copy Text** — OCRs the selection with the tesseract daemon and puts the
+    text on the Windows clipboard, no AI — for pasting an item name into GW2's
+    destroy-confirm box. `ocr.cpp` gained `OcrPixels()` (OCR a given crop);
+    new `copytext.{h,cpp}`.
+  - **Read** re-reads the selection aloud.
+- **gw2-claude-daemon.py — `@action:` dispatch.** A request whose `.prompt`
+  starts with `@action:<name>` routes to the `trading-post` / `wiki-fav` /
+  `research` handler; no prefix is the unchanged plain read.
+
+### Notes
+
+- Web search must be enabled for the Anthropic org; if it isn't, Research falls
+  back to a plain knowledge-based answer.
+- NexusGameWiki may rewrite `library.json` from memory while running — a daemon
+  favourite append is reliably picked up on the next GW2 launch.
+
 ## [2026-05-18] — Mystic AI: new addon (Phase 1), spun out of Mystic Clicker
 
 ### Added

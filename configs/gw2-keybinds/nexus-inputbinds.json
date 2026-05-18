@@ -1911,9 +1911,18 @@
 		"Alt": true,
 		"Code": 68,
 		"Ctrl": false,
-		"Identifier": "CLAUDE_READ_SCREEN",
+		"Identifier": "MYSTIC_AI_CAPTURE",
 		"Passthrough": false,
 		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 68,
+		"Ctrl": false,
+		"Identifier": "MYSTIC_AI_READ_BOOK",
+		"Passthrough": false,
+		"Shift": true,
 		"Type": 1
 	}
 ]

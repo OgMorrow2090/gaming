@@ -7,6 +7,30 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-18] — Mystic AI keybinds assigned + deployed to bazzite
+
+### Changed
+
+- **`configs/gw2-keybinds/nexus-inputbinds.json`** — assigned the Mystic AI
+  addon keybinds:
+  - `MYSTIC_AI_CAPTURE` → **Alt+F10** (freeze-frame drag-select read)
+  - `MYSTIC_AI_READ_BOOK` → **Shift+F10** (saved book-region read)
+  - Removed the stale `CLAUDE_READ_SCREEN` entry (Mystic Clicker 3.6.25 dropped
+    that keybind); Mystic AI Capture reuses its freed Alt+F10 slot.
+- Keys collision-checked against `nexus-inputbinds.json` and `gamebinds.xml`:
+  F9/F10 *bare* are taken (`MERCHANT_COMBO`, `COPY_ITEM_NAME`), but Alt+F10 and
+  Shift+F10 are clear on both the Nexus and GW2 sides.
+
+### Notes
+
+- Deployed with `deploy-nexus-config.sh` to the bazzite `local` profile only —
+  the Deck was asleep. The script's `gw2-appletv` / `gw2-deck` targets are the
+  archived multi-install profiles (consolidated away 2026-05-12) and now error;
+  the script should be trimmed to the live profile + Deck.
+- R1+Menu controller routing is not included here: the live layout is a
+  Steam Input autosave on the new `controller_triton` pad, edited in the Steam
+  UI — outside the repo's neptune-era VDF pipeline.
+
 ## [2026-05-18] — Mystic AI Phase 2: side-panel actions (TP / Wiki / Research / Copy)
 
 ### Added

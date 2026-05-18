@@ -41,8 +41,9 @@ GW2 (Nexus addon)                bazzite host (outside sandbox)
   `gw2-ocr-daemon.service`. Lives at `~/.config/systemd/user/` on bazzite.
 - **Config**: `~/.config/gw2-claude/config.env` (mode 600) — `ANTHROPIC_API_KEY`
   (required), `GW2_CLAUDE_MODEL`, and the TTS keys (`GW2_CLAUDE_TTS`,
-  `GW2_CLAUDE_TTS_ENGINE`, `GW2_CLAUDE_VOICE`, `ELEVENLABS_API_KEY`,
-  `ELEVENLABS_VOICE_ID`, `ELEVENLABS_MODEL`). Not in the repo — secret. The
+  `GW2_CLAUDE_TTS_ENGINE`, `GW2_CLAUDE_TTS_GAIN_DB`, `GW2_CLAUDE_VOICE`,
+  `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID`, `ELEVENLABS_MODEL`). Not in the
+  repo — secret. The
   ElevenLabs key lives in 1Password at
   `op://Home/ElevenLabs API Key - GW2 Screen Reader/credential`.
 

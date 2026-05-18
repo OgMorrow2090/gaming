@@ -52,6 +52,10 @@ GW2_CLAUDE_TTS=on
 GW2_CLAUDE_TTS_ENGINE=auto
 GW2_CLAUDE_VOICE=en_GB-northern_english_male-medium
 
+# Loudness boost (dB) so the voice rides above the game audio. Boost is
+# limiter-protected, so it stays clean — raise it for an even louder read.
+GW2_CLAUDE_TTS_GAIN_DB=12
+
 # Optional. ElevenLabs cloud TTS — far more natural than Piper. Leave the key
 # blank to stay on Piper. ELEVENLABS_VOICE_ID picks the voice (browse
 # elevenlabs.io); ELEVENLABS_MODEL defaults to eleven_turbo_v2_5.

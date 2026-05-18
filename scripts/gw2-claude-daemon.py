@@ -34,6 +34,7 @@ Config: ~/.config/gw2-claude/config.env  (KEY=VALUE lines, mode 600)
     GW2_CLAUDE_MODEL=claude-haiku-4-5       (optional)
     GW2_CLAUDE_TTS=on                       (optional — on/off, default on)
     GW2_CLAUDE_TTS_ENGINE=auto              (optional — auto/piper/elevenlabs)
+    GW2_CLAUDE_TTS_GAIN_DB=12               (optional — loudness boost, dB)
     GW2_CLAUDE_VOICE=en_GB-...-medium       (optional — Piper voice name)
     ELEVENLABS_API_KEY=...                  (optional — enables ElevenLabs TTS)
     ELEVENLABS_VOICE_ID=...                 (optional — ElevenLabs voice)
@@ -62,6 +63,7 @@ STOP_MARKER = os.path.join(TMP, "gw2-claude-stop")
 SPEAKING_MARKER = os.path.join(TMP, "gw2-claude-speaking")
 TTS_WAV = os.path.join(TMP, "gw2-claude-tts.wav")
 TTS_MP3 = os.path.join(TMP, "gw2-claude-tts.mp3")
+TTS_RAW = os.path.join(TMP, "gw2-claude-tts-raw.wav")  # pre-boost synthesis target
 
 # ElevenLabs cloud TTS — optional; enabled when ELEVENLABS_API_KEY is set.
 EL_API_BASE = "https://api.elevenlabs.io/v1/text-to-speech/"
@@ -242,6 +244,21 @@ def _play(wav_path, label):
     return True
 
 
+def _af_filter(cfg):
+    """ffmpeg -af value for the TTS loudness boost, or None when not boosting.
+
+    A plain volume boost would clip ElevenLabs/Piper output on loud syllables,
+    so the boost is followed by a limiter — loud, but never distorted. This is
+    what makes the voice ride above the game audio."""
+    try:
+        gain = float(cfg.get("GW2_CLAUDE_TTS_GAIN_DB") or 0)
+    except ValueError:
+        gain = 0.0
+    if gain <= 0:
+        return None
+    return "volume=%.1fdB,alimiter=limit=0.95" % gain
+
+
 def _speak_piper(spoken, cfg):
     """Local Piper synthesis -> WAV -> playback. Returns True on success."""
     voice = cfg.get("GW2_CLAUDE_VOICE") or "en_GB-northern_english_male-medium"
@@ -250,12 +267,18 @@ def _speak_piper(spoken, cfg):
         log("WARN: voice model missing (%s) — skipping TTS" % model)
         return False
 
+    af = _af_filter(cfg)
     piper = os.path.join(os.path.dirname(sys.executable), "piper")
+    synth_to = TTS_RAW if af else TTS_WAV
     try:
-        subprocess.run([piper, "-m", model, "-f", TTS_WAV],
+        subprocess.run([piper, "-m", model, "-f", synth_to],
                        input=spoken.encode("utf-8"),
                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                        timeout=120, check=True)
+        if af:
+            subprocess.run(["ffmpeg", "-y", "-i", TTS_RAW, "-af", af, TTS_WAV],
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                           timeout=30, check=True)
     except Exception as e:  # noqa: BLE001
         log("WARN: Piper synthesis failed: %s" % e)
         return False
@@ -299,10 +322,15 @@ def _speak_elevenlabs(spoken, cfg):
         with open(TTS_MP3, "wb") as f:
             f.write(mp3)
         # pw-play wants WAV; ffmpeg decodes the MP3 (ffmpeg is always present
-        # on bazzite — Sunshine streaming depends on it).
-        subprocess.run(["ffmpeg", "-y", "-i", TTS_MP3, TTS_WAV],
-                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                       timeout=30, check=True)
+        # on bazzite — Sunshine streaming depends on it) and applies the
+        # loudness boost so the voice rides above the game audio.
+        cmd = ["ffmpeg", "-y", "-i", TTS_MP3]
+        af = _af_filter(cfg)
+        if af:
+            cmd += ["-af", af]
+        cmd.append(TTS_WAV)
+        subprocess.run(cmd, stdout=subprocess.DEVNULL,
+                       stderr=subprocess.DEVNULL, timeout=30, check=True)
     except Exception as e:  # noqa: BLE001
         log("WARN: ElevenLabs audio decode failed: %s" % e)
         return False

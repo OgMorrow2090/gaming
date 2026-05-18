@@ -1602,7 +1602,7 @@
 		"Type": 1
 	},
 	{
-		"Alt": false,
+		"Alt": true,
 		"Code": 67,
 		"Ctrl": false,
 		"Identifier": "PERSONAL_MARKER",

@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2411"
-	"title"		"Guild Wars 2 - Og v19.9"
+	"revision"		"2412"
+	"title"		"Guild Wars 2 - Og v20.0"
 	"description"		"#SettingsController_AutosaveDescription"
 	"creator"		"76561198025059559"
 	"progenitor"		"usercloud://1284210/controller_neptune"
@@ -2331,22 +2331,6 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press HOME, Home Instance Portal, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_2"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
 							"binding"		"key_press LEFT_CONTROL, Toggle Paths, , "
 							"binding"		"key_press F3, Toggle Paths, , "
 						}
@@ -2356,7 +2340,7 @@
 				{
 				}
 			}
-			"touch_menu_button_3"
+			"touch_menu_button_2"
 			{
 				"activators"
 				{
@@ -2374,7 +2358,7 @@
 				{
 				}
 			}
-			"touch_menu_button_4"
+			"touch_menu_button_3"
 			{
 				"activators"
 				{
@@ -2392,7 +2376,7 @@
 				{
 				}
 			}
-			"touch_menu_button_5"
+			"touch_menu_button_4"
 			{
 				"activators"
 				{
@@ -2409,7 +2393,7 @@
 				{
 				}
 			}
-			"touch_menu_button_6"
+			"touch_menu_button_5"
 			{
 				"activators"
 				{
@@ -2425,7 +2409,7 @@
 				{
 				}
 			}
-			"touch_menu_button_7"
+			"touch_menu_button_6"
 			{
 				"activators"
 				{
@@ -2441,7 +2425,7 @@
 				{
 				}
 			}
-			"touch_menu_button_8"
+			"touch_menu_button_7"
 			{
 				"activators"
 				{
@@ -2457,7 +2441,7 @@
 				{
 				}
 			}
-			"touch_menu_button_9"
+			"touch_menu_button_8"
 			{
 				"activators"
 				{
@@ -2473,7 +2457,7 @@
 				{
 				}
 			}
-			"touch_menu_button_10"
+			"touch_menu_button_9"
 			{
 				"activators"
 				{
@@ -2491,7 +2475,7 @@
 				{
 				}
 			}
-			"touch_menu_button_11"
+			"touch_menu_button_10"
 			{
 				"activators"
 				{
@@ -2499,8 +2483,7 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Community LFG, , "
-							"binding"		"key_press F7, Community LFG, , "
+							"binding"		"key_press HOME, Home Instance Portal, , "
 						}
 					}
 				}
@@ -2508,7 +2491,7 @@
 				{
 				}
 			}
-			"touch_menu_button_12"
+			"touch_menu_button_11"
 			{
 				"activators"
 				{
@@ -2525,7 +2508,7 @@
 				{
 				}
 			}
-			"touch_menu_button_13"
+			"touch_menu_button_12"
 			{
 				"activators"
 				{
@@ -2542,7 +2525,7 @@
 				{
 				}
 			}
-			"touch_menu_button_14"
+			"touch_menu_button_13"
 			{
 				"activators"
 				{
@@ -2559,7 +2542,7 @@
 				{
 				}
 			}
-			"touch_menu_button_15"
+			"touch_menu_button_14"
 			{
 				"activators"
 				{
@@ -2576,7 +2559,7 @@
 				{
 				}
 			}
-			"touch_menu_button_16"
+			"touch_menu_button_15"
 			{
 				"activators"
 				{
@@ -2593,7 +2576,7 @@
 				{
 				}
 			}
-			"touch_menu_button_17"
+			"touch_menu_button_16"
 			{
 				"activators"
 				{

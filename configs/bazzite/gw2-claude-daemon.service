@@ -1,0 +1,14 @@
+[Unit]
+Description=GW2 Claude-vision OCR daemon (host-side Claude API worker)
+Documentation=file://%h/scripts/gw2-claude-daemon.py
+After=default.target
+
+[Service]
+Type=simple
+# Uses the per-user venv created by scripts/gw2-claude-setup.sh.
+ExecStart=%h/.local/share/gw2-claude/venv/bin/python %h/scripts/gw2-claude-daemon.py --daemon
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

@@ -84,8 +84,8 @@ void Worker(std::string prompt, bool atCursor)
                 ScreenToClient(GameWindow, &pt);
 
             const int PAD  = 24;    // margin up-left so the first glyph isn't clipped
-            const int BOXW = 960;   // generous enough for a tooltip / dialog box
-            const int BOXH = 620;
+            const int BOXW = 1500;  // big enough for a full book / dialog panel
+            const int BOXH = 1000;
             capX = pt.x - PAD;  if (capX < 0) capX = 0;
             capY = pt.y - PAD;  if (capY < 0) capY = 0;
             capW = BOXW;  if (capX + capW > w) capW = w - capX;

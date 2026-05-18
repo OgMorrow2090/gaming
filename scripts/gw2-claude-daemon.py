@@ -31,19 +31,26 @@ Standalone test mode (no addon needed):
 
 Config: ~/.config/gw2-claude/config.env  (KEY=VALUE lines, mode 600)
     ANTHROPIC_API_KEY=sk-ant-...           (required)
-    GW2_CLAUDE_MODEL=claude-haiku-4-5      (optional)
-    GW2_CLAUDE_TTS=on                      (optional — on/off, default on)
-    GW2_CLAUDE_VOICE=en_GB-cori-high     (optional — Piper voice name)
+    GW2_CLAUDE_MODEL=claude-haiku-4-5       (optional)
+    GW2_CLAUDE_TTS=on                       (optional — on/off, default on)
+    GW2_CLAUDE_TTS_ENGINE=auto              (optional — auto/piper/elevenlabs)
+    GW2_CLAUDE_VOICE=en_GB-...-medium       (optional — Piper voice name)
+    ELEVENLABS_API_KEY=...                  (optional — enables ElevenLabs TTS)
+    ELEVENLABS_VOICE_ID=...                 (optional — ElevenLabs voice)
+    ELEVENLABS_MODEL=eleven_turbo_v2_5      (optional)
 """
 
 import base64
 import glob
 import io
+import json
 import os
 import re
 import subprocess
 import sys
 import time
+import urllib.error
+import urllib.request
 
 CONFIG_PATH = os.path.expanduser("~/.config/gw2-claude/config.env")
 LOG_PATH = os.path.expanduser("~/.local/state/gw2-claude-daemon.log")
@@ -54,6 +61,12 @@ POLL_SECONDS = 0.2
 STOP_MARKER = os.path.join(TMP, "gw2-claude-stop")
 SPEAKING_MARKER = os.path.join(TMP, "gw2-claude-speaking")
 TTS_WAV = os.path.join(TMP, "gw2-claude-tts.wav")
+TTS_MP3 = os.path.join(TMP, "gw2-claude-tts.mp3")
+
+# ElevenLabs cloud TTS — optional; enabled when ELEVENLABS_API_KEY is set.
+EL_API_BASE = "https://api.elevenlabs.io/v1/text-to-speech/"
+EL_DEFAULT_MODEL = "eleven_turbo_v2_5"
+EL_DEFAULT_VOICE = "pNInz6obpgDQGcFmaJgB"  # placeholder preset; pick a playful voice once the key is in
 
 MAX_LONG_EDGE = 2576
 IMAGE_EXTS = (".png", ".jpg", ".jpeg", ".bmp", ".webp", ".gif")
@@ -214,22 +227,28 @@ def reap_tts():
         _safe_rm(SPEAKING_MARKER)
 
 
-def speak(text, cfg):
-    """Synthesize `text` with Piper and play it. Supersedes any current speech."""
+def _play(wav_path, label):
+    """Start killable playback of `wav_path` and set the speaking marker."""
     global g_tts_proc
-    stop_speaking()
+    try:
+        g_tts_proc = subprocess.Popen(["pw-play", wav_path],
+                                      stdout=subprocess.DEVNULL,
+                                      stderr=subprocess.DEVNULL)
+    except Exception as e:  # noqa: BLE001
+        log("WARN: pw-play failed: %s" % e)
+        return False
+    open(SPEAKING_MARKER, "w").close()
+    log("speaking (%s)" % label)
+    return True
 
-    if (cfg.get("GW2_CLAUDE_TTS", "on") or "on").lower() in ("off", "0", "false", "no"):
-        return
-    spoken = clean_for_speech(text)
-    if not spoken:
-        return
 
-    voice = cfg.get("GW2_CLAUDE_VOICE") or "en_GB-cori-high"
+def _speak_piper(spoken, cfg):
+    """Local Piper synthesis -> WAV -> playback. Returns True on success."""
+    voice = cfg.get("GW2_CLAUDE_VOICE") or "en_GB-northern_english_male-medium"
     model = os.path.join(VOICES_DIR, voice + ".onnx")
     if not os.path.exists(model):
         log("WARN: voice model missing (%s) — skipping TTS" % model)
-        return
+        return False
 
     piper = os.path.join(os.path.dirname(sys.executable), "piper")
     try:
@@ -239,17 +258,78 @@ def speak(text, cfg):
                        timeout=120, check=True)
     except Exception as e:  # noqa: BLE001
         log("WARN: Piper synthesis failed: %s" % e)
+        return False
+    return _play(TTS_WAV, "%d chars, Piper %s" % (len(spoken), voice))
+
+
+def _synth_elevenlabs(spoken, cfg):
+    """Call the ElevenLabs TTS API; return MP3 bytes, or None on failure."""
+    key = cfg.get("ELEVENLABS_API_KEY")
+    voice = cfg.get("ELEVENLABS_VOICE_ID") or EL_DEFAULT_VOICE
+    model = cfg.get("ELEVENLABS_MODEL") or EL_DEFAULT_MODEL
+    body = json.dumps({
+        "text": spoken,
+        "model_id": model,
+        # Lower stability + some style = a livelier, less monotone read.
+        "voice_settings": {"stability": 0.4, "similarity_boost": 0.75,
+                           "style": 0.45, "use_speaker_boost": True},
+    }).encode("utf-8")
+    req = urllib.request.Request(
+        EL_API_BASE + voice + "?output_format=mp3_44100_128",
+        data=body, method="POST",
+        headers={"xi-api-key": key, "Content-Type": "application/json",
+                 "Accept": "audio/mpeg"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            return resp.read()
+    except urllib.error.HTTPError as e:
+        detail = e.read()[:200].decode("utf-8", "replace")
+        log("WARN: ElevenLabs HTTP %s — %s" % (e.code, detail))
+    except Exception as e:  # noqa: BLE001
+        log("WARN: ElevenLabs request failed: %s" % e)
+    return None
+
+
+def _speak_elevenlabs(spoken, cfg):
+    """ElevenLabs cloud TTS -> MP3 -> decode -> playback. Returns True on success."""
+    mp3 = _synth_elevenlabs(spoken, cfg)
+    if not mp3:
+        return False
+    try:
+        with open(TTS_MP3, "wb") as f:
+            f.write(mp3)
+        # pw-play wants WAV; ffmpeg decodes the MP3 (ffmpeg is always present
+        # on bazzite — Sunshine streaming depends on it).
+        subprocess.run(["ffmpeg", "-y", "-i", TTS_MP3, TTS_WAV],
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                       timeout=30, check=True)
+    except Exception as e:  # noqa: BLE001
+        log("WARN: ElevenLabs audio decode failed: %s" % e)
+        return False
+    voice = cfg.get("ELEVENLABS_VOICE_ID") or EL_DEFAULT_VOICE
+    return _play(TTS_WAV, "%d chars, ElevenLabs %s" % (len(spoken), voice))
+
+
+def speak(text, cfg):
+    """Speak `text` aloud — ElevenLabs when configured, else local Piper.
+    Supersedes any current speech."""
+    stop_speaking()
+
+    if (cfg.get("GW2_CLAUDE_TTS", "on") or "on").lower() in ("off", "0", "false", "no"):
+        return
+    spoken = clean_for_speech(text)
+    if not spoken:
         return
 
-    try:
-        g_tts_proc = subprocess.Popen(["pw-play", TTS_WAV],
-                                      stdout=subprocess.DEVNULL,
-                                      stderr=subprocess.DEVNULL)
-    except Exception as e:  # noqa: BLE001
-        log("WARN: pw-play failed: %s" % e)
-        return
-    open(SPEAKING_MARKER, "w").close()
-    log("speaking (%d chars, voice %s)" % (len(spoken), voice))
+    # Engine: "elevenlabs", "piper", or "auto" (ElevenLabs when a key is set).
+    engine = (cfg.get("GW2_CLAUDE_TTS_ENGINE") or "auto").lower()
+    use_el = engine == "elevenlabs" or (engine == "auto" and cfg.get("ELEVENLABS_API_KEY"))
+
+    if use_el:
+        if _speak_elevenlabs(spoken, cfg):
+            return
+        log("ElevenLabs unavailable — falling back to local Piper")
+    _speak_piper(spoken, cfg)
 
 
 def _safe_rm(path):

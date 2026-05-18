@@ -45,10 +45,19 @@ ANTHROPIC_API_KEY=
 GW2_CLAUDE_MODEL=claude-haiku-4-5
 
 # Optional. Text-to-speech — the daemon reads Claude's answer aloud.
-#   GW2_CLAUDE_TTS:   on / off
-#   GW2_CLAUDE_VOICE: any Piper voice in ~/.local/share/gw2-claude/voices/
+#   GW2_CLAUDE_TTS:        on / off
+#   GW2_CLAUDE_TTS_ENGINE: auto / piper / elevenlabs (auto = ElevenLabs if a key is set)
+#   GW2_CLAUDE_VOICE:      any Piper voice in ~/.local/share/gw2-claude/voices/
 GW2_CLAUDE_TTS=on
+GW2_CLAUDE_TTS_ENGINE=auto
 GW2_CLAUDE_VOICE=en_GB-northern_english_male-medium
+
+# Optional. ElevenLabs cloud TTS — far more natural than Piper. Leave the key
+# blank to stay on Piper. ELEVENLABS_VOICE_ID picks the voice (browse
+# elevenlabs.io); ELEVENLABS_MODEL defaults to eleven_turbo_v2_5.
+ELEVENLABS_API_KEY=
+ELEVENLABS_VOICE_ID=
+ELEVENLABS_MODEL=eleven_turbo_v2_5
 EOF
     chmod 600 "$CFGDIR/config.env"
     echo ""

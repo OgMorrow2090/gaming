@@ -27,6 +27,13 @@ The controller wake script (`~/bin/controller-wake-tv.py` on bazzite) switches t
 - 60-second cooldown between triggers
 - Controller takes ~35 seconds to actually power down after holding Steam button
 
+**Known gap — first wake after a bazzite reboot:** the `ever_seen_data` gate
+only arms after data has been seen → silence → data. After a fresh boot with
+the controller already asleep, the first wake is *swallowed* (no prior data was
+observed during the silence) — the TV does not switch. Subsequent sleep→wake
+cycles work normally. Manual switch meanwhile: run the WebOS `set_input` call
+directly (`aiowebostv` → `client.set_input("HDMI_2")`).
+
 **TV WOL prerequisite:**
 
 - LG TV must have **"WoL"** enabled (Settings → General → Devices) — without this, the WiFi radio powers down completely in standby and WOL magic packets never arrive

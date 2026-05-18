@@ -3,6 +3,7 @@
 Index of memory entries for this repo. Each line points at one file in `memory/`.
 
 - [VDF editing rules](vdf-editing-rules.md) — never bulk-rewrite controller VDFs; always validate; full rules in `docs/vdf-editing-golden-rules.md`
+- [Steam touch/radial menus cap at 16 buttons](steam-touch-menu-16-button-cap.md) — a 17th slot makes Steam silently reject the whole layout; replace, don't expand
 - [Steam Input sync ≠ Cloud toggle](steam-input-sync-not-cloud.md) — Valve bug #7801; signout/signin is the only fix for ghost layouts
 - [Chord emission quirks](chord-emission-quirks.md) — uinput modifier-hold + Full_Press double-emit; when to use DLL-press-`I` pattern
 - [GW2 GameBinds.xml chord collisions](gw2-keybind-collisions.md) — Home/End/PgUp/PgDn = Skill Profession 2-5; check before picking chord keys
@@ -21,6 +22,7 @@ Index of memory entries for this repo. Each line points at one file in `memory/`
 - [Mystic Clicker build + auto-deploy pipeline](mystic-clicker-build-and-deploy.md) — GitHub Actions builds DLL on push; Mac launchd watcher (`com.itinyk.gw2-mystic-clicker-watcher`) auto-deploys to all 4 profiles every 5 min when GW2 closed; LAN-private IPs prevent direct cloud deploy
 - [AI must always watch and deploy the DLL](feedback_always_watch_and_deploy_dll.md) — after any mystic-clicker push, verify CI green + watcher logged `deploy OK: <sha>` + all 4 profile DLL hashes match before reporting done
 - [GDI BitBlt is dead under DXVK + gamescope; use D3D11 swap-chain readback](d3d11-back-buffer-capture-vs-gdi.md) — `BitBlt(GetDC(NULL))` returns all-black on bazzite; capture `APIDefs->SwapChain` back buffer from a Nexus `RT_PostRender` hook instead
+- [GW2 Claude-vision daemon](gw2-claude-vision.md) — capture frame → Claude API (vision) → spoken answer; Piper or ElevenLabs TTS (live voice "Lily"); cursor-anchored + headless read
 - [OCR line filter tuning for GW2 destroy-popup item names](ocr-line-filter-tuning.md) — trim leading/trailing junk, then whitelist+heuristics (min word length, avg letters/word, character-name blacklist via MumbleLink) to separate real item names from inventory/overlay noise
 - [NVIDIA + gamescope display state → 4K@165 flicker](nvidia-gamescope-state-flicker.md) — purple/red colour-cycle flicker after many mode switches / EDID swaps / vkms toggles in one uptime is stale NVIDIA driver state, not the cable or mode; cold reboot is the reliable reset (or full PSU-off capacitor drain if soft reboot doesn't clear); never change gamescope-mode mid-stream
 - [GW2 Wine DPI — historical per-profile + current main-install state](per-profile-fixed-dpi.md) — **ARCHIVED 2026-05-12** for the multi-profile mappings; main install now at 0x90 (150%) + MouseSensitivity 20 (reverted from 200% due to login flicker). Rule still applies: never wire dynamic per-mode DPI swap into Sunshine prep-cmd.

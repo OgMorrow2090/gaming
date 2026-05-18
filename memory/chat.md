@@ -950,3 +950,50 @@ Set Sunshine web UI password to `admin123` during debugging (via `sunshine --cre
 - **Nexus scaling**: user said "can go much larger" — may want GlobalScale > 2.0 next session
 - **SteamOS 3.8 beta on Deck**: user plays native games on Deck too; 3.8.x would bring NTSync for those
 - **DP→HDMI adapter + Steam Controller 2**: still pending delivery
+
+## 2026-05-18 — Controller v20, Claude screen-reader voice (ElevenLabs), headless read
+
+### What was done
+
+- **mystic-clicker v3.6.20**: Accept-slot naming-drift cleanup — renamed drifted
+  "Accept" combo labels so the visible name matches the action across the addon
+  UI, the controller VDF, and logs (`General Accept 2` → `Accept 4`, etc.).
+- **controller v20.0**: added "Home Instance Portal" to the Utility Wheel. First
+  attempt expanded the wheel to 17 slots → Steam silently rejected the whole
+  layout (16-button cap). Fixed by replacing "Community LFG" — wheel stays at 16.
+- **mystic-clicker v3.6.21**: cursor-anchored "Read at Cursor" (captures a
+  960×620 box at the mouse cursor) + Esc-to-stop.
+- **mystic-clicker v3.6.22**: headless AI read — `CLAUDE_READ_SCREEN` no longer
+  opens the capture panel; the answer is spoken. Killed the user hitting the
+  position-capture 5-second countdown when triggering the AI from the controller.
+- **gw2-claude — ElevenLabs TTS**: daemon gained an engine selector
+  (piper / elevenlabs / auto). ElevenLabs is far more natural; live voice "Lily"
+  (British female). Playful reading-tone added to the daemon SYSTEM_PROMPT.
+
+### Live config / infra changes on bazzite
+
+| What | Change |
+| --- | --- |
+| `1284210/controller_neptune.vdf` | controller v20.0 (16-slot wheel, Home Instance Portal, renamed Accept buttons, title "Og v20.0") |
+| `addons/mystic-clicker.dll` | v3.6.22 deployed |
+| `~/scripts/gw2-claude-daemon.py` | ElevenLabs support deployed |
+| `~/.config/gw2-claude/config.env` | added `GW2_CLAUDE_TTS_ENGINE`, `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID` (Lily), `ELEVENLABS_MODEL` |
+| Piper voices | added `en_GB-northern_english_male-medium`, `en_GB-jenny_dioco-medium` |
+| bazzite | rebooted twice — Steam caches the controller layout; an on-disk VDF change needs a restart |
+
+### Repo changes
+
+- mystic-clicker: `keybinds.cpp`, `entry.cpp`, `capture-ui.cpp`, `claude-vision.{h,cpp}`, `input-sim.cpp`, `shared.h`
+- `configs/gw2-keybinds/controller_neptune.vdf` — v20.0
+- `scripts/gw2-claude-daemon.py`, `scripts/gw2-claude-setup.sh` — ElevenLabs + voice
+- `memory/steam-touch-menu-16-button-cap.md` (new), `gw2-claude-vision.md`, `controller-vdf-deploy-checklist.md`, `cec-controller-wake-script.md` (updated); CHANGELOG, `.gitignore`
+
+### 1Password
+
+- New item **Home → "ElevenLabs API Key - GW2 Screen Reader"** (API Credential) — holds the ElevenLabs TTS key.
+
+### Open / next session
+
+- **controller-wake-tv**: first controller wake after a bazzite reboot is swallowed by the `ever_seen_data` gate — TV doesn't switch. Optional fix pending.
+- **Streaming-profile controller VDFs**: v20 deployed only to the direct-bazzite config (`1284210/`). If streaming to Deck/Apple TV resumes, the Deck-side / streaming-profile VDFs need v20 too.
+- **Home Instance Portal** sits in the old Community-LFG wheel slot (10), not 12 o'clock — reposition if wanted.

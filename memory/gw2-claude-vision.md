@@ -34,13 +34,17 @@ GW2 (Nexus addon)                bazzite host (outside sandbox)
   vision, writes the answer back. Also `--analyze <image> [question]` for
   standalone testing with no addon involved.
 - **`scripts/gw2-claude-setup.sh`** — one-time setup. Creates a per-user Python
-  venv (`~/.local/share/gw2-claude/venv`) and pip-installs `anthropic` + `pillow`.
-  bazzite immutability blocks system packages, not user venvs — venv survives OS
-  updates; re-run the script to refresh the SDK.
+  venv (`~/.local/share/gw2-claude/venv`) and pip-installs `anthropic`,
+  `pillow`, `piper-tts`. bazzite immutability blocks system packages, not user
+  venvs — venv survives OS updates; re-run the script to refresh the SDK.
 - **`configs/bazzite/gw2-claude-daemon.service`** — `systemd --user` unit, mirrors
   `gw2-ocr-daemon.service`. Lives at `~/.config/systemd/user/` on bazzite.
 - **Config**: `~/.config/gw2-claude/config.env` (mode 600) — `ANTHROPIC_API_KEY`
-  (required) + `GW2_CLAUDE_MODEL` (optional). Not in the repo — secret.
+  (required), `GW2_CLAUDE_MODEL`, and the TTS keys (`GW2_CLAUDE_TTS`,
+  `GW2_CLAUDE_TTS_ENGINE`, `GW2_CLAUDE_VOICE`, `ELEVENLABS_API_KEY`,
+  `ELEVENLABS_VOICE_ID`, `ELEVENLABS_MODEL`). Not in the repo — secret. The
+  ElevenLabs key lives in 1Password at
+  `op://Home/ElevenLabs API Key - GW2 Screen Reader/credential`.
 
 ## Protocol (separate `gw2-claude-*` namespace; coexists with tesseract daemon)
 
@@ -78,11 +82,18 @@ caps at 2576px long edge — larger frames are downscaled.
   worker thread (avoids deadlocking the render thread), `Poll()` per-frame.
   `CLAUDE_READ_SCREEN` keybind (unbound by default) — bind it to a controller
   long-hold for no-keyboard triggering. Built via GitHub Actions.
-- **Phase 2.5 (daemon side done)**: Piper TTS — the daemon speaks Claude's
-  answer aloud (British female voice `en_GB-cori-high`); audio rides the
-  Sunshine stream back to the player. `/tmp/gw2-claude-stop` kills playback,
-  `/tmp/gw2-claude-speaking` marks it in progress. Config: `GW2_CLAUDE_TTS`,
-  `GW2_CLAUDE_VOICE`. Remaining: addon double-press toggle (read / stop).
+- **Phase 2.5 (done)**: text-to-speech — the daemon speaks Claude's answer
+  aloud; audio rides the Sunshine stream back to the player.
+  `/tmp/gw2-claude-stop` kills playback, `/tmp/gw2-claude-speaking` marks it in
+  progress. Two engines: local **Piper** (free, offline) and **ElevenLabs**
+  cloud TTS — far more natural; used when `ELEVENLABS_API_KEY` is set,
+  auto-falls back to Piper. Live voice: ElevenLabs "Lily" (British female). The
+  daemon SYSTEM_PROMPT carries a light/playful reading tone.
+- **Phase 2.6 (done — mystic-clicker v3.6.21–22)**: cursor-anchored read
+  ("Read at Cursor" captures a 960×620 box at the mouse, not the whole frame);
+  Esc-to-stop; read/stop toggle on one control; and a **headless** trigger —
+  CLAUDE_READ_SCREEN no longer opens the capture panel, the answer just comes
+  back as speech.
 - **Phase 3 (later, opt-in, ToS-gated)**: closed-loop — Claude returns a
   structured action, the addon executes it. ArenaNet ToS risk lives here; keep it
   a separate explicit toggle, off by default.
@@ -90,11 +101,11 @@ caps at 2576px long edge — larger frames are downscaled.
 ## Controller trigger
 
 `CLAUDE_READ_SCREEN` is registered unbound. To trigger a screen read from the
-controller with no keyboard: in the Steam Input config, add a **Long_Press**
-activator on the View / left-menu button that sends the key assigned to
-`CLAUDE_READ_SCREEN` in Nexus. The keybind opens the capture panel and fires the
-"Read Screen" preset; the answer appears under the auto-expanded "Ask Claude"
-header.
+controller with no keyboard: in the Steam Input config, add an activator on a
+spare button (currently the map-button long-hold → `Alt+F10`) that sends the
+key assigned to `CLAUDE_READ_SCREEN` in Nexus. As of v3.6.22 the read runs
+**headless** — no capture panel opens; the answer comes back as speech. Press
+the same control again, or Esc, to stop a read/playback in progress.
 
 ## ArenaNet ToS
 

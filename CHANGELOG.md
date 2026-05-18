@@ -7,6 +7,35 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-18] — controller v20.0, Claude screen-reader voice + headless read
+
+### Added
+
+- **gw2-claude — ElevenLabs cloud TTS**: `gw2-claude-daemon.py` gained an engine
+  selector — ElevenLabs (far more natural) when `ELEVENLABS_API_KEY` is set,
+  else local Piper. No new Python dependency (stdlib `urllib`); MP3 → ffmpeg
+  decode → pw-play. Live voice: ElevenLabs "Lily" (British female). The daemon
+  SYSTEM_PROMPT carries a light/playful reading tone.
+- **mystic-clicker v3.6.21 — cursor-anchored read**: "Read at Cursor" captures a
+  960×620 box at the mouse cursor instead of the whole frame; Esc also stops a
+  read/playback in progress.
+- **controller v20.0**: "Home Instance Portal" added to the Utility Wheel
+  (replacing "Community LFG" — the wheel stays at 16 slots; Steam Input silently
+  rejects touch menus over 16 buttons).
+
+### Changed
+
+- **mystic-clicker v3.6.22 — headless AI read**: the `CLAUDE_READ_SCREEN`
+  keybind no longer opens the capture panel — the read runs headless and the
+  answer is spoken aloud. Stops the user hitting the position-capture 5s
+  countdown when triggering the AI from the controller.
+
+### Fixed
+
+- **mystic-clicker v3.6.20 — Accept-slot naming drift**: drifted "Accept" combo
+  labels renamed so the visible name matches the action across the addon UI and
+  the controller layout (`General Accept 2` → `Accept 4`, etc.).
+
 ## [controller v19.7] — Fix v19.6 chord misfires (F12 → logout, Ctrl+Shift+X chord doesn't trigger addon)
 
 ### Fixed

@@ -83,6 +83,13 @@ Steam Input keeps the active layout in memory. Even after on-disk replacement, t
 2. (Aggressive) `pkill steamwebhelper && pkill steam` on the relevant machine — Steam respawns with fresh layout cache
 3. Relaunch GW2 stream
 
+**On bazzite (Game Mode):** `pkill steam` races the gamescope session's
+auto-respawn, and Steam writes its stale in-memory layout back to the autosave
+file on shutdown — clobbering a freshly-deployed VDF. Reliable sequence:
+`systemctl --user stop gamescope-session-plus@steam.service` → re-deploy the VDF
+→ `sudo systemctl reboot`. Deploy the VDF *after* Steam has stopped so its
+shutdown-writeback cannot overwrite it; Steam then reads it fresh on boot.
+
 ## Cross-reference
 
 - [streaming-input-host-vs-client.md](streaming-input-host-vs-client.md) — explains why Deck-as-client uses Deck native's Steam Input layout (not bazzite's), so Deck VDF deploys must hit `deck@172.16.100.95`

@@ -201,7 +201,7 @@
 		"AllowPrereleases": false,
 		"IsDisabledUntilUpdate": false,
 		"IsFavorite": false,
-		"IsLoaded": true,
+		"IsLoaded": false,
 		"IsPausingUpdates": false,
 		"Name": "Community LFG",
 		"Signature": -61416033

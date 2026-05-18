@@ -39,6 +39,7 @@ std::string                           g_label;
 std::string                           g_result;
 std::string                           g_suffix;       // set by the worker once files are written
 bool                                  g_filesReady = false;
+bool                                  g_speaking   = false;  // daemon TTS in progress
 std::chrono::steady_clock::time_point  g_start;
 
 // Generous — the daemon normally replies in well under 10s. This is the
@@ -142,10 +143,16 @@ void RequestReadScreen()
 
 void Poll()
 {
+    // The daemon touches this while TTS is talking. Check it every frame
+    // regardless of request state — speech outlives the Done transition.
+    bool speaking = (GetFileAttributesA("Z:/tmp/gw2-claude-speaking")
+                     != INVALID_FILE_ATTRIBUTES);
+
     std::string                           suffix;
     std::chrono::steady_clock::time_point  start;
     {
         std::lock_guard<std::mutex> lk(g_mtx);
+        g_speaking = speaking;
         if (g_state != State::Waiting) return;
         if (!g_filesReady)             return;   // worker still capturing
         suffix = g_suffix;
@@ -217,6 +224,24 @@ int GetElapsedMs()
     if (g_state == State::Idle) return 0;
     return (int)std::chrono::duration_cast<std::chrono::milliseconds>(
         std::chrono::steady_clock::now() - g_start).count();
+}
+
+bool IsSpeaking()
+{
+    std::lock_guard<std::mutex> lk(g_mtx);
+    return g_speaking;
+}
+
+void Stop()
+{
+    // Touch the stop marker — the daemon kills any TTS playback on its next
+    // poll. Wine maps Z: -> Linux root, so this is /tmp/gw2-claude-stop.
+    { std::ofstream sf("Z:/tmp/gw2-claude-stop"); }
+
+    std::lock_guard<std::mutex> lk(g_mtx);
+    g_speaking = false;
+    if (g_state == State::Waiting)
+        g_state = State::Idle;   // also cancel a read that hasn't returned yet
 }
 
 }  // namespace ClaudeVision

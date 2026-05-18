@@ -314,7 +314,13 @@ def run_daemon(client, model, cfg):
             _safe_rm(ready)
 
             if ok:
-                speak(result, cfg)
+                # If the player cancelled mid-read (the stop marker appeared
+                # during the API call), honour it instead of speaking.
+                if os.path.exists(STOP_MARKER):
+                    _safe_rm(STOP_MARKER)
+                    log("read %s cancelled before speech" % suffix)
+                else:
+                    speak(result, cfg)
 
         time.sleep(POLL_SECONDS)
 

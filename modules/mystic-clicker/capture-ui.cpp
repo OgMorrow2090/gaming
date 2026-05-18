@@ -385,16 +385,19 @@ void RenderCaptureWindow()
         if (!s_CountdownActive)
         {
             ClaudeVision::State cs = ClaudeVision::GetState();
+            bool claudeSpeaking = ClaudeVision::IsSpeaking();
 
-            // Auto-expand the header while a read is running so the answer is
-            // visible without the player opening it — matters when the request
-            // was fired by keybind rather than by clicking in here.
-            if (cs == ClaudeVision::State::Waiting)
+            // Auto-expand while a read runs or Claude is speaking, so the
+            // answer and Stop control are visible without opening the header.
+            if (cs == ClaudeVision::State::Waiting || claudeSpeaking)
                 ImGui::SetNextItemOpen(true);
 
             if (ImGui::CollapsingHeader("Ask Claude###claude"))
             {
                 float cBtnH = 28.0f * g_UIScale;
+
+                if (claudeSpeaking && ImGui::Button("Stop Reading", ImVec2(-1, cBtnH)))
+                    ClaudeVision::Stop();
 
                 if (cs == ClaudeVision::State::Waiting)
                 {

@@ -33,6 +33,14 @@ void Request(const char* label, const char* prompt);
 // one place.
 void RequestReadScreen();
 
+// True while the daemon is reading an answer aloud (Piper TTS in progress).
+bool IsSpeaking();
+
+// Cancel an in-flight read and stop any speech. The keybind toggles between
+// this and RequestReadScreen() — one control (e.g. a controller double-press)
+// both starts a read and stops it.
+void Stop();
+
 // Advance the state machine — check for the daemon's reply. Call once per
 // render frame. Cheap when idle.
 void Poll();

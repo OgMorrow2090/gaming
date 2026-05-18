@@ -310,10 +310,19 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     }
     else if (strcmp(aIdentifier, CLAUDE_READ_SCREEN) == 0)
     {
-        // Surface the capture panel so the answer is visible, then fire the
-        // read. Triggerable by a controller long-hold — no keyboard needed.
-        g_ShowCaptureWindow = true;
-        ClaudeVision::RequestReadScreen();
+        // Toggle: if a read is in flight or Claude is speaking, stop it;
+        // otherwise start a new read. One control (e.g. a controller
+        // double-press) both starts the read and stops it — no keyboard.
+        if (ClaudeVision::GetState() == ClaudeVision::State::Waiting
+            || ClaudeVision::IsSpeaking())
+        {
+            ClaudeVision::Stop();
+        }
+        else
+        {
+            g_ShowCaptureWindow = true;   // surface the panel so the answer shows
+            ClaudeVision::RequestReadScreen();
+        }
     }
     // === CAPTURE MODE ===
     else if (strcmp(aIdentifier, CAPTURE_MODE) == 0)

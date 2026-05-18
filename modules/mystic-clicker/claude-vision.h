@@ -30,9 +30,10 @@ enum class State { Idle, Waiting, Done, Error };
 // flight.
 void Request(const char* label, const char* prompt, bool atCursorCrop = false);
 
-// Convenience: the cursor-anchored read — captures a box at the mouse cursor
-// and reads the text there. Shared by the in-window "Read at Cursor" button
-// and the CLAUDE_READ_SCREEN keybind so the prompt lives in one place.
+// The cursor-anchored continuous "follow" read — captures a box at the mouse
+// cursor, reads the text there, then keeps re-reading it each time the text
+// changes (a book page turn, a scroll) until Stop(). Used by the in-window
+// "Read at Cursor" button and the CLAUDE_READ_SCREEN keybind.
 void RequestReadScreen();
 
 // True while the daemon is reading an answer aloud (Piper TTS in progress).

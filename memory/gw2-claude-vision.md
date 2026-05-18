@@ -104,8 +104,17 @@ caps at 2576px long edge — larger frames are downscaled.
   the selection as a static region the `MYSTIC_AI_READ_BOOK` keybind re-reads
   with no drag. Keybinds `MYSTIC_AI_CAPTURE` / `MYSTIC_AI_READ_BOOK` (unbound).
   Mystic Clicker 3.6.25 dropped `claude-vision.{h,cpp}`, the Ask-Claude UI and
-  `CLAUDE_READ_SCREEN`. Phase 2 of the Mystic AI plan (Check-TP / wiki /
-  research / OCR-to-clipboard side-panel actions) is not yet built.
+  `CLAUDE_READ_SCREEN`.
+- **Phase 5 (done — Mystic AI 1.1.0, 2026-05-18)**: side-panel action buttons.
+  After a drag capture the box-anchored panel has **Check TP Prices**, **Add to
+  Wiki**, **Research**, **Copy Text** and **Read**. The addon prefixes the
+  daemon `.prompt` with `@action:<name>`; `gw2-claude-daemon.py` dispatches to
+  `trading-post` (GW2 API price; item name→ID via gw2tp's cached bulk list),
+  `wiki-fav` (GW2 wiki search API → `NexusGameWiki/library.json` favourites),
+  and `research` (Claude + the `web_search` tool, model
+  `GW2_CLAUDE_RESEARCH_MODEL`, default `claude-sonnet-4-6`). **Copy Text** is
+  local — `copytext.cpp` OCRs the crop via the tesseract daemon and sets the
+  Windows clipboard, no Claude call.
 - **Phase 3 (later, opt-in, ToS-gated)**: closed-loop — Claude returns a
   structured action, the addon executes it. ArenaNet ToS risk lives here; keep it
   a separate explicit toggle, off by default.

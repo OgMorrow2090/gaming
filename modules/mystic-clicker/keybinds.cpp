@@ -320,7 +320,11 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
         }
         else
         {
-            g_ShowCaptureWindow = true;   // surface the panel so the answer shows
+            // Headless: fire the read WITHOUT opening the capture panel. The
+            // answer comes back as speech, so the panel (and its position-
+            // capture buttons + 5s countdown) never needs to appear. Poll()
+            // runs every frame regardless of panel visibility, so the read
+            // still completes and speaks.
             ClaudeVision::RequestReadScreen();
         }
     }

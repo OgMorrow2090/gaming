@@ -26,9 +26,9 @@ echo "Installing/updating anthropic SDK + Pillow + Piper TTS into the venv..."
 
 VOICES="$HOME/.local/share/gw2-claude/voices"
 mkdir -p "$VOICES"
-if [ ! -f "$VOICES/en_GB-cori-high.onnx" ]; then
-    echo "Downloading Piper voice en_GB-cori-high (British female)..."
-    "$VENV/bin/python" -m piper.download_voices en_GB-cori-high --data-dir "$VOICES"
+if [ ! -f "$VOICES/en_GB-northern_english_male-medium.onnx" ]; then
+    echo "Downloading Piper voice en_GB-northern_english_male-medium..."
+    "$VENV/bin/python" -m piper.download_voices en_GB-northern_english_male-medium --data-dir "$VOICES"
 fi
 
 if [ ! -f "$CFGDIR/config.env" ]; then
@@ -48,7 +48,7 @@ GW2_CLAUDE_MODEL=claude-haiku-4-5
 #   GW2_CLAUDE_TTS:   on / off
 #   GW2_CLAUDE_VOICE: any Piper voice in ~/.local/share/gw2-claude/voices/
 GW2_CLAUDE_TTS=on
-GW2_CLAUDE_VOICE=en_GB-cori-high
+GW2_CLAUDE_VOICE=en_GB-northern_english_male-medium
 EOF
     chmod 600 "$CFGDIR/config.env"
     echo ""

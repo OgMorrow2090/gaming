@@ -9,6 +9,7 @@
  */
 
 #include "shared.h"
+#include "claude-vision.h"
 #include <cstring>
 #include <unordered_map>
 #include <string>
@@ -306,6 +307,13 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
     else if (strcmp(aIdentifier, COPY_ITEM_NAME) == 0)
     {
         SimulateCopyItemName();
+    }
+    else if (strcmp(aIdentifier, CLAUDE_READ_SCREEN) == 0)
+    {
+        // Surface the capture panel so the answer is visible, then fire the
+        // read. Triggerable by a controller long-hold — no keyboard needed.
+        g_ShowCaptureWindow = true;
+        ClaudeVision::RequestReadScreen();
     }
     // === CAPTURE MODE ===
     else if (strcmp(aIdentifier, CAPTURE_MODE) == 0)

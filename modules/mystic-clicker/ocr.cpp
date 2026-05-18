@@ -69,9 +69,10 @@ struct BmpInfoHeader {
 // Write a 24bpp BGR pixel buffer (top-down, row-major) as a BI_RGB BMP.
 // pixels: width*height*3 bytes, in BGR order, top-left first.
 // We write rows bottom-up as required by the BMP format.
-static bool WriteBmp(const std::string& path,
-                     const std::vector<uint8_t>& pixels,
-                     int width, int height)
+// Declared in ocr.h — also reused by claude-vision.cpp.
+bool WriteBmp(const std::string& path,
+              const std::vector<uint8_t>& pixels,
+              int width, int height)
 {
     int rowStride = ((width * 3 + 3) / 4) * 4;  // BMP rows are 4-byte aligned
     int padBytes  = rowStride - width * 3;

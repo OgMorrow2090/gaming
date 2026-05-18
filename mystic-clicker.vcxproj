@@ -107,6 +107,7 @@
     <ClCompile Include="modules\mystic-clicker\screen-capture.cpp" />
     <ClCompile Include="modules\mystic-clicker\config.cpp" />
     <ClCompile Include="modules\mystic-clicker\capture-ui.cpp" />
+    <ClCompile Include="modules\mystic-clicker\claude-vision.cpp" />
     <ClCompile Include="modules\mystic-clicker\rescue.cpp" />
     <ClCompile Include="include\imgui\imgui.cpp" />
     <ClCompile Include="include\imgui\imgui_draw.cpp" />
@@ -116,6 +117,7 @@
 
   <ItemGroup>
     <ClInclude Include="modules\mystic-clicker\shared.h" />
+    <ClInclude Include="modules\mystic-clicker\claude-vision.h" />
     <ClInclude Include="include\Nexus.h" />
     <ClInclude Include="include\imgui\imgui.h" />
     <ClInclude Include="include\imgui\imgui_internal.h" />

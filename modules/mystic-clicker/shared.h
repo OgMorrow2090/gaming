@@ -105,6 +105,7 @@ constexpr const char* CRAFT_CLOSE = "CRAFT_CLOSE";          // single click to c
 constexpr const char* GRACEFUL_QUIT = "GRACEFUL_QUIT";      // Esc → wait → click captured Exit Game button (replaces Alt+F4)
 constexpr const char* PATHING_TOGGLE_ALL = "PATHING_TOGGLE_ALL"; // Toggle Pathing addon's minimap + map + world render layers in one keypress
 constexpr const char* COPY_ITEM_NAME = "COPY_ITEM_NAME"; // Hover item + press: copies item name to clipboard via chat-link → GW2 API (for destroy-confirmation pasting)
+constexpr const char* CLAUDE_READ_SCREEN = "CLAUDE_READ_SCREEN"; // Capture the screen + ask Claude to read it (Phase 2 — controller-triggerable, no keyboard)
 
 // Capture keybind identifiers
 constexpr const char* CAPTURE_CRAFT = "CAPTURE_CRAFT";

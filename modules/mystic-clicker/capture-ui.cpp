@@ -12,6 +12,7 @@
 
 #include "shared.h"
 #include "imgui/imgui.h"
+#include "claude-vision.h"
 #include <cstdio>
 #include <cstring>
 #include <cmath>
@@ -236,6 +237,10 @@ void RenderCaptureWindow()
         // MT's render path each clear after applying their own state.
     }
 
+    // Advance the Claude-vision request state machine every frame — even while
+    // the panel is hidden — so a request fired by keybind still completes.
+    ClaudeVision::Poll();
+
     if (!g_ShowCaptureWindow) return;
 
     // Auto-hide confirmation after 3 seconds
@@ -371,6 +376,66 @@ void RenderCaptureWindow()
             ImGui::Text("Click target, move cursor in %ds.", COUNTDOWN_SECONDS);
             ImGui::Separator();
             ImGui::Spacing();
+        }
+
+        // ── Ask Claude — read the screen with no keyboard ─────────────────
+        // One tap captures the frame and sends it to the host-side Claude
+        // daemon; the answer appears below a few seconds later. Also fired by
+        // the CLAUDE_READ_SCREEN keybind (e.g. a controller long-hold).
+        if (!s_CountdownActive)
+        {
+            ClaudeVision::State cs = ClaudeVision::GetState();
+
+            // Auto-expand the header while a read is running so the answer is
+            // visible without the player opening it — matters when the request
+            // was fired by keybind rather than by clicking in here.
+            if (cs == ClaudeVision::State::Waiting)
+                ImGui::SetNextItemOpen(true);
+
+            if (ImGui::CollapsingHeader("Ask Claude###claude"))
+            {
+                float cBtnH = 28.0f * g_UIScale;
+
+                if (cs == ClaudeVision::State::Waiting)
+                {
+                    ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.0f, 1.0f),
+                        "Reading the screen... (%ds)",
+                        ClaudeVision::GetElapsedMs() / 1000);
+                }
+                else
+                {
+                    if (ImGui::Button("Read Screen", ImVec2(-1, cBtnH)))
+                        ClaudeVision::RequestReadScreen();
+                    if (ImGui::Button("Read Tooltip", ImVec2(-1, cBtnH)))
+                        ClaudeVision::Request("Read Tooltip",
+                            "Read the item or skill tooltip shown on screen. Report "
+                            "its full text - name, stats, and description.");
+                    if (ImGui::Button("List Items", ImVec2(-1, cBtnH)))
+                        ClaudeVision::Request("List Items",
+                            "List every item shown in the open panel (vendor, "
+                            "trading post, inventory, or reward track) with its "
+                            "quantity and price if visible.");
+                    if (ImGui::Button("Read Dialog", ImVec2(-1, cBtnH)))
+                        ClaudeVision::Request("Read Dialog",
+                            "Read the NPC dialogue, quest text, or event "
+                            "description currently on screen. Report it fully.");
+                }
+
+                if (cs == ClaudeVision::State::Done)
+                {
+                    ImGui::Spacing();
+                    ImGui::Separator();
+                    ImGui::TextDisabled("%s:", ClaudeVision::GetLabel().c_str());
+                    ImGui::TextWrapped("%s", ClaudeVision::GetResult().c_str());
+                }
+                else if (cs == ClaudeVision::State::Error)
+                {
+                    ImGui::Spacing();
+                    ImGui::Separator();
+                    ImGui::TextColored(ImVec4(1.0f, 0.4f, 0.4f, 1.0f),
+                        "%s", ClaudeVision::GetResult().c_str());
+                }
+            }
         }
 
         for (int c = 0; c < NUM_CATEGORIES; ++c)

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <vector>
+#include <cstdint>
 
 // Color-isolation strategy applied to the captured image before OCR.
 // Tesseract works far better on high-contrast black-on-white, so when we know
@@ -34,3 +36,9 @@ OcrResult OcrScreenRegion(int x, int y, int w, int h, const OcrOptions& opts);
 
 // Convenience: rectangle of given size centered on the cursor.
 OcrResult OcrAroundCursor(int width, int height, const OcrOptions& opts);
+
+// Write a 24bpp BGR pixel buffer (top-down, row-major) as a BI_RGB BMP.
+// Exposed here so the Claude-vision capture path (claude-vision.cpp) can reuse
+// the same writer instead of duplicating it.
+bool WriteBmp(const std::string& path, const std::vector<uint8_t>& pixels,
+              int width, int height);

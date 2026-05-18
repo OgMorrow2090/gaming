@@ -20,9 +20,16 @@ if [ ! -d "$VENV" ]; then
     python3 -m venv "$VENV"
 fi
 
-echo "Installing/updating anthropic SDK + Pillow into the venv..."
+echo "Installing/updating anthropic SDK + Pillow + Piper TTS into the venv..."
 "$VENV/bin/pip" install --quiet --upgrade pip
-"$VENV/bin/pip" install --quiet --upgrade anthropic pillow
+"$VENV/bin/pip" install --quiet --upgrade anthropic pillow piper-tts
+
+VOICES="$HOME/.local/share/gw2-claude/voices"
+mkdir -p "$VOICES"
+if [ ! -f "$VOICES/en_GB-cori-high.onnx" ]; then
+    echo "Downloading Piper voice en_GB-cori-high (British female)..."
+    "$VENV/bin/python" -m piper.download_voices en_GB-cori-high --data-dir "$VOICES"
+fi
 
 if [ ! -f "$CFGDIR/config.env" ]; then
     cat > "$CFGDIR/config.env" <<'EOF'
@@ -36,6 +43,12 @@ ANTHROPIC_API_KEY=
 #   claude-sonnet-4-6 — stronger reading, mid cost
 #   claude-opus-4-7   — most capable; use when coin-digit precision matters
 GW2_CLAUDE_MODEL=claude-haiku-4-5
+
+# Optional. Text-to-speech — the daemon reads Claude's answer aloud.
+#   GW2_CLAUDE_TTS:   on / off
+#   GW2_CLAUDE_VOICE: any Piper voice in ~/.local/share/gw2-claude/voices/
+GW2_CLAUDE_TTS=on
+GW2_CLAUDE_VOICE=en_GB-cori-high
 EOF
     chmod 600 "$CFGDIR/config.env"
     echo ""
@@ -45,7 +58,7 @@ fi
 
 echo ""
 "$VENV/bin/python" - <<'PY'
-import anthropic, PIL
-print("OK: anthropic", anthropic.__version__, "+ Pillow", PIL.__version__)
+import anthropic, PIL, piper  # noqa: F401
+print("OK: anthropic", anthropic.__version__, "+ Pillow", PIL.__version__, "+ Piper")
 PY
 echo "venv ready: $VENV"

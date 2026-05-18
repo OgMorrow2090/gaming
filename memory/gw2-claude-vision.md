@@ -19,7 +19,7 @@ of the Steam pressure-vessel sandbox — was already solved for tesseract OCR. S
 
 ## Architecture (Phase 1 — read-only)
 
-```
+```text
 GW2 (Nexus addon)                bazzite host (outside sandbox)
   capture frame  ──BMP/PNG──▶  /tmp/gw2-claude-input-<TS>.*
                                        │  (bind-mounted into sandbox)
@@ -45,7 +45,7 @@ GW2 (Nexus addon)                bazzite host (outside sandbox)
 ## Protocol (separate `gw2-claude-*` namespace; coexists with tesseract daemon)
 
 | File | Written by | Meaning |
-|---|---|---|
+| --- | --- | --- |
 | `/tmp/gw2-claude-input-<TS>.png` (or jpg/bmp/webp) | addon | captured frame |
 | `/tmp/gw2-claude-input-<TS>.prompt` | addon (optional) | what to ask Claude |
 | `/tmp/gw2-claude-input-<TS>.ready` | addon | atomic "frame complete" trigger |
@@ -78,6 +78,11 @@ caps at 2576px long edge — larger frames are downscaled.
   worker thread (avoids deadlocking the render thread), `Poll()` per-frame.
   `CLAUDE_READ_SCREEN` keybind (unbound by default) — bind it to a controller
   long-hold for no-keyboard triggering. Built via GitHub Actions.
+- **Phase 2.5 (daemon side done)**: Piper TTS — the daemon speaks Claude's
+  answer aloud (British female voice `en_GB-cori-high`); audio rides the
+  Sunshine stream back to the player. `/tmp/gw2-claude-stop` kills playback,
+  `/tmp/gw2-claude-speaking` marks it in progress. Config: `GW2_CLAUDE_TTS`,
+  `GW2_CLAUDE_VOICE`. Remaining: addon double-press toggle (read / stop).
 - **Phase 3 (later, opt-in, ToS-gated)**: closed-loop — Claude returns a
   structured action, the addon executes it. ArenaNet ToS risk lives here; keep it
   a separate explicit toggle, off by default.

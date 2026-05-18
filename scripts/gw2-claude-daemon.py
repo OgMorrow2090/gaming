@@ -1,52 +1,60 @@
 #!/usr/bin/env python3
-"""gw2-claude-daemon.py — Claude-vision OCR worker for Mystic Clicker / GW2.
+"""gw2-claude-daemon.py — Claude-vision OCR + text-to-speech worker for GW2.
 
 Companion to gw2-ocr-daemon.sh. Where that daemon runs tesseract for fast,
 free, offline transcription, this one sends the captured frame to the Claude
-API — which can both READ and UNDERSTAND the screen (item lists, tooltips,
-dialog state, coin amounts) far better than tesseract manages on GW2's
-stylised fonts.
+API — which can both READ and UNDERSTAND the screen — and then speaks the
+answer aloud via Piper TTS. Designed for a keyboard-free, controller +
+game-streaming setup: the spoken answer rides the Sunshine audio stream back
+to the player.
 
-Same sandbox-bridge design as the tesseract daemon: the Nexus addon drops a
+Sandbox-bridge design (same as the tesseract daemon): the Nexus addon drops a
 captured frame into /tmp (bind-mounted into the Steam pressure-vessel
 sandbox); this daemon runs OUTSIDE the sandbox as a `systemd --user` unit,
-polls /tmp, calls the API, writes the result back.
+polls /tmp, calls the API, writes the answer back, and speaks it.
 
-Protocol (parallel to the tesseract daemon — separate `gw2-claude-*`
-namespace so the two daemons never race for the same files):
+Protocol (separate gw2-claude-* namespace so it never collides with the
+tesseract OCR daemon):
 
-    addon writes  /tmp/gw2-claude-input-<TS>.png      captured frame (png/jpg/bmp/webp)
-    addon writes  /tmp/gw2-claude-input-<TS>.prompt   (optional) what to ask Claude
-    addon touches /tmp/gw2-claude-input-<TS>.ready    atomic "frame complete" trigger
+    addon writes  /tmp/gw2-claude-input-<TS>.png      captured frame
+    addon writes  /tmp/gw2-claude-input-<TS>.prompt   (optional) what to ask
+    addon touches /tmp/gw2-claude-input-<TS>.ready    "request complete" trigger
     daemon writes /tmp/gw2-claude-output-<TS>.txt     Claude's answer
     daemon touches /tmp/gw2-claude-done-<TS>          completion marker
-
-We process the `.ready` marker (never the image directly) so we cannot race
-the addon's still-open file handle and analyse a half-written frame.
+    daemon touches /tmp/gw2-claude-speaking           present while TTS is talking
+    addon touches /tmp/gw2-claude-stop                request: stop talking now
 
 Standalone test mode (no addon needed):
 
-    gw2-claude-daemon.py --analyze <image> ["question"]
+    gw2-claude-daemon.py --analyze <image> ["question"]   read + speak an image
+    gw2-claude-daemon.py --say "some text"                speak text directly
 
 Config: ~/.config/gw2-claude/config.env  (KEY=VALUE lines, mode 600)
-    ANTHROPIC_API_KEY=sk-ant-...      (required)
-    GW2_CLAUDE_MODEL=claude-opus-4-7  (optional — see config.env comments)
+    ANTHROPIC_API_KEY=sk-ant-...           (required)
+    GW2_CLAUDE_MODEL=claude-haiku-4-5      (optional)
+    GW2_CLAUDE_TTS=on                      (optional — on/off, default on)
+    GW2_CLAUDE_VOICE=en_GB-cori-high     (optional — Piper voice name)
 """
 
 import base64
+import glob
 import io
 import os
+import re
+import subprocess
 import sys
 import time
 
 CONFIG_PATH = os.path.expanduser("~/.config/gw2-claude/config.env")
 LOG_PATH = os.path.expanduser("~/.local/state/gw2-claude-daemon.log")
+VOICES_DIR = os.path.expanduser("~/.local/share/gw2-claude/voices")
 TMP = "/tmp"
-POLL_SECONDS = 0.2  # API round-trip dwarfs this; no need to spin faster
+POLL_SECONDS = 0.2
 
-# Claude vision accepts JPEG/PNG/GIF/WebP — not BMP. Whatever the addon drops,
-# we re-encode to PNG before sending. Opus 4.7 high-res caps at 2576px on the
-# long edge; anything larger is downscaled to stay inside that and control cost.
+STOP_MARKER = os.path.join(TMP, "gw2-claude-stop")
+SPEAKING_MARKER = os.path.join(TMP, "gw2-claude-speaking")
+TTS_WAV = os.path.join(TMP, "gw2-claude-tts.wav")
+
 MAX_LONG_EDGE = 2576
 IMAGE_EXTS = (".png", ".jpg", ".jpeg", ".bmp", ".webp", ".gif")
 
@@ -74,9 +82,12 @@ SYSTEM_PROMPT = (
     "When given no specific question, transcribe everything visible.\n"
     "- If the image is blank, black, or otherwise unreadable, say so plainly "
     "rather than describing nothing.\n"
-    "- Keep answers compact — this output is consumed by an addon, not a human "
-    "reading prose."
+    "- Your answer is both shown on screen and read aloud by text-to-speech, "
+    "so keep it plain and compact — no markdown, no bullet symbols."
 )
+
+# Handle to the running `pw-play` subprocess, or None.
+g_tts_proc = None
 
 
 def log(msg):
@@ -91,7 +102,6 @@ def log(msg):
 
 
 def load_config():
-    """Read ~/.config/gw2-claude/config.env into the environment."""
     cfg = {}
     try:
         with open(CONFIG_PATH) as f:
@@ -119,8 +129,8 @@ def prepare_image(path):
         long_edge = max(im.size)
         if long_edge > MAX_LONG_EDGE:
             scale = MAX_LONG_EDGE / long_edge
-            new_size = (round(im.width * scale), round(im.height * scale))
-            im = im.resize(new_size, Image.LANCZOS)
+            im = im.resize((round(im.width * scale), round(im.height * scale)),
+                           Image.LANCZOS)
         buf = io.BytesIO()
         im.save(buf, format="PNG")
         return buf.getvalue()
@@ -134,10 +144,8 @@ def analyze(client, model, image_path, question):
     resp = client.messages.create(
         model=model,
         max_tokens=4096,
-        # System prompt is identical on every request — cache it so repeated
-        # calls only pay full price for the (always-unique) image + question.
-        # Caching only engages once the cached prefix is large enough for the
-        # model; if it doesn't, this is simply a no-op, never a regression.
+        # Stable system prompt — cached so repeated calls only pay full price
+        # for the always-unique image + question.
         system=[{
             "type": "text",
             "text": SYSTEM_PROMPT,
@@ -165,8 +173,89 @@ def analyze(client, model, image_path, question):
     return text or "(no text returned)"
 
 
+# ---------------------------------------------------------------------------
+# Text-to-speech (Piper). Synthesis is brief and runs inline; playback is a
+# detached `pw-play` subprocess we can kill on a stop request. The presence of
+# SPEAKING_MARKER tells the addon whether speech is currently in progress.
+# ---------------------------------------------------------------------------
+
+def clean_for_speech(text):
+    """Strip markdown so the voice doesn't read 'asterisk asterisk'."""
+    t = re.sub(r"`+", "", text)
+    t = re.sub(r"\*+", "", t)
+    t = re.sub(r"^#+\s*", "", t, flags=re.MULTILINE)
+    t = re.sub(r"^\s*[-*]\s+", "", t, flags=re.MULTILINE)
+    return t.strip()
+
+
+def stop_speaking():
+    """Kill any in-progress playback and clear the speaking marker."""
+    global g_tts_proc
+    if g_tts_proc is not None:
+        if g_tts_proc.poll() is None:
+            g_tts_proc.terminate()
+            try:
+                g_tts_proc.wait(timeout=2)
+            except Exception:  # noqa: BLE001
+                g_tts_proc.kill()
+        g_tts_proc = None
+    _safe_rm(SPEAKING_MARKER)
+
+
+def reap_tts():
+    """Drop the speaking marker once playback has finished on its own."""
+    global g_tts_proc
+    if g_tts_proc is not None and g_tts_proc.poll() is not None:
+        g_tts_proc = None
+        _safe_rm(SPEAKING_MARKER)
+
+
+def speak(text, cfg):
+    """Synthesize `text` with Piper and play it. Supersedes any current speech."""
+    global g_tts_proc
+    stop_speaking()
+
+    if (cfg.get("GW2_CLAUDE_TTS", "on") or "on").lower() in ("off", "0", "false", "no"):
+        return
+    spoken = clean_for_speech(text)
+    if not spoken:
+        return
+
+    voice = cfg.get("GW2_CLAUDE_VOICE") or "en_GB-cori-high"
+    model = os.path.join(VOICES_DIR, voice + ".onnx")
+    if not os.path.exists(model):
+        log("WARN: voice model missing (%s) — skipping TTS" % model)
+        return
+
+    piper = os.path.join(os.path.dirname(sys.executable), "piper")
+    try:
+        subprocess.run([piper, "-m", model, "-f", TTS_WAV],
+                       input=spoken.encode("utf-8"),
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                       timeout=120, check=True)
+    except Exception as e:  # noqa: BLE001
+        log("WARN: Piper synthesis failed: %s" % e)
+        return
+
+    try:
+        g_tts_proc = subprocess.Popen(["pw-play", TTS_WAV],
+                                      stdout=subprocess.DEVNULL,
+                                      stderr=subprocess.DEVNULL)
+    except Exception as e:  # noqa: BLE001
+        log("WARN: pw-play failed: %s" % e)
+        return
+    open(SPEAKING_MARKER, "w").close()
+    log("speaking (%d chars, voice %s)" % (len(spoken), voice))
+
+
+def _safe_rm(path):
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+
+
 def find_image(suffix):
-    """Locate the captured frame for a given request suffix."""
     for ext in IMAGE_EXTS:
         candidate = os.path.join(TMP, "gw2-claude-input-%s%s" % (suffix, ext))
         if os.path.exists(candidate):
@@ -174,11 +263,17 @@ def find_image(suffix):
     return None
 
 
-def run_daemon(client, model):
-    import glob
-
-    log("daemon starting (pid=%d model=%s)" % (os.getpid(), model))
+def run_daemon(client, model, cfg):
+    log("daemon starting (pid=%d model=%s tts=%s)" % (
+        os.getpid(), model, cfg.get("GW2_CLAUDE_TTS", "on")))
     while True:
+        # A stop request kills speech immediately (the addon touches this on a
+        # second double-press of the read button).
+        if os.path.exists(STOP_MARKER):
+            stop_speaking()
+            _safe_rm(STOP_MARKER)
+        reap_tts()
+
         for ready in glob.glob(os.path.join(TMP, "gw2-claude-input-*.ready")):
             suffix = os.path.basename(ready)[len("gw2-claude-input-"):-len(".ready")]
             done_mark = os.path.join(TMP, "gw2-claude-done-%s" % suffix)
@@ -202,27 +297,26 @@ def run_daemon(client, model):
             except FileNotFoundError:
                 pass
 
+            # A fresh read supersedes whatever is being spoken.
+            stop_speaking()
+
+            ok = True
             try:
                 result = analyze(client, model, image_path, question)
-            except Exception as e:  # noqa: BLE001 — surface every failure to the addon
+            except Exception as e:  # noqa: BLE001
                 result = "ERROR: %s" % e
+                ok = False
                 log("ERROR request=%s %s" % (suffix, e))
 
-            # Write the answer, then touch the done marker LAST so the addon
-            # never reads a half-written output file.
             with open(out_path, "w") as f:
                 f.write(result)
             open(done_mark, "w").close()
             _safe_rm(ready)
 
+            if ok:
+                speak(result, cfg)
+
         time.sleep(POLL_SECONDS)
-
-
-def _safe_rm(path):
-    try:
-        os.remove(path)
-    except OSError:
-        pass
 
 
 def main():
@@ -230,26 +324,36 @@ def main():
     model = cfg.get("GW2_CLAUDE_MODEL") or "claude-opus-4-7"
     os.environ["ANTHROPIC_API_KEY"] = cfg["ANTHROPIC_API_KEY"]
 
+    args = sys.argv[1:]
+
+    if args and args[0] == "--say":
+        speak(" ".join(args[1:]), cfg)
+        if g_tts_proc is not None:
+            g_tts_proc.wait()
+        return
+
     import anthropic
     client = anthropic.Anthropic()
 
-    args = sys.argv[1:]
     if args and args[0] == "--analyze":
         if len(args) < 2:
             print("usage: gw2-claude-daemon.py --analyze <image> [question]",
                   file=sys.stderr)
             sys.exit(2)
-        image = args[1]
         question = " ".join(args[2:]) if len(args) > 2 else None
-        print(analyze(client, model, image, question))
+        text = analyze(client, model, args[1], question)
+        print(text)
+        speak(text, cfg)
+        if g_tts_proc is not None:
+            g_tts_proc.wait()
         return
 
     if args and args[0] != "--daemon":
-        print("usage: gw2-claude-daemon.py [--daemon | --analyze <image> [q]]",
+        print("usage: gw2-claude-daemon.py [--daemon | --analyze <img> [q] | --say <text>]",
               file=sys.stderr)
         sys.exit(2)
 
-    run_daemon(client, model)
+    run_daemon(client, model, cfg)
 
 
 if __name__ == "__main__":

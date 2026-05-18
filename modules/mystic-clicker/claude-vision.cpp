@@ -46,19 +46,20 @@ std::chrono::steady_clock::time_point  g_start;
 // "something is wrong" threshold (daemon not running, no network, etc.).
 constexpr int CLAUDE_TIMEOUT_MS = 45000;
 
-// Capture the whole GW2 frame and write the request files for the daemon.
+// Capture the GW2 frame (whole screen, or a box at the cursor when atCursor)
+// and write the request files for the daemon.
 //
 // Runs on a detached worker thread: CaptureBackBufferRegion() blocks until the
 // next RT_PostRender hook fulfils it, so calling it on the render thread (where
 // the UI runs) would deadlock that frame.
-void Worker(std::string prompt)
+void Worker(std::string prompt, bool atCursor)
 {
     // Unique suffix so rapid/concurrent requests never collide.
     auto now = std::chrono::steady_clock::now().time_since_epoch().count();
     char suffix[32];
     snprintf(suffix, sizeof(suffix), "%lld", (long long)now);
 
-    // Full-screen capture: the game window's client rect is the render res.
+    // The game window's client rect is the render resolution.
     int w = 2560, h = 1440;   // fallback if the window handle is unavailable
     if (GameWindow != nullptr)
     {
@@ -70,8 +71,31 @@ void Worker(std::string prompt)
         }
     }
 
+    // Capture region. Default: the whole frame. Cursor mode: a box anchored a
+    // little up-left of the mouse, so the player can point at the start of the
+    // text they want and get just that block read — not the whole screen.
+    int capX = 0, capY = 0, capW = w, capH = h;
+    if (atCursor)
+    {
+        POINT pt;
+        if (GetCursorPos(&pt))
+        {
+            if (GameWindow != nullptr)
+                ScreenToClient(GameWindow, &pt);
+
+            const int PAD  = 24;    // margin up-left so the first glyph isn't clipped
+            const int BOXW = 960;   // generous enough for a tooltip / dialog box
+            const int BOXH = 620;
+            capX = pt.x - PAD;  if (capX < 0) capX = 0;
+            capY = pt.y - PAD;  if (capY < 0) capY = 0;
+            capW = BOXW;  if (capX + capW > w) capW = w - capX;
+            capH = BOXH;  if (capY + capH > h) capH = h - capY;
+        }
+    }
+
     std::vector<uint8_t> pixels;
-    if (w <= 0 || h <= 0 || !CaptureBackBufferRegion(0, 0, w, h, pixels))
+    if (capW <= 0 || capH <= 0 ||
+        !CaptureBackBufferRegion(capX, capY, capW, capH, pixels))
     {
         std::lock_guard<std::mutex> lk(g_mtx);
         g_state  = ClaudeVision::State::Error;
@@ -85,7 +109,7 @@ void Worker(std::string prompt)
     std::string promptPath = inBase + ".prompt";
     std::string readyPath  = inBase + ".ready";
 
-    if (!WriteBmp(bmpPath, pixels, w, h))
+    if (!WriteBmp(bmpPath, pixels, capW, capH))
     {
         std::lock_guard<std::mutex> lk(g_mtx);
         g_state  = ClaudeVision::State::Error;
@@ -106,7 +130,8 @@ void Worker(std::string prompt)
     {
         char msg[256];
         snprintf(msg, sizeof(msg),
-                 "Claude vision request sent (%dx%d, suffix %s)", w, h, suffix);
+                 "Claude vision request sent (%dx%d at %d,%d, suffix %s)",
+                 capW, capH, capX, capY, suffix);
         APIDefs->Log(LOGL_INFO, "MysticClicker", msg);
     }
 
@@ -119,7 +144,7 @@ void Worker(std::string prompt)
 
 namespace ClaudeVision {
 
-void Request(const char* label, const char* prompt)
+void Request(const char* label, const char* prompt, bool atCursorCrop)
 {
     {
         std::lock_guard<std::mutex> lk(g_mtx);
@@ -131,14 +156,17 @@ void Request(const char* label, const char* prompt)
         g_filesReady = false;
         g_start      = std::chrono::steady_clock::now();
     }
-    std::thread(Worker, std::string(prompt ? prompt : "")).detach();
+    std::thread(Worker, std::string(prompt ? prompt : ""), atCursorCrop).detach();
 }
 
 void RequestReadScreen()
 {
-    Request("Read Screen",
-        "Transcribe every piece of text visible on this Guild Wars 2 screen. "
-        "Preserve structure: list items one per line.");
+    Request("Read at Cursor",
+        "This image is a region of the Guild Wars 2 screen, captured around "
+        "the point the player pointed at. Read the text in it - a tooltip, "
+        "dialogue, quest text, mail, or item listing - in full, top to bottom. "
+        "If text is clearly cut off at an edge, say so briefly at the end.",
+        true);   // crop to a box at the mouse cursor
 }
 
 void Poll()

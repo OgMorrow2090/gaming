@@ -241,6 +241,15 @@ void RenderCaptureWindow()
     // the panel is hidden — so a request fired by keybind still completes.
     ClaudeVision::Poll();
 
+    // Esc also stops Claude reading. Observed via GetAsyncKeyState, never
+    // consumed — Esc still closes menus and does its normal job in-game.
+    if ((GetAsyncKeyState(VK_ESCAPE) & 0x8000) &&
+        (ClaudeVision::GetState() == ClaudeVision::State::Waiting
+         || ClaudeVision::IsSpeaking()))
+    {
+        ClaudeVision::Stop();
+    }
+
     if (!g_ShowCaptureWindow) return;
 
     // Auto-hide confirmation after 3 seconds
@@ -407,7 +416,7 @@ void RenderCaptureWindow()
                 }
                 else
                 {
-                    if (ImGui::Button("Read Screen", ImVec2(-1, cBtnH)))
+                    if (ImGui::Button("Read at Cursor", ImVec2(-1, cBtnH)))
                         ClaudeVision::RequestReadScreen();
                     if (ImGui::Button("Read Tooltip", ImVec2(-1, cBtnH)))
                         ClaudeVision::Request("Read Tooltip",

@@ -24,13 +24,15 @@ namespace ClaudeVision {
 enum class State { Idle, Waiting, Done, Error };
 
 // Start a request. `label` is the button name (shown in the UI); `prompt` is
-// the question sent to Claude. Non-blocking; ignored if one is already in
+// the question sent to Claude. When `atCursorCrop` is true the capture is a
+// box anchored at the mouse cursor instead of the whole frame — point at the
+// start of the text you want read. Non-blocking; ignored if one is already in
 // flight.
-void Request(const char* label, const char* prompt);
+void Request(const char* label, const char* prompt, bool atCursorCrop = false);
 
-// Convenience: the "Read Screen" preset (transcribe everything). Shared by the
-// in-window button and the CLAUDE_READ_SCREEN keybind so the prompt lives in
-// one place.
+// Convenience: the cursor-anchored read — captures a box at the mouse cursor
+// and reads the text there. Shared by the in-window "Read at Cursor" button
+// and the CLAUDE_READ_SCREEN keybind so the prompt lives in one place.
 void RequestReadScreen();
 
 // True while the daemon is reading an answer aloud (Piper TTS in progress).

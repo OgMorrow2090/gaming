@@ -3172,7 +3172,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press HOME, Home Instance Portal, , "
+							"binding"		"key_press LEFT_ALT, Claude Read, , "
+							"binding"		"key_press F10, Claude Read, , "
 						}
 						"settings"
 						{

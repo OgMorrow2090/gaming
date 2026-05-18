@@ -1906,5 +1906,14 @@
 		"Passthrough": false,
 		"Shift": true,
 		"Type": 1
+	},
+	{
+		"Alt": true,
+		"Code": 68,
+		"Ctrl": false,
+		"Identifier": "CLAUDE_READ_SCREEN",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
 	}
 ]

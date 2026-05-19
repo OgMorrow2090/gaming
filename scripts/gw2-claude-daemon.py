@@ -349,9 +349,12 @@ def _speak_elevenlabs(spoken, cfg):
     return _play(TTS_WAV, "%d chars, ElevenLabs %s" % (len(spoken), voice))
 
 
-def speak(text, cfg):
-    """Speak `text` aloud — ElevenLabs when configured, else local Piper.
-    Supersedes any current speech."""
+def speak(text, cfg, is_book=False):
+    """Speak `text` aloud. Supersedes any current speech.
+
+    GW2_CLAUDE_TTS_ENGINE: elevenlabs = always ElevenLabs; piper = always local
+    Piper; auto = ElevenLabs for book reads only, Piper for everything else (so
+    the premium voice is spent on long-form books, not quick tooltip reads)."""
     stop_speaking()
 
     if (cfg.get("GW2_CLAUDE_TTS", "on") or "on").lower() in ("off", "0", "false", "no"):
@@ -360,9 +363,9 @@ def speak(text, cfg):
     if not spoken:
         return
 
-    # Engine: "elevenlabs", "piper", or "auto" (ElevenLabs when a key is set).
     engine = (cfg.get("GW2_CLAUDE_TTS_ENGINE") or "auto").lower()
-    use_el = engine == "elevenlabs" or (engine == "auto" and cfg.get("ELEVENLABS_API_KEY"))
+    use_el = (engine == "elevenlabs"
+              or (engine == "auto" and is_book and cfg.get("ELEVENLABS_API_KEY")))
 
     if use_el:
         if _speak_elevenlabs(spoken, cfg):
@@ -646,6 +649,12 @@ def run_daemon(client, model, cfg):
             if action != "read":
                 log("request=%s action=%s" % (suffix, action))
 
+            # Book reads (Read-Book keybind) use ElevenLabs under engine "auto";
+            # every other read stays on free Piper. The marker phrase must match
+            # overlay.cpp BOOK_PROMPT.
+            is_book = (action == "read" and bool(question)
+                       and "in-game Guild Wars 2 book" in question)
+
             # A fresh request supersedes whatever is being spoken.
             stop_speaking()
 
@@ -676,7 +685,7 @@ def run_daemon(client, model, cfg):
                     _safe_rm(STOP_MARKER)
                     log("read %s cancelled before speech" % suffix)
                 else:
-                    speak(result, cfg)
+                    speak(result, cfg, is_book)
 
         time.sleep(POLL_SECONDS)
 

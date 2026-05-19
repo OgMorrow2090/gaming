@@ -46,7 +46,7 @@ GW2_CLAUDE_MODEL=claude-haiku-4-5
 
 # Optional. Text-to-speech — the daemon reads Claude's answer aloud.
 #   GW2_CLAUDE_TTS:        on / off
-#   GW2_CLAUDE_TTS_ENGINE: auto / piper / elevenlabs (auto = ElevenLabs if a key is set)
+#   GW2_CLAUDE_TTS_ENGINE: auto / piper / elevenlabs (auto = ElevenLabs for books, Piper otherwise)
 #   GW2_CLAUDE_VOICE:      any Piper voice in ~/.local/share/gw2-claude/voices/
 GW2_CLAUDE_TTS=on
 GW2_CLAUDE_TTS_ENGINE=auto

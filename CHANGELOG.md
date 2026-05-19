@@ -7,6 +7,18 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-19] — TTS routing — book reads → ElevenLabs Lily, the rest → Piper
+
+### Changed
+
+- **`gw2-claude-daemon.py`** — under `GW2_CLAUDE_TTS_ENGINE=auto`, only **book
+  reads** (the Read-Book keybind) use ElevenLabs "Lily"; drag-select reads,
+  tooltips and the TP / Wiki / Research actions now use free Piper "Jenny".
+  `run_daemon` flags a book read by the `BOOK_PROMPT` marker; `speak()` gained
+  an `is_book` argument. `elevenlabs` / `piper` still force a single engine.
+  Spends the ElevenLabs credit budget on long-form book reading and keeps quick
+  functional reads free.
+
 ## [2026-05-19] — Piper fallback voice → Jenny (British female)
 
 ### Changed

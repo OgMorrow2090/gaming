@@ -463,20 +463,27 @@ ImVec2 PanelAnchorPos(float panelW, float estH, ImVec2 disp)
     return ImVec2(x, y);
 }
 
-// An icon button (embedded GW2-style icon), falling back to a text button if
-// the texture is not ready yet.
-bool IconButton(const char* iconId, const char* fallback, const char* tip, float sz)
+// One action button: a GW2 icon if the texture is loaded, otherwise a coloured
+// text button. `col` tints the button so each action reads at a glance; `w`
+// fixes the width so the action row fits the panel.
+bool ActionButton(const char* iconId, const char* label, const char* tip,
+                  ImU32 col, float w, float h)
 {
-    bool clicked = false;
     Texture_t* tex = iconId ? Icons::Get(iconId) : nullptr;
-    // The vendored ImGui predates the str_id ImageButton overload, so the
-    // button derives its ID from the texture; PushID keeps it unique per icon.
-    ImGui::PushID(iconId);
-    if (tex && tex->Resource)
-        clicked = ImGui::ImageButton((ImTextureID)(intptr_t)tex->Resource, ImVec2(sz, sz));
-    else
-        clicked = ImGui::Button(fallback,
-                                ImVec2(0, sz + ImGui::GetStyle().FramePadding.y * 2.0f));
+    ImVec4 c = ImGui::ColorConvertU32ToFloat4(col);
+    ImVec4 cHov(Mn(c.x * 1.30f, 1.0f), Mn(c.y * 1.30f, 1.0f), Mn(c.z * 1.30f, 1.0f), 1.0f);
+    ImVec4 cAct(c.x * 0.78f, c.y * 0.78f, c.z * 0.78f, 1.0f);
+
+    // The vendored ImGui predates the str_id ImageButton overload; PushID on
+    // the label keeps each button's ID unique.
+    ImGui::PushID(label);
+    ImGui::PushStyleColor(ImGuiCol_Button,        c);
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, cHov);
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive,  cAct);
+    bool clicked = (tex && tex->Resource)
+        ? ImGui::ImageButton((ImTextureID)(intptr_t)tex->Resource, ImVec2(h, h))
+        : ImGui::Button(label, ImVec2(w, h));
+    ImGui::PopStyleColor(3);
     ImGui::PopID();
     if (tip && ImGui::IsItemHovered())
         ImGui::SetTooltip("%s", tip);
@@ -552,44 +559,67 @@ void DrawPanel(bool reviewMode)
         bool  busy = (cs == ClaudeVision::State::Waiting)
                      || (copySt == CopyText::State::Working);
 
+        // A distinct tint per action so the row reads at a glance.
+        const ImU32 COL_READ  = IM_COL32( 48, 112, 158, 235);
+        const ImU32 COL_TP    = IM_COL32(152, 122,  36, 235);
+        const ImU32 COL_WIKI  = IM_COL32( 54, 124,  74, 235);
+        const ImU32 COL_RSCH  = IM_COL32(104,  76, 150, 235);
+        const ImU32 COL_COPY  = IM_COL32( 94, 100, 110, 235);
+        const ImU32 COL_BOOK  = IM_COL32(152,  98,  46, 235);
+        const ImU32 COL_STOP  = IM_COL32(160,  60,  60, 235);
+        const ImU32 COL_CLOSE = IM_COL32( 72,  76,  84, 235);
+
         if (busy)
         {
             ImGui::TextDisabled("Working...");
             if (speaking || cs == ClaudeVision::State::Waiting)
             {
                 ImGui::SameLine();
-                if (IconButton(Icons::STOP, "Stop", "Stop the read / stop speaking.", bsz))
+                if (ActionButton(Icons::STOP, "Stop", "Stop the read / stop speaking.",
+                                 COL_STOP, 96.0f * g_UIScale, btnH))
                     ClaudeVision::Stop();
             }
         }
         else if (reviewMode && g_haveSel && !g_lastCrop.empty())
         {
-            // Actions on the captured selection — the buttons sit at the box.
-            if (IconButton(Icons::READ, "Read", "Read the selection aloud again.", bsz))
+            // Six actions on the selection in one equal-width row, so they all
+            // fit the panel; a smaller label font keeps the row compact.
+            const int N  = 6;
+            float     sp = ImGui::GetStyle().ItemSpacing.x;
+            float     bw = (ImGui::GetContentRegionAvail().x - sp * (N - 1)) / N;
+            ImGui::SetWindowFontScale(g_UIScale * 0.82f);
+
+            if (ActionButton(Icons::READ, "Read", "Read the selection aloud again.",
+                             COL_READ, bw, btnH))
                 ClaudeVision::RequestPixels("Read", DRAG_PROMPT,
                                             g_lastCrop, g_lastCropW, g_lastCropH);
             ImGui::SameLine();
-            if (IconButton(Icons::TP, "TP", "Check this item's Trading Post price.", bsz))
+            if (ActionButton(Icons::TP, "TP", "Check this item's Trading Post price.",
+                             COL_TP, bw, btnH))
                 ClaudeVision::RequestPixels("Trading Post", "@action:trading-post",
                                             g_lastCrop, g_lastCropW, g_lastCropH);
             ImGui::SameLine();
-            if (IconButton(Icons::WIKI, "Wiki", "Add this to your GW2 wiki favorites.", bsz))
+            if (ActionButton(Icons::WIKI, "Wiki", "Add this to your GW2 wiki favorites.",
+                             COL_WIKI, bw, btnH))
                 ClaudeVision::RequestPixels("Wiki", "@action:wiki-fav",
                                             g_lastCrop, g_lastCropW, g_lastCropH);
             ImGui::SameLine();
-            if (IconButton(Icons::RESEARCH, "Research",
-                           "Research this with the GW2 wiki and the web.", bsz))
+            if (ActionButton(Icons::RESEARCH, "Research",
+                             "Research this with the GW2 wiki and the web.",
+                             COL_RSCH, bw, btnH))
                 ClaudeVision::RequestPixels("Research", "@action:research",
                                             g_lastCrop, g_lastCropW, g_lastCropH);
             ImGui::SameLine();
-            if (IconButton(Icons::COPY, "Copy",
-                           "OCR the selection to the clipboard (no AI) - paste it "
-                           "into GW2's destroy-confirm box.", bsz))
+            if (ActionButton(Icons::COPY, "Copy",
+                             "OCR the selection to the clipboard (no AI) - paste it "
+                             "into GW2's destroy-confirm box.",
+                             COL_COPY, bw, btnH))
                 CopyText::Request(g_lastCrop, g_lastCropW, g_lastCropH);
             ImGui::SameLine();
-            if (IconButton(Icons::BOOK, "Book",
-                    "Save this selection as the static book region. The Read Book "
-                    "keybind then re-reads it with no drag.", bsz))
+            if (ActionButton(Icons::BOOK, "Book",
+                             "Save this selection as the static book region. The Read "
+                             "Book keybind then re-reads it with no drag.",
+                             COL_BOOK, bw, btnH))
             {
                 g_BookRegionX = g_selX; g_BookRegionY = g_selY;
                 g_BookRegionW = g_selW; g_BookRegionH = g_selH;
@@ -598,9 +628,13 @@ void DrawPanel(bool reviewMode)
                     APIDefs->GUI_SendAlert("Mystic AI: book region saved. Use the "
                                            "Read Book keybind to re-read it.");
             }
+
+            ImGui::SetWindowFontScale(g_UIScale);
         }
 
-        if (ImGui::Button("Close", ImVec2(0.0f, btnH)))
+        ImGui::Spacing();
+        if (ActionButton(nullptr, "Close", "Close this panel.",
+                         COL_CLOSE, 96.0f * g_UIScale, btnH))
             g_panelOpen = false;
 
         // --- settings ---

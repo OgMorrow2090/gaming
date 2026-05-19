@@ -7,6 +7,26 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-19] — Mystic AI 1.1.1 — capture-panel action buttons
+
+### Changed
+
+- **`modules/mystic-ai/overlay.cpp`** — the six capture-panel action buttons
+  (Read / TP / Wiki / Research / Copy / Book) now lay out as one equal-width
+  row sized to the panel. Previously the auto-width text buttons overflowed the
+  440 px panel — Copy was half-clipped and **Book was entirely off-screen and
+  unreachable**.
+  - New `ActionButton` helper replaces `IconButton`: per-action tint (Read
+    blue, TP gold, Wiki green, Research purple, Copy slate, Book brown, Stop
+    red), fixed width, smaller label font (0.82×).
+  - Still prefers the embedded GW2 icon when its texture is available.
+- Version 1.1.0 → **1.1.1** (`entry.cpp`).
+
+### Known issue
+
+- The action buttons render as text, not icons — the embedded icon textures
+  aren't loading (`Icons::Get` returns null). Separate fix.
+
 ## [2026-05-18] — Controller layout Og v21.0 — Mystic AI chords + Waypoint→Menu
 
 ### Changed

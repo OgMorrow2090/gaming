@@ -482,26 +482,37 @@ def bltc_find_item(name):
     gw2bltc.com. Its name search is substring-based, so a partial name such as
     "Powerful Blood" still resolves ("Vial of Powerful Blood").
 
+    The vision model often reads a pluralised stack label ("134 Quartz
+    Crystals") while the real item is singular ("Quartz Crystal"), so a
+    trailing-'s' singular form is tried as a fallback when the name as read
+    finds nothing.
+
     Returns (item_id, canonical_name), or (None, None) if nothing matched."""
-    try:
-        req = urllib.request.Request(
-            BLTC_SEARCH + "?name=" + urllib.parse.quote(name),
-            headers={"User-Agent": "Mozilla/5.0"})
-        with urllib.request.urlopen(req, timeout=15) as resp:
-            html = resp.read().decode("utf-8", "replace")
-    except Exception as e:  # noqa: BLE001
-        log("WARN: BLTC search failed for %r: %s" % (name, e))
-        return None, None
-    hits = [(int(m.group(1)), m.group(2).strip())
-            for m in _BLTC_ROW.finditer(html)]
-    if not hits:
-        return None, None
-    low = name.strip().lower()
-    for iid, nm in hits:                # an exact name match wins
-        if nm.lower() == low:
-            return iid, nm
-    hits.sort(key=lambda h: len(h[1]))   # else the closest (shortest) name
-    return hits[0]
+    base = name.strip()
+    candidates = [base]
+    if len(base) > 3 and base[-1] in ("s", "S"):
+        candidates.append(base[:-1])     # plural -> singular fallback
+    for cand in candidates:
+        try:
+            req = urllib.request.Request(
+                BLTC_SEARCH + "?name=" + urllib.parse.quote(cand),
+                headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                html = resp.read().decode("utf-8", "replace")
+        except Exception as e:  # noqa: BLE001
+            log("WARN: BLTC search failed for %r: %s" % (cand, e))
+            continue
+        hits = [(int(m.group(1)), m.group(2).strip())
+                for m in _BLTC_ROW.finditer(html)]
+        if not hits:
+            continue
+        low = cand.lower()
+        for iid, nm in hits:                 # an exact name match wins
+            if nm.lower() == low:
+                return iid, nm
+        hits.sort(key=lambda h: len(h[1]))    # else the closest (shortest) name
+        return hits[0]
+    return None, None
 
 
 def _fetch_item(item_id):
@@ -578,7 +589,8 @@ OVERVIEW_INSTRUCTION = (
     "DEFAULT: treat the crop as a single game ITEM and reply with EXACTLY "
     "these three lines, nothing else:\n"
     "NAME: <the item's exact name — the coloured title at the TOP of the "
-    "tooltip>\n"
+    "tooltip, singular, with no stack-count number; e.g. 'Quartz Crystal', "
+    "not '134 Quartz Crystals'>\n"
     "ABOUT: <one or two plain sentences on what the item is>\n"
     "USES: <one short line: what it is mainly used for>\n"
     "\n"

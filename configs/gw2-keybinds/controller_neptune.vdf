@@ -2,7 +2,7 @@
 {
 	"version"		"3"
 	"revision"		"2413"
-	"title"		"Guild Wars 2 - Og v24.4"
+	"title"		"Guild Wars 2 - Og v24.5"
 	"description"		"#SettingsController_AutosaveDescription"
 	"creator"		"76561198025059559"
 	"progenitor"		"usercloud://1284210/controller_neptune"
@@ -3359,13 +3359,6 @@
 				"activators"
 				{
 					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press KEYPAD_0, Mystic AI TP Region, , "
-						}
-					}
-					"Double_Press"
 					{
 						"bindings"
 						{

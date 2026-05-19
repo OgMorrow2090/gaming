@@ -77,12 +77,10 @@ IMAGE_EXTS = (".png", ".jpg", ".jpeg", ".bmp", ".webp", ".gif")
 
 # Phase 2 action endpoints / paths.
 GW2_API = "https://api.guildwars2.com/v2"
-GW2TP_ITEMS_NAMES = "http://api.gw2tp.com/1/bulk/items-names.json"
+BLTC_SEARCH = "https://www.gw2bltc.com/en/tp/search"  # item name -> id lookup
 WIKI_API = "https://wiki.guildwars2.com/api.php"
 WIKI_LIBRARY = os.path.expanduser(
     "~/.local/share/Steam/steamapps/common/Guild Wars 2/addons/NexusGameWiki/library.json")
-ITEM_NAME_CACHE = os.path.expanduser("~/.cache/gw2-claude/items-names.json")
-ITEM_NAME_CACHE_TTL = 86400  # re-fetch gw2tp's item list at most once a day
 
 DEFAULT_PROMPT = (
     "Transcribe all visible text in this Guild Wars 2 screenshot. Preserve "
@@ -91,29 +89,29 @@ DEFAULT_PROMPT = (
 )
 
 SYSTEM_PROMPT = (
-    "You are a vision assistant for the MMO Guild Wars 2. You receive a "
-    "screenshot or a cropped region of the GW2 user interface and must read "
-    "and report what is on screen accurately and concisely.\n\n"
-    "Guidelines:\n"
-    "- Report only text and UI state that is actually visible. Never invent, "
-    "guess, or autocomplete text that is cut off or unreadable — mark it as "
-    "unclear instead.\n"
-    "- GW2 uses stylised fonts; read item names, vendor/trading-post listings, "
-    "skill names, dialog buttons, and chat carefully.\n"
-    "- Coin amounts matter: report gold/silver/copper values precisely, in "
-    "order, exactly as shown.\n"
-    "- Preserve structure. Lists become one item per line. Tooltips stay as a "
-    "coherent block. Tables keep their columns.\n"
-    "- When the user asks a specific question, answer it directly and briefly. "
-    "When given no specific question, transcribe everything visible.\n"
-    "- If the image is blank, black, or otherwise unreadable, say so plainly "
-    "rather than describing nothing.\n"
-    "- Tone: keep it light, warm, and a bit playful — like a mate reading the "
-    "screen out to you over voice chat, not a stiff formal report. Stay "
-    "accurate, but relaxed and natural; a little personality and humour is "
-    "welcome. Don't overdo it — a quick fun aside, not a comedy routine.\n"
-    "- Your answer is both shown on screen and read aloud by text-to-speech, "
-    "so keep it plain and compact — no markdown, no bullet symbols."
+    "You are a screen-reading assistant for the game Guild Wars 2. You receive "
+    "a screenshot or a cropped region of the GW2 interface. Your job is to "
+    "read out the text that is on screen — nothing more.\n\n"
+    "Rules:\n"
+    "- Output ONLY the text content itself. Do NOT describe the image, do NOT "
+    "say what kind of UI element it is, and do NOT add openers such as 'I "
+    "see', 'This is', 'The screen shows', or 'Here is'. Just give the words.\n"
+    "- If part of the text is cut off, tiny, or unreadable, simply skip it. "
+    "Never mention or flag that anything is cut off, unclear, or partially "
+    "visible — read what is legible and stop there.\n"
+    "- GW2 uses stylised fonts; read item names, vendor and trading-post "
+    "listings, skill names, dialog buttons and chat carefully.\n"
+    "- Report gold/silver/copper coin amounts and item quantities exactly as "
+    "shown.\n"
+    "- Preserve structure: lists one item per line, a tooltip as one coherent "
+    "block, tables keeping their columns.\n"
+    "- When the user asks a specific question, answer it directly. Otherwise "
+    "just read out everything that is visible.\n"
+    "- If the image is blank or black, say so in a few words.\n"
+    "- Read naturally and plainly, the way a person reads text aloud — no "
+    "markdown, no bullet symbols, no commentary, no jokes or asides.\n"
+    "- Your answer is shown on screen and may be read aloud, so keep it clean "
+    "and compact."
 )
 
 # Handle to the running `pw-play` subprocess, or None.
@@ -450,31 +448,40 @@ def format_coins(copper):
     return " ".join(parts)
 
 
-def load_item_name_map():
-    """Lowercased GW2 item name -> item id, from gw2tp's bulk list. Cached on
-    disk for a day so gw2tp is hit at most once daily."""
-    fresh = (os.path.exists(ITEM_NAME_CACHE)
-             and time.time() - os.path.getmtime(ITEM_NAME_CACHE) < ITEM_NAME_CACHE_TTL)
-    if not fresh:
-        try:
-            data = _http_get(GW2TP_ITEMS_NAMES, 30)
-            os.makedirs(os.path.dirname(ITEM_NAME_CACHE), exist_ok=True)
-            with open(ITEM_NAME_CACHE, "wb") as f:
-                f.write(data)
-        except Exception as e:  # noqa: BLE001
-            log("WARN: gw2tp item-name fetch failed: %s" % e)
+# A gw2bltc.com search-result row — the item's id and display name. Anchored
+# on the td-name cell so it is independent of which price/stat columns show.
+_BLTC_ROW = re.compile(
+    r'td-name[^<]*<a\s+href="/en/item/(\d+)-[^"]*">([^<]+)</a>')
+
+
+def bltc_find_item(name):
+    """Resolve a GW2 item name to its numeric item id via a gw2bltc.com search.
+
+    gw2tp's bulk name list (api.gw2tp.com) is dead, and the official GW2 API
+    has no name search — so, like the itinyk portal's flips page, we search
+    gw2bltc.com. Its name search is substring-based, so a partial name such as
+    "Powerful Blood" still resolves ("Vial of Powerful Blood").
+
+    Returns (item_id, canonical_name), or (None, None) if nothing matched."""
     try:
-        with open(ITEM_NAME_CACHE, "rb") as f:
-            raw = json.load(f)
-    except Exception:  # noqa: BLE001
-        return {}
-    # gw2tp returns {"items": [[id, "Name"], ...]} (or a bare list of pairs).
-    rows = raw.get("items") if isinstance(raw, dict) else raw
-    out = {}
-    for row in rows or []:
-        if isinstance(row, (list, tuple)) and len(row) >= 2:
-            out[str(row[1]).strip().lower()] = row[0]
-    return out
+        req = urllib.request.Request(
+            BLTC_SEARCH + "?name=" + urllib.parse.quote(name),
+            headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            html = resp.read().decode("utf-8", "replace")
+    except Exception as e:  # noqa: BLE001
+        log("WARN: BLTC search failed for %r: %s" % (name, e))
+        return None, None
+    hits = [(int(m.group(1)), m.group(2).strip())
+            for m in _BLTC_ROW.finditer(html)]
+    if not hits:
+        return None, None
+    low = name.strip().lower()
+    for iid, nm in hits:                # an exact name match wins
+        if nm.lower() == low:
+            return iid, nm
+    hits.sort(key=lambda h: len(h[1]))   # else the closest (shortest) name
+    return hits[0]
 
 
 def _fetch_item(item_id):
@@ -505,14 +512,14 @@ def action_trading_post(client, model, image_path):
     if not name or name.upper() == "NONE":
         return "I couldn't make out an item name in that selection."
 
-    item_id = load_item_name_map().get(name.lower())
+    item_id, bltc_name = bltc_find_item(name)
     if item_id is None:
         return ("I couldn't find %s on the Trading Post — it may be "
                 "account-bound or not tradeable." % name)
 
     # Canonical name + sell-to-vendor value from the item API.
     canon, vendor, no_sell = _fetch_item(item_id)
-    disp_name = canon or name
+    disp_name = canon or bltc_name or name
     if no_sell:
         vendor = -1
 
@@ -596,13 +603,16 @@ def action_wiki_fav(client, model, image_path):
 
 
 RESEARCH_SYSTEM = (
-    "You are a Guild Wars 2 helper. The player has shown you a region of their "
-    "screen. Identify the main item, skill, trait, NPC, event, or place and "
-    "explain it in depth — what it is, how it is obtained or used, and a "
-    "useful tip or two — drawing on the GW2 wiki and current web sources. "
-    "Answer as ONE concise spoken explanation: a paragraph or two of plain, "
-    "conversational text. No markdown, no bullet points, and no preamble such "
-    "as 'I'll look that up' — just the explanation."
+    "You are a Guild Wars 2 expert. The player has shown you a region of their "
+    "screen. Identify the main item, skill, trait, NPC, event, or place, then "
+    "research it thoroughly with the GW2 wiki and current web sources and give "
+    "a genuinely in-depth explanation — well beyond prices. Cover what it is, "
+    "where and how it is obtained, what it is used for (crafting, builds, "
+    "collections, achievements), how it fits the current game and economy, "
+    "and a few practical tips or things players often get wrong. Be thorough "
+    "and specific with real detail. Answer as flowing spoken prose — several "
+    "paragraphs of plain conversational text, with no markdown, no bullet "
+    "points, and no preamble such as 'I'll look that up'."
 )
 
 

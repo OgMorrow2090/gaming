@@ -7,6 +7,26 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-19] — gw2-claude — TP lookup via gw2bltc.com + cleaner reading
+
+### Fixed
+
+- **Trading Post lookups failed for every item.** gw2tp's bulk name list
+  (`api.gw2tp.com`) is dead — it no longer resolves — so the daemon had no
+  name→ID map and reported every item as "not on the Trading Post". Item
+  names are now resolved via a **gw2bltc.com** search (the same source the
+  itinyk portal uses), whose substring search also handles partial names
+  ("Powerful Blood" → "Vial of Powerful Blood"). Prices and vendor value
+  still come from the official GW2 API.
+
+### Changed
+
+- **`SYSTEM_PROMPT`** — the screen reader no longer narrates the screenshot
+  ("this is a tooltip showing…") or flags cut-off / unclear text; it reads the
+  legible text only, plainly, with no commentary or asides.
+- **`RESEARCH_SYSTEM`** — the Research action now produces a genuinely in-depth
+  write-up (acquisition, uses, builds, economy, tips), not a short blurb.
+
 ## [2026-05-19] — Mystic Clicker 3.6.27 — colour-coded capture categories
 
 ### Changed

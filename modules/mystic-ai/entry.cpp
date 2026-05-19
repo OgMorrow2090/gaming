@@ -56,7 +56,7 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     AddonDef.Name             = "Mystic AI";
     AddonDef.Version.Major    = 1;
     AddonDef.Version.Minor    = 1;
-    AddonDef.Version.Build    = 1;
+    AddonDef.Version.Build    = 2;
     AddonDef.Version.Revision = 0;
     AddonDef.Author      = "OgMorrow2090";
     AddonDef.Description = "Freeze-frame screen reader for GW2 - drag-select any "
@@ -99,9 +99,11 @@ void AddonLoad(AddonAPI_t* aApi)
         (void* (*)(size_t, void*))APIDefs->ImguiMalloc,
         (void  (*)(void*,  void*))APIDefs->ImguiFree);
 
-    // Render callback + the D3D11 back-buffer capture hook.
+    // Render callback, the D3D11 back-buffer capture hook, and the WndProc hook
+    // (lets Esc close Mystic AI without GW2 also closing its book / inventory).
     APIDefs->GUI_Register(RT_Render, RenderMysticAI);
     RegisterScreenCaptureHook();
+    APIDefs->WndProc_Register(MysticAIWndProc);
 
     // Embedded GW2-style icons + a Nexus Quick Access shortcut that fires the
     // capture keybind when clicked.
@@ -127,6 +129,7 @@ void AddonUnload()
     APIDefs->InputBinds_Deregister(MYSTIC_AI_CAPTURE);
     APIDefs->InputBinds_Deregister(MYSTIC_AI_READ_BOOK);
     APIDefs->QuickAccess_Remove("MYSTIC_AI_SHORTCUT");
+    APIDefs->WndProc_Deregister(MysticAIWndProc);
     APIDefs->GUI_Deregister(RenderMysticAI);
     DeregisterScreenCaptureHook();
     ShutdownOverlay();

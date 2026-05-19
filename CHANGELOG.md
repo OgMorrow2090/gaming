@@ -7,6 +7,29 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-19] — Mystic AI 1.1.2 — button grid + Esc no longer leaks to GW2
+
+### Changed
+
+- **`overlay.cpp` — capture-panel action buttons** now lay out as a **3-wide,
+  2-row grid** (Read / TP / Wiki, then Research / Copy / Book). The single row
+  of six still clipped "Research" and "Copy"; each button now gets a third of
+  the panel width, so every label fits.
+
+### Fixed
+
+- **Esc no longer closes the in-game book / inventory behind the panel.** Mystic
+  AI polled Esc with `GetAsyncKeyState`, which doesn't consume the key — GW2 saw
+  it too. New Nexus **WndProc hook** (`MysticAIWndProc`) swallows Esc while the
+  panel/overlay is open (closing Mystic AI + stopping audio) and returns 0 so
+  the key never reaches GW2. Idle, Esc passes through unchanged.
+- Version 1.1.1 → **1.1.2**.
+
+### Next
+
+- Book auto-continue (read the next page on a page-turn) — deliberately a
+  separate change: it needs a long-lived page-watch thread done with care.
+
 ## [2026-05-19] — Mystic AI 1.1.1 — capture-panel action buttons
 
 ### Changed

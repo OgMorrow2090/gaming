@@ -25,6 +25,7 @@ void RenderMysticAI();   // RT_Render callback
 void ToggleCapture();    // start, or cancel, the freeze-frame drag-select capture
 void ReadBookRegion();   // capture + read the saved book region (no drag)
 void ShutdownOverlay();  // release the frozen-frame texture — called from AddonUnload
+UINT MysticAIWndProc(HWND aHwnd, UINT aMsg, WPARAM aWParam, LPARAM aLParam);  // Nexus WndProc hook — consumes Esc
 
 // --- Config (config.cpp) ---
 void SetConfigPath(const char* addonDir);

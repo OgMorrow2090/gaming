@@ -57,6 +57,13 @@ bool g_needRelease = false;   // release the frozen texture at the next frame's 
 enum Cmd { CMD_NONE, CMD_TOGGLE, CMD_BOOK };
 std::atomic<int> g_cmd{CMD_NONE};
 
+// --- WndProc hook <-> render thread ----------------------------------------
+// g_uiActive: the render thread publishes "Mystic AI owns Esc right now" so the
+// WndProc can swallow the key before GW2 sees it. g_escConsumed: the WndProc
+// posts a swallowed Esc for the render thread to act on next frame.
+std::atomic<bool> g_uiActive{false};
+std::atomic<bool> g_escConsumed{false};
+
 // --- Capture worker handoff (guarded by g_capMtx) --------------------------
 std::mutex           g_capMtx;
 std::vector<uint8_t> g_capPixels;     // full frame, 24-bit BGR
@@ -582,12 +589,11 @@ void DrawPanel(bool reviewMode)
         }
         else if (reviewMode && g_haveSel && !g_lastCrop.empty())
         {
-            // Six actions on the selection in one equal-width row, so they all
-            // fit the panel; a smaller label font keeps the row compact.
-            const int N  = 6;
-            float     sp = ImGui::GetStyle().ItemSpacing.x;
-            float     bw = (ImGui::GetContentRegionAvail().x - sp * (N - 1)) / N;
-            ImGui::SetWindowFontScale(g_UIScale * 0.82f);
+            // Six actions in a 3-wide, 2-row grid — each button gets a third of
+            // the panel, so even "Research" fits with room to spare.
+            float sp = ImGui::GetStyle().ItemSpacing.x;
+            float bw = (ImGui::GetContentRegionAvail().x - sp * 2.0f) / 3.0f;
+            ImGui::SetWindowFontScale(g_UIScale * 0.85f);
 
             if (ActionButton(Icons::READ, "Read", "Read the selection aloud again.",
                              COL_READ, bw, btnH))
@@ -603,7 +609,6 @@ void DrawPanel(bool reviewMode)
                              COL_WIKI, bw, btnH))
                 ClaudeVision::RequestPixels("Wiki", "@action:wiki-fav",
                                             g_lastCrop, g_lastCropW, g_lastCropH);
-            ImGui::SameLine();
             if (ActionButton(Icons::RESEARCH, "Research",
                              "Research this with the GW2 wiki and the web.",
                              COL_RSCH, bw, btnH))
@@ -693,8 +698,10 @@ void RenderMysticAI()
     ClaudeVision::Poll();
     ProcessCommand();
 
-    // Esc cancels an active overlay/panel, or stops a stray read / speech.
-    if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
+    // Esc — the WndProc hook (MysticAIWndProc) swallows the key and posts it
+    // here, so the panel/overlay closes without GW2 also closing the book or
+    // inventory it had open behind it.
+    if (g_escConsumed.exchange(false))
     {
         if (g_mode != MODE_IDLE)
             ExitToIdle(true);
@@ -718,6 +725,11 @@ void RenderMysticAI()
     {
         DrawPanel(false);
     }
+
+    // Publish for the WndProc hook whether Mystic AI should own Esc this frame.
+    g_uiActive.store(g_mode != MODE_IDLE
+                     || ClaudeVision::IsSpeaking()
+                     || ClaudeVision::GetState() == ClaudeVision::State::Waiting);
 }
 
 void ToggleCapture()  { g_cmd.store(CMD_TOGGLE); }
@@ -729,4 +741,18 @@ void ShutdownOverlay()
     // Called from AddonUnload, after the render callback is deregistered — no
     // pending draw can reference the texture any more.
     ReleaseFrozenFrame();
+}
+
+// Nexus WndProc hook. While Mystic AI's panel or overlay is up (or it is still
+// reading aloud), swallow Esc: post it for the render thread and return 0 so
+// GW2 never sees the key — its book / inventory / window stays open. When
+// Mystic AI is idle, Esc passes straight through unchanged.
+UINT MysticAIWndProc(HWND, UINT aMsg, WPARAM aWParam, LPARAM)
+{
+    if (aMsg == WM_KEYDOWN && aWParam == VK_ESCAPE && g_uiActive.load())
+    {
+        g_escConsumed.store(true);
+        return 0;
+    }
+    return aMsg;
 }

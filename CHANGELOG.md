@@ -7,6 +7,20 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-19] — Mystic AI 1.1.11 — full action panel on the TP-region read
+
+### Changed
+
+- **The TP Region keybind opens the full action panel now.** Pressing it used
+  to show the overview — item name, "Used for" line, Buy/Sell/Vendor coin rows
+  — but with no action buttons, so there was no way to Research or Wiki-
+  favourite the item without re-capturing it by hand. The TP-region read now
+  keeps its captured region as the crop (`ClaudeVision::RequestRegion` gained a
+  `keepCrop` option that hands the pixels back via `TakeRegionCrop`), and the
+  panel shows the same **Read / Wiki / Research / Copy / Legendary** buttons as
+  a drag-select review. Book and Save TP region stay drag-select-only — they
+  set a region from a fresh selection, which a region re-read is not.
+
 ## [2026-05-19] — Mystic AI 1.1.10 — cursor-anchored TP region, global Esc fix
 
 ### Changed

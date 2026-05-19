@@ -42,6 +42,12 @@ bool                                  g_filesReady = false;
 bool                                  g_speaking   = false;  // daemon TTS in progress
 std::chrono::steady_clock::time_point  g_start;
 
+// Pixels kept for a keepCrop RequestRegion — the TP-region panel reuses them
+// for its action buttons. Guarded by g_mtx.
+std::vector<uint8_t>                  g_regionCrop;
+int                                   g_regionCropW = 0, g_regionCropH = 0;
+bool                                  g_regionCropReady = false;
+
 // Generous — the daemon normally replies in well under 10s. This is the
 // "something is wrong" threshold (daemon down, no network, etc.).
 constexpr int CLAUDE_TIMEOUT_MS = 45000;
@@ -107,7 +113,7 @@ void PixelWorker(std::string label, std::string prompt,
 // files. CaptureBackBufferRegion blocks until the next RT_PostRender, so this
 // must not run on the render thread.
 void RegionWorker(std::string label, std::string prompt,
-                  int x, int y, int w, int h)
+                  int x, int y, int w, int h, bool keepCrop)
 {
     std::vector<uint8_t> px;
     if (w <= 0 || h <= 0 || !CaptureBackBufferRegion(x, y, w, h, px))
@@ -124,6 +130,14 @@ void RegionWorker(std::string label, std::string prompt,
     {
         g_suffix     = suffix;
         g_filesReady = true;
+        if (keepCrop)
+        {
+            // Keep a copy so the panel's action buttons can re-send this crop.
+            g_regionCrop      = px;
+            g_regionCropW     = w;
+            g_regionCropH     = h;
+            g_regionCropReady = true;
+        }
         LogSent(label, w, h, suffix);
     }
     else
@@ -161,6 +175,8 @@ bool BeginRequest(const char* label)
     g_result.clear();
     g_suffix.clear();
     g_filesReady = false;
+    g_regionCrop.clear();
+    g_regionCropReady = false;
     g_start      = std::chrono::steady_clock::now();
     return true;
 }
@@ -179,12 +195,24 @@ void RequestPixels(const char* label, const char* prompt,
 }
 
 void RequestRegion(const char* label, const char* prompt,
-                   int x, int y, int w, int h)
+                   int x, int y, int w, int h, bool keepCrop)
 {
     if (!BeginRequest(label)) return;
     std::thread(RegionWorker, std::string(label ? label : ""),
                 std::string(prompt ? prompt : ""),
-                x, y, w, h).detach();
+                x, y, w, h, keepCrop).detach();
+}
+
+bool TakeRegionCrop(std::vector<uint8_t>& outPx, int& outW, int& outH)
+{
+    std::lock_guard<std::mutex> lk(g_mtx);
+    if (!g_regionCropReady) return false;
+    outPx = std::move(g_regionCrop);
+    outW  = g_regionCropW;
+    outH  = g_regionCropH;
+    g_regionCrop.clear();
+    g_regionCropReady = false;
+    return true;
 }
 
 void Speak(const std::string& text)

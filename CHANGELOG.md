@@ -7,6 +7,31 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-19] — Mystic AI 1.1.12 — Research no longer times out or auto-reads
+
+### Fixed
+
+- **Research no longer times out.** The Research action runs a web-search-
+  backed write-up that legitimately takes far longer than a plain screen read,
+  but the addon gave every request the same 45-second ceiling — so a Research
+  call still in progress showed "timed out - is gw2-claude-daemon.service
+  running" instead of its result. Research now has its own 180-second ceiling;
+  every other action keeps the short 45-second one, so a genuinely-dead daemon
+  is still reported quickly.
+
+### Changed
+
+- **Research is silent now — it no longer reads itself aloud.** Like the
+  overview, a Research write-up shows on the panel and is voiced only when you
+  press Read. (daemon-side `gw2-claude-daemon.py`.)
+- **The overview reliably builds the structured item panel** (daemon-side).
+  Long, descriptive item tooltips — containers, trophies, currencies — were
+  sometimes returned as a plain transcription, with the stack count and vendor
+  value mashed into the prose, instead of the name + "Used for" + Buy/Sell/
+  Vendor coin panel. The overview instruction now treats any inventory item as
+  an ITEM by default and ignores the stack count / "in Bank" line / coin value
+  shown on the tooltip.
+
 ## [2026-05-19] — Mystic AI 1.1.11 — full action panel on the TP-region read
 
 ### Changed

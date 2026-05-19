@@ -48,9 +48,15 @@ std::vector<uint8_t>                  g_regionCrop;
 int                                   g_regionCropW = 0, g_regionCropH = 0;
 bool                                  g_regionCropReady = false;
 
-// Generous — the daemon normally replies in well under 10s. This is the
-// "something is wrong" threshold (daemon down, no network, etc.).
-constexpr int CLAUDE_TIMEOUT_MS = 45000;
+// The daemon normally replies in well under 10s — this short ceiling is the
+// "something is wrong" threshold (daemon down, no network, etc.). Research
+// runs a web-search-backed write-up and legitimately takes far longer, so it
+// gets its own generous ceiling (chosen per request in BeginRequest).
+constexpr int CLAUDE_TIMEOUT_MS          = 45000;
+constexpr int CLAUDE_RESEARCH_TIMEOUT_MS = 180000;
+
+// Ceiling for the request currently in flight — set by BeginRequest.
+int g_timeoutMs = CLAUDE_TIMEOUT_MS;
 
 std::string MakeSuffix()
 {
@@ -172,6 +178,9 @@ bool BeginRequest(const char* label)
         return false;
     g_state      = ClaudeVision::State::Waiting;
     g_label      = label ? label : "";
+    // Research runs a web search and is far slower than a plain read.
+    g_timeoutMs  = (g_label == "Research") ? CLAUDE_RESEARCH_TIMEOUT_MS
+                                           : CLAUDE_TIMEOUT_MS;
     g_result.clear();
     g_suffix.clear();
     g_filesReady = false;
@@ -230,13 +239,15 @@ void Poll()
 
     std::string                           suffix;
     std::chrono::steady_clock::time_point  start;
+    int                                   timeoutMs = CLAUDE_TIMEOUT_MS;
     {
         std::lock_guard<std::mutex> lk(g_mtx);
         g_speaking = speaking;
         if (g_state != State::Waiting) return;
         if (!g_filesReady)             return;   // worker still capturing / writing
-        suffix = g_suffix;
-        start  = g_start;
+        suffix    = g_suffix;
+        start     = g_start;
+        timeoutMs = g_timeoutMs;
     }
 
     std::string inBase = std::string("Z:/tmp/gw2-claude-input-")  + suffix;
@@ -272,7 +283,7 @@ void Poll()
 
     auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
         std::chrono::steady_clock::now() - start).count();
-    if (elapsed > CLAUDE_TIMEOUT_MS)
+    if (elapsed > timeoutMs)
     {
         std::lock_guard<std::mutex> lk(g_mtx);
         g_state  = State::Error;

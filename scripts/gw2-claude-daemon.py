@@ -572,16 +572,26 @@ def action_trading_post(client, model, image_path):
 
 
 OVERVIEW_INSTRUCTION = (
-    "This is a cropped region of the Guild Wars 2 screen.\n"
-    "If it shows a single game ITEM (an inventory slot, an item tooltip, a "
-    "trading-post listing), reply with EXACTLY these three lines and nothing "
-    "else:\n"
-    "NAME: <the item's exact in-game name>\n"
+    "This is a cropped region of the Guild Wars 2 screen — almost always a "
+    "hovered inventory item and its tooltip.\n"
+    "\n"
+    "DEFAULT: treat the crop as a single game ITEM and reply with EXACTLY "
+    "these three lines, nothing else:\n"
+    "NAME: <the item's exact name — the coloured title at the TOP of the "
+    "tooltip>\n"
     "ABOUT: <one or two plain sentences on what the item is>\n"
-    "USES: <one line: what it is used for — key recipes, crafting, "
-    "collections>\n"
-    "If it is NOT a single item — dialogue, quest text, a book page, mail, a "
-    "menu, chat — reply instead with one line:\n"
+    "USES: <one short line: what it is mainly used for>\n"
+    "\n"
+    "A long, flavourful or descriptive tooltip is STILL an item — containers, "
+    "trophies, currencies, crafting materials, gizmos and trading-post "
+    "listings all count as an ITEM. The tooltip may also show a stack count, "
+    "an 'in Bank' / 'in Inventory' line and a gold/silver/copper value: "
+    "IGNORE all of those, they are not part of the name, the description or "
+    "the uses.\n"
+    "\n"
+    "Reply with TEXT instead ONLY when the crop contains no item at all — it "
+    "is purely an open book page, an NPC dialogue box, mail, or a chat "
+    "window:\n"
     "TEXT: <all of the visible text, in full>\n"
     "Do not add any other commentary."
 )
@@ -989,14 +999,15 @@ def run_daemon(client, model, cfg):
             open(done_mark, "w").close()
             _safe_rm(ready)
 
-            # Speak only what is meant to be heard — a plain or book read, and
-            # Research. The overview, TP, copy-name and favourite actions show
-            # on the panel silently; the Read button re-sends them as "say".
+            # Speak only a plain or book read. Research, overview, TP, copy-name
+            # and the favourite actions all show on the panel silently — the
+            # Read button re-sends their content as "say" when the player wants
+            # to hear it.
             if ok:
                 if os.path.exists(STOP_MARKER):
                     _safe_rm(STOP_MARKER)
                     log("read %s cancelled before speech" % suffix)
-                elif action in ("read", "research"):
+                elif action == "read":
                     speak(result, cfg, is_book)
 
         time.sleep(POLL_SECONDS)

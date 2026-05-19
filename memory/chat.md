@@ -1,5 +1,7 @@
 # Session Log
 
+<!-- markdownlint-disable MD024 -->
+
 Append-only log of agent sessions on this repo. Read at session start for continuity. Entries are summaries — not full transcripts.
 
 ## 2026-05-12 — AMD RX 9070 XT swap day + consolidation to single GW2 install
@@ -997,3 +999,40 @@ Set Sunshine web UI password to `admin123` during debugging (via `sunshine --cre
 - **controller-wake-tv**: first controller wake after a bazzite reboot is swallowed by the `ever_seen_data` gate — TV doesn't switch. Optional fix pending.
 - **Streaming-profile controller VDFs**: v20 deployed only to the direct-bazzite config (`1284210/`). If streaming to Deck/Apple TV resumes, the Deck-side / streaming-profile VDFs need v20 too.
 - **Home Instance Portal** sits in the old Community-LFG wheel slot (10), not 12 o'clock — reposition if wanted.
+
+## 2026-05-19 — Mystic AI 1.1.10 → 1.1.13: cursor-anchored TP, controller R1+Menu, TP-region feature removed
+
+Long session refining the Mystic AI screen reader's capture trigger and output, then removing the standalone TP-region feature entirely.
+
+### What was done
+
+- **Cursor-anchored TP region (1.1.10).** The saved TP region captured a fixed screen spot — useless for inventory. Made it cursor-relative: the box is stored as an offset from the cursor and re-anchored to the live cursor on each read.
+- **Global-Esc bug fixed (1.1.10).** Mystic AI's WndProc swallowed Esc whenever book-watch was armed / speech playing — even with no visible UI — so Event Timers' Esc-to-close stopped working. Fixed: only own Esc while a Mystic AI window is on screen (`g_uiActive = (g_mode != MODE_IDLE)`).
+- **Full action panel on the TP-region read (1.1.11).**
+- **Research no longer times out or auto-reads (1.1.12).** 45s ceiling → 180s for Research (web-search write-ups legitimately take ~60s); Research is now silent (panel-only, voiced on Read). Overview prompt hardened so item tooltips aren't misread as plain text.
+- **Quartz Crystals TP bug fixed (daemon).** `bltc_find_item` now retries plural→singular ("Quartz Crystals" → "Quartz Crystal") — gw2bltc lists singular names.
+- **Controller → R1+Menu = Capture (v24.1 → v24.5).** Long detour: R1+R2 / L1+Menu chords "did nothing". Root cause found in Steam's `controller.txt` log — `KEYPAD_MINUS` is an INVALID Steam Input key token. Reverted to Alt+F10. Final: R1+Menu Full_Press = Capture (drag), Long_Press = Read Book. Dedicated TP-region hotkey dropped. See `memory/steam-input-invalid-key-tokens.md`.
+- **TP-region feature removed entirely (1.1.13).** R1+Menu drag-capture already reads whatever the cursor is on with the full panel, so the cursor-anchored region + its keybind were redundant. Removed the "Save TP region" button, the Settings row, the `MYSTIC_AI_TP_REGION` keybind, and all backing code (`StartTpRead`, `CMD_TPREGION`, `MODE_BOOKPANEL`, `OpenPanelNotice`, `keepCrop`/`TakeRegionCrop`). −251 net lines.
+
+### Deployed (bazzite `Og@172.16.100.212` + Deck `deck@172.16.100.95`)
+
+| What | Version / md5 |
+| --- | --- |
+| `addons/mystic-ai.dll` | 1.1.13 — md5 `dbbc492d` |
+| `~/scripts/gw2-claude-daemon.py` | md5 `e39f1d5a` (overview/research/bltc fixes) |
+| `Nexus/InputBinds.json` | MYSTIC_AI_CAPTURE = Alt+F10, TP_REGION unbound |
+| `1284210/controller_neptune.vdf` | v24.5 — md5 `b16528be` |
+
+bazzite: deployed via the sddm dance. Deck: GW2 was closed so the DLL copied direct; controller VDF deployed via `systemctl --user stop steam-launcher.service` (the no-sudo Deck equivalent of the sddm dance).
+
+### Repo changes
+
+- `modules/mystic-ai/{overlay,claude-vision,config,entry,keybinds}.cpp` + `.h`, `shared.h`
+- `configs/gw2-keybinds/{controller_neptune.vdf, nexus-inputbinds.json}`
+- `scripts/gw2-claude-daemon.py`
+- `CHANGELOG.md`; `memory/steam-input-invalid-key-tokens.md` (new)
+
+### Open / next session
+
+- **Other GW2 profiles not synced.** Only the main `Guild Wars 2/addons/` on bazzite + the Deck got 1.1.13 — the apple-tv and deck-bazzite profiles on bazzite are still on the old build.
+- **mystic-clicker.dll on the Deck** not synced to latest CI (intentional — unchanged this session).

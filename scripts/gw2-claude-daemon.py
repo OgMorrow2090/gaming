@@ -211,7 +211,10 @@ def analyze(client, model, image_path, question):
 
 def clean_for_speech(text):
     """Strip markdown so the voice doesn't read 'asterisk asterisk'."""
-    t = re.sub(r"`+", "", text)
+    # Drop the Trading Post coin-data marker line — it drives the on-screen
+    # panel, not speech (the prose to read aloud follows it).
+    t = re.sub(r"^@TP\|[^\n]*\n", "", text)
+    t = re.sub(r"`+", "", t)
     t = re.sub(r"\*+", "", t)
     t = re.sub(r"^#+\s*", "", t, flags=re.MULTILINE)
     t = re.sub(r"^\s*[-*]\s+", "", t, flags=re.MULTILINE)
@@ -474,8 +477,26 @@ def load_item_name_map():
     return out
 
 
+def _fetch_item(item_id):
+    """Best-effort GW2 item lookup. Returns (canonical_name, vendor_value,
+    no_sell) — vendor_value is the sell-to-vendor price in copper."""
+    try:
+        item = _http_get_json("%s/items/%s" % (GW2_API, item_id), 15)
+    except Exception as e:  # noqa: BLE001
+        log("WARN: item lookup failed for %s: %s" % (item_id, e))
+        return None, 0, False
+    flags = item.get("flags") or []
+    return item.get("name"), int(item.get("vendor_value") or 0), "NoSell" in flags
+
+
 def action_trading_post(client, model, image_path):
-    """Identify the item in the crop and report its Trading Post prices."""
+    """Identify the item in the crop and report Trading Post + vendor prices.
+
+    On success the result has two parts: a machine-readable "@TP|..." marker
+    line that the Mystic AI panel parses into gold/silver/copper coin rows,
+    then the spoken prose. clean_for_speech() drops the marker before TTS.
+    Lookup failures return plain text (no marker) — the panel shows those as
+    a normal message."""
     name = claude_identify(client, model, image_path,
         "This is a Guild Wars 2 screenshot of a single item — an inventory "
         "slot, a tooltip, or a listing. Reply with ONLY that item's exact "
@@ -488,19 +509,39 @@ def action_trading_post(client, model, image_path):
     if item_id is None:
         return ("I couldn't find %s on the Trading Post — it may be "
                 "account-bound or not tradeable." % name)
+
+    # Canonical name + sell-to-vendor value from the item API.
+    canon, vendor, no_sell = _fetch_item(item_id)
+    disp_name = canon or name
+    if no_sell:
+        vendor = -1
+
+    # Trading Post buy/sell. A side with no orders reports unit_price 0 —
+    # map that to -1 ("none") so the panel and speech say so plainly.
+    buy = sell = -1
     try:
         price = _http_get_json("%s/commerce/prices/%s" % (GW2_API, item_id), 15)
+        buy = int(price.get("buys", {}).get("unit_price") or 0) or -1
+        sell = int(price.get("sells", {}).get("unit_price") or 0) or -1
     except urllib.error.HTTPError as e:
-        if e.code == 404:
-            return "%s has no Trading Post listings right now." % name
-        return "The Trading Post API didn't answer for %s (HTTP %s)." % (name, e.code)
+        if e.code != 404:   # 404 = not currently listed; vendor row still shown
+            return "The Trading Post API didn't answer for %s (HTTP %s)." % (
+                disp_name, e.code)
     except Exception as e:  # noqa: BLE001
-        return "I couldn't reach the Trading Post for %s right now." % name
+        return "I couldn't reach the Trading Post for %s right now." % disp_name
 
-    buy = price.get("buys", {}).get("unit_price", 0)
-    sell = price.get("sells", {}).get("unit_price", 0)
-    return "%s. Highest buy order, %s. Lowest sell listing, %s." % (
-        name, format_coins(buy), format_coins(sell))
+    say = ["%s." % disp_name,
+           "Highest buy order, %s." % (format_coins(buy) if buy >= 0
+                                       else "no buy orders"),
+           "Lowest sell listing, %s." % (format_coins(sell) if sell >= 0
+                                          else "no sell listings")]
+    if vendor > 0:
+        say.append("Vendor value, %s." % format_coins(vendor))
+    elif vendor < 0:
+        say.append("It can't be sold to a vendor.")
+
+    marker = "@TP|buy=%d|sell=%d|vendor=%d|name=%s" % (buy, sell, vendor, disp_name)
+    return marker + "\n" + " ".join(say)
 
 
 def _add_wiki_favorite(page_id, title):

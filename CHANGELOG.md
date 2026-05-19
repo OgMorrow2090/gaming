@@ -7,6 +7,28 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-19] — Mystic AI 1.1.4 — Trading Post coin panel
+
+### Added
+
+- **The TP action now shows a proper price panel** — the item name, then
+  **Buy**, **Sell** and **Vendor** rows, each rendered with gold / silver /
+  copper coin discs (the look of the portal GW2 pages) instead of one line of
+  text. Coins scale with the Text-size slider.
+- **Vendor value** — the panel's third row is the item's sell-to-vendor price,
+  fetched from the GW2 item API (`/v2/items/{id}`). Items flagged `NoSell`
+  show "not sellable"; a side of the Trading Post with no orders shows
+  "no buy orders" / "no sell listings".
+
+### Changed
+
+- **`gw2-claude-daemon.py`** — `action_trading_post` now also fetches the item
+  (vendor value, canonical name, `NoSell` flag) and returns a machine-readable
+  `@TP|buy=..|sell=..|vendor=..|name=..` marker line ahead of the spoken prose.
+  `clean_for_speech` strips that marker so TTS only reads the sentence. Lookup
+  failures still return plain text (no marker) and display as a message.
+- Version 1.1.3 → **1.1.4** (`entry.cpp`).
+
 ## [2026-05-19] — Mystic Clicker 3.6.26 — granular Text/Button/Opacity settings
 
 ### Changed

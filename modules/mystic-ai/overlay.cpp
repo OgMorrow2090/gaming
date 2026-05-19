@@ -34,6 +34,8 @@
 #include <thread>
 #include <cstdint>
 #include <cstring>
+#include <cstdlib>
+#include <string>
 
 // Prompts sent to Claude with the captured image.
 static const char* DRAG_PROMPT =
@@ -497,6 +499,105 @@ bool ActionButton(const char* iconId, const char* label, const char* tip,
     return clicked;
 }
 
+// ---------------------------------------------------------------------------
+// Trading Post coin panel
+//
+// action_trading_post in gw2-claude-daemon.py returns, on a successful price
+// lookup, a marker line "@TP|buy=..|sell=..|vendor=..|name=.." followed by the
+// spoken prose. We parse the marker and draw buy / sell / vendor rows with
+// gold-silver-copper coin discs — the look of the portal GW2 pages. Anything
+// without the marker (errors, "not tradeable") falls back to wrapped text.
+// ---------------------------------------------------------------------------
+struct TpData
+{
+    long long   buy = -1, sell = -1, vendor = -1;  // copper; -1 = none / unknown
+    std::string name;
+};
+
+// Read an integer "key=NNN" field out of the marker line; -1 if absent.
+long long TpField(const std::string& line, const char* key)
+{
+    size_t p = line.find(key);
+    if (p == std::string::npos) return -1;
+    return strtoll(line.c_str() + p + strlen(key), nullptr, 10);
+}
+
+bool ParseTpMarker(const std::string& result, TpData& out)
+{
+    if (result.rfind("@TP|", 0) != 0) return false;
+    size_t nl = result.find('\n');
+    std::string line = (nl == std::string::npos) ? result : result.substr(0, nl);
+    out.buy    = TpField(line, "buy=");
+    out.sell   = TpField(line, "sell=");
+    out.vendor = TpField(line, "vendor=");
+    size_t np  = line.find("name=");
+    out.name   = (np != std::string::npos) ? line.substr(np + 5) : "";
+    return true;
+}
+
+// GW2 coin tints.
+const ImU32 COIN_GOLD   = IM_COL32(232, 192, 106, 255);
+const ImU32 COIN_SILVER = IM_COL32(204, 209, 217, 255);
+const ImU32 COIN_COPPER = IM_COL32(202, 134,  92, 255);
+
+// Draw one coin disc at the cursor, then advance the cursor past it. Sized to
+// the current font so it tracks the Text-size slider.
+void CoinDisc(ImU32 fill)
+{
+    float d  = ImGui::GetFontSize() * 0.86f;
+    float lh = ImGui::GetTextLineHeight();
+    ImVec2 p = ImGui::GetCursorScreenPos();
+    ImVec2 c(p.x + d * 0.5f, p.y + lh * 0.5f);
+    float  r = d * 0.5f;
+    ImDrawList* dl = ImGui::GetWindowDrawList();
+    dl->AddCircleFilled(c, r, fill, 20);
+    dl->AddCircle(c, r, IM_COL32(0, 0, 0, 170), 20, 1.4f);
+    dl->AddCircleFilled(ImVec2(c.x - r * 0.30f, c.y - r * 0.32f), r * 0.32f,
+                        IM_COL32(255, 255, 255, 95), 12);
+    ImGui::Dummy(ImVec2(d, lh));
+}
+
+// One priced row: "Label   12<gold> 34<silver> 56<copper>", or `noneText` when
+// the value is unknown (-1). `labelW` aligns every row's coins to one column.
+void DrawCoinRow(const char* label, ImU32 labelCol, long long copper,
+                 float labelW, const char* noneText)
+{
+    ImGui::TextColored(ImGui::ColorConvertU32ToFloat4(labelCol), "%s", label);
+    ImGui::SameLine(labelW);
+    if (copper < 0) { ImGui::TextDisabled("%s", noneText); return; }
+
+    long long g = copper / 10000;
+    long long s = (copper % 10000) / 100;
+    long long c = copper % 100;
+    if (g > 0)
+    {
+        ImGui::Text("%lld", g); ImGui::SameLine(0, 3);
+        CoinDisc(COIN_GOLD);    ImGui::SameLine(0, 9);
+    }
+    if (g > 0 || s > 0)
+    {
+        ImGui::Text("%lld", s); ImGui::SameLine(0, 3);
+        CoinDisc(COIN_SILVER);  ImGui::SameLine(0, 9);
+    }
+    ImGui::Text("%lld", c); ImGui::SameLine(0, 3);
+    CoinDisc(COIN_COPPER);
+}
+
+// The TP result: item name, then buy / sell / vendor coin rows.
+void DrawTpPanel(const TpData& tp)
+{
+    if (!tp.name.empty())
+        ImGui::TextColored(ImVec4(1.0f, 0.86f, 0.45f, 1.0f), "%s", tp.name.c_str());
+    ImGui::Spacing();
+    float labelW = ImGui::CalcTextSize("Vendor").x + ImGui::GetFontSize() * 1.1f;
+    DrawCoinRow("Buy",    IM_COL32(120, 200, 120, 255), tp.buy,    labelW,
+                "no buy orders");
+    DrawCoinRow("Sell",   IM_COL32(232, 170,  92, 255), tp.sell,   labelW,
+                "no sell listings");
+    DrawCoinRow("Vendor", IM_COL32(170, 174, 184, 255), tp.vendor, labelW,
+                "not sellable");
+}
+
 void DrawPanel(bool reviewMode)
 {
     ImGuiIO& io = ImGui::GetIO();
@@ -544,7 +645,13 @@ void DrawPanel(bool reviewMode)
             if (!ClaudeVision::GetLabel().empty())
                 ImGui::TextDisabled("%s", ClaudeVision::GetLabel().c_str());
             ImGui::Separator();
-            ImGui::TextWrapped("%s", ClaudeVision::GetResult().c_str());
+            // A Trading Post result carries a "@TP|" coin marker — draw it as
+            // gold/silver/copper rows; everything else is plain wrapped text.
+            TpData tp;
+            if (ParseTpMarker(ClaudeVision::GetResult(), tp))
+                DrawTpPanel(tp);
+            else
+                ImGui::TextWrapped("%s", ClaudeVision::GetResult().c_str());
         }
         else if (cs == ClaudeVision::State::Error)
         {

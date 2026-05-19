@@ -34,7 +34,10 @@ void SaveSettings();
 void CheckResolutionChange();
 
 // Per-resolution settings, persisted to mystic-ai-<W>x<H>.cfg.
-extern float g_UIScale;       // UI scale, 0.5 .. 3.0
+extern float g_FontScale;     // panel text size, 0.6 .. 2.5
+extern float g_ButtonScale;   // action-button size, 0.6 .. 2.5
+extern float g_PanelW;        // panel width  — drag-resized, persisted
+extern float g_PanelH;        // panel height — drag-resized, persisted
 extern float g_PanelOpacity;  // results panel background opacity, 0.2 .. 1.0
 // Saved "book region" — a fixed screen rectangle the Read-Book keybind re-reads
 // with no drag. Pixel coords in the game window's client space. W/H == 0 = unset.

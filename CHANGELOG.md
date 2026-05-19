@@ -7,6 +7,19 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-19] — Mystic AI 1.1.3 — resizable panel + granular settings
+
+### Changed
+
+- **The panel is now a freely drag-resizable rectangle** — grab any edge to
+  size it; the size is saved per resolution and the panel snaps to it on each
+  capture. A long answer scrolls inside the fixed rectangle instead of growing
+  the window into a tall narrow strip.
+- **Settings** — the single "UI scale" slider is replaced by **Text size** and
+  **Button size** sliders (0.6–2.5), matching Mystic Trading's granular style;
+  opacity unchanged. Old `UIScale` configs migrate into both.
+- Version 1.1.2 → **1.1.3** (`entry.cpp`).
+
 ## [2026-05-19] — TTS routing — book reads → ElevenLabs Lily, the rest → Piper
 
 ### Changed

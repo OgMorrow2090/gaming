@@ -503,24 +503,35 @@ void DrawPanel(bool reviewMode)
     ClaudeVision::State cs = ClaudeVision::GetState();
     bool speaking = ClaudeVision::IsSpeaking();
 
-    float panelW = 440.0f * g_UIScale;
-    float estH   = 240.0f * g_UIScale;
-
+    // Fresh capture: snap the panel to the box at the saved size. Otherwise the
+    // size is the player's — the window is freely drag-resizable.
     if (g_reposPanel)
     {
-        ImGui::SetNextWindowPos(PanelAnchorPos(panelW, estH, io.DisplaySize), ImGuiCond_Always);
+        ImGui::SetNextWindowPos(PanelAnchorPos(g_PanelW, g_PanelH, io.DisplaySize),
+                                ImGuiCond_Always);
+        ImGui::SetNextWindowSize(ImVec2(g_PanelW, g_PanelH), ImGuiCond_Always);
         ImGui::SetNextWindowFocus();
         g_reposPanel = false;
     }
-    ImGui::SetNextWindowSize(ImVec2(panelW, 0.0f), ImGuiCond_Always);
-    ImGui::SetNextWindowSizeConstraints(ImVec2(panelW, 0.0f),
-                                        ImVec2(panelW, io.DisplaySize.y * 0.8f));
+    ImGui::SetNextWindowSizeConstraints(ImVec2(300.0f, 200.0f),
+                                        ImVec2(99999.0f, 99999.0f));
     ImGui::SetNextWindowBgAlpha(g_PanelOpacity);
 
     if (ImGui::Begin("Mystic AI###mai_panel", &g_panelOpen,
                      ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse))
     {
-        ImGui::SetWindowFontScale(g_UIScale);
+        // Persist a drag-resize once the player releases the window edge.
+        ImVec2 ws = ImGui::GetWindowSize();
+        float dW = ws.x - g_PanelW, dH = ws.y - g_PanelH;
+        if ((dW > 1.0f || dW < -1.0f || dH > 1.0f || dH < -1.0f)
+            && !ImGui::IsMouseDown(ImGuiMouseButton_Left))
+        {
+            g_PanelW = ws.x;
+            g_PanelH = ws.y;
+            SaveSettings();
+        }
+
+        ImGui::SetWindowFontScale(g_FontScale);
 
         // --- status / answer ---
         if (cs == ClaudeVision::State::Waiting)
@@ -561,7 +572,7 @@ void DrawPanel(bool reviewMode)
         ImGui::Spacing();
 
         // --- action buttons, sitting right at the box ---
-        float bsz  = 26.0f * g_UIScale;
+        float bsz  = 26.0f * g_ButtonScale;
         float btnH = bsz + ImGui::GetStyle().FramePadding.y * 2.0f;
         bool  busy = (cs == ClaudeVision::State::Waiting)
                      || (copySt == CopyText::State::Working);
@@ -583,7 +594,7 @@ void DrawPanel(bool reviewMode)
             {
                 ImGui::SameLine();
                 if (ActionButton(Icons::STOP, "Stop", "Stop the read / stop speaking.",
-                                 COL_STOP, 96.0f * g_UIScale, btnH))
+                                 COL_STOP, 96.0f * g_ButtonScale, btnH))
                     ClaudeVision::Stop();
             }
         }
@@ -593,7 +604,7 @@ void DrawPanel(bool reviewMode)
             // the panel, so even "Research" fits with room to spare.
             float sp = ImGui::GetStyle().ItemSpacing.x;
             float bw = (ImGui::GetContentRegionAvail().x - sp * 2.0f) / 3.0f;
-            ImGui::SetWindowFontScale(g_UIScale * 0.85f);
+            ImGui::SetWindowFontScale(g_FontScale * 0.85f);
 
             if (ActionButton(Icons::READ, "Read", "Read the selection aloud again.",
                              COL_READ, bw, btnH))
@@ -634,12 +645,12 @@ void DrawPanel(bool reviewMode)
                                            "Read Book keybind to re-read it.");
             }
 
-            ImGui::SetWindowFontScale(g_UIScale);
+            ImGui::SetWindowFontScale(g_FontScale);
         }
 
         ImGui::Spacing();
         if (ActionButton(nullptr, "Close", "Close this panel.",
-                         COL_CLOSE, 96.0f * g_UIScale, btnH))
+                         COL_CLOSE, 96.0f * g_ButtonScale, btnH))
             g_panelOpen = false;
 
         // --- settings ---
@@ -647,15 +658,21 @@ void DrawPanel(bool reviewMode)
         if (ImGui::CollapsingHeader("Settings###mai_settings"))
         {
             bool save = false;
-            ImGui::TextUnformatted("UI scale");
+            ImGui::TextUnformatted("Text size");
             ImGui::SetNextItemWidth(-1.0f);
-            ImGui::SliderFloat("##mai_scale", &g_UIScale, 0.5f, 3.0f, "%.1f");
+            ImGui::SliderFloat("##mai_font", &g_FontScale, 0.6f, 2.5f, "%.2f");
+            save |= ImGui::IsItemDeactivatedAfterEdit();
+
+            ImGui::TextUnformatted("Button size");
+            ImGui::SetNextItemWidth(-1.0f);
+            ImGui::SliderFloat("##mai_btn", &g_ButtonScale, 0.6f, 2.5f, "%.2f");
             save |= ImGui::IsItemDeactivatedAfterEdit();
 
             ImGui::TextUnformatted("Panel opacity");
             ImGui::SetNextItemWidth(-1.0f);
             ImGui::SliderFloat("##mai_opacity", &g_PanelOpacity, 0.2f, 1.0f, "%.2f");
             save |= ImGui::IsItemDeactivatedAfterEdit();
+            ImGui::TextDisabled("Drag the panel's edge to resize it.");
 
             if (g_BookRegionW > 0)
             {

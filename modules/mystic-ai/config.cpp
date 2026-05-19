@@ -14,7 +14,10 @@
 #include <cstdlib>
 
 // --- Settings state (declared in shared.h) ---
-float g_UIScale      = 1.0f;
+float g_FontScale    = 1.0f;
+float g_ButtonScale  = 1.0f;
+float g_PanelW       = 460.0f;
+float g_PanelH       = 340.0f;
 float g_PanelOpacity = 0.92f;
 int   g_BookRegionX  = 0;
 int   g_BookRegionY  = 0;
@@ -54,7 +57,10 @@ std::string ConfigPath(int w, int h)
 // across a resolution change — so it always resets with everything else.
 void ResetDefaults()
 {
-    g_UIScale      = 1.0f;
+    g_FontScale    = 1.0f;
+    g_ButtonScale  = 1.0f;
+    g_PanelW       = 460.0f;
+    g_PanelH       = 340.0f;
     g_PanelOpacity = 0.92f;
     g_BookRegionX  = 0;
     g_BookRegionY  = 0;
@@ -72,8 +78,30 @@ bool ReadConfig(const std::string& path)
     {
         if (line.rfind("UIScale=", 0) == 0)
         {
+            // Migration from the old single combined scale — seed both, clamped.
             float v = (float)atof(line.substr(8).c_str());
-            if (v >= 0.5f && v <= 3.0f) g_UIScale = v;
+            if (v < 0.6f) v = 0.6f; else if (v > 2.5f) v = 2.5f;
+            g_FontScale = v; g_ButtonScale = v;
+        }
+        else if (line.rfind("FontScale=", 0) == 0)
+        {
+            float v = (float)atof(line.substr(10).c_str());
+            if (v >= 0.6f && v <= 2.5f) g_FontScale = v;
+        }
+        else if (line.rfind("ButtonScale=", 0) == 0)
+        {
+            float v = (float)atof(line.substr(12).c_str());
+            if (v >= 0.6f && v <= 2.5f) g_ButtonScale = v;
+        }
+        else if (line.rfind("PanelW=", 0) == 0)
+        {
+            float v = (float)atof(line.substr(7).c_str());
+            if (v >= 300.0f && v <= 4000.0f) g_PanelW = v;
+        }
+        else if (line.rfind("PanelH=", 0) == 0)
+        {
+            float v = (float)atof(line.substr(7).c_str());
+            if (v >= 200.0f && v <= 4000.0f) g_PanelH = v;
         }
         else if (line.rfind("PanelOpacity=", 0) == 0)
         {
@@ -123,7 +151,10 @@ void SaveSettings()
         return;
     }
     f << "# Resolution: " << g_ResW << "x" << g_ResH << "\n";
-    f << "UIScale="      << g_UIScale      << "\n";
+    f << "FontScale="    << g_FontScale    << "\n";
+    f << "ButtonScale="  << g_ButtonScale  << "\n";
+    f << "PanelW="       << g_PanelW       << "\n";
+    f << "PanelH="       << g_PanelH       << "\n";
     f << "PanelOpacity=" << g_PanelOpacity << "\n";
     f << "BookRegionX="  << g_BookRegionX  << "\n";
     f << "BookRegionY="  << g_BookRegionY  << "\n";

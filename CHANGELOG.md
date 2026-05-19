@@ -7,6 +7,34 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-19] — Mystic AI 1.1.9 — book reads audio-only, TP-region panel fix
+
+### Changed
+
+- **Book reads are audio-only now — no on-screen panel.** The Read-Book keybind
+  used to open the results panel and show the transcribed page text. The daemon
+  already reads the page aloud, so the panel just repeated it. Pressing
+  Read-Book now simply captures the saved book region and sends the read; the
+  daemon speaks it, and nothing opens on screen. The keybind toggle (a second
+  press stops the watch and speech), Esc, and the page-turn auto-advance all
+  still work — the auto-advance is simpler now, with no panel ever over the
+  region. With no book region saved the keybind shows a Nexus toast instead of
+  a panel. Drag-select Capture and the TP-region read still use the panel.
+
+### Fixed
+
+- **The TP Region keybind panel reliably shows and stays now.** Pressing it sent
+  the request and the daemon processed it, but the results panel only flickered
+  on screen and never stayed — the player never saw the overview. A chord bound
+  to the TP-region keybind can have Steam Input + Nexus deliver the chord's
+  *other* keybind a frame or two later; the per-identifier debounce only
+  suppresses a repeat of the same identifier, so that stray command drained
+  into the generic "any keybind cancels the active mode" rule and closed the
+  panel that had just opened. The TP-region read now arms a brief open guard so
+  a paired chord press in the frames right after cannot close its panel. The
+  panel opens with the overview — item name, "Used for" line, Buy/Sell/Vendor
+  coin rows — and keeps it.
+
 ## [2026-05-19] — Mystic AI 1.1.8 — TP-region + book auto-advance fixes
 
 ### Fixed

@@ -46,6 +46,9 @@ extern float g_PanelOpacity;  // results panel background opacity, 0.2 .. 1.0
 // Saved "book region" — a fixed screen rectangle the Read-Book keybind re-reads
 // with no drag. Pixel coords in the game window's client space. W/H == 0 = unset.
 extern int   g_BookRegionX, g_BookRegionY, g_BookRegionW, g_BookRegionH;
-// Saved "TP region" — a fixed screen rectangle the TP-region keybind overviews
-// with no drag. Pixel coords in the game window's client space. W/H == 0 = unset.
+// Saved "TP region" — the TP-region keybind overviews it with no drag. Unlike
+// the book region this is CURSOR-RELATIVE: X/Y are the box's offset (client
+// pixels, may be negative) from the cursor, W/H its size. The keybind adds the
+// live cursor position, so it reads whatever item the cursor is on. W/H == 0
+// = unset.
 extern int   g_TpRegionX, g_TpRegionY, g_TpRegionW, g_TpRegionH;

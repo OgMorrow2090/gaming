@@ -89,6 +89,13 @@ ImVec4 g_boxDisp{0, 0, 0, 0};
 int    g_selX = 0, g_selY = 0, g_selW = 0, g_selH = 0;
 bool   g_haveSel = false;
 
+// Cursor position (game-window client pixels) captured the instant the freeze-
+// frame is triggered — "where the player was pointing". The Save TP region
+// button records the selection box as an offset from this point so the
+// TP-region keybind can re-capture relative to the live cursor — inventory
+// items are never in the same screen spot twice. See StartTpRead.
+int    g_capCursorX = 0, g_capCursorY = 0;
+
 // The drag-selected crop, kept through the Review session so the action
 // buttons (Wiki / Research / Copy) can re-send it.
 std::vector<uint8_t> g_lastCrop;
@@ -395,6 +402,15 @@ void StartCapture()
     g_dragging = false;
     g_haveSel  = false;
     g_mode     = MODE_CAPTURING;
+
+    // Record where the cursor is pointing as the freeze triggers — the Save TP
+    // region button stores the drag box as an offset from this point.
+    POINT pt{0, 0};
+    if (GetCursorPos(&pt) && GameWindow)
+        ScreenToClient(GameWindow, &pt);
+    g_capCursorX = pt.x;
+    g_capCursorY = pt.y;
+
     std::thread(CaptureWorker).detach();
 }
 
@@ -462,21 +478,32 @@ void StartBookRead()
     }
 }
 
-// Read the saved TP region. Captures the saved rectangle and sends
-// @action:overview — the panel then shows the item, its "Used for" line and
-// TP/vendor rows, silently. With no saved region it opens the panel with an
-// on-screen instruction so the keybind press is always visibly acknowledged.
+// Read the saved TP region. The saved region is cursor-relative — X/Y are the
+// box's offset from where the cursor was when it was set (see the Save TP
+// region button) — so this adds the live cursor and captures around whatever
+// item the cursor is on now. Sends @action:overview; the panel then shows the
+// item, its "Used for" line and TP/vendor rows, silently. With no saved region
+// it opens the panel with an on-screen instruction so the press is always
+// visibly acknowledged.
 void StartTpRead()
 {
     if (g_TpRegionW <= 0 || g_TpRegionH <= 0)
     {
-        OpenPanelNotice("No TP region saved - drag-select an item, then "
-                        "press 'Save TP region'.");
-        ClaudeVision::Speak("No TP region saved yet. Drag-select an item, then "
-                            "use Save TP region.");
+        OpenPanelNotice("No TP region saved - point at an item, drag-select its "
+                        "tooltip, then press 'Save TP region'.");
+        ClaudeVision::Speak("No TP region saved yet. Drag-select an item tooltip, "
+                            "then use Save TP region.");
         return;
     }
-    g_anchor      = ImVec4((float)g_TpRegionX, (float)g_TpRegionY,
+    // Add the live cursor to the saved offset so the read follows wherever the
+    // player is pointing right now.
+    POINT pt{0, 0};
+    if (GetCursorPos(&pt) && GameWindow)
+        ScreenToClient(GameWindow, &pt);
+    int rx = pt.x + g_TpRegionX;
+    int ry = pt.y + g_TpRegionY;
+
+    g_anchor      = ImVec4((float)rx, (float)ry,
                            (float)g_TpRegionW, (float)g_TpRegionH);
     g_reposPanel  = true;
     g_panelOpen   = true;
@@ -486,7 +513,7 @@ void StartTpRead()
     // later, cannot drain into the generic cancel and close this panel.
     g_tpOpenGuardUntilMs = ImGui::GetTime() * 1000.0 + TP_OPEN_GUARD_MS;
     ClaudeVision::RequestRegion("Overview", "@action:overview",
-                                g_TpRegionX, g_TpRegionY, g_TpRegionW, g_TpRegionH);
+                                rx, ry, g_TpRegionW, g_TpRegionH);
 }
 
 // Drain the keybind command. The Read command just voices the panel and never
@@ -1270,18 +1297,24 @@ void DrawPanel(bool reviewMode)
                 ClaudeVision::RequestPixels("Legendary", "@action:legendary-fav",
                                             g_lastCrop, g_lastCropW, g_lastCropH);
 
-            // Row 3 — Save TP region.
+            // Row 3 — Save TP region. Stored cursor-relative: the box position
+            // as an offset from where the cursor was when the frame froze, so
+            // the TP-region keybind reads whatever item the cursor is on — not
+            // a fixed screen spot.
             if (ActionButton(nullptr, "Save TP region",
-                             "Save this selection as the static TP region. The TP "
-                             "Region keybind then re-reads it with no drag.",
+                             "Save this selection as the cursor-anchored TP region. "
+                             "The TP Region keybind then reads whatever item the "
+                             "cursor is on, with no drag.",
                              COL_TPRG, bw, btnH))
             {
-                g_TpRegionX = g_selX; g_TpRegionY = g_selY;
+                g_TpRegionX = g_selX - g_capCursorX;
+                g_TpRegionY = g_selY - g_capCursorY;
                 g_TpRegionW = g_selW; g_TpRegionH = g_selH;
                 SaveSettings();
                 if (APIDefs)
-                    APIDefs->GUI_SendAlert("Mystic AI: TP region saved. Use the "
-                                           "TP Region keybind to re-read it.");
+                    APIDefs->GUI_SendAlert("Mystic AI: TP region saved. Point at an "
+                                           "item and use the TP Region keybind to "
+                                           "read it.");
             }
 
             ImGui::SetWindowFontScale(g_FontScale);
@@ -1461,7 +1494,7 @@ void DrawPanel(bool reviewMode)
 
             if (g_TpRegionW > 0)
             {
-                ImGui::Text("TP region: %dx%d at (%d,%d)",
+                ImGui::Text("TP region: %dx%d, offset (%+d,%+d) from cursor",
                     g_TpRegionW, g_TpRegionH, g_TpRegionX, g_TpRegionY);
                 if (ImGui::Button("Clear TP region"))
                 {
@@ -1504,19 +1537,11 @@ void RenderMysticAI()
 
     // Esc — the WndProc hook (MysticAIWndProc) swallows the key and posts it
     // here, so the panel/overlay closes without GW2 also closing the book or
-    // inventory it had open behind it. Esc also ends a book auto-advance.
-    if (g_escConsumed.exchange(false))
-    {
-        if (g_mode != MODE_IDLE)
-            ExitToIdle(true, true);    // Esc is an explicit cancel — ends the watch
-        else
-        {
-            if (g_bookWatch) StopBookWatch();
-            if (ClaudeVision::GetState() == ClaudeVision::State::Waiting
-                || ClaudeVision::IsSpeaking())
-                ClaudeVision::Stop();
-        }
-    }
+    // inventory it had open behind it. The hook only swallows Esc while a
+    // Mystic AI window is actually on screen (see the g_uiActive publish
+    // below), so a consumed Esc always means "close that window".
+    if (g_escConsumed.exchange(false) && g_mode != MODE_IDLE)
+        ExitToIdle(true, true);        // Esc is an explicit cancel — ends the watch
 
     AdvanceCapture();
     AdvanceBookWatch();
@@ -1535,12 +1560,14 @@ void RenderMysticAI()
         DrawPanel(false);
     }
 
-    // Publish for the WndProc hook whether Mystic AI should own Esc this frame
-    // — also while a book auto-advance is running, so Esc ends the watch.
-    g_uiActive.store(g_mode != MODE_IDLE
-                     || g_bookWatch
-                     || ClaudeVision::IsSpeaking()
-                     || ClaudeVision::GetState() == ClaudeVision::State::Waiting);
+    // Publish for the WndProc hook whether Mystic AI should own Esc this frame.
+    // ONLY while a Mystic AI window is on screen (the freeze overlay or the
+    // results panel). A book auto-advance watch, an in-flight read or narration
+    // all run with NO visible UI — owning Esc then would swallow the key from
+    // GW2 and every other addon (e.g. Event Timers' Esc-to-close) for as long
+    // as the watch stayed armed. Stop a book watch with a second Read-Book
+    // press instead; it is no longer tied to Esc.
+    g_uiActive.store(g_mode != MODE_IDLE);
 }
 
 void ToggleCapture()  { g_cmd.store(CMD_TOGGLE); }

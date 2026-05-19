@@ -7,6 +7,33 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-19] — Mystic AI 1.1.10 — cursor-anchored TP region, global Esc fix
+
+### Changed
+
+- **The saved TP region is cursor-anchored now.** It used to capture a fixed
+  screen rectangle, so the TP-region keybind only worked when an item happened
+  to sit in that exact spot — useless for inventory, where items are never in
+  the same place twice. The TP region is now stored as an offset from the
+  cursor: the Save TP region button records where the drag box sits relative to
+  where the cursor was pointing when the frame froze, and the TP-region keybind
+  adds the live cursor position — so it reads whatever item the cursor is on
+  now. Re-save your TP region after updating (point at an item, Capture,
+  drag-select its tooltip, then Save TP region). The book region is unchanged —
+  GW2's book panel is genuinely fixed, so it stays an absolute rectangle.
+
+### Fixed
+
+- **Mystic AI no longer swallows the Esc key while idle.** Its WndProc hook
+  consumes Esc so the results panel / freeze overlay close without GW2 also
+  closing the book or inventory behind them. But the hook also claimed Esc
+  whenever a book auto-advance watch was armed or speech was playing — both of
+  which run with no Mystic AI window on screen. Once a book had been read the
+  watch stayed armed, so Esc was dead for GW2 and every other addon (e.g. the
+  Event Timers addon's Esc-to-close) until the watch was toggled off. The hook
+  now claims Esc only while a Mystic AI window is actually visible. Stop a book
+  auto-advance with a second Read-Book press, as before.
+
 ## [2026-05-19] — Mystic AI 1.1.9 — book reads audio-only, TP-region panel fix
 
 ### Changed

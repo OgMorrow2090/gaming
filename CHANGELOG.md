@@ -7,6 +7,20 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-19] — Piper fallback voice → Jenny (British female)
+
+### Changed
+
+- **Piper fallback TTS voice** is now `en_GB-jenny_dioco-medium` ("Jenny", a
+  natural British-female voice) in place of `en_GB-northern_english_male-medium`.
+  When ElevenLabs "Lily" is unavailable (quota / network), the local free
+  fallback now sounds close to Lily rather than dropping to a male voice.
+  - `scripts/gw2-claude-setup.sh` — downloads Jenny; `config.env` template
+    `GW2_CLAUDE_VOICE` default set to Jenny.
+  - `scripts/gw2-claude-daemon.py` — `_speak_piper` hard-coded default updated.
+- Deployed to bazzite: Jenny model fetched into `~/.local/share/gw2-claude/
+  voices/`, `config.env` switched, `gw2-claude-daemon` restarted.
+
 ## [2026-05-19] — Mystic AI 1.1.2 — button grid + Esc no longer leaks to GW2
 
 ### Changed

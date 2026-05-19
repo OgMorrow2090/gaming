@@ -272,7 +272,7 @@ def _af_filter(cfg):
 
 def _speak_piper(spoken, cfg):
     """Local Piper synthesis -> WAV -> playback. Returns True on success."""
-    voice = cfg.get("GW2_CLAUDE_VOICE") or "en_GB-northern_english_male-medium"
+    voice = cfg.get("GW2_CLAUDE_VOICE") or "en_GB-jenny_dioco-medium"
     model = os.path.join(VOICES_DIR, voice + ".onnx")
     if not os.path.exists(model):
         log("WARN: voice model missing (%s) — skipping TTS" % model)

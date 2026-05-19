@@ -2,7 +2,7 @@
 {
 	"version"		"3"
 	"revision"		"2413"
-	"title"		"Guild Wars 2 - Og v21.0"
+	"title"		"Guild Wars 2 - Og v22.0"
 	"description"		"#SettingsController_AutosaveDescription"
 	"creator"		"76561198025059559"
 	"progenitor"		"usercloud://1284210/controller_neptune"
@@ -2323,6 +2323,22 @@
 					{
 						"bindings"
 						{
+							"binding"		"key_press HOME, Home Instance Portal, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+			"touch_menu_button_2"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
 							"binding"		"key_press LEFT_CONTROL, Toggle Paths, , "
 							"binding"		"key_press F3, Toggle Paths, , "
 						}
@@ -2332,7 +2348,7 @@
 				{
 				}
 			}
-			"touch_menu_button_2"
+			"touch_menu_button_3"
 			{
 				"activators"
 				{
@@ -2350,7 +2366,7 @@
 				{
 				}
 			}
-			"touch_menu_button_3"
+			"touch_menu_button_4"
 			{
 				"activators"
 				{
@@ -2368,7 +2384,7 @@
 				{
 				}
 			}
-			"touch_menu_button_4"
+			"touch_menu_button_5"
 			{
 				"activators"
 				{
@@ -2385,7 +2401,7 @@
 				{
 				}
 			}
-			"touch_menu_button_5"
+			"touch_menu_button_6"
 			{
 				"activators"
 				{
@@ -2401,7 +2417,7 @@
 				{
 				}
 			}
-			"touch_menu_button_6"
+			"touch_menu_button_7"
 			{
 				"activators"
 				{
@@ -2417,7 +2433,7 @@
 				{
 				}
 			}
-			"touch_menu_button_7"
+			"touch_menu_button_8"
 			{
 				"activators"
 				{
@@ -2433,7 +2449,7 @@
 				{
 				}
 			}
-			"touch_menu_button_8"
+			"touch_menu_button_9"
 			{
 				"activators"
 				{
@@ -2449,7 +2465,7 @@
 				{
 				}
 			}
-			"touch_menu_button_9"
+			"touch_menu_button_10"
 			{
 				"activators"
 				{
@@ -2460,22 +2476,6 @@
 							"binding"		"key_press LEFT_SHIFT, Capture Mode, , "
 							"binding"		"key_press LEFT_CONTROL, Capture Mode, , "
 							"binding"		"key_press C, Capture Mode, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_10"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press HOME, Home Instance Portal, , "
 						}
 					}
 				}
@@ -3333,6 +3333,32 @@
 		"description"		""
 		"inputs"
 		{
+			"button_escape"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Mystic AI Read, , "
+							"binding"		"key_press F10, Mystic AI Read, , "
+						}
+					}
+					"Long_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Mystic AI TP Region, , "
+							"binding"		"key_press LEFT_SHIFT, Mystic AI TP Region, , "
+							"binding"		"key_press F10, Mystic AI TP Region, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
 		}
 		"settings"
 		{

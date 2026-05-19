@@ -7,6 +7,18 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-19] — Mystic Clicker 3.6.27 — colour-coded capture categories
+
+### Changed
+
+- **The capture panel's category headers are now colour-coded** — each of the
+  eleven categories (Mystic Forge, Trading Post, Bank & Inventory, …) gets a
+  distinct tint on its collapsing header, and its idle capture buttons carry a
+  faint version of the same colour. The long target list is far easier to scan
+  and the categories tell apart at a glance. Countdown / confirmation states
+  are unchanged.
+- Version 3.6.26 → **3.6.27** (`entry.cpp`).
+
 ## [2026-05-19] — Mystic AI 1.1.4 — Trading Post coin panel
 
 ### Added

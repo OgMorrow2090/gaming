@@ -185,6 +185,24 @@ static const char* const s_Categories[] = {
 };
 static constexpr int NUM_CATEGORIES = sizeof(s_Categories) / sizeof(s_Categories[0]);
 
+// A distinct tint per category, index-aligned with s_Categories above — keep
+// the two arrays the same length and order. Each colour tints that category's
+// collapsing header (and, faintly, its idle capture buttons) so the categories
+// separate at a glance.
+static const ImVec4 s_CategoryColors[NUM_CATEGORIES] = {
+    ImVec4(0.62f, 0.45f, 0.85f, 1.0f),  // Mystic Forge     - violet
+    ImVec4(0.85f, 0.67f, 0.28f, 1.0f),  // Trading Post     - amber
+    ImVec4(0.36f, 0.58f, 0.88f, 1.0f),  // Bank & Inventory - blue
+    ImVec4(0.88f, 0.52f, 0.27f, 1.0f),  // Crafting         - orange
+    ImVec4(0.30f, 0.72f, 0.70f, 1.0f),  // Mail             - teal
+    ImVec4(0.86f, 0.42f, 0.68f, 1.0f),  // Wizard Vault     - magenta
+    ImVec4(0.50f, 0.50f, 0.86f, 1.0f),  // Wizard Items     - indigo
+    ImVec4(0.42f, 0.74f, 0.42f, 1.0f),  // Travel           - green
+    ImVec4(0.78f, 0.60f, 0.40f, 1.0f),  // Bouncy Chest     - tan
+    ImVec4(0.50f, 0.60f, 0.70f, 1.0f),  // Generic Accept   - slate
+    ImVec4(0.58f, 0.58f, 0.60f, 1.0f),  // Misc             - grey
+};
+
 /**
  * PerformCapture - Called when countdown reaches zero
  */
@@ -376,7 +394,8 @@ void RenderCaptureWindow()
 
         for (int c = 0; c < NUM_CATEGORIES; ++c)
         {
-            const char* category = s_Categories[c];
+            const char*  category = s_Categories[c];
+            const ImVec4 cc       = s_CategoryColors[c];
 
             // Collect indices of targets in this category.
             int catIndices[NUM_TARGETS];
@@ -431,7 +450,14 @@ void RenderCaptureWindow()
             // highlighted button stays visible during the 5s wait.
             if (catHasActive) ImGui::SetNextItemOpen(true);
 
-            if (!ImGui::CollapsingHeader(headerLabel)) continue;
+            // Tint the header with the category's colour so categories
+            // separate at a glance.
+            ImGui::PushStyleColor(ImGuiCol_Header,        ImVec4(cc.x, cc.y, cc.z, 0.55f));
+            ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(cc.x, cc.y, cc.z, 0.78f));
+            ImGui::PushStyleColor(ImGuiCol_HeaderActive,  ImVec4(cc.x, cc.y, cc.z, 0.92f));
+            bool catOpen = ImGui::CollapsingHeader(headerLabel);
+            ImGui::PopStyleColor(3);
+            if (!catOpen) continue;
 
             for (int i = 0; i < catCount; ++i)
             {
@@ -460,7 +486,14 @@ void RenderCaptureWindow()
                 }
                 else
                 {
-                    if (ImGui::Button(label, ImVec2(-1, btnH)))
+                    // Faint category tint so an expanded category's buttons
+                    // still read as one group.
+                    ImGui::PushStyleColor(ImGuiCol_Button,        ImVec4(cc.x, cc.y, cc.z, 0.20f));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(cc.x, cc.y, cc.z, 0.42f));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonActive,  ImVec4(cc.x, cc.y, cc.z, 0.60f));
+                    bool pressed = ImGui::Button(label, ImVec2(-1, btnH));
+                    ImGui::PopStyleColor(3);
+                    if (pressed)
                     {
                         s_CountdownActive = true;
                         s_CountdownTarget = idx;

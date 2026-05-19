@@ -1908,8 +1908,8 @@
 		"Type": 1
 	},
 	{
-		"Alt": false,
-		"Code": 74,
+		"Alt": true,
+		"Code": 68,
 		"Ctrl": false,
 		"Identifier": "MYSTIC_AI_CAPTURE",
 		"Passthrough": false,

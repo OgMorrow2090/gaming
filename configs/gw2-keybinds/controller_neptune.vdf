@@ -2,7 +2,7 @@
 {
 	"version"		"3"
 	"revision"		"2413"
-	"title"		"Guild Wars 2 - Og v22.0"
+	"title"		"Guild Wars 2 - Og v23.0"
 	"description"		"#SettingsController_AutosaveDescription"
 	"creator"		"76561198025059559"
 	"progenitor"		"usercloud://1284210/controller_neptune"
@@ -3333,32 +3333,6 @@
 		"description"		""
 		"inputs"
 		{
-			"button_escape"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Mystic AI Read, , "
-							"binding"		"key_press F10, Mystic AI Read, , "
-						}
-					}
-					"Long_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_CONTROL, Mystic AI TP Region, , "
-							"binding"		"key_press LEFT_SHIFT, Mystic AI TP Region, , "
-							"binding"		"key_press F10, Mystic AI TP Region, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
 		}
 		"settings"
 		{
@@ -3395,6 +3369,15 @@
 				"activators"
 				{
 					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_CONTROL, Mystic AI TP Region, , "
+							"binding"		"key_press LEFT_SHIFT, Mystic AI TP Region, , "
+							"binding"		"key_press F10, Mystic AI TP Region, , "
+						}
+					}
+					"Double_Press"
 					{
 						"bindings"
 						{

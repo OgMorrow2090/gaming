@@ -408,13 +408,13 @@ def _http_get_json(url, timeout=20):
     return json.loads(_http_get(url, timeout).decode("utf-8", "replace"))
 
 
-def claude_identify(client, model, image_path, instruction):
-    """One short vision call — pulls an item / topic name out of a crop."""
+def _vision(client, model, image_path, instruction, max_tokens=200):
+    """One vision call — returns Claude's raw text answer for `instruction`."""
     png = prepare_image(image_path)
     b64 = base64.standard_b64encode(png).decode("ascii")
     resp = client.messages.create(
         model=model,
-        max_tokens=120,
+        max_tokens=max_tokens,
         messages=[{
             "role": "user",
             "content": [
@@ -424,10 +424,15 @@ def claude_identify(client, model, image_path, instruction):
             ],
         }],
     )
-    text = "".join(b.text for b in resp.content
-                    if getattr(b, "type", None) == "text").strip()
-    # Models sometimes wrap the name in quotes or add a trailing period.
-    return text.strip("\"'.‘’“” ").strip()
+    return "".join(b.text for b in resp.content
+                   if getattr(b, "type", None) == "text").strip()
+
+
+def claude_identify(client, model, image_path, instruction):
+    """One short vision call — pulls an item / topic name out of a crop.
+    Strips quotes / trailing punctuation the model sometimes adds."""
+    return _vision(client, model, image_path, instruction, 120).strip(
+        "\"'.‘’“” ").strip()
 
 
 def format_coins(copper):
@@ -549,6 +554,87 @@ def action_trading_post(client, model, image_path):
 
     marker = "@TP|buy=%d|sell=%d|vendor=%d|name=%s" % (buy, sell, vendor, disp_name)
     return marker + "\n" + " ".join(say)
+
+
+OVERVIEW_INSTRUCTION = (
+    "This is a cropped region of the Guild Wars 2 screen.\n"
+    "If it shows a single game ITEM (an inventory slot, an item tooltip, a "
+    "trading-post listing), reply with EXACTLY these two lines and nothing "
+    "else:\n"
+    "NAME: <the item's exact in-game name>\n"
+    "ABOUT: <one or two plain sentences on what the item is and what it is "
+    "used for>\n"
+    "If it is NOT a single item — dialogue, quest text, a book page, mail, a "
+    "menu, chat — reply instead with one line:\n"
+    "TEXT: <all of the visible text, in full>\n"
+    "Do not add any other commentary."
+)
+
+
+def action_overview(client, model, image_path):
+    """Default drag-select action. Identify the item and build an on-screen
+    overview — name, what it is, Trading Post buy/sell and vendor value. The
+    panel shows it silently; the Read button voices the SPOKEN line. A non-item
+    selection comes back as a plain transcription instead."""
+    raw = _vision(client, model, image_path, OVERVIEW_INSTRUCTION, 1500).strip()
+    if raw.upper().startswith("TEXT:"):
+        return raw[5:].strip()                  # not an item — plain text
+
+    name = about = ""
+    for line in raw.splitlines():
+        s = line.strip()
+        if s.upper().startswith("NAME:"):
+            name = s[5:].strip().strip("\"'")
+        elif s.upper().startswith("ABOUT:"):
+            about = s[6:].strip()
+    if not name:
+        return raw                              # unparseable — show as-is
+
+    # Trading Post + vendor — best-effort; the overview still shows without it.
+    buy = sell = vendor = -1
+    disp_name = name
+    item_id, bltc_name = bltc_find_item(name)
+    if item_id is not None:
+        canon, vendor, no_sell = _fetch_item(item_id)
+        disp_name = canon or bltc_name or name
+        if no_sell:
+            vendor = -1
+        try:
+            price = _http_get_json("%s/commerce/prices/%s" % (GW2_API, item_id), 15)
+            buy = int(price.get("buys", {}).get("unit_price") or 0) or -1
+            sell = int(price.get("sells", {}).get("unit_price") or 0) or -1
+        except Exception:  # noqa: BLE001
+            pass
+
+    # SPOKEN line — what the Read button voices on demand.
+    say = [disp_name + ".", about]
+    if buy >= 0 or sell >= 0:
+        say.append("Trading Post buy %s, sell %s."
+                   % (format_coins(buy) if buy >= 0 else "no orders",
+                      format_coins(sell) if sell >= 0 else "no listings"))
+    if vendor > 0:
+        say.append("Vendor value %s." % format_coins(vendor))
+    spoken = " ".join(p for p in say if p)
+
+    marker = "@OV|buy=%d|sell=%d|vendor=%d|name=%s" % (buy, sell, vendor, disp_name)
+    return "%s\nABOUT:%s\nSPOKEN:%s" % (marker, about, spoken)
+
+
+def action_copy_name(client, model, image_path):
+    """Smart Copy — pull ONLY the item's name out of the crop. GW2's
+    destroy-item confirmation shows the name in rarity-coloured text and can
+    wrap it over two lines; the addon puts the returned name on the clipboard."""
+    name = _vision(client, model, image_path,
+        "This is a Guild Wars 2 destroy-item confirmation box or an item "
+        "tooltip. The item's name is the coloured text (orange = exotic, "
+        "yellow = rare, blue = masterwork, green = fine, white = basic). Reply "
+        "with ONLY that item's exact name as a single line of plain text — if "
+        "it wraps onto two lines on screen, join it into one. No quotes, no "
+        "other words. If there is no item name, reply NONE.", 80)
+    name = name.strip().strip("\"'.‘’“” ").strip()
+    if not name or name.upper() == "NONE":
+        return "@COPY|"
+    return "@COPY|" + name.splitlines()[0].strip()
 
 
 def _add_wiki_favorite(page_id, title):
@@ -675,12 +761,8 @@ def run_daemon(client, model, cfg):
                 _safe_rm(ready)
                 continue
 
-            image_path = find_image(suffix)
-            if image_path is None:
-                log("WARN: no image for request %s — skipping" % suffix)
-                _safe_rm(ready)
-                continue
-
+            # Read the prompt and split off any "@action:<name>" prefix first —
+            # the "say" action carries text only and needs no captured image.
             question = None
             try:
                 with open(prompt_path) as f:
@@ -688,20 +770,36 @@ def run_daemon(client, model, cfg):
             except FileNotFoundError:
                 pass
 
-            # The addon may prefix the prompt with "@action:<name>" on the
-            # first line to request a Phase 2 action instead of a plain read.
             action = "read"
             if question and question.lstrip().startswith("@action:"):
                 first, _, rest = question.lstrip().partition("\n")
                 action = first.strip()[len("@action:"):].strip().lower() or "read"
-                question = rest.strip()
-            elif question is not None:
+                question = rest
+            if question is not None:
                 question = question.strip()
             if action != "read":
                 log("request=%s action=%s" % (suffix, action))
 
-            # Book reads (Read-Book keybind) use ElevenLabs under engine "auto";
-            # every other read stays on free Piper. The marker phrase must match
+            # "say" — voice the supplied text aloud; no image, no Claude call,
+            # fire-and-forget (the Read button sends this to read whatever is
+            # already on the panel, with no fresh API round-trip and no reply).
+            if action == "say":
+                stop_speaking()
+                if os.path.exists(STOP_MARKER):
+                    _safe_rm(STOP_MARKER)
+                else:
+                    speak(question or "", cfg)
+                _safe_rm(prompt_path)
+                _safe_rm(ready)
+                continue
+
+            image_path = find_image(suffix)
+            if image_path is None:
+                log("WARN: no image for request %s — skipping" % suffix)
+                _safe_rm(ready)
+                continue
+
+            # Book reads (Read-Book keybind) — the marker phrase must match
             # overlay.cpp BOOK_PROMPT.
             is_book = (action == "read" and bool(question)
                        and "in-game Guild Wars 2 book" in question)
@@ -711,8 +809,12 @@ def run_daemon(client, model, cfg):
 
             ok = True
             try:
-                if action == "trading-post":
+                if action == "overview":
+                    result = action_overview(client, model, image_path)
+                elif action == "trading-post":
                     result = action_trading_post(client, model, image_path)
+                elif action == "copy-name":
+                    result = action_copy_name(client, model, image_path)
                 elif action == "wiki-fav":
                     result = action_wiki_fav(client, model, image_path)
                 elif action == "research":
@@ -729,13 +831,14 @@ def run_daemon(client, model, cfg):
             open(done_mark, "w").close()
             _safe_rm(ready)
 
+            # Speak only what is meant to be heard — a plain or book read, and
+            # Research. The overview, TP, copy-name and favourite actions show
+            # on the panel silently; the Read button re-sends them as "say".
             if ok:
-                # If the player cancelled mid-read (the stop marker appeared
-                # during the API call), honour it instead of speaking.
                 if os.path.exists(STOP_MARKER):
                     _safe_rm(STOP_MARKER)
                     log("read %s cancelled before speech" % suffix)
-                else:
+                elif action in ("read", "research"):
                     speak(result, cfg, is_book)
 
         time.sleep(POLL_SECONDS)

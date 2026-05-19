@@ -7,6 +7,37 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-19] — Mystic AI 1.1.5 — overview panel + on-demand reading
+
+### Added
+
+- **Drag-select now shows a silent on-screen overview** instead of reading the
+  selection aloud. For an item it lists the item name, a one-line description
+  of what it is, its Trading Post **Buy** / **Sell** prices and its **Vendor**
+  value — all rendered in the panel with no narration. A selection that is not
+  an item falls back to a plain on-screen transcription.
+- **Reading aloud is now on-demand** — the **Read** button voices the panel's
+  content (the item's spoken description, or the transcription) only when you
+  ask, leaving the panel on screen while it speaks.
+
+### Changed
+
+- **Action buttons moved above the text.** The Read / Wiki / Research / Copy /
+  Book row is now drawn at the top of the panel, so the mouse lands on the
+  buttons — right where the drag ended — rather than on the result text.
+- **Copy now extracts just the item name.** Instead of OCR-ing the whole
+  selection, the Copy button asks the daemon for the item's name and puts that
+  on the clipboard, ready to paste into GW2's item-destroy confirmation box.
+- **The standalone TP button is gone** — Trading Post prices are part of the
+  overview panel now.
+- **Opening Settings expands the panel** so the controls show without
+  scrolling, and collapses it back when closed. A normal drag-resize is still
+  saved as before.
+- **The waiting status no longer shows a counting number** — it read like a
+  countdown. It is now a plain "Reading the screen…" with animated dots.
+- **Cut-off-text narration removed** — the drag-select prompt no longer asks
+  Claude to flag text clipped at an edge.
+
 ## [2026-05-19] — gw2-claude — TP lookup via gw2bltc.com + cleaner reading
 
 ### Fixed

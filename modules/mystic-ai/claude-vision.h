@@ -37,6 +37,13 @@ void RequestPixels(const char* label, const char* prompt,
 void RequestRegion(const char* label, const char* prompt,
                    int x, int y, int w, int h);
 
+// Fire-and-forget: ask the daemon to voice `text` aloud right now. Writes a
+// "@action:say" request (a .prompt + .ready, no .bmp) on a detached worker
+// thread. Does NOT touch the request state machine and is never polled — the
+// daemon writes no reply. Used by the Read button to read panel content on
+// demand without disturbing what the panel shows.
+void Speak(const std::string& text);
+
 // True while the daemon is reading an answer aloud (TTS in progress).
 bool IsSpeaking();
 

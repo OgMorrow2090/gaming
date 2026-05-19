@@ -35,14 +35,14 @@
 #include <cstdint>
 #include <cstring>
 #include <cstdlib>
+#include <cstdio>
 #include <string>
 
 // Prompts sent to Claude with the captured image.
 static const char* DRAG_PROMPT =
     "This image is a region of the Guild Wars 2 screen that the player selected. "
     "Read the text in it - a tooltip, dialogue, quest text, book page, mail, item "
-    "listing, or trading-post prices - in full, top to bottom. If text is clearly "
-    "cut off at an edge, mention that briefly.";
+    "listing, or trading-post prices - in full, top to bottom.";
 
 static const char* BOOK_PROMPT =
     "This image is a page from an in-game Guild Wars 2 book. Read the page text in "
@@ -88,9 +88,31 @@ int    g_selX = 0, g_selY = 0, g_selW = 0, g_selH = 0;
 bool   g_haveSel = false;
 
 // The drag-selected crop, kept through the Review session so the action
-// buttons (Read / TP / Wiki / Research / Copy) can re-send it.
+// buttons (Wiki / Research / Copy) can re-send it.
 std::vector<uint8_t> g_lastCrop;
 int                  g_lastCropW = 0, g_lastCropH = 0;
+
+// The sentence the Read button voices on demand — the SPOKEN: line of an
+// overview result, or the whole result for a plain transcription. Refreshed
+// every frame while the panel is Done; empty disables the Read button.
+std::string g_spokenText;
+
+// Smart-Copy state. A "@COPY|" result sets the Windows clipboard exactly once
+// (g_copyHandled remembers the result string already acted on, so the Done
+// branch doesn't re-copy every frame); g_copyMsg / g_copyMsgCol is the line
+// the panel then shows.
+std::string g_copyHandled;
+std::string g_copyMsg;
+ImVec4      g_copyMsgCol{1, 1, 1, 1};
+
+// --- Settings auto-expand --------------------------------------------------
+// The Settings header grows the panel so its controls show without scrolling.
+// g_settingsOpen tracks the header across frames; g_settingsExtraH is the
+// height added while it is open (0 when closed). The user's own panel size
+// (g_PanelW/g_PanelH) is never bumped, so SaveSettings() always stores the
+// collapsed size and a normal drag-resize still works.
+bool  g_settingsOpen   = false;
+float g_settingsExtraH = 0.0f;
 
 // --- Box-anchored panel ----------------------------------------------------
 ImVec4 g_anchor{0, 0, 0, 0};   // box the panel anchors to (display coords)
@@ -216,6 +238,9 @@ void ExitToIdle(bool stopRead)
     g_needRelease = true;
     g_lastCrop.clear();
     g_lastCrop.shrink_to_fit();
+    g_spokenText.clear();
+    g_copyHandled.clear();
+    g_copyMsg.clear();
     CopyText::Reset();
     if (stopRead) ClaudeVision::Stop();
 }
@@ -372,7 +397,7 @@ void FinishSelection(ImVec2 disp)
 
     g_dragging = false;
     g_mode = MODE_REVIEW;
-    ClaudeVision::RequestPixels("Read", DRAG_PROMPT, std::move(crop), cw, ch);
+    ClaudeVision::RequestPixels("Overview", "@action:overview", std::move(crop), cw, ch);
 }
 
 // ---------------------------------------------------------------------------
@@ -598,6 +623,79 @@ void DrawTpPanel(const TpData& tp)
                 "not sellable");
 }
 
+// ---------------------------------------------------------------------------
+// Overview panel
+//
+// The default drag-select action (@action:overview) returns, when the
+// selection is an item, three lines:
+//   @OV|buy=..|sell=..|vendor=..|name=..   coin marker (mirrors @TP|)
+//   ABOUT:<one or two sentence description>
+//   SPOKEN:<a prose sentence to be voiced on demand>
+// We show the name, the ABOUT text, and buy / sell / vendor coin rows — all on
+// screen, silently. The SPOKEN line is cached for the Read button. A selection
+// that is not an item returns plain text with no marker and falls back to
+// wrapped text (see DrawPanel).
+// ---------------------------------------------------------------------------
+struct OverviewData
+{
+    long long   buy = -1, sell = -1, vendor = -1;  // copper; -1 = none / unknown
+    std::string name;
+    std::string about;    // the ABOUT: line
+    std::string spoken;   // the SPOKEN: line — voiced by the Read button
+};
+
+bool ParseOverviewMarker(const std::string& result, OverviewData& out)
+{
+    if (result.rfind("@OV|", 0) != 0) return false;
+
+    // First line is the @OV| marker; ABOUT: / SPOKEN: are later lines.
+    size_t nl   = result.find('\n');
+    std::string line = (nl == std::string::npos) ? result : result.substr(0, nl);
+    out.buy    = TpField(line, "buy=");
+    out.sell   = TpField(line, "sell=");
+    out.vendor = TpField(line, "vendor=");
+    size_t np  = line.find("name=");
+    out.name   = (np != std::string::npos) ? line.substr(np + 5) : "";
+
+    // Walk the remaining lines for the ABOUT: and SPOKEN: prefixes.
+    size_t pos = (nl == std::string::npos) ? std::string::npos : nl + 1;
+    while (pos != std::string::npos && pos < result.size())
+    {
+        size_t end = result.find('\n', pos);
+        std::string l = result.substr(pos, end == std::string::npos
+                                               ? std::string::npos : end - pos);
+        if (l.rfind("ABOUT:", 0) == 0)
+            out.about = l.substr(6);
+        else if (l.rfind("SPOKEN:", 0) == 0)
+            out.spoken = l.substr(7);
+        pos = (end == std::string::npos) ? std::string::npos : end + 1;
+    }
+    return true;
+}
+
+// The overview result: item name, a short description, then buy / sell /
+// vendor coin rows.
+void DrawOverviewPanel(const OverviewData& ov)
+{
+    if (!ov.name.empty())
+        ImGui::TextColored(ImVec4(1.0f, 0.86f, 0.45f, 1.0f), "%s", ov.name.c_str());
+    if (!ov.about.empty())
+    {
+        ImGui::Spacing();
+        ImGui::TextWrapped("%s", ov.about.c_str());
+    }
+    ImGui::Spacing();
+    ImGui::Separator();
+    ImGui::Spacing();
+    float labelW = ImGui::CalcTextSize("Vendor").x + ImGui::GetFontSize() * 1.1f;
+    DrawCoinRow("Buy",    IM_COL32(120, 200, 120, 255), ov.buy,    labelW,
+                "no buy orders");
+    DrawCoinRow("Sell",   IM_COL32(232, 170,  92, 255), ov.sell,   labelW,
+                "no sell listings");
+    DrawCoinRow("Vendor", IM_COL32(170, 174, 184, 255), ov.vendor, labelW,
+                "not sellable");
+}
+
 void DrawPanel(bool reviewMode)
 {
     ImGuiIO& io = ImGui::GetIO();
@@ -618,75 +716,40 @@ void DrawPanel(bool reviewMode)
                                         ImVec2(99999.0f, 99999.0f));
     ImGui::SetNextWindowBgAlpha(g_PanelOpacity);
 
+    // Settings auto-expand: while the Settings header is open, force the panel
+    // to the larger size so its controls show without scrolling. Done before
+    // Begin() — SetNextWindowSize must precede it.
+    if (g_settingsOpen)
+        ImGui::SetNextWindowSize(ImVec2(g_PanelW, g_PanelH + g_settingsExtraH),
+                                 ImGuiCond_Always);
+
     if (ImGui::Begin("Mystic AI###mai_panel", &g_panelOpen,
                      ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse))
     {
-        // Persist a drag-resize once the player releases the window edge.
-        ImVec2 ws = ImGui::GetWindowSize();
-        float dW = ws.x - g_PanelW, dH = ws.y - g_PanelH;
-        if ((dW > 1.0f || dW < -1.0f || dH > 1.0f || dH < -1.0f)
-            && !ImGui::IsMouseDown(ImGuiMouseButton_Left))
+        // Persist a drag-resize once the player releases the window edge. Held
+        // off while Settings is open — the size is forced then, not the
+        // player's, so SaveSettings() always stores the collapsed size.
+        if (!g_settingsOpen)
         {
-            g_PanelW = ws.x;
-            g_PanelH = ws.y;
-            SaveSettings();
+            ImVec2 ws = ImGui::GetWindowSize();
+            float dW = ws.x - g_PanelW, dH = ws.y - g_PanelH;
+            if ((dW > 1.0f || dW < -1.0f || dH > 1.0f || dH < -1.0f)
+                && !ImGui::IsMouseDown(ImGuiMouseButton_Left))
+            {
+                g_PanelW = ws.x;
+                g_PanelH = ws.y;
+                SaveSettings();
+            }
         }
 
         ImGui::SetWindowFontScale(g_FontScale);
 
-        // --- status / answer ---
-        if (cs == ClaudeVision::State::Waiting)
-        {
-            ImGui::TextColored(ImVec4(1.0f, 0.82f, 0.2f, 1.0f),
-                "Reading the screen...  (%ds)", ClaudeVision::GetElapsedMs() / 1000);
-        }
-        else if (cs == ClaudeVision::State::Done)
-        {
-            if (!ClaudeVision::GetLabel().empty())
-                ImGui::TextDisabled("%s", ClaudeVision::GetLabel().c_str());
-            ImGui::Separator();
-            // A Trading Post result carries a "@TP|" coin marker — draw it as
-            // gold/silver/copper rows; everything else is plain wrapped text.
-            TpData tp;
-            if (ParseTpMarker(ClaudeVision::GetResult(), tp))
-                DrawTpPanel(tp);
-            else
-                ImGui::TextWrapped("%s", ClaudeVision::GetResult().c_str());
-        }
-        else if (cs == ClaudeVision::State::Error)
-        {
-            ImGui::TextColored(ImVec4(1.0f, 0.45f, 0.45f, 1.0f),
-                "%s", ClaudeVision::GetResult().c_str());
-        }
-        else
-        {
-            ImGui::TextDisabled("Idle.");
-        }
-
-        // Copy Text (OCR) runs independently of the Claude-backed actions.
-        CopyText::State copySt = CopyText::GetState();
-        if (copySt == CopyText::State::Working)
-            ImGui::TextColored(ImVec4(1.0f, 0.82f, 0.2f, 1.0f), "Copying text (OCR)...");
-        else if (copySt == CopyText::State::Done)
-            ImGui::TextColored(ImVec4(0.5f, 0.9f, 0.5f, 1.0f),
-                "Copied to clipboard: %s", CopyText::GetResult().c_str());
-        else if (copySt == CopyText::State::Error)
-            ImGui::TextColored(ImVec4(1.0f, 0.6f, 0.4f, 1.0f),
-                "Copy Text: %s", CopyText::GetResult().c_str());
-
-        ImGui::Spacing();
-        ImGui::Separator();
-        ImGui::Spacing();
-
-        // --- action buttons, sitting right at the box ---
         float bsz  = 26.0f * g_ButtonScale;
         float btnH = bsz + ImGui::GetStyle().FramePadding.y * 2.0f;
-        bool  busy = (cs == ClaudeVision::State::Waiting)
-                     || (copySt == CopyText::State::Working);
+        bool  busy = (cs == ClaudeVision::State::Waiting);
 
         // A distinct tint per action so the row reads at a glance.
         const ImU32 COL_READ  = IM_COL32( 48, 112, 158, 235);
-        const ImU32 COL_TP    = IM_COL32(152, 122,  36, 235);
         const ImU32 COL_WIKI  = IM_COL32( 54, 124,  74, 235);
         const ImU32 COL_RSCH  = IM_COL32(104,  76, 150, 235);
         const ImU32 COL_COPY  = IM_COL32( 94, 100, 110, 235);
@@ -694,6 +757,9 @@ void DrawPanel(bool reviewMode)
         const ImU32 COL_STOP  = IM_COL32(160,  60,  60, 235);
         const ImU32 COL_CLOSE = IM_COL32( 72,  76,  84, 235);
 
+        // --- action buttons, sitting right at the box ---
+        // Drawn ABOVE the result so the mouse lands on the buttons, not the
+        // text, the moment the panel opens.
         if (busy)
         {
             ImGui::TextDisabled("Working...");
@@ -707,37 +773,34 @@ void DrawPanel(bool reviewMode)
         }
         else if (reviewMode && g_haveSel && !g_lastCrop.empty())
         {
-            // Six actions in a 3-wide, 2-row grid — each button gets a third of
-            // the panel, so even "Research" fits with room to spare.
+            // Five actions in a 3-wide grid — each button gets a third of the
+            // panel, so even "Research" fits with room to spare.
             float sp = ImGui::GetStyle().ItemSpacing.x;
             float bw = (ImGui::GetContentRegionAvail().x - sp * 2.0f) / 3.0f;
             ImGui::SetWindowFontScale(g_FontScale * 0.85f);
 
-            if (ActionButton(Icons::READ, "Read", "Read the selection aloud again.",
+            // Read voices the panel's cached SPOKEN line on demand — fire-and-
+            // forget, so the overview keeps showing while speech plays.
+            if (ActionButton(Icons::READ, "Read", "Read this aloud.",
                              COL_READ, bw, btnH))
-                ClaudeVision::RequestPixels("Read", DRAG_PROMPT,
-                                            g_lastCrop, g_lastCropW, g_lastCropH);
-            ImGui::SameLine();
-            if (ActionButton(Icons::TP, "TP", "Check this item's Trading Post price.",
-                             COL_TP, bw, btnH))
-                ClaudeVision::RequestPixels("Trading Post", "@action:trading-post",
-                                            g_lastCrop, g_lastCropW, g_lastCropH);
+                ClaudeVision::Speak(g_spokenText);
             ImGui::SameLine();
             if (ActionButton(Icons::WIKI, "Wiki", "Add this to your GW2 wiki favorites.",
                              COL_WIKI, bw, btnH))
                 ClaudeVision::RequestPixels("Wiki", "@action:wiki-fav",
                                             g_lastCrop, g_lastCropW, g_lastCropH);
+            ImGui::SameLine();
             if (ActionButton(Icons::RESEARCH, "Research",
                              "Research this with the GW2 wiki and the web.",
                              COL_RSCH, bw, btnH))
                 ClaudeVision::RequestPixels("Research", "@action:research",
                                             g_lastCrop, g_lastCropW, g_lastCropH);
-            ImGui::SameLine();
             if (ActionButton(Icons::COPY, "Copy",
-                             "OCR the selection to the clipboard (no AI) - paste it "
+                             "Copy this item's name to the clipboard - paste it "
                              "into GW2's destroy-confirm box.",
                              COL_COPY, bw, btnH))
-                CopyText::Request(g_lastCrop, g_lastCropW, g_lastCropH);
+                ClaudeVision::RequestPixels("Copy", "@action:copy-name",
+                                            g_lastCrop, g_lastCropW, g_lastCropH);
             ImGui::SameLine();
             if (ActionButton(Icons::BOOK, "Book",
                              "Save this selection as the static book region. The Read "
@@ -760,9 +823,90 @@ void DrawPanel(bool reviewMode)
                          COL_CLOSE, 96.0f * g_ButtonScale, btnH))
             g_panelOpen = false;
 
-        // --- settings ---
         ImGui::Spacing();
-        if (ImGui::CollapsingHeader("Settings###mai_settings"))
+        ImGui::Separator();
+        ImGui::Spacing();
+
+        // --- status / answer ---
+        if (cs == ClaudeVision::State::Waiting)
+        {
+            // Animated dots, no digits — a counting number looked like a
+            // countdown. The daemon normally replies within a few seconds.
+            int dots = (ClaudeVision::GetElapsedMs() / 400) % 3 + 1;
+            char wait[40];
+            snprintf(wait, sizeof(wait), "Reading the screen%.*s",
+                     dots, "...");
+            ImGui::TextColored(ImVec4(1.0f, 0.82f, 0.2f, 1.0f), "%s", wait);
+        }
+        else if (cs == ClaudeVision::State::Done)
+        {
+            if (!ClaudeVision::GetLabel().empty())
+                ImGui::TextDisabled("%s", ClaudeVision::GetLabel().c_str());
+            ImGui::Separator();
+
+            // Dispatch on the result marker. "@OV|" is the silent drag-select
+            // overview; "@TP|" the Trading Post coin panel; "@COPY|" the
+            // item-name clipboard grab; anything else is plain wrapped text.
+            const std::string& res = ClaudeVision::GetResult();
+            OverviewData ov;
+            TpData       tp;
+            if (ParseOverviewMarker(res, ov))
+            {
+                DrawOverviewPanel(ov);
+                g_spokenText = ov.spoken;   // Read button voices this
+            }
+            else if (ParseTpMarker(res, tp))
+            {
+                DrawTpPanel(tp);
+            }
+            else if (res.rfind("@COPY|", 0) == 0)
+            {
+                // Set the clipboard exactly once per result, not every frame.
+                if (g_copyHandled != res)
+                {
+                    g_copyHandled = res;
+                    std::string name = res.substr(6);   // text after "@COPY|"
+                    if (!name.empty())
+                    {
+                        CopyText::SetClipboard(name);
+                        g_copyMsg    = "Copied: " + name;
+                        g_copyMsgCol = ImVec4(0.5f, 0.9f, 0.5f, 1.0f);
+                    }
+                    else
+                    {
+                        g_copyMsg    = "Couldn't find an item name.";
+                        g_copyMsgCol = ImVec4(1.0f, 0.66f, 0.34f, 1.0f);
+                    }
+                }
+                if (!g_copyMsg.empty())
+                    ImGui::TextColored(g_copyMsgCol, "%s", g_copyMsg.c_str());
+            }
+            else
+            {
+                ImGui::TextWrapped("%s", res.c_str());
+                g_spokenText = res;         // Read button voices the transcription
+            }
+        }
+        else if (cs == ClaudeVision::State::Error)
+        {
+            ImGui::TextColored(ImVec4(1.0f, 0.45f, 0.45f, 1.0f),
+                "%s", ClaudeVision::GetResult().c_str());
+        }
+        else
+        {
+            ImGui::TextDisabled("Idle.");
+        }
+
+        // --- settings ---
+        // Opening this header grows the panel; closing it shrinks it back. The
+        // open/closed state is tracked across frames so the size change is
+        // applied (and undone) by the SetNextWindowSize above. The extra height
+        // tracks the Text-size slider so the block always clears the window.
+        ImGui::Spacing();
+        bool settingsOpen = ImGui::CollapsingHeader("Settings###mai_settings");
+        g_settingsExtraH  = settingsOpen ? 170.0f * g_FontScale : 0.0f;
+        g_settingsOpen    = settingsOpen;
+        if (settingsOpen)
         {
             bool save = false;
             ImGui::TextUnformatted("Text size");

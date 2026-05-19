@@ -20,6 +20,10 @@ void Request(std::vector<uint8_t> bgrPixels, int w, int h);
 // Forget the last result. Called when a new capture starts.
 void Reset();
 
+// Put UTF-8 text on the Windows clipboard (as CF_UNICODETEXT). Shared with the
+// overlay's smart-Copy action, which copies an item name returned by Claude.
+void SetClipboard(const std::string& utf8);
+
 State       GetState();
 std::string GetResult();   // copied text when Done, error message when Error
 

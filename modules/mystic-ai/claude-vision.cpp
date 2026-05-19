@@ -133,6 +133,22 @@ void RegionWorker(std::string label, std::string prompt,
     }
 }
 
+// Worker for Speak — fire-and-forget. Writes a "@action:say" request: just a
+// .prompt + .ready marker, no .bmp. The daemon voices the text and writes no
+// reply, so this never touches g_state / g_suffix / g_filesReady and is never
+// polled.
+void SayWorker(std::string text)
+{
+    std::string base = std::string("Z:/tmp/gw2-claude-input-") + MakeSuffix();
+    {
+        std::ofstream pf(base + ".prompt", std::ios::binary);
+        pf << "@action:say\n" << text;
+    }
+    {
+        std::ofstream rf(base + ".ready");   // touched LAST
+    }
+}
+
 // Common request setup. Returns false (so the caller drops the request) if a
 // read is already in flight.
 bool BeginRequest(const char* label)
@@ -169,6 +185,12 @@ void RequestRegion(const char* label, const char* prompt,
     std::thread(RegionWorker, std::string(label ? label : ""),
                 std::string(prompt ? prompt : ""),
                 x, y, w, h).detach();
+}
+
+void Speak(const std::string& text)
+{
+    if (text.empty()) return;   // nothing to voice
+    std::thread(SayWorker, text).detach();
 }
 
 void Poll()

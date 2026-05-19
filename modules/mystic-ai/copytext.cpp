@@ -25,36 +25,6 @@ std::mutex      g_mtx;
 CopyText::State g_state = CopyText::State::Idle;
 std::string     g_result;
 
-// Put UTF-8 text on the Windows clipboard as CF_UNICODETEXT. GW2 reads this
-// clipboard when the player pastes (Ctrl+V) — the addon runs inside GW2's
-// process, so they share the one Wine clipboard.
-void SetClipboard(const std::string& utf8)
-{
-    if (!OpenClipboard(nullptr)) return;
-    EmptyClipboard();
-
-    int wlen = MultiByteToWideChar(CP_UTF8, 0, utf8.c_str(), -1, nullptr, 0);
-    if (wlen > 0)
-    {
-        HGLOBAL h = GlobalAlloc(GMEM_MOVEABLE, (size_t)wlen * sizeof(wchar_t));
-        if (h)
-        {
-            wchar_t* dst = (wchar_t*)GlobalLock(h);
-            if (dst)
-            {
-                MultiByteToWideChar(CP_UTF8, 0, utf8.c_str(), -1, dst, wlen);
-                GlobalUnlock(h);
-                SetClipboardData(CF_UNICODETEXT, h);   // the clipboard owns h now
-            }
-            else
-            {
-                GlobalFree(h);
-            }
-        }
-    }
-    CloseClipboard();
-}
-
 // Tesseract output for an item name is one line plus stray whitespace. Flatten
 // newlines/tabs to spaces, trim the ends, and collapse runs of spaces.
 std::string Tidy(const std::string& in)
@@ -102,7 +72,7 @@ void Worker(std::vector<uint8_t> px, int w, int h)
         }
         else
         {
-            SetClipboard(text);
+            CopyText::SetClipboard(text);
             g_state  = CopyText::State::Done;
             g_result = text;
             if (APIDefs)
@@ -120,6 +90,36 @@ void Worker(std::vector<uint8_t> px, int w, int h)
 }  // namespace
 
 namespace CopyText {
+
+// Put UTF-8 text on the Windows clipboard as CF_UNICODETEXT. GW2 reads this
+// clipboard when the player pastes (Ctrl+V) — the addon runs inside GW2's
+// process, so they share the one Wine clipboard.
+void SetClipboard(const std::string& utf8)
+{
+    if (!OpenClipboard(nullptr)) return;
+    EmptyClipboard();
+
+    int wlen = MultiByteToWideChar(CP_UTF8, 0, utf8.c_str(), -1, nullptr, 0);
+    if (wlen > 0)
+    {
+        HGLOBAL h = GlobalAlloc(GMEM_MOVEABLE, (size_t)wlen * sizeof(wchar_t));
+        if (h)
+        {
+            wchar_t* dst = (wchar_t*)GlobalLock(h);
+            if (dst)
+            {
+                MultiByteToWideChar(CP_UTF8, 0, utf8.c_str(), -1, dst, wlen);
+                GlobalUnlock(h);
+                SetClipboardData(CF_UNICODETEXT, h);   // the clipboard owns h now
+            }
+            else
+            {
+                GlobalFree(h);
+            }
+        }
+    }
+    CloseClipboard();
+}
 
 void Request(std::vector<uint8_t> bgrPixels, int w, int h)
 {

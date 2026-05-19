@@ -1036,3 +1036,224 @@ bazzite: deployed via the sddm dance. Deck: GW2 was closed so the DLL copied dir
 
 - **Other GW2 profiles not synced.** Only the main `Guild Wars 2/addons/` on bazzite + the Deck got 1.1.13 — the apple-tv and deck-bazzite profiles on bazzite are still on the old build.
 - **mystic-clicker.dll on the Deck** not synced to latest CI (intentional — unchanged this session).
+
+
+---
+
+## 2026-05-19 — Back-fill: recovered May 13-15 session logs
+
+These seven entries were logged to the itinyk-app project's auto-memory
+directory by mistake during May 13-15 sessions and never reached this repo.
+Recovered verbatim during itinyk-app session cleanup. The reusable lessons
+were already captured in dedicated memory files (`bazzite-performance-tuning.md`,
+`cef-overlay-black-screen-after-stream.md`, `cec-controller-wake-script.md`);
+this restores the activity log.
+
+## 2026-05-15 (continued) — Mystic modules: UI fixes, VDF deploy fix, in-window settings
+
+### What was done
+- **ROOT CAUSE: VDF deployed to wrong path**: R1+dpad_east bindings (Bank hold, Merchant double-tap, TP tap) weren't working because VDF changes were being deployed to the Moonlight path instead of the native GW2 app path (`Steam Controller Configs/64793831/config/1284210/controller_neptune.vdf`). Fixed by deploying to native path.
+- **F11 Merchant conflict**: F11 opens GW2 Options menu natively. Changed MERCHANT_COMBO from F11 (scan 87) to F9 (scan 67) in both VDF and Nexus InputBinds.
+- **Controller config cleanup**: Removed all legacy VDF directories from bazzite, only native `1284210/` remains.
+- **Mystic Clicker UI Scale**: Added `g_UIScale` config variable with slider in Settings collapsing header. Scales font, spacing, padding, button heights, window width.
+- **Mystic Clicker close button fix**: Moved Close Panel button to top of window (always visible). BeginChild negative-height approach didn't work reliably with ImGui 1.80 + Nexus GlobalScale 2.0.
+- **Mystic Clicker text size fix**: Reduced font to 85% (`g_UIScale * 0.85f`) to fit at Nexus GlobalScale 2.0. Compacted button labels: `"Name (x,y)"` instead of `"Name  (x, y)"`, `"(-)"` for unset.
+- **Mystic Clicker min width constraint**: Added `SetNextWindowSizeConstraints` (min 400*scale) to prevent text clipping.
+- **Mystic Trading in-window appearance settings**: Added Text Size / Icon Size / Row Height / Opacity sliders to right-click context menus on Flip List, Dashboard, and Delivery Box windows. Previously only accessible via Nexus addon options panel.
+- **Mystic Trading opacity persistence**: Added `window_opacity` to SaveConfig/LoadConfig (was missing).
+- **GitHub Actions builds**: All changes built and deployed via CI. DLLs deployed to bazzite via SCP.
+- **Nexus config backup**: Refreshed nexus-inputbinds.json and nexus-settings.json from bazzite.
+
+### Files changed (guildwars2 repo)
+- `modules/mystic-clicker/capture-ui.cpp` — close button top, font 85%, compact labels, min width, UI scale
+- `modules/mystic-clicker/config.cpp` — g_UIScale load/save
+- `modules/mystic-clicker/shared.h` — extern g_UIScale declaration
+- `modules/mystic-trading/render.cpp` — appearance sliders in all context menus
+- `modules/mystic-trading/api-client.cpp` — window_opacity persistence
+- `configs/steam-controller/moonlight-gw2-og-v19.9.vdf` — R1 dpad_east fixes, F9 merchant, activator order
+- `configs/gw2-keybinds/nexus-inputbinds.json` — MERCHANT_COMBO F9, KB_MENU Ctrl+F5
+- `configs/gw2-keybinds/nexus-settings.json` — refreshed from bazzite
+
+### Commits (guildwars2 repo)
+- `863fdd2` — mystic-clicker UI scale + VDF R1 dpad fixes
+- `fdd8b38` — close button scroll fix + trading appearance settings
+- `ff5da34` — widen window + min size constraint
+- `8e8b31a` — close button moved to top
+- `4345d80` — font 85%, compact labels
+- `f857c5c` — backup nexus keybinds + settings
+
+### Key facts
+- **Native GW2 VDF path**: `Steam Controller Configs/64793831/config/1284210/controller_neptune.vdf` (NOT Moonlight path)
+- **ImGui version**: 1.80 (Nexus bundled) — negative BeginChild height works but unreliably with GlobalScale 2.0
+- **Nexus GlobalScale**: 2.0, FontSize: 20.0 — all addon UI rendered at 2x
+- **F9 scan code**: 67 (Nexus uses scan codes, not VK codes)
+
+### Resolved
+- R1+dpad_east all three bindings working (TP tap F7, Bank hold F8, Merchant double-tap F9)
+- VDF path confusion — documented correct native path
+- F11 Merchant conflict — changed to F9
+- Mystic Clicker close button visibility
+- Mystic Clicker text overflow at GlobalScale 2.0
+- Mystic Trading appearance settings accessible in-window
+
+### Open items
+- SUM chord double-fire — removed interruptable=1, hold_repeats=0 still in place, needs user testing
+- Community LFG addon broken (`CRITICAL: Cancelled load:`) — community addon, not fixable by us
+- Test UI Scale slider at different values (user confirmed 1.0 looks better)
+
+---
+
+## 2026-05-15 (continued) — TV WOL over WiFi fix
+
+### What was done
+- **TV not waking from standby**: Wake script WOL worked when TV was already on (Apple TV input), but couldn't wake TV from full standby. Root cause: LG TV "Wake on LAN" (WiFi) setting was disabled — WiFi radio powered down completely in standby, so WOL magic packets never reached it
+- **Fix**: Enabled "WoL" in LG TV settings (Settings → General → Devices). TV now responds to WOL over WiFi even from standby
+- **Verified**: TV off → controller wake → WOL powers on TV → WebOS switches to bazzite — full flow working end-to-end
+
+### Files changed
+- None (TV settings change only)
+
+### Resolved
+- Wake script retry on cold-start TV — now working after enabling TV WoL setting
+
+### Open items
+- Verify SUM chord no longer double-fires (user testing)
+- `scripts/vendors/workspace/workspace_users.py` (itinyk-app) has uncommitted changes from another session
+
+---
+
+## 2026-05-15 — Wake script retry fix, CEF overlay auto-fix, VDF double-fire fix
+
+### What was done
+- **Wake script failed overnight**: WebOS error `8:1008` — TV was in deep sleep, 2s WOL wait too short. Added retry logic: 4 attempts with 3/5/8/12s waits, re-sends WOL between attempts
+- **CEF overlay black screen recurred**: same stuck steamwebhelper overlay when switching TV inputs. Added `pkill steamwebhelper` to wake script — runs after successful TV switch, Steam auto-restarts it in ~5s, clears the overlay automatically
+- **VDF double-fire on L1+right dpad**: "SUM" chord (three `key_press S/U/M` bindings) was typing twice. Added `hold_repeats=0` to the Full_Press settings to prevent re-trigger
+
+### Files changed
+- `configs/bazzite/controller-wake-tv.py` (guildwars2) — retry logic + steamwebhelper kill
+- `configs/steam-controller/moonlight-gw2-og-v19.9.vdf` (guildwars2) — hold_repeats=0 on SUM chord
+
+### Commits
+- `1544800` (guildwars2) — wake script: add retry logic + CEF overlay fix; VDF: hold_repeats=0 on SUM chord
+
+### Open items
+- Verify SUM chord no longer double-fires (user testing)
+- ~~Verify wake script retry succeeds on cold-start TV (next morning test)~~ — resolved, TV WoL WiFi setting was off
+- `scripts/vendors/workspace/workspace_users.py` (itinyk-app) has uncommitted changes from another session
+
+---
+
+## 2026-05-13 PM (continued) — CEF overlay black screen fix
+
+### What was done
+- **Diagnosed black screen on bazzite after TV input switch**: after ending Apple TV Moonlight stream and switching TV back to bazzite direct HDMI, user saw cursor + pure black screen. Right-click showed Chromium context menu ("forward", "print") — identified as a steamwebhelper CEF overlay stuck as topmost gamescope surface
+- **Recovered without reboot**: `systemctl --user restart gamescope-session-plus@steam.service` brought Big Picture back in ~15 seconds, no full reboot needed
+- **Saved diagnostic as memory**: created `memory/cef-overlay-black-screen-after-stream.md` in guildwars2 repo with root cause, recovery command, and diagnostic tell
+- **Config backups**: bazzite GW2 configs backed up (no drift detected from last session)
+
+### Files changed
+- `memory/cef-overlay-black-screen-after-stream.md` (guildwars2, new) — CEF overlay diagnostic
+- `memory/MEMORY.md` (guildwars2) — added index entry for new memory
+
+### Commits
+- `d1e0a82` (guildwars2) — memory: add CEF overlay black screen diagnostic after stream end
+
+### Open items
+- User testing whether the black screen recurs after regular TV watching (no Moonlight) — if it does, issue is TV input switching, not Sunshine-specific
+- Login flicker verification at 150% DPI still pending (from earlier session)
+- Steam Controller delivery still pending — will eliminate Deck-as-controller and reduce Moonlight usage
+
+---
+
+## 2026-05-14 (continued) — Direct HDMI migration + WebOS TV switching
+
+### What was done
+- **Diagnosed no audio through UGREEN DP-to-HDMI dongle**: extensive troubleshooting confirmed PipeWire, ALSA, ELD, mixer all correct on bazzite side. Direct ALSA writes (S16_LE, S32_LE) reached GPU hardware but TV heard nothing. Proved dongle doesn't pass audio by plugging HDMI direct — instant audio
+- **LG TV firmware update**: installed firmware update + cold reboot. Fixed HDMI 2.1 negotiation (4K@120Hz + FreeSync now works on direct HDMI — was stuck at 60Hz before firmware update). Also fixed Apple TV CEC volume control
+- **Switched from DP dongle to direct HDMI**: GPU native HDMI 2.1 port delivers 4K@120Hz, FreeSync, audio, all in one cable. Dongle no longer needed
+- **Discovered AMD GPU native HDMI has no CEC**: `/dev/cec*` doesn't exist on direct HDMI — the dongle was providing CEC via its own chip
+- **Replaced CEC with WebOS network API**: LG TV discovered at 172.16.100.44 via SSDP. Paired using `aiowebostv` library. New script `controller-wake-tv.py` uses same silence-detection on hidraw0 but switches TV via WebOS `set_input("HDMI_2")` + WOL instead of CEC commands
+- **Verified end-to-end**: controller power-off → 30s silence → controller power-on → TV switches from Apple TV to bazzite via WebOS
+- **Removed old CEC script**: disabled and deleted `cec-controller-wake.sh` and service from bazzite
+- **Controller joystick sensitivity**: changed from 200% back to 150% in VDF on bazzite and repo backup
+
+### Files changed
+- `configs/bazzite/controller-wake-tv.py` (guildwars2, new) — WebOS-based TV wake/switch script
+- `configs/bazzite/controller-wake-tv.service` (guildwars2, new) — systemd user service
+- `configs/bazzite/cec-controller-wake.sh` (guildwars2) — kept as historical reference (old CEC version)
+- `memory/cec-controller-wake-script.md` (guildwars2) — updated to document WebOS approach
+- `memory/MEMORY.md` (guildwars2) — updated index entry
+
+### Key facts
+- TV IP: 172.16.100.44, MAC: 6c:15:db:8d:a5:a6, WebOS client key: 2c37f5beb73ad7247415b32263c9501f
+- Bazzite on HDMI_2, Apple TV on HDMI_1
+- Controller sends 0x42 reports at ~267/sec (was 0x7b at ~2/sec with dongle — different hidraw behavior on direct HDMI)
+- Controller takes ~35 seconds to fully power down after holding Steam button
+
+### Resolved
+- No audio through dongle — bypassed by switching to direct HDMI
+- CEC not available on direct HDMI — replaced with WebOS network control
+- Apple TV CEC volume — fixed by TV firmware update
+
+---
+
+## 2026-05-14 — CEC wake script v2 (silence-detection) + bazzite config backup
+
+### What was done
+- **CEC wake script rewritten to silence-detection**: Original bash `dd`-based script triggered on gamescope restart (sensor data `0x7b` reports flowed continuously). Investigated Steam's exclusive input grab — all button data invisible through hidraw and evdev while gamescope runs. Three HID report types identified: `0x42` (input, always 00,00), `0x7b` (sensor/IMU), `0x43` (connection/battery). Steam button intercepted by firmware, produces no HID reports.
+- **Final approach**: Python script detects controller sleep→wake via hidraw silence (30s no data = asleep). Uses `ever_seen_data` gate to prevent false triggers on boot — only fires after data has been observed then goes silent then resumes. Eliminates boot grace period entirely.
+- **Verified all three cases**: gamescope restart (no trigger), system reboot (no trigger — confirmed via journal logs, TV flip on reboot is gamescope display pipeline not CEC script), controller wake from sleep (triggers CEC correctly)
+- **Backed up all changed bazzite files to guildwars2 repo**:
+  - CEC wake script (Python silence-detection version)
+  - Gamescope wrapper (`--immediate-flips` removed from all modes, `4k144` added)
+  - Gamescope mode helper (synced mode list)
+  - Controller VDF v19.9 (sensitivity 200%, all haptics zeroed)
+  - Firewall rules (reordered, same ruleset)
+- **GW2 keybinds + Nexus configs**: backed up, no drift detected
+
+### Files changed
+- `configs/bazzite/cec-controller-wake.sh` (guildwars2) — complete rewrite from bash to Python
+- `configs/bazzite/gamescope-wrapper` (guildwars2) — removed `--immediate-flips`, added `4k144`
+- `configs/bazzite/gamescope-mode.sh` (guildwars2) — synced mode list
+- `configs/bazzite/firewalld-rules.txt` (guildwars2) — refreshed (reordered)
+- `configs/steam-controller/moonlight-gw2-og-v19.9.vdf` (guildwars2, new) — controller VDF backup
+
+### Commits
+- `e89b2f8` (guildwars2) — bazzite: CEC silence-detection wake script, gamescope --immediate-flips removed, controller v19.9
+- `c32aaab` (guildwars2) — bazzite: refresh firewalld rules backup
+
+### Open items
+- TV flips to bazzite on reboot (gamescope display pipeline, not CEC script — user OK with this)
+
+### Resolved from prior sessions
+- Login flicker at 150% DPI — confirmed fixed
+- Dual GW2 installs — no longer needed, plan cancelled
+- Steam Controller delivered and in use
+
+---
+
+## 2026-05-13 PM (continued) — Bazzite full performance tuning
+
+### What was done
+- **Audited sleep/suspend/hibernate**: all already masked except `suspend-then-hibernate.target` — now masked
+- **Full performance tuning applied**:
+  - CPU governor: powersave → performance
+  - EPP: balance_performance → performance
+  - intel_pstate min_perf_pct: 16 → 100 (never downclock)
+  - GPU: auto → high
+  - TuneD: balanced-bazzite → custom `gaming-performance` profile
+- **Result**: all 16 threads now run at **5.0 GHz** (was ~4.1 GHz idle). Package temp 73C water cooled
+- **Persistence battle**: TuneD's `tuned-ppd` daemon was overriding profile on boot. Fixed by creating custom profile at `/etc/tuned/profiles/gaming-performance/`, overriding `/etc/tuned/ppd.conf` to map performance → gaming-performance, and setting `ppd_base_profile` to performance. Also created `cpu-performance.service` as belt-and-suspenders fallback
+- **Verified across 3 reboots**: settings now persist correctly
+
+### Files changed (guildwars2 repo)
+- `configs/bazzite/tuned-gaming-performance.conf` (new) — custom TuneD profile backup
+- `configs/bazzite/tuned-ppd.conf` (new) — PPD override backup
+- `configs/bazzite/cpu-performance.service` (new) — systemd unit backup
+- `memory/bazzite-performance-tuning.md` (new) — full documentation + restore instructions
+- `memory/MEMORY.md` — added index entry
+
+### Open items
+- User testing whether the black screen recurs after regular TV watching (no Moonlight)
+- ~~Login flicker verification at 150% DPI~~ — confirmed fixed 2026-05-14
+- ~~Steam Controller delivery~~ — delivered 2026-05-14, in use

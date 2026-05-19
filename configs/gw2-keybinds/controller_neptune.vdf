@@ -2,7 +2,7 @@
 {
 	"version"		"3"
 	"revision"		"2413"
-	"title"		"Guild Wars 2 - Og v24.3"
+	"title"		"Guild Wars 2 - Og v24.4"
 	"description"		"#SettingsController_AutosaveDescription"
 	"creator"		"76561198025059559"
 	"progenitor"		"usercloud://1284210/controller_neptune"
@@ -3323,23 +3323,6 @@
 		"description"		""
 		"inputs"
 		{
-			"button_menu"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
-							"binding"		"key_press LEFT_ALT, Mystic AI Capture, , "
-							"binding"		"key_press F10, Mystic AI Capture, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
 		}
 		"settings"
 		{
@@ -3380,6 +3363,14 @@
 						"bindings"
 						{
 							"binding"		"key_press KEYPAD_0, Mystic AI TP Region, , "
+						}
+					}
+					"Double_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_ALT, Mystic AI Capture, , "
+							"binding"		"key_press F10, Mystic AI Capture, , "
 						}
 					}
 					"Long_Press"

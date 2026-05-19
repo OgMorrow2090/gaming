@@ -7,6 +7,21 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-19] — Mystic AI 1.1.13 — remove the standalone TP-region feature
+
+### Removed
+
+- **The standalone "TP region" feature is gone.** The drag-capture panel no
+  longer shows the "Save TP region" button, the Settings block no longer shows
+  the saved TP region, and the `MYSTIC_AI_TP_REGION` keybind is no longer
+  registered. The dedicated TP-region read was superseded by R1+Menu drag-
+  capture, which reads whatever item the cursor is on with the full action
+  panel — so the cursor-anchored region and its keybind were redundant. The
+  Book region (drag-select once, re-read with the Read Book keybind) is
+  unchanged. Internally this also drops `MODE_BOOKPANEL`, `OpenPanelNotice`,
+  the on-screen notice, the open-guard, and the `keepCrop` / `TakeRegionCrop`
+  path in the ClaudeVision client.
+
 ## [2026-05-19] — Mystic AI 1.1.12 — Research no longer times out or auto-reads
 
 ### Fixed

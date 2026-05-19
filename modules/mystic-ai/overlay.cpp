@@ -51,14 +51,13 @@ static const char* BOOK_PROMPT =
 namespace {
 
 // --- Render-thread state machine -------------------------------------------
-enum Mode { MODE_IDLE, MODE_CAPTURING, MODE_SELECTING, MODE_REVIEW, MODE_BOOKPANEL };
+enum Mode { MODE_IDLE, MODE_CAPTURING, MODE_SELECTING, MODE_REVIEW };
 int  g_mode        = MODE_IDLE;
 bool g_needRelease = false;   // release the frozen texture at the next frame's top
 
 // --- Command posted by the keybind thread, drained by the render thread ----
-// CMD_BOOK toggles book-watch mode; CMD_READ voices the panel; CMD_TPREGION
-// re-reads the saved TP region.
-enum Cmd { CMD_NONE, CMD_TOGGLE, CMD_BOOK, CMD_READ, CMD_TPREGION };
+// CMD_BOOK toggles book-watch mode; CMD_READ voices the panel.
+enum Cmd { CMD_NONE, CMD_TOGGLE, CMD_BOOK, CMD_READ };
 std::atomic<int> g_cmd{CMD_NONE};
 
 // --- WndProc hook <-> render thread ----------------------------------------
@@ -89,22 +88,10 @@ ImVec4 g_boxDisp{0, 0, 0, 0};
 int    g_selX = 0, g_selY = 0, g_selW = 0, g_selH = 0;
 bool   g_haveSel = false;
 
-// Cursor position (game-window client pixels) captured the instant the freeze-
-// frame is triggered — "where the player was pointing". The Save TP region
-// button records the selection box as an offset from this point so the
-// TP-region keybind can re-capture relative to the live cursor — inventory
-// items are never in the same screen spot twice. See StartTpRead.
-int    g_capCursorX = 0, g_capCursorY = 0;
-
 // The drag-selected crop, kept through the Review session so the action
 // buttons (Wiki / Research / Copy) can re-send it.
 std::vector<uint8_t> g_lastCrop;
 int                  g_lastCropW = 0, g_lastCropH = 0;
-
-// True while a TP-region read waits for ClaudeVision to hand back its captured
-// region (RequestRegion with keepCrop). Once it arrives it becomes g_lastCrop,
-// so the TP-region panel shows the same action buttons as a drag-select review.
-bool                 g_wantRegionCrop = false;
 
 // The sentence the Read button voices on demand — the SPOKEN: line of an
 // overview result, or the whole result for a plain transcription. Refreshed
@@ -131,23 +118,6 @@ float g_settingsExtraH = 0.0f;
 ImVec4 g_anchor{0, 0, 0, 0};   // box the panel anchors to (display coords)
 bool   g_reposPanel = false;   // snap the panel to the anchor on its next frame
 bool   g_panelOpen  = true;
-
-// The TP-region keybind opens its panel from a dedicated re-read command. Steam
-// Input + Nexus can deliver a chord's other keybind a frame or two later (the
-// per-identifier debounce in keybinds.cpp only suppresses a repeat of the SAME
-// identifier). That stray command used to drain into the generic "any keybind
-// cancels the active mode" rule and close the just-opened panel — the flicker.
-// g_tpOpenGuardUntilMs holds a brief window after a TP-region read starts; the
-// generic cancel ignores a command that lands inside it. GetTime ms; 0 = off.
-double g_tpOpenGuardUntilMs = 0.0;
-constexpr double TP_OPEN_GUARD_MS = 350.0;
-
-// --- On-screen notice ------------------------------------------------------
-// A short instruction the panel shows in place of a result — e.g. when a
-// region-read keybind fires but no region is saved yet. It guarantees the
-// player always sees something happen on screen, not just a spoken hint that
-// may be inaudible. Cleared when a real request starts or the panel closes.
-std::string g_panelNotice;
 
 // --- Book auto-advance watch (render thread only) --------------------------
 // While the watch is ON, Mystic AI re-reads the book region whenever the page
@@ -385,12 +355,9 @@ void ExitToIdle(bool stopRead, bool stopWatch)
     g_needRelease = true;
     g_lastCrop.clear();
     g_lastCrop.shrink_to_fit();
-    g_wantRegionCrop = false;
     g_spokenText.clear();
     g_copyHandled.clear();
     g_copyMsg.clear();
-    g_panelNotice.clear();
-    g_tpOpenGuardUntilMs = 0.0;   // the panel is gone — the open guard is moot
     CopyText::Reset();
     if (stopWatch) StopBookWatch();
     if (stopRead)  ClaudeVision::Stop();
@@ -409,31 +376,7 @@ void StartCapture()
     g_haveSel  = false;
     g_mode     = MODE_CAPTURING;
 
-    // Record where the cursor is pointing as the freeze triggers — the Save TP
-    // region button stores the drag box as an offset from this point.
-    POINT pt{0, 0};
-    if (GetCursorPos(&pt) && GameWindow)
-        ScreenToClient(GameWindow, &pt);
-    g_capCursorX = pt.x;
-    g_capCursorY = pt.y;
-
     std::thread(CaptureWorker).detach();
-}
-
-// Open the region-read panel near the screen centre, with a short on-screen
-// notice in place of any result. Used by the TP-region keybind when no TP
-// region is saved yet — so the keybind press always shows something. (The
-// book keybind no longer opens a panel; it shows a Nexus toast instead.)
-void OpenPanelNotice(const std::string& notice)
-{
-    // Anchor near the screen centre — there is no saved box to sit beside.
-    ImGuiIO& io  = ImGui::GetIO();
-    g_anchor     = ImVec4(io.DisplaySize.x * 0.5f - 230.0f,
-                          io.DisplaySize.y * 0.35f, 0.0f, 0.0f);
-    g_reposPanel  = true;
-    g_panelOpen   = true;
-    g_panelNotice = notice;
-    g_mode        = MODE_BOOKPANEL;
 }
 
 // Fire one book-region read. Shared by the first Read-Book press and by the
@@ -484,56 +427,10 @@ void StartBookRead()
     }
 }
 
-// Read the saved TP region. The saved region is cursor-relative — X/Y are the
-// box's offset from where the cursor was when it was set (see the Save TP
-// region button) — so this adds the live cursor and captures around whatever
-// item the cursor is on now. Sends @action:overview; the panel then shows the
-// item, its "Used for" line and TP/vendor rows, silently. With no saved region
-// it opens the panel with an on-screen instruction so the press is always
-// visibly acknowledged.
-void StartTpRead()
-{
-    if (g_TpRegionW <= 0 || g_TpRegionH <= 0)
-    {
-        OpenPanelNotice("No TP region saved - point at an item, drag-select its "
-                        "tooltip, then press 'Save TP region'.");
-        ClaudeVision::Speak("No TP region saved yet. Drag-select an item tooltip, "
-                            "then use Save TP region.");
-        return;
-    }
-    // Add the live cursor to the saved offset so the read follows wherever the
-    // player is pointing right now.
-    POINT pt{0, 0};
-    if (GetCursorPos(&pt) && GameWindow)
-        ScreenToClient(GameWindow, &pt);
-    int rx = pt.x + g_TpRegionX;
-    int ry = pt.y + g_TpRegionY;
-
-    g_anchor      = ImVec4((float)rx, (float)ry,
-                           (float)g_TpRegionW, (float)g_TpRegionH);
-    g_reposPanel  = true;
-    g_panelOpen   = true;
-    g_panelNotice.clear();   // a real read replaces any notice
-    g_mode        = MODE_BOOKPANEL;   // the region-read panel mode
-    // The panel shows the full action-button row once the captured region is
-    // handed back as the crop — RenderMysticAI picks it up via g_wantRegionCrop.
-    g_haveSel        = false;
-    g_lastCrop.clear();
-    g_lastCropW = g_lastCropH = 0;
-    g_wantRegionCrop = true;
-    // Arm the open guard so a chord's paired keybind, delivered a frame or two
-    // later, cannot drain into the generic cancel and close this panel.
-    g_tpOpenGuardUntilMs = ImGui::GetTime() * 1000.0 + TP_OPEN_GUARD_MS;
-    ClaudeVision::RequestRegion("Overview", "@action:overview",
-                                rx, ry, g_TpRegionW, g_TpRegionH, true);
-}
-
 // Drain the keybind command. The Read command just voices the panel and never
 // disturbs a mode. A second Read-Book press toggles the book watch off; a book
-// read is audio-only and opens no panel. The TP-region keybind always
-// (re)starts its overview read — it is a dedicated action, not a cancel.
-// Otherwise a keybind press while a mode is active cancels it; from idle it
-// starts a fresh capture or region read.
+// read is audio-only and opens no panel. Otherwise a keybind press while a
+// mode is active cancels it; from idle it starts a fresh capture.
 void ProcessCommand()
 {
     int c = g_cmd.exchange(CMD_NONE);
@@ -552,29 +449,6 @@ void ProcessCommand()
         StartBookRead();   // toggles the watch off and stops speech
         return;
     }
-    // The TP-region keybind is a re-read action, not a cancel: it must always
-    // start a fresh overview of the saved rectangle, even with a panel already
-    // open or a prior read's speech still playing. Handled before the generic
-    // "any press cancels the mode" rule so it is never swallowed. Stop any
-    // in-flight read / speech first so the new read does not talk over it.
-    if (c == CMD_TPREGION)
-    {
-        if (ClaudeVision::GetState() == ClaudeVision::State::Waiting
-            || ClaudeVision::IsSpeaking())
-            ClaudeVision::Stop();
-        StopBookWatch();   // a TP read ends any book auto-advance
-        StartTpRead();
-        return;
-    }
-
-    // The TP-region panel has just opened: a chord can deliver its other
-    // keybind (CMD_TOGGLE / CMD_BOOK) a frame or two later. Inside the guard
-    // window, drop that stray command so the generic cancel below does not
-    // close the panel that was just opened — the cause of the panel flicker.
-    if (g_tpOpenGuardUntilMs > 0.0
-        && ImGui::GetTime() * 1000.0 < g_tpOpenGuardUntilMs)
-        return;
-    g_tpOpenGuardUntilMs = 0.0;
 
     if (g_mode != MODE_IDLE)
     {
@@ -1188,7 +1062,7 @@ void DrawSectionedResult(const std::string& result)
 constexpr float AUTO_CAP_FRAC = 0.80f;   // panel height ceiling, fraction of screen
 float g_answerContentH = 0.0f;
 
-void DrawPanel(bool reviewMode)
+void DrawPanel()
 {
     ImGuiIO& io = ImGui::GetIO();
     ClaudeVision::State cs = ClaudeVision::GetState();
@@ -1236,7 +1110,6 @@ void DrawPanel(bool reviewMode)
         const ImU32 COL_COPY  = IM_COL32( 94, 100, 110, 235);
         const ImU32 COL_BOOK  = IM_COL32(152,  98,  46, 235);
         const ImU32 COL_LEGY  = IM_COL32(150, 112,  40, 235);
-        const ImU32 COL_TPRG  = IM_COL32( 56, 110, 120, 235);
         const ImU32 COL_STOP  = IM_COL32(160,  60,  60, 235);
 
         // --- action buttons, sitting right at the box ---
@@ -1255,10 +1128,8 @@ void DrawPanel(bool reviewMode)
         }
         else if (g_haveSel && !g_lastCrop.empty())
         {
-            // The action row, in a 3-wide grid. A drag-select review shows all
-            // seven actions; a TP-region read shows the five that act on the
-            // crop and omits Book / Save TP region (those set a region from a
-            // fresh selection, which a region re-read is not).
+            // The action row, in a 3-wide grid: Read, Wiki, Research on the
+            // first row; Copy, Book, Legendary on the second.
             float sp = ImGui::GetStyle().ItemSpacing.x;
             float bw = (ImGui::GetContentRegionAvail().x - sp * 2.0f) / 3.0f;
             ImGui::SetWindowFontScale(g_FontScale * 0.85f);
@@ -1290,22 +1161,19 @@ void DrawPanel(bool reviewMode)
                 ClaudeVision::RequestPixels("Copy", "@action:copy-name",
                                             g_lastCrop, g_lastCropW, g_lastCropH);
             ImGui::SameLine();
-            if (reviewMode)
+            if (ActionButton(Icons::BOOK, "Book",
+                             "Save this selection as the static book region. The "
+                             "Read Book keybind then re-reads it with no drag.",
+                             COL_BOOK, bw, btnH))
             {
-                if (ActionButton(Icons::BOOK, "Book",
-                                 "Save this selection as the static book region. The "
-                                 "Read Book keybind then re-reads it with no drag.",
-                                 COL_BOOK, bw, btnH))
-                {
-                    g_BookRegionX = g_selX; g_BookRegionY = g_selY;
-                    g_BookRegionW = g_selW; g_BookRegionH = g_selH;
-                    SaveSettings();
-                    if (APIDefs)
-                        APIDefs->GUI_SendAlert("Mystic AI: book region saved. Use the "
-                                               "Read Book keybind to re-read it.");
-                }
-                ImGui::SameLine();
+                g_BookRegionX = g_selX; g_BookRegionY = g_selY;
+                g_BookRegionW = g_selW; g_BookRegionH = g_selH;
+                SaveSettings();
+                if (APIDefs)
+                    APIDefs->GUI_SendAlert("Mystic AI: book region saved. Use the "
+                                           "Read Book keybind to re-read it.");
             }
+            ImGui::SameLine();
             // No Legendary icon asset — ActionButton renders a text button when
             // the icon id is null.
             if (ActionButton(nullptr, "Legendary", "Queue this item for the "
@@ -1313,29 +1181,6 @@ void DrawPanel(bool reviewMode)
                              COL_LEGY, bw, btnH))
                 ClaudeVision::RequestPixels("Legendary", "@action:legendary-fav",
                                             g_lastCrop, g_lastCropW, g_lastCropH);
-
-            // Row 3 — Save TP region (drag-select only). Stored cursor-relative:
-            // the box position as an offset from where the cursor was when the
-            // frame froze, so the TP-region keybind reads whatever item the
-            // cursor is on — not a fixed screen spot.
-            if (reviewMode)
-            {
-                if (ActionButton(nullptr, "Save TP region",
-                                 "Save this selection as the cursor-anchored TP region. "
-                                 "The TP Region keybind then reads whatever item the "
-                                 "cursor is on, with no drag.",
-                                 COL_TPRG, bw, btnH))
-                {
-                    g_TpRegionX = g_selX - g_capCursorX;
-                    g_TpRegionY = g_selY - g_capCursorY;
-                    g_TpRegionW = g_selW; g_TpRegionH = g_selH;
-                    SaveSettings();
-                    if (APIDefs)
-                        APIDefs->GUI_SendAlert("Mystic AI: TP region saved. Point at an "
-                                               "item and use the TP Region keybind to "
-                                               "read it.");
-                }
-            }
 
             ImGui::SetWindowFontScale(g_FontScale);
         }
@@ -1366,16 +1211,7 @@ void DrawPanel(bool reviewMode)
                           overflow ? 0 : ImGuiWindowFlags_NoScrollbar);
         float answerY0 = ImGui::GetCursorPosY();
 
-        if (!g_panelNotice.empty())
-        {
-            // A region-read keybind fired with nothing saved — show the
-            // instruction on screen so the press is never silent. Checked
-            // first so it always wins over a stale Done / Error result left by
-            // an earlier read (the keybind handlers do not reset that state).
-            ImGui::TextColored(ImVec4(1.0f, 0.82f, 0.2f, 1.0f),
-                "%s", g_panelNotice.c_str());
-        }
-        else if (cs == ClaudeVision::State::Waiting)
+        if (cs == ClaudeVision::State::Waiting)
         {
             // Animated dots, no digits — a counting number looked like a
             // countdown. The daemon normally replies within a few seconds.
@@ -1511,21 +1347,6 @@ void DrawPanel(bool reviewMode)
             {
                 ImGui::TextDisabled("Book region: not set");
             }
-
-            if (g_TpRegionW > 0)
-            {
-                ImGui::Text("TP region: %dx%d, offset (%+d,%+d) from cursor",
-                    g_TpRegionW, g_TpRegionH, g_TpRegionX, g_TpRegionY);
-                if (ImGui::Button("Clear TP region"))
-                {
-                    g_TpRegionX = g_TpRegionY = g_TpRegionW = g_TpRegionH = 0;
-                    save = true;
-                }
-            }
-            else
-            {
-                ImGui::TextDisabled("TP region: not set");
-            }
             if (save) SaveSettings();
         }
     }
@@ -1555,22 +1376,6 @@ void RenderMysticAI()
     ClaudeVision::Poll();
     ProcessCommand();
 
-    // A TP-region read keeps its captured region — pick it up here as the crop
-    // so the panel's Wiki / Research / Copy buttons can re-send it.
-    if (g_wantRegionCrop)
-    {
-        std::vector<uint8_t> px;
-        int cw = 0, ch = 0;
-        if (ClaudeVision::TakeRegionCrop(px, cw, ch))
-        {
-            g_lastCrop       = std::move(px);
-            g_lastCropW      = cw;
-            g_lastCropH      = ch;
-            g_haveSel        = true;
-            g_wantRegionCrop = false;
-        }
-    }
-
     // Esc — the WndProc hook (MysticAIWndProc) swallows the key and posts it
     // here, so the panel/overlay closes without GW2 also closing the book or
     // inventory it had open behind it. The hook only swallows Esc while a
@@ -1589,11 +1394,7 @@ void RenderMysticAI()
     else if (g_mode == MODE_REVIEW)
     {
         DrawFrozenOverlay(false);
-        DrawPanel(true);
-    }
-    else if (g_mode == MODE_BOOKPANEL)
-    {
-        DrawPanel(false);
+        DrawPanel();
     }
 
     // Publish for the WndProc hook whether Mystic AI should own Esc this frame.
@@ -1611,8 +1412,6 @@ void ToggleCapture()  { g_cmd.store(CMD_TOGGLE); }
 void ReadBookRegion() { g_cmd.store(CMD_BOOK); }
 
 void ReadPanelAloud() { g_cmd.store(CMD_READ); }
-
-void ReadTpRegion()   { g_cmd.store(CMD_TPREGION); }
 
 void ShutdownOverlay()
 {

@@ -33,16 +33,9 @@ void RequestPixels(const char* label, const char* prompt,
                    std::vector<uint8_t> bgrPixels, int w, int h);
 
 // Capture a fixed screen rectangle, then send it. Non-blocking — the capture
-// runs on a worker thread. With keepCrop, the captured BGR pixels are also
-// kept for the caller to retrieve via TakeRegionCrop — the TP-region panel
-// reuses them for its Wiki / Research / Copy action buttons.
+// runs on a worker thread.
 void RequestRegion(const char* label, const char* prompt,
-                   int x, int y, int w, int h, bool keepCrop = false);
-
-// Retrieve the pixels captured by the most recent keepCrop RequestRegion.
-// Returns false until the capture worker has finished; moves the pixels out
-// on success, so it yields them exactly once.
-bool TakeRegionCrop(std::vector<uint8_t>& outPx, int& outW, int& outH);
+                   int x, int y, int w, int h);
 
 // Fire-and-forget: ask the daemon to voice `text` aloud right now. Writes a
 // "@action:say" request (a .prompt + .ready, no .bmp) on a detached worker

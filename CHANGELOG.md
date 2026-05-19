@@ -7,6 +7,39 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-19] — Mystic AI 1.1.6 — book auto-advance, favourites, colour research
+
+### Added
+
+- **Book pages auto-advance.** The Read-Book keybind now toggles a watch: once
+  a page is read and narrated, Mystic AI watches the saved book region and
+  automatically reads the **next page** when you turn it — no extra key press.
+  Press Read-Book again, press Esc, or start a new drag-select to stop the
+  watch. Page turns are detected by sampling the region every couple of seconds
+  on a worker thread and comparing a tiny-thumbnail brightness checksum.
+- **A Legendary button.** Sits beside Wiki in the action row and queues the
+  selected item for the **CraftyLegend** favourites.
+- **Two new keybinds** (unbound by default): **Read** voices the current panel
+  content just like the Read button, and **TP Region** re-reads a saved static
+  item rectangle as a silent overview — the item, its "Used for" line and its
+  Trading Post / vendor coin rows. A new **Save TP region** button stores the
+  current selection as that rectangle (per-resolution, like the book region).
+
+### Changed
+
+- **Favourites now survive a relaunch.** NexusGameWiki (and CraftyLegend)
+  rewrite their library files from memory when the game closes, so a live
+  append while GW2 ran was wiped. The daemon now **queues** wiki and Legendary
+  favourites and flushes them into the addon JSON files only while GW2 is shut
+  — so the addons read them fresh on the next launch. The Wiki / Legendary
+  buttons report a queued confirmation on the panel (not spoken).
+- **Research is colour-coded.** The Research write-up now comes back in labelled
+  sections — About, How to get, Uses, Recipes, Prices, Tips — and the panel
+  renders each section with its own coloured heading so it is easy to scan.
+- **The overview now says what an item is used for.** A drag-select (or TP
+  Region) overview adds a green "Used for:" line — key recipes, crafting and
+  collections — under the item description, and includes it in the spoken read.
+
 ## [2026-05-19] — Mystic AI 1.1.5 — overview panel + on-demand reading
 
 ### Added

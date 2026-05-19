@@ -1,11 +1,13 @@
 /**
  * keybinds.cpp
  *
- * Routes Mystic AI's two keybinds:
+ * Routes Mystic AI's keybinds:
  *   MYSTIC_AI_CAPTURE   — start (or cancel) the freeze-frame drag-select read
  *   MYSTIC_AI_READ_BOOK — read the saved book region, no drag
+ *   MYSTIC_AI_READ      — voice the current panel content (the Read action)
+ *   MYSTIC_AI_TP_REGION — overview the saved TP region, no drag
  *
- * Both just post a command to the render thread (see overlay.cpp). Presses are
+ * Each just posts a command to the render thread (see overlay.cpp). Presses are
  * debounced against Steam Input chord double-fires, the same way Mystic
  * Clicker's handler is — Steam Input + Nexus can deliver a chord's press event
  * twice at the same millisecond.
@@ -39,4 +41,8 @@ void ProcessKeybind(const char* aIdentifier, bool aIsRelease)
         ToggleCapture();
     else if (strcmp(aIdentifier, MYSTIC_AI_READ_BOOK) == 0)
         ReadBookRegion();
+    else if (strcmp(aIdentifier, MYSTIC_AI_READ) == 0)
+        ReadPanelAloud();
+    else if (strcmp(aIdentifier, MYSTIC_AI_TP_REGION) == 0)
+        ReadTpRegion();
 }

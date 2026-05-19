@@ -81,6 +81,15 @@ BLTC_SEARCH = "https://www.gw2bltc.com/en/tp/search"  # item name -> id lookup
 WIKI_API = "https://wiki.guildwars2.com/api.php"
 WIKI_LIBRARY = os.path.expanduser(
     "~/.local/share/Steam/steamapps/common/Guild Wars 2/addons/NexusGameWiki/library.json")
+CRAFTY_LIBRARY = os.path.expanduser(
+    "~/.local/share/Steam/steamapps/common/Guild Wars 2/addons/CraftyLegend/favourites.json")
+
+# Deferred favourites queue. NexusGameWiki (and CraftyLegend) rewrite their
+# library files from memory on game-close, so a live append while GW2 runs is
+# wiped. Instead we queue favourites here and flush them into the addon JSON
+# files only while GW2 is NOT running — so the addons read them fresh on the
+# next launch. Shape: {"wiki": [{"pageId","title","savedAt"}], "crafty": [int]}.
+PENDING_FAVS = os.path.expanduser("~/.cache/gw2-claude/pending-favs.json")
 
 DEFAULT_PROMPT = (
     "Transcribe all visible text in this Guild Wars 2 screenshot. Preserve "
@@ -212,6 +221,12 @@ def clean_for_speech(text):
     # Drop the Trading Post coin-data marker line — it drives the on-screen
     # panel, not speech (the prose to read aloud follows it).
     t = re.sub(r"^@TP\|[^\n]*\n", "", text)
+    # Drop a leading "@SECT" line — it flags a colour-coded Research result for
+    # the panel; the prose under it is what gets read aloud.
+    t = re.sub(r"^@SECT\n", "", t)
+    # Drop the "#HEADER#" section markers Research uses, so TTS does not read
+    # "hash about hash" — keep the prose under each header.
+    t = re.sub(r"^#[A-Z ]+#\s*$", "", t, flags=re.MULTILINE)
     t = re.sub(r"`+", "", t)
     t = re.sub(r"\*+", "", t)
     t = re.sub(r"^#+\s*", "", t, flags=re.MULTILINE)
@@ -559,11 +574,12 @@ def action_trading_post(client, model, image_path):
 OVERVIEW_INSTRUCTION = (
     "This is a cropped region of the Guild Wars 2 screen.\n"
     "If it shows a single game ITEM (an inventory slot, an item tooltip, a "
-    "trading-post listing), reply with EXACTLY these two lines and nothing "
+    "trading-post listing), reply with EXACTLY these three lines and nothing "
     "else:\n"
     "NAME: <the item's exact in-game name>\n"
-    "ABOUT: <one or two plain sentences on what the item is and what it is "
-    "used for>\n"
+    "ABOUT: <one or two plain sentences on what the item is>\n"
+    "USES: <one line: what it is used for — key recipes, crafting, "
+    "collections>\n"
     "If it is NOT a single item — dialogue, quest text, a book page, mail, a "
     "menu, chat — reply instead with one line:\n"
     "TEXT: <all of the visible text, in full>\n"
@@ -580,13 +596,15 @@ def action_overview(client, model, image_path):
     if raw.upper().startswith("TEXT:"):
         return raw[5:].strip()                  # not an item — plain text
 
-    name = about = ""
+    name = about = uses = ""
     for line in raw.splitlines():
         s = line.strip()
         if s.upper().startswith("NAME:"):
             name = s[5:].strip().strip("\"'")
         elif s.upper().startswith("ABOUT:"):
             about = s[6:].strip()
+        elif s.upper().startswith("USES:"):
+            uses = s[5:].strip()
     if not name:
         return raw                              # unparseable — show as-is
 
@@ -608,6 +626,8 @@ def action_overview(client, model, image_path):
 
     # SPOKEN line — what the Read button voices on demand.
     say = [disp_name + ".", about]
+    if uses:
+        say.append("Used for: " + uses)
     if buy >= 0 or sell >= 0:
         say.append("Trading Post buy %s, sell %s."
                    % (format_coins(buy) if buy >= 0 else "no orders",
@@ -617,7 +637,7 @@ def action_overview(client, model, image_path):
     spoken = " ".join(p for p in say if p)
 
     marker = "@OV|buy=%d|sell=%d|vendor=%d|name=%s" % (buy, sell, vendor, disp_name)
-    return "%s\nABOUT:%s\nSPOKEN:%s" % (marker, about, spoken)
+    return "%s\nABOUT:%s\nUSES:%s\nSPOKEN:%s" % (marker, about, uses, spoken)
 
 
 def action_copy_name(client, model, image_path):
@@ -637,34 +657,47 @@ def action_copy_name(client, model, image_path):
     return "@COPY|" + name.splitlines()[0].strip()
 
 
-def _add_wiki_favorite(page_id, title):
-    """Append a favourite to NexusGameWiki's library.json. Returns False if it
-    was already there, or on failure."""
-    data = {"favorites": [], "recent": []}
+def _gw2_running():
+    """True while a Gw2-64.exe process is alive — pending favourites are only
+    flushed to the addon JSON files when the game is closed."""
     try:
-        with open(WIKI_LIBRARY) as f:
+        return subprocess.run(["pgrep", "-f", "Gw2-64.exe"],
+                              stdout=subprocess.DEVNULL,
+                              stderr=subprocess.DEVNULL).returncode == 0
+    except Exception:  # noqa: BLE001
+        return False
+
+
+def _load_pending_favs():
+    """Read the deferred-favourites queue. Always returns a well-formed dict."""
+    data = {"wiki": [], "crafty": []}
+    try:
+        with open(PENDING_FAVS) as f:
             loaded = json.load(f)
         if isinstance(loaded, dict):
-            data = loaded
+            if isinstance(loaded.get("wiki"), list):
+                data["wiki"] = loaded["wiki"]
+            if isinstance(loaded.get("crafty"), list):
+                data["crafty"] = loaded["crafty"]
     except (OSError, ValueError):
         pass
-    favs = data.setdefault("favorites", [])
-    if any(isinstance(f, dict) and f.get("pageId") == page_id for f in favs):
-        return False
-    favs.append({"pageId": page_id, "savedAt": int(time.time()), "title": title})
+    return data
+
+
+def _save_pending_favs(data):
+    """Write the deferred-favourites queue back to disk."""
     try:
-        os.makedirs(os.path.dirname(WIKI_LIBRARY), exist_ok=True)
-        with open(WIKI_LIBRARY, "w") as f:
+        os.makedirs(os.path.dirname(PENDING_FAVS), exist_ok=True)
+        with open(PENDING_FAVS, "w") as f:
             json.dump(data, f, indent=2)
     except OSError as e:
-        log("WARN: could not write %s: %s" % (WIKI_LIBRARY, e))
-        return False
-    return True
+        log("WARN: could not write %s: %s" % (PENDING_FAVS, e))
 
 
 def action_wiki_fav(client, model, image_path):
-    """Identify the subject of the crop and add its wiki page to the
-    NexusGameWiki favourites."""
+    """Identify the subject of the crop, resolve its wiki page, and QUEUE it as
+    a deferred wiki favourite — flushed to NexusGameWiki's library.json only
+    while GW2 is not running, so the addon doesn't overwrite it on game-close."""
     term = claude_identify(client, model, image_path,
         "This is a Guild Wars 2 screenshot. Reply with ONLY the name of the "
         "main item, skill, NPC, or place shown — the thing worth looking up on "
@@ -683,22 +716,133 @@ def action_wiki_fav(client, model, image_path):
 
     page_id = hits[0].get("pageid")
     title = hits[0].get("title", term)
-    if _add_wiki_favorite(page_id, title):
-        return "Added %s to your wiki favourites." % title
-    return "%s is already in your wiki favourites." % title
+
+    pending = _load_pending_favs()
+    if any(isinstance(e, dict) and e.get("pageId") == page_id
+           for e in pending["wiki"]):
+        return "%s is already queued for your wiki favourites." % title
+    pending["wiki"].append({"pageId": page_id, "savedAt": int(time.time()),
+                            "title": title})
+    _save_pending_favs(pending)
+    return "Queued %s for your wiki favourites." % title
+
+
+def action_legendary_fav(client, model, image_path):
+    """Identify the item in the crop and QUEUE it as a deferred CraftyLegend
+    favourite — flushed to CraftyLegend's favourites.json only while GW2 is not
+    running, so the addon doesn't overwrite it on game-close."""
+    name = claude_identify(client, model, image_path,
+        "This is a Guild Wars 2 screenshot of a single item. Reply with ONLY "
+        "that item's exact in-game name: no quotes, no extra words. If you "
+        "cannot tell, reply NONE.")
+    if not name or name.upper() == "NONE":
+        return "I couldn't make out an item name in that selection."
+
+    item_id, bltc_name = bltc_find_item(name)
+    if item_id is None:
+        return "I couldn't find %s to add to CraftyLegend." % name
+
+    pending = _load_pending_favs()
+    if item_id in pending["crafty"]:
+        return "%s is already queued for CraftyLegend." % (bltc_name or name)
+    pending["crafty"].append(item_id)
+    _save_pending_favs(pending)
+    return "Queued %s for CraftyLegend." % (bltc_name or name)
+
+
+def flush_pending_favs():
+    """Merge queued favourites into the addon JSON files — but only while GW2 is
+    closed. NexusGameWiki / CraftyLegend rewrite those files from memory on
+    game-close, so a flush mid-session would be wiped; flushing while the game
+    is shut means the addons load the new favourites on the next launch."""
+    pending = _load_pending_favs()
+    if not pending["wiki"] and not pending["crafty"]:
+        return
+    if _gw2_running():
+        return
+
+    flushed_wiki = flushed_crafty = 0
+
+    # Wiki favourites -> NexusGameWiki library.json (favorites[], dedup pageId).
+    if pending["wiki"]:
+        data = {"favorites": [], "recent": []}
+        try:
+            with open(WIKI_LIBRARY) as f:
+                loaded = json.load(f)
+            if isinstance(loaded, dict):
+                data = loaded
+        except (OSError, ValueError):
+            pass
+        favs = data.setdefault("favorites", [])
+        data.setdefault("recent", [])
+        have = {f.get("pageId") for f in favs if isinstance(f, dict)}
+        for entry in pending["wiki"]:
+            pid = entry.get("pageId")
+            if pid in have:
+                continue
+            favs.append({"pageId": pid,
+                         "savedAt": entry.get("savedAt") or int(time.time()),
+                         "title": entry.get("title", "")})
+            have.add(pid)
+            flushed_wiki += 1
+        try:
+            os.makedirs(os.path.dirname(WIKI_LIBRARY), exist_ok=True)
+            with open(WIKI_LIBRARY, "w") as f:
+                json.dump(data, f, indent=2)
+        except OSError as e:
+            log("WARN: could not write %s: %s" % (WIKI_LIBRARY, e))
+            return
+
+    # Crafty favourites -> CraftyLegend favourites.json (favourites[], dedup id).
+    if pending["crafty"]:
+        data = {"favourites": []}
+        try:
+            with open(CRAFTY_LIBRARY) as f:
+                loaded = json.load(f)
+            if isinstance(loaded, dict):
+                data = loaded
+        except (OSError, ValueError):
+            pass
+        favs = data.setdefault("favourites", [])
+        have = set(f for f in favs if isinstance(f, int))
+        for iid in pending["crafty"]:
+            if iid in have:
+                continue
+            favs.append(iid)
+            have.add(iid)
+            flushed_crafty += 1
+        try:
+            os.makedirs(os.path.dirname(CRAFTY_LIBRARY), exist_ok=True)
+            with open(CRAFTY_LIBRARY, "w") as f:
+                json.dump(data, f, indent=2)
+        except OSError as e:
+            log("WARN: could not write %s: %s" % (CRAFTY_LIBRARY, e))
+            return
+
+    # All merged — clear the queue.
+    _save_pending_favs({"wiki": [], "crafty": []})
+    log("flushed pending favourites: %d wiki, %d crafty"
+        % (flushed_wiki, flushed_crafty))
 
 
 RESEARCH_SYSTEM = (
     "You are a Guild Wars 2 expert. The player has shown you a region of their "
     "screen. Identify the main item, skill, trait, NPC, event, or place, then "
     "research it thoroughly with the GW2 wiki and current web sources and give "
-    "a genuinely in-depth explanation — well beyond prices. Cover what it is, "
-    "where and how it is obtained, what it is used for (crafting, builds, "
-    "collections, achievements), how it fits the current game and economy, "
-    "and a few practical tips or things players often get wrong. Be thorough "
-    "and specific with real detail. Answer as flowing spoken prose — several "
-    "paragraphs of plain conversational text, with no markdown, no bullet "
-    "points, and no preamble such as 'I'll look that up'."
+    "a genuinely in-depth explanation — well beyond prices.\n\n"
+    "Reply in labelled sections so it is easy to scan. Use ONLY the sections "
+    "below that actually apply, and put each header on its own line, written "
+    "EXACTLY as shown:\n"
+    "#ABOUT#\n"
+    "#HOW TO GET#\n"
+    "#USES#\n"
+    "#RECIPES#\n"
+    "#PRICES#\n"
+    "#TIPS#\n"
+    "Under each header write plain prose — several sentences of conversational "
+    "text. Be thorough and specific with real detail. Use no markdown, no "
+    "bullet points, and no preamble such as 'I'll look that up'. Output nothing "
+    "but the headers and their prose."
 )
 
 
@@ -737,12 +881,17 @@ def action_research(client, cfg, image_path, question):
         # knowledge-based answer rather than failing the whole request.
         log("WARN: research web search failed (%s) — answering without it" % e)
         text = _call(None)
-    return text or "(no research result)"
+    if not text:
+        return "(no research result)"
+    # "@SECT" flags the result as colour-coded sections for the Mystic AI
+    # panel; clean_for_speech strips it (and the #...# headers) before TTS.
+    return "@SECT\n" + text
 
 
 def run_daemon(client, model, cfg):
     log("daemon starting (pid=%d model=%s tts=%s)" % (
         os.getpid(), model, cfg.get("GW2_CLAUDE_TTS", "on")))
+    last_flush = 0.0
     while True:
         # A stop request kills speech immediately (the addon touches this on a
         # second double-press of the read button).
@@ -750,6 +899,13 @@ def run_daemon(client, model, cfg):
             stop_speaking()
             _safe_rm(STOP_MARKER)
         reap_tts()
+
+        # Flush queued favourites into the addon JSON files — throttled, and a
+        # no-op unless the queue has entries and GW2 is closed.
+        now = time.time()
+        if now - last_flush >= 10.0:
+            last_flush = now
+            flush_pending_favs()
 
         for ready in glob.glob(os.path.join(TMP, "gw2-claude-input-*.ready")):
             suffix = os.path.basename(ready)[len("gw2-claude-input-"):-len(".ready")]
@@ -817,6 +973,8 @@ def run_daemon(client, model, cfg):
                     result = action_copy_name(client, model, image_path)
                 elif action == "wiki-fav":
                     result = action_wiki_fav(client, model, image_path)
+                elif action == "legendary-fav":
+                    result = action_legendary_fav(client, model, image_path)
                 elif action == "research":
                     result = action_research(client, cfg, image_path, question)
                 else:

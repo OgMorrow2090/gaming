@@ -23,6 +23,10 @@ int   g_BookRegionX  = 0;
 int   g_BookRegionY  = 0;
 int   g_BookRegionW  = 0;
 int   g_BookRegionH  = 0;
+int   g_TpRegionX    = 0;
+int   g_TpRegionY    = 0;
+int   g_TpRegionW    = 0;
+int   g_TpRegionH    = 0;
 
 namespace {
 
@@ -53,8 +57,9 @@ std::string ConfigPath(int w, int h)
     return std::string(buf);
 }
 
-// Reset to defaults. The book region is pixel-coordinate data — meaningless
-// across a resolution change — so it always resets with everything else.
+// Reset to defaults. The book / TP regions are pixel-coordinate data —
+// meaningless across a resolution change — so they always reset with
+// everything else.
 void ResetDefaults()
 {
     g_FontScale    = 1.0f;
@@ -66,6 +71,10 @@ void ResetDefaults()
     g_BookRegionY  = 0;
     g_BookRegionW  = 0;
     g_BookRegionH  = 0;
+    g_TpRegionX    = 0;
+    g_TpRegionY    = 0;
+    g_TpRegionW    = 0;
+    g_TpRegionH    = 0;
 }
 
 bool ReadConfig(const std::string& path)
@@ -112,6 +121,10 @@ bool ReadConfig(const std::string& path)
         else if (line.rfind("BookRegionY=", 0) == 0) g_BookRegionY = atoi(line.substr(12).c_str());
         else if (line.rfind("BookRegionW=", 0) == 0) g_BookRegionW = atoi(line.substr(12).c_str());
         else if (line.rfind("BookRegionH=", 0) == 0) g_BookRegionH = atoi(line.substr(12).c_str());
+        else if (line.rfind("TpRegionX=", 0) == 0)   g_TpRegionX   = atoi(line.substr(10).c_str());
+        else if (line.rfind("TpRegionY=", 0) == 0)   g_TpRegionY   = atoi(line.substr(10).c_str());
+        else if (line.rfind("TpRegionW=", 0) == 0)   g_TpRegionW   = atoi(line.substr(10).c_str());
+        else if (line.rfind("TpRegionH=", 0) == 0)   g_TpRegionH   = atoi(line.substr(10).c_str());
     }
     return true;
 }
@@ -160,6 +173,10 @@ void SaveSettings()
     f << "BookRegionY="  << g_BookRegionY  << "\n";
     f << "BookRegionW="  << g_BookRegionW  << "\n";
     f << "BookRegionH="  << g_BookRegionH  << "\n";
+    f << "TpRegionX="    << g_TpRegionX    << "\n";
+    f << "TpRegionY="    << g_TpRegionY    << "\n";
+    f << "TpRegionW="    << g_TpRegionW    << "\n";
+    f << "TpRegionH="    << g_TpRegionH    << "\n";
 }
 
 void CheckResolutionChange()

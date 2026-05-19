@@ -56,7 +56,7 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     AddonDef.Name             = "Mystic AI";
     AddonDef.Version.Major    = 1;
     AddonDef.Version.Minor    = 1;
-    AddonDef.Version.Build    = 5;
+    AddonDef.Version.Build    = 6;
     AddonDef.Version.Revision = 0;
     AddonDef.Author      = "OgMorrow2090";
     AddonDef.Description = "Freeze-frame screen reader for GW2 - drag-select any "
@@ -113,10 +113,12 @@ void AddonLoad(AddonAPI_t* aApi)
                              "Mystic AI - drag-select to read the screen");
 
     // Keybinds — unbound by default so the player binds them (controller-
-    // friendly: bind the capture key to a button, the book read to a
-    // double-press).
+    // friendly: bind the capture key to a button, the region reads to
+    // double-presses).
     APIDefs->InputBinds_RegisterWithString(MYSTIC_AI_CAPTURE,   ProcessKeybind, "(null)");
     APIDefs->InputBinds_RegisterWithString(MYSTIC_AI_READ_BOOK, ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(MYSTIC_AI_READ,      ProcessKeybind, "(null)");
+    APIDefs->InputBinds_RegisterWithString(MYSTIC_AI_TP_REGION, ProcessKeybind, "(null)");
 
     APIDefs->Log(LOGL_INFO, "MysticAI", "Mystic AI loaded.");
 }
@@ -128,6 +130,8 @@ void AddonUnload()
 {
     APIDefs->InputBinds_Deregister(MYSTIC_AI_CAPTURE);
     APIDefs->InputBinds_Deregister(MYSTIC_AI_READ_BOOK);
+    APIDefs->InputBinds_Deregister(MYSTIC_AI_READ);
+    APIDefs->InputBinds_Deregister(MYSTIC_AI_TP_REGION);
     APIDefs->QuickAccess_Remove("MYSTIC_AI_SHORTCUT");
     APIDefs->WndProc_Deregister(MysticAIWndProc);
     APIDefs->GUI_Deregister(RenderMysticAI);

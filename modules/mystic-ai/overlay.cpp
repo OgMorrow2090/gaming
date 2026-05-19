@@ -56,7 +56,9 @@ int  g_mode        = MODE_IDLE;
 bool g_needRelease = false;   // release the frozen texture at the next frame's top
 
 // --- Command posted by the keybind thread, drained by the render thread ----
-enum Cmd { CMD_NONE, CMD_TOGGLE, CMD_BOOK };
+// CMD_BOOK toggles book-watch mode; CMD_READ voices the panel; CMD_TPREGION
+// re-reads the saved TP region.
+enum Cmd { CMD_NONE, CMD_TOGGLE, CMD_BOOK, CMD_READ, CMD_TPREGION };
 std::atomic<int> g_cmd{CMD_NONE};
 
 // --- WndProc hook <-> render thread ----------------------------------------
@@ -118,6 +120,30 @@ float g_settingsExtraH = 0.0f;
 ImVec4 g_anchor{0, 0, 0, 0};   // box the panel anchors to (display coords)
 bool   g_reposPanel = false;   // snap the panel to the anchor on its next frame
 bool   g_panelOpen  = true;
+
+// --- Book auto-advance watch (render thread only) --------------------------
+// While the watch is ON, Mystic AI re-reads the book region whenever the page
+// turns. It detects a turn by capturing the region every ~2s on a worker
+// thread, downscaling it to a 32x32 thumbnail and comparing a cheap checksum
+// against the last page. A second Read-Book press, Esc, or any new drag-select
+// capture turns the watch OFF. The watch only ticks while no read is in flight
+// and no speech is playing — so it never interrupts the current page.
+bool                 g_bookWatch     = false;  // watch armed
+bool                 g_bookHaveSum   = false;  // a baseline checksum is stored
+uint32_t             g_bookSum       = 0;      // last page's thumbnail checksum
+double               g_bookNextTickMs = 0.0;   // earliest next sample (GetTime ms)
+std::mutex           g_bookMtx;                // guards the watch-worker handoff
+bool                 g_bookSampling  = false;  // a watch sample is in flight
+bool                 g_bookSampleReady = false;
+bool                 g_bookSampleOk  = false;
+uint32_t             g_bookSampleSum = 0;
+
+// Checksum threshold — the 32x32 thumbnail sum is in [0, ~261000]. A turned
+// page rewrites the brightness of many cells (a diff in the thousands), while a
+// flickering cursor or antialiasing noise nudges only a few cells. ~1500 sits
+// well clear of that noise floor without missing a real page turn.
+constexpr uint32_t BOOK_SUM_THRESHOLD = 1500;
+constexpr double   BOOK_TICK_MS       = 2000.0;
 
 inline float Mn(float a, float b) { return a < b ? a : b; }
 inline float Mx(float a, float b) { return a > b ? a : b; }
@@ -225,8 +251,73 @@ void CaptureWorker()
 }
 
 // ---------------------------------------------------------------------------
+// Book auto-advance — page-turn detection
+//
+// The watch worker grabs the book region off the render thread (the same
+// off-render-thread rule as CaptureWorker — CaptureBackBufferRegion blocks
+// until the next RT_PostRender), shrinks it to a tiny thumbnail and reduces it
+// to one number. The render thread compares that to the last page's number;
+// a big enough jump means the page turned.
+// ---------------------------------------------------------------------------
+
+// Downscale a 24-bit BGR region to `cells`x`cells` (nearest-neighbour) and sum
+// each cell's brightness into a cheap checksum. The sum lands in [0, 255*cells*
+// cells] — a turned page changes the brightness pattern of many cells, so the
+// sum jumps; small cursor / antialiasing flicker barely moves it. The compare
+// is the absolute difference of two such sums against BOOK_SUM_THRESHOLD.
+uint32_t ThumbChecksum(const std::vector<uint8_t>& bgr, int w, int h, int cells)
+{
+    if (w <= 0 || h <= 0 || cells <= 0
+        || bgr.size() < (size_t)w * h * 3)
+        return 0;
+    uint32_t sum = 0;
+    for (int cy = 0; cy < cells; ++cy)
+    {
+        int sy = (int)(((long long)cy * h) / cells);
+        if (sy >= h) sy = h - 1;
+        for (int cx = 0; cx < cells; ++cx)
+        {
+            int sx = (int)(((long long)cx * w) / cells);
+            if (sx >= w) sx = w - 1;
+            const uint8_t* p = &bgr[((size_t)sy * w + sx) * 3];
+            // Average the channels so the checksum tracks brightness only.
+            sum += ((uint32_t)p[0] + p[1] + p[2]) / 3;
+        }
+    }
+    return sum;
+}
+
+// Capture the saved book region and hand a 32x32-thumbnail checksum back to the
+// render thread. Runs on a detached worker — never the render thread.
+void BookWatchWorker(int x, int y, int w, int h)
+{
+    std::vector<uint8_t> px;
+    bool ok = (w > 0 && h > 0)
+              && CaptureBackBufferRegion(x, y, w, h, px, 1500);
+    uint32_t sum = ok ? ThumbChecksum(px, w, h, 32) : 0;
+
+    std::lock_guard<std::mutex> lk(g_bookMtx);
+    g_bookSampleOk    = ok;
+    g_bookSampleSum   = sum;
+    g_bookSampleReady = true;
+    g_bookSampling    = false;
+}
+
+// ---------------------------------------------------------------------------
 // State transitions (render thread)
 // ---------------------------------------------------------------------------
+
+// Turn book auto-advance off and forget the page baseline. The detached watch
+// worker (if one is mid-flight) is harmless — its result is dropped because the
+// watch is no longer armed.
+void StopBookWatch()
+{
+    g_bookWatch   = false;
+    g_bookHaveSum = false;
+    g_bookSum     = 0;
+    std::lock_guard<std::mutex> lk(g_bookMtx);
+    g_bookSampleReady = false;
+}
 
 // Leave any active mode. The frozen texture is released at the top of the next
 // frame, never mid-frame — this frame's draw list may still reference it.
@@ -242,11 +333,13 @@ void ExitToIdle(bool stopRead)
     g_copyHandled.clear();
     g_copyMsg.clear();
     CopyText::Reset();
+    StopBookWatch();
     if (stopRead) ClaudeVision::Stop();
 }
 
 void StartCapture()
 {
+    StopBookWatch();   // a fresh drag-select capture ends any book auto-advance
     {
         std::lock_guard<std::mutex> lk(g_capMtx);
         g_capPixels.clear();
@@ -259,15 +352,10 @@ void StartCapture()
     std::thread(CaptureWorker).detach();
 }
 
-void StartBookRead()
+// Fire one book-region read and show the book panel. Shared by the first
+// Read-Book press and by the auto-advance when a page turn is detected.
+void FireBookRead()
 {
-    if (g_BookRegionW <= 0 || g_BookRegionH <= 0)
-    {
-        if (APIDefs)
-            APIDefs->GUI_SendAlert("Mystic AI: no book region saved yet. Drag-select a "
-                                   "book page, then click the Book button to save it.");
-        return;
-    }
     g_anchor     = ImVec4((float)g_BookRegionX, (float)g_BookRegionY,
                           (float)g_BookRegionW, (float)g_BookRegionH);
     g_reposPanel = true;
@@ -277,12 +365,80 @@ void StartBookRead()
                                 g_BookRegionX, g_BookRegionY, g_BookRegionW, g_BookRegionH);
 }
 
-// Drain the keybind command. Any keybind press while a mode is active cancels
-// it; otherwise it stops a stray read, or starts a fresh capture / book read.
+// Read-Book keybind. Toggles book auto-advance: off -> start a book read and
+// arm the watch; on -> disarm it and stop any speech. With no saved region it
+// behaves as before — just a hint.
+void StartBookRead()
+{
+    if (g_BookRegionW <= 0 || g_BookRegionH <= 0)
+    {
+        if (APIDefs)
+            APIDefs->GUI_SendAlert("Mystic AI: no book region saved yet. Drag-select a "
+                                   "book page, then click the Book button to save it.");
+        return;
+    }
+    if (g_bookWatch)
+    {
+        // Second press — toggle the watch off and silence the current page.
+        StopBookWatch();
+        ClaudeVision::Stop();
+        return;
+    }
+    FireBookRead();
+    // Arm the watch; the first sample is delayed so it lands after this page's
+    // read and narration, not during it.
+    g_bookWatch      = true;
+    g_bookHaveSum    = false;
+    g_bookSum        = 0;
+    g_bookNextTickMs = ImGui::GetTime() * 1000.0 + BOOK_TICK_MS;
+    {
+        std::lock_guard<std::mutex> lk(g_bookMtx);
+        g_bookSampling = g_bookSampleReady = false;
+    }
+}
+
+// Read the saved TP region. Mirrors the book region but sends @action:overview
+// — the panel then shows the item, its "Used for" line and TP/vendor rows,
+// silently. With no saved region it just speaks a hint.
+void StartTpRead()
+{
+    if (g_TpRegionW <= 0 || g_TpRegionH <= 0)
+    {
+        ClaudeVision::Speak("No TP region saved yet. Drag-select an item, then "
+                            "use Save TP region.");
+        return;
+    }
+    g_anchor     = ImVec4((float)g_TpRegionX, (float)g_TpRegionY,
+                          (float)g_TpRegionW, (float)g_TpRegionH);
+    g_reposPanel = true;
+    g_panelOpen  = true;
+    g_mode       = MODE_BOOKPANEL;   // same region-read panel mode as the book
+    ClaudeVision::RequestRegion("Overview", "@action:overview",
+                                g_TpRegionX, g_TpRegionY, g_TpRegionW, g_TpRegionH);
+}
+
+// Drain the keybind command. The Read command just voices the panel and never
+// disturbs a mode. A second Read-Book press toggles the book watch off even
+// while the book panel is up. Otherwise a keybind press while a mode is active
+// cancels it; from idle it starts a fresh capture / region read.
 void ProcessCommand()
 {
     int c = g_cmd.exchange(CMD_NONE);
     if (c == CMD_NONE) return;
+
+    // Read — voice the panel's cached content; leaves the mode untouched.
+    if (c == CMD_READ)
+    {
+        ClaudeVision::Speak(g_spokenText);
+        return;
+    }
+    // A Read-Book press while the watch is armed toggles it off — handled
+    // before the generic "any press cancels the mode" rule below.
+    if (c == CMD_BOOK && g_bookWatch)
+    {
+        StartBookRead();   // toggles the watch off and stops speech
+        return;
+    }
 
     if (g_mode != MODE_IDLE)
     {
@@ -295,8 +451,9 @@ void ProcessCommand()
         ClaudeVision::Stop();
         return;
     }
-    if (c == CMD_TOGGLE)    StartCapture();
-    else if (c == CMD_BOOK) StartBookRead();
+    if (c == CMD_TOGGLE)         StartCapture();
+    else if (c == CMD_BOOK)      StartBookRead();
+    else if (c == CMD_TPREGION)  StartTpRead();
 }
 
 // Capturing -> Selecting once the worker delivers the frame.
@@ -340,6 +497,77 @@ void AdvanceCapture()
     g_dragging = false;
     g_haveSel  = false;
     g_mode     = MODE_SELECTING;
+}
+
+// Book auto-advance tick (render thread). While the watch is armed: once the
+// current page's read and narration are finished, sample the book region every
+// ~2s on a worker thread; a checksum jump means the page turned, so fire a
+// fresh book read. Cheap and a no-op while the watch is off.
+void AdvanceBookWatch()
+{
+    if (!g_bookWatch) return;
+
+    // First, drain a finished worker sample.
+    bool haveSample = false, sampleOk = false;
+    uint32_t sampleSum = 0;
+    {
+        std::lock_guard<std::mutex> lk(g_bookMtx);
+        if (g_bookSampleReady)
+        {
+            haveSample        = true;
+            sampleOk          = g_bookSampleOk;
+            sampleSum         = g_bookSampleSum;
+            g_bookSampleReady = false;
+        }
+    }
+    if (haveSample && sampleOk)
+    {
+        if (!g_bookHaveSum)
+        {
+            // First clean sample after a read — this is the baseline page.
+            g_bookSum     = sampleSum;
+            g_bookHaveSum = true;
+        }
+        else
+        {
+            uint32_t diff = (sampleSum > g_bookSum)
+                            ? sampleSum - g_bookSum : g_bookSum - sampleSum;
+            if (diff > BOOK_SUM_THRESHOLD)
+            {
+                // The page turned — read the new page and rebaseline once its
+                // read settles (g_bookHaveSum reset below).
+                g_bookSum     = sampleSum;
+                g_bookHaveSum = false;
+                FireBookRead();
+            }
+        }
+    }
+
+    // Then, post a fresh sample — but only while nothing is in flight: no read
+    // pending, no speech playing, no sample worker already running, and the
+    // tick interval elapsed. This keeps the watch from re-reading mid-page.
+    if (ClaudeVision::GetState() == ClaudeVision::State::Waiting
+        || ClaudeVision::IsSpeaking())
+        return;
+
+    double nowMs = ImGui::GetTime() * 1000.0;
+    if (nowMs < g_bookNextTickMs) return;
+
+    bool startSample = false;
+    {
+        std::lock_guard<std::mutex> lk(g_bookMtx);
+        if (!g_bookSampling)
+        {
+            g_bookSampling = true;
+            startSample    = true;
+        }
+    }
+    if (startSample)
+    {
+        g_bookNextTickMs = nowMs + BOOK_TICK_MS;
+        std::thread(BookWatchWorker, g_BookRegionX, g_BookRegionY,
+                    g_BookRegionW, g_BookRegionH).detach();
+    }
 }
 
 // Crop the frozen frame to the drag box, fire the read, enter Review.
@@ -627,20 +855,22 @@ void DrawTpPanel(const TpData& tp)
 // Overview panel
 //
 // The default drag-select action (@action:overview) returns, when the
-// selection is an item, three lines:
+// selection is an item, four lines:
 //   @OV|buy=..|sell=..|vendor=..|name=..   coin marker (mirrors @TP|)
 //   ABOUT:<one or two sentence description>
+//   USES:<one line: what the item is used for>
 //   SPOKEN:<a prose sentence to be voiced on demand>
-// We show the name, the ABOUT text, and buy / sell / vendor coin rows — all on
-// screen, silently. The SPOKEN line is cached for the Read button. A selection
-// that is not an item returns plain text with no marker and falls back to
-// wrapped text (see DrawPanel).
+// We show the name, the ABOUT text, the "Used for" line, and buy / sell /
+// vendor coin rows — all on screen, silently. The SPOKEN line is cached for the
+// Read button. A selection that is not an item returns plain text with no
+// marker and falls back to wrapped text (see DrawPanel).
 // ---------------------------------------------------------------------------
 struct OverviewData
 {
     long long   buy = -1, sell = -1, vendor = -1;  // copper; -1 = none / unknown
     std::string name;
     std::string about;    // the ABOUT: line
+    std::string uses;     // the USES: line — "Used for" heading
     std::string spoken;   // the SPOKEN: line — voiced by the Read button
 };
 
@@ -657,7 +887,7 @@ bool ParseOverviewMarker(const std::string& result, OverviewData& out)
     size_t np  = line.find("name=");
     out.name   = (np != std::string::npos) ? line.substr(np + 5) : "";
 
-    // Walk the remaining lines for the ABOUT: and SPOKEN: prefixes.
+    // Walk the remaining lines for the ABOUT: / USES: / SPOKEN: prefixes.
     size_t pos = (nl == std::string::npos) ? std::string::npos : nl + 1;
     while (pos != std::string::npos && pos < result.size())
     {
@@ -666,6 +896,8 @@ bool ParseOverviewMarker(const std::string& result, OverviewData& out)
                                                ? std::string::npos : end - pos);
         if (l.rfind("ABOUT:", 0) == 0)
             out.about = l.substr(6);
+        else if (l.rfind("USES:", 0) == 0)
+            out.uses = l.substr(5);
         else if (l.rfind("SPOKEN:", 0) == 0)
             out.spoken = l.substr(7);
         pos = (end == std::string::npos) ? std::string::npos : end + 1;
@@ -673,8 +905,8 @@ bool ParseOverviewMarker(const std::string& result, OverviewData& out)
     return true;
 }
 
-// The overview result: item name, a short description, then buy / sell /
-// vendor coin rows.
+// The overview result: item name, a short description, a "Used for" line, then
+// buy / sell / vendor coin rows.
 void DrawOverviewPanel(const OverviewData& ov)
 {
     if (!ov.name.empty())
@@ -683,6 +915,12 @@ void DrawOverviewPanel(const OverviewData& ov)
     {
         ImGui::Spacing();
         ImGui::TextWrapped("%s", ov.about.c_str());
+    }
+    if (!ov.uses.empty())
+    {
+        ImGui::Spacing();
+        ImGui::TextColored(ImVec4(0.45f, 0.85f, 0.45f, 1.0f), "Used for:");
+        ImGui::TextWrapped("%s", ov.uses.c_str());
     }
     ImGui::Spacing();
     ImGui::Separator();
@@ -694,6 +932,62 @@ void DrawOverviewPanel(const OverviewData& ov)
                 "no sell listings");
     DrawCoinRow("Vendor", IM_COL32(170, 174, 184, 255), ov.vendor, labelW,
                 "not sellable");
+}
+
+// ---------------------------------------------------------------------------
+// Colour-coded Research panel
+//
+// action_research in gw2-claude-daemon.py returns its write-up as "@SECT\n"
+// followed by labelled sections. Each section header is a line of the form
+// "#HEADER#" (ABOUT / HOW TO GET / USES / RECIPES / PRICES / TIPS); the prose
+// under it follows on the next lines. We draw each header in its own colour and
+// wrap the prose beneath it.
+// ---------------------------------------------------------------------------
+
+// Map a section name (the text between the # markers) to its heading colour.
+ImVec4 SectionColour(const std::string& header)
+{
+    if (header == "ABOUT")      return ImVec4(0.80f, 0.80f, 0.84f, 1.0f);  // light grey
+    if (header == "HOW TO GET") return ImVec4(0.36f, 0.82f, 0.86f, 1.0f);  // cyan
+    if (header == "USES")       return ImVec4(0.45f, 0.85f, 0.45f, 1.0f);  // green
+    if (header == "RECIPES")    return ImVec4(0.56f, 0.74f, 0.96f, 1.0f);  // light blue
+    if (header == "PRICES")     return ImVec4(0.93f, 0.78f, 0.36f, 1.0f);  // gold
+    if (header == "TIPS")       return ImVec4(0.96f, 0.62f, 0.30f, 1.0f);  // orange
+    return ImVec4(0.62f, 0.78f, 0.96f, 1.0f);                              // default accent
+}
+
+// Render a "@SECT" research result section by section. A "#HEADER#" line is a
+// coloured heading; everything else wraps as normal text under it.
+void DrawSectionedResult(const std::string& result)
+{
+    // Skip the leading "@SECT" line.
+    size_t pos = result.find('\n');
+    pos = (pos == std::string::npos) ? result.size() : pos + 1;
+
+    bool firstSection = true;
+    while (pos < result.size())
+    {
+        size_t end = result.find('\n', pos);
+        std::string line = result.substr(pos, end == std::string::npos
+                                                  ? std::string::npos : end - pos);
+        pos = (end == std::string::npos) ? result.size() : end + 1;
+
+        // A header line is "#NAME#" — a leading '#', a trailing '#', no spaces
+        // around the markers themselves.
+        bool isHeader = line.size() >= 3 && line.front() == '#'
+                        && line.back() == '#';
+        if (isHeader)
+        {
+            std::string name = line.substr(1, line.size() - 2);
+            if (!firstSection) ImGui::Spacing();
+            firstSection = false;
+            ImGui::TextColored(SectionColour(name), "%s", name.c_str());
+        }
+        else if (!line.empty())
+        {
+            ImGui::TextWrapped("%s", line.c_str());
+        }
+    }
 }
 
 void DrawPanel(bool reviewMode)
@@ -754,6 +1048,8 @@ void DrawPanel(bool reviewMode)
         const ImU32 COL_RSCH  = IM_COL32(104,  76, 150, 235);
         const ImU32 COL_COPY  = IM_COL32( 94, 100, 110, 235);
         const ImU32 COL_BOOK  = IM_COL32(152,  98,  46, 235);
+        const ImU32 COL_LEGY  = IM_COL32(150, 112,  40, 235);
+        const ImU32 COL_TPRG  = IM_COL32( 56, 110, 120, 235);
         const ImU32 COL_STOP  = IM_COL32(160,  60,  60, 235);
         const ImU32 COL_CLOSE = IM_COL32( 72,  76,  84, 235);
 
@@ -773,19 +1069,21 @@ void DrawPanel(bool reviewMode)
         }
         else if (reviewMode && g_haveSel && !g_lastCrop.empty())
         {
-            // Five actions in a 3-wide grid — each button gets a third of the
+            // Seven actions in a 3-wide grid — each button gets a third of the
             // panel, so even "Research" fits with room to spare.
             float sp = ImGui::GetStyle().ItemSpacing.x;
             float bw = (ImGui::GetContentRegionAvail().x - sp * 2.0f) / 3.0f;
             ImGui::SetWindowFontScale(g_FontScale * 0.85f);
 
+            // Row 1 — Read / Wiki / Research.
             // Read voices the panel's cached SPOKEN line on demand — fire-and-
             // forget, so the overview keeps showing while speech plays.
             if (ActionButton(Icons::READ, "Read", "Read this aloud.",
                              COL_READ, bw, btnH))
                 ClaudeVision::Speak(g_spokenText);
             ImGui::SameLine();
-            if (ActionButton(Icons::WIKI, "Wiki", "Add this to your GW2 wiki favorites.",
+            if (ActionButton(Icons::WIKI, "Wiki", "Queue this for your GW2 wiki "
+                             "favorites - added on the next game launch.",
                              COL_WIKI, bw, btnH))
                 ClaudeVision::RequestPixels("Wiki", "@action:wiki-fav",
                                             g_lastCrop, g_lastCropW, g_lastCropH);
@@ -795,6 +1093,8 @@ void DrawPanel(bool reviewMode)
                              COL_RSCH, bw, btnH))
                 ClaudeVision::RequestPixels("Research", "@action:research",
                                             g_lastCrop, g_lastCropW, g_lastCropH);
+
+            // Row 2 — Copy / Book / Legendary.
             if (ActionButton(Icons::COPY, "Copy",
                              "Copy this item's name to the clipboard - paste it "
                              "into GW2's destroy-confirm box.",
@@ -813,6 +1113,28 @@ void DrawPanel(bool reviewMode)
                 if (APIDefs)
                     APIDefs->GUI_SendAlert("Mystic AI: book region saved. Use the "
                                            "Read Book keybind to re-read it.");
+            }
+            ImGui::SameLine();
+            // No Legendary icon asset — ActionButton renders a text button when
+            // the icon id is null.
+            if (ActionButton(nullptr, "Legendary", "Queue this item for the "
+                             "CraftyLegend favourites - added on the next game launch.",
+                             COL_LEGY, bw, btnH))
+                ClaudeVision::RequestPixels("Legendary", "@action:legendary-fav",
+                                            g_lastCrop, g_lastCropW, g_lastCropH);
+
+            // Row 3 — Save TP region.
+            if (ActionButton(nullptr, "Save TP region",
+                             "Save this selection as the static TP region. The TP "
+                             "Region keybind then re-reads it with no drag.",
+                             COL_TPRG, bw, btnH))
+            {
+                g_TpRegionX = g_selX; g_TpRegionY = g_selY;
+                g_TpRegionW = g_selW; g_TpRegionH = g_selH;
+                SaveSettings();
+                if (APIDefs)
+                    APIDefs->GUI_SendAlert("Mystic AI: TP region saved. Use the "
+                                           "TP Region keybind to re-read it.");
             }
 
             ImGui::SetWindowFontScale(g_FontScale);
@@ -845,9 +1167,12 @@ void DrawPanel(bool reviewMode)
             ImGui::Separator();
 
             // Dispatch on the result marker. "@OV|" is the silent drag-select
-            // overview; "@TP|" the Trading Post coin panel; "@COPY|" the
-            // item-name clipboard grab; anything else is plain wrapped text.
-            const std::string& res = ClaudeVision::GetResult();
+            // overview; "@TP|" the Trading Post coin panel; "@SECT" the
+            // colour-coded Research write-up; "@COPY|" the item-name clipboard
+            // grab; a Wiki / Legendary favourite returns a plain confirmation
+            // line shown as a tick; anything else is plain wrapped text.
+            const std::string& res   = ClaudeVision::GetResult();
+            const std::string  label = ClaudeVision::GetLabel();
             OverviewData ov;
             TpData       tp;
             if (ParseOverviewMarker(res, ov))
@@ -858,6 +1183,13 @@ void DrawPanel(bool reviewMode)
             else if (ParseTpMarker(res, tp))
             {
                 DrawTpPanel(tp);
+            }
+            else if (res.rfind("@SECT", 0) == 0)
+            {
+                // Colour-coded Research — render section by section. The whole
+                // result is still what the Read button voices.
+                DrawSectionedResult(res);
+                g_spokenText = res;
             }
             else if (res.rfind("@COPY|", 0) == 0)
             {
@@ -880,6 +1212,16 @@ void DrawPanel(bool reviewMode)
                 }
                 if (!g_copyMsg.empty())
                     ImGui::TextColored(g_copyMsgCol, "%s", g_copyMsg.c_str());
+            }
+            else if (label == "Wiki" || label == "Legendary")
+            {
+                // A favourite action — show the daemon's confirmation as a
+                // green tick message; it is not spoken. The vendored ImGui font
+                // is ASCII-only, so the tick is a plain "+ ". Guard against a
+                // short or empty reply so the panel never shows a bare tick.
+                ImGui::TextColored(ImVec4(0.5f, 0.9f, 0.5f, 1.0f), "+");
+                ImGui::SameLine();
+                ImGui::TextWrapped("%s", res.empty() ? "Done." : res.c_str());
             }
             else
             {
@@ -904,7 +1246,7 @@ void DrawPanel(bool reviewMode)
         // tracks the Text-size slider so the block always clears the window.
         ImGui::Spacing();
         bool settingsOpen = ImGui::CollapsingHeader("Settings###mai_settings");
-        g_settingsExtraH  = settingsOpen ? 170.0f * g_FontScale : 0.0f;
+        g_settingsExtraH  = settingsOpen ? 210.0f * g_FontScale : 0.0f;
         g_settingsOpen    = settingsOpen;
         if (settingsOpen)
         {
@@ -939,6 +1281,21 @@ void DrawPanel(bool reviewMode)
             {
                 ImGui::TextDisabled("Book region: not set");
             }
+
+            if (g_TpRegionW > 0)
+            {
+                ImGui::Text("TP region: %dx%d at (%d,%d)",
+                    g_TpRegionW, g_TpRegionH, g_TpRegionX, g_TpRegionY);
+                if (ImGui::Button("Clear TP region"))
+                {
+                    g_TpRegionX = g_TpRegionY = g_TpRegionW = g_TpRegionH = 0;
+                    save = true;
+                }
+            }
+            else
+            {
+                ImGui::TextDisabled("TP region: not set");
+            }
             if (save) SaveSettings();
         }
     }
@@ -968,17 +1325,22 @@ void RenderMysticAI()
 
     // Esc — the WndProc hook (MysticAIWndProc) swallows the key and posts it
     // here, so the panel/overlay closes without GW2 also closing the book or
-    // inventory it had open behind it.
+    // inventory it had open behind it. Esc also ends a book auto-advance.
     if (g_escConsumed.exchange(false))
     {
         if (g_mode != MODE_IDLE)
-            ExitToIdle(true);
-        else if (ClaudeVision::GetState() == ClaudeVision::State::Waiting
-                 || ClaudeVision::IsSpeaking())
-            ClaudeVision::Stop();
+            ExitToIdle(true);          // ExitToIdle stops the book watch too
+        else
+        {
+            if (g_bookWatch) StopBookWatch();
+            if (ClaudeVision::GetState() == ClaudeVision::State::Waiting
+                || ClaudeVision::IsSpeaking())
+                ClaudeVision::Stop();
+        }
     }
 
     AdvanceCapture();
+    AdvanceBookWatch();
 
     if (g_mode == MODE_SELECTING)
     {
@@ -994,8 +1356,10 @@ void RenderMysticAI()
         DrawPanel(false);
     }
 
-    // Publish for the WndProc hook whether Mystic AI should own Esc this frame.
+    // Publish for the WndProc hook whether Mystic AI should own Esc this frame
+    // — also while a book auto-advance is running, so Esc ends the watch.
     g_uiActive.store(g_mode != MODE_IDLE
+                     || g_bookWatch
                      || ClaudeVision::IsSpeaking()
                      || ClaudeVision::GetState() == ClaudeVision::State::Waiting);
 }
@@ -1003,6 +1367,10 @@ void RenderMysticAI()
 void ToggleCapture()  { g_cmd.store(CMD_TOGGLE); }
 
 void ReadBookRegion() { g_cmd.store(CMD_BOOK); }
+
+void ReadPanelAloud() { g_cmd.store(CMD_READ); }
+
+void ReadTpRegion()   { g_cmd.store(CMD_TPREGION); }
 
 void ShutdownOverlay()
 {

@@ -1924,5 +1924,23 @@
 		"Passthrough": false,
 		"Shift": true,
 		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 68,
+		"Ctrl": true,
+		"Identifier": "MYSTIC_AI_READ",
+		"Passthrough": false,
+		"Shift": false,
+		"Type": 1
+	},
+	{
+		"Alt": false,
+		"Code": 68,
+		"Ctrl": true,
+		"Identifier": "MYSTIC_AI_TP_REGION",
+		"Passthrough": false,
+		"Shift": true,
+		"Type": 1
 	}
 ]

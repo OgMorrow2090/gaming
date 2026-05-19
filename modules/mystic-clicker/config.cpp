@@ -152,7 +152,9 @@ float g_CaptureWinY = 0.0f;
 float g_CaptureWinW = 0.0f;
 float g_CaptureWinH = 0.0f;
 bool g_ResetWindowsFlag = false;
-float g_UIScale = 1.0f;
+float g_FontScale = 1.0f;
+float g_ButtonScale = 1.0f;
+float g_WindowOpacity = 0.92f;
 
 // Resolution tracking
 static int g_CurrentResWidth = 0;
@@ -561,15 +563,33 @@ void LoadButtonPositions()
             g_CaptureWinH = (float)std::stod(line.substr(12));
         if (line.find("UIScale=") == 0)
         {
+            // Migration from the old single combined scale — seed both, clamped.
             float val = (float)std::stod(line.substr(8));
-            if (val >= 0.5f && val <= 3.0f) g_UIScale = val;
+            if (val < 0.6f) val = 0.6f; else if (val > 2.5f) val = 2.5f;
+            g_FontScale = val;
+            g_ButtonScale = val;
+        }
+        if (line.find("FontScale=") == 0)
+        {
+            float val = (float)std::stod(line.substr(10));
+            if (val >= 0.6f && val <= 2.5f) g_FontScale = val;
+        }
+        if (line.find("ButtonScale=") == 0)
+        {
+            float val = (float)std::stod(line.substr(12));
+            if (val >= 0.6f && val <= 2.5f) g_ButtonScale = val;
+        }
+        if (line.find("WindowOpacity=") == 0)
+        {
+            float val = (float)std::stod(line.substr(14));
+            if (val >= 0.2f && val <= 1.0f) g_WindowOpacity = val;
         }
     }
 
     file.close();
 
     char buffer[256];
-    sprintf_s(buffer, "Loaded [%dx%d]: Deposit(%d,%d) Sort(%d,%d) Chest(%d,%d)", 
+    sprintf_s(buffer, "Loaded [%dx%d]: Deposit(%d,%d) Sort(%d,%d) Chest(%d,%d)",
               g_CurrentResWidth, g_CurrentResHeight,
               g_DepositX, g_DepositY, g_SortX, g_SortY, g_ChestX, g_ChestY);
     APIDefs->Log(LOGL_INFO, "MysticClicker", buffer);
@@ -726,7 +746,9 @@ void SaveButtonPositions()
     file << "CaptureWinY=" << g_CaptureWinY << "\n";
     file << "CaptureWinW=" << g_CaptureWinW << "\n";
     file << "CaptureWinH=" << g_CaptureWinH << "\n";
-    file << "UIScale=" << g_UIScale << "\n";
+    file << "FontScale=" << g_FontScale << "\n";
+    file << "ButtonScale=" << g_ButtonScale << "\n";
+    file << "WindowOpacity=" << g_WindowOpacity << "\n";
 
     file.close();
     
@@ -1115,8 +1137,26 @@ void CheckResolutionChange()
                     g_CaptureWinH = (float)std::stod(line.substr(12));
                 if (line.find("UIScale=") == 0)
                 {
+                    // Migration from the old single combined scale — seed both, clamped.
                     float val = (float)std::stod(line.substr(8));
-                    if (val >= 0.5f && val <= 3.0f) g_UIScale = val;
+                    if (val < 0.6f) val = 0.6f; else if (val > 2.5f) val = 2.5f;
+                    g_FontScale = val;
+                    g_ButtonScale = val;
+                }
+                if (line.find("FontScale=") == 0)
+                {
+                    float val = (float)std::stod(line.substr(10));
+                    if (val >= 0.6f && val <= 2.5f) g_FontScale = val;
+                }
+                if (line.find("ButtonScale=") == 0)
+                {
+                    float val = (float)std::stod(line.substr(12));
+                    if (val >= 0.6f && val <= 2.5f) g_ButtonScale = val;
+                }
+                if (line.find("WindowOpacity=") == 0)
+                {
+                    float val = (float)std::stod(line.substr(14));
+                    if (val >= 0.2f && val <= 1.0f) g_WindowOpacity = val;
                 }
             }
             file.close();

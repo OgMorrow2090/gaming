@@ -7,6 +7,19 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-19] — Mystic Clicker 3.6.26 — granular Text/Button/Opacity settings
+
+### Changed
+
+- **Settings** — the single "UI scale" slider in the capture window is replaced
+  by three sliders: **Text size** and **Button size** (0.6–2.5), plus
+  **Opacity** (0.2–1.0), matching the granular style of Mystic AI and Mystic
+  Trading. Text size scales the window font; Button size scales the window,
+  buttons, spacing and layout; Opacity sets the capture window background.
+- Old `UIScale` configs migrate — the saved value seeds both Text size and
+  Button size (clamped to 0.6–2.5).
+- Version 3.6.25 → **3.6.26** (`entry.cpp`).
+
 ## [2026-05-19] — Mystic AI 1.1.3 — resizable panel + granular settings
 
 ### Changed

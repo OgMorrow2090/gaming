@@ -34,8 +34,10 @@ extern float g_CaptureWinW;
 extern float g_CaptureWinH;
 extern bool g_ResetWindowsFlag;
 
-// UI scaling (per-resolution, saved in config)
-extern float g_UIScale;
+// UI scaling + opacity (per-resolution, saved in config)
+extern float g_FontScale;      // capture window text size, 0.6 .. 2.5
+extern float g_ButtonScale;    // capture window button/layout size, 0.6 .. 2.5
+extern float g_WindowOpacity;  // capture window background opacity, 0.2 .. 1.0
 
 // Keybind identifiers - Actions
 constexpr const char* DEPOSIT_MATERIALS = "DEPOSIT_MATERIALS";

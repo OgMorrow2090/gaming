@@ -108,11 +108,10 @@ std::string g_copyMsg;
 ImVec4      g_copyMsgCol{1, 1, 1, 1};
 
 // --- Settings auto-expand --------------------------------------------------
-// The Settings header grows the panel so its controls show without scrolling.
-// g_settingsOpen tracks the header across frames; g_settingsExtraH is the
-// height added while it is open (0 when closed). The user's own panel size
-// (g_PanelW/g_PanelH) is never bumped, so SaveSettings() always stores the
-// collapsed size and a normal drag-resize still works.
+// The panel auto-grows its height to fit its content every frame (see
+// DrawPanel), so the Settings header no longer needs to bump a stored size —
+// opening it just adds its controls and the window grows to fit them. These
+// are kept only as a record of whether the header is open across frames.
 bool  g_settingsOpen   = false;
 float g_settingsExtraH = 0.0f;
 
@@ -120,6 +119,13 @@ float g_settingsExtraH = 0.0f;
 ImVec4 g_anchor{0, 0, 0, 0};   // box the panel anchors to (display coords)
 bool   g_reposPanel = false;   // snap the panel to the anchor on its next frame
 bool   g_panelOpen  = true;
+
+// --- On-screen notice ------------------------------------------------------
+// A short instruction the panel shows in place of a result — e.g. when a
+// region-read keybind fires but no region is saved yet. It guarantees the
+// player always sees something happen on screen, not just a spoken hint that
+// may be inaudible. Cleared when a real request starts or the panel closes.
+std::string g_panelNotice;
 
 // --- Book auto-advance watch (render thread only) --------------------------
 // While the watch is ON, Mystic AI re-reads the book region whenever the page
@@ -332,6 +338,7 @@ void ExitToIdle(bool stopRead)
     g_spokenText.clear();
     g_copyHandled.clear();
     g_copyMsg.clear();
+    g_panelNotice.clear();
     CopyText::Reset();
     StopBookWatch();
     if (stopRead) ClaudeVision::Stop();
@@ -352,26 +359,44 @@ void StartCapture()
     std::thread(CaptureWorker).detach();
 }
 
+// Open the region-read panel anchored to a saved rectangle, with a short
+// on-screen notice in place of any result. Shared by the region-read keybinds
+// when no region is saved yet — so a keybind press always shows something.
+void OpenPanelNotice(const std::string& notice)
+{
+    // Anchor near the screen centre — there is no saved box to sit beside.
+    ImGuiIO& io  = ImGui::GetIO();
+    g_anchor     = ImVec4(io.DisplaySize.x * 0.5f - 230.0f,
+                          io.DisplaySize.y * 0.35f, 0.0f, 0.0f);
+    g_reposPanel  = true;
+    g_panelOpen   = true;
+    g_panelNotice = notice;
+    g_mode        = MODE_BOOKPANEL;
+}
+
 // Fire one book-region read and show the book panel. Shared by the first
 // Read-Book press and by the auto-advance when a page turn is detected.
 void FireBookRead()
 {
-    g_anchor     = ImVec4((float)g_BookRegionX, (float)g_BookRegionY,
-                          (float)g_BookRegionW, (float)g_BookRegionH);
-    g_reposPanel = true;
-    g_panelOpen  = true;
-    g_mode       = MODE_BOOKPANEL;
+    g_anchor      = ImVec4((float)g_BookRegionX, (float)g_BookRegionY,
+                           (float)g_BookRegionW, (float)g_BookRegionH);
+    g_reposPanel  = true;
+    g_panelOpen   = true;
+    g_panelNotice.clear();   // a real read replaces any notice
+    g_mode        = MODE_BOOKPANEL;
     ClaudeVision::RequestRegion("Book", BOOK_PROMPT,
                                 g_BookRegionX, g_BookRegionY, g_BookRegionW, g_BookRegionH);
 }
 
 // Read-Book keybind. Toggles book auto-advance: off -> start a book read and
 // arm the watch; on -> disarm it and stop any speech. With no saved region it
-// behaves as before — just a hint.
+// opens the panel with an on-screen instruction, so the press is never silent.
 void StartBookRead()
 {
     if (g_BookRegionW <= 0 || g_BookRegionH <= 0)
     {
+        OpenPanelNotice("No book region saved - drag-select a book page, "
+                        "then press the Book button to save it.");
         if (APIDefs)
             APIDefs->GUI_SendAlert("Mystic AI: no book region saved yet. Drag-select a "
                                    "book page, then click the Book button to save it.");
@@ -399,20 +424,24 @@ void StartBookRead()
 
 // Read the saved TP region. Mirrors the book region but sends @action:overview
 // — the panel then shows the item, its "Used for" line and TP/vendor rows,
-// silently. With no saved region it just speaks a hint.
+// silently. With no saved region it opens the panel with an on-screen
+// instruction so the keybind press is always visibly acknowledged.
 void StartTpRead()
 {
     if (g_TpRegionW <= 0 || g_TpRegionH <= 0)
     {
+        OpenPanelNotice("No TP region saved - drag-select an item, then "
+                        "press 'Save TP region'.");
         ClaudeVision::Speak("No TP region saved yet. Drag-select an item, then "
                             "use Save TP region.");
         return;
     }
-    g_anchor     = ImVec4((float)g_TpRegionX, (float)g_TpRegionY,
-                          (float)g_TpRegionW, (float)g_TpRegionH);
-    g_reposPanel = true;
-    g_panelOpen  = true;
-    g_mode       = MODE_BOOKPANEL;   // same region-read panel mode as the book
+    g_anchor      = ImVec4((float)g_TpRegionX, (float)g_TpRegionY,
+                           (float)g_TpRegionW, (float)g_TpRegionH);
+    g_reposPanel  = true;
+    g_panelOpen   = true;
+    g_panelNotice.clear();   // a real read replaces any notice
+    g_mode        = MODE_BOOKPANEL;   // same region-read panel mode as the book
     ClaudeVision::RequestRegion("Overview", "@action:overview",
                                 g_TpRegionX, g_TpRegionY, g_TpRegionW, g_TpRegionH);
 }
@@ -990,52 +1019,57 @@ void DrawSectionedResult(const std::string& result)
     }
 }
 
+// Auto-sizing panel — measured content height (render thread only).
+//
+// The panel auto-grows its height to fit whatever it draws, so the player
+// never has to drag it taller. The window uses ImGuiWindowFlags_AlwaysAutoResize
+// for the natural fit; the width is pinned to g_PanelW via the size constraints
+// and the height is capped at AUTO_CAP_FRAC of the game window.
+//
+// The variable-height part is the status / answer block, so it is drawn inside
+// a child region. g_answerContentH is that block's natural height as measured
+// last frame: while it fits the budget the child is given that exact height and
+// the whole panel grows to fit it; once it overflows the budget the child is
+// pinned to the budget and gains a scrollbar, so the panel stays capped and the
+// text scrolls. 0 until the first frame is drawn.
+constexpr float AUTO_CAP_FRAC = 0.80f;   // panel height ceiling, fraction of screen
+float g_answerContentH = 0.0f;
+
 void DrawPanel(bool reviewMode)
 {
     ImGuiIO& io = ImGui::GetIO();
     ClaudeVision::State cs = ClaudeVision::GetState();
     bool speaking = ClaudeVision::IsSpeaking();
 
-    // Fresh capture: snap the panel to the box at the saved size. Otherwise the
-    // size is the player's — the window is freely drag-resizable.
+    // Height ceiling — beyond this the panel stays capped and the answer
+    // scrolls instead of pushing the window off-screen.
+    float capH = io.DisplaySize.y * AUTO_CAP_FRAC;
+
+    // Fresh capture: snap the panel to the box. The height is estimated from
+    // last frame's measured answer block (or g_PanelH on the very first open),
+    // so PanelAnchorPos can place the box above/below sensibly; AlwaysAutoResize
+    // then settles the real height on the same frame.
     if (g_reposPanel)
     {
-        ImGui::SetNextWindowPos(PanelAnchorPos(g_PanelW, g_PanelH, io.DisplaySize),
+        float estH = g_answerContentH > 0.0f
+                     ? Mn(g_answerContentH + 220.0f, capH) : g_PanelH;
+        ImGui::SetNextWindowPos(PanelAnchorPos(g_PanelW, estH, io.DisplaySize),
                                 ImGuiCond_Always);
-        ImGui::SetNextWindowSize(ImVec2(g_PanelW, g_PanelH), ImGuiCond_Always);
         ImGui::SetNextWindowFocus();
         g_reposPanel = false;
     }
-    ImGui::SetNextWindowSizeConstraints(ImVec2(300.0f, 200.0f),
-                                        ImVec2(99999.0f, 99999.0f));
+
+    // Pin the width to g_PanelW and cap the height. With AlwaysAutoResize the
+    // window fits its content within these bounds — height auto-grows, width is
+    // fixed, neither axis is drag-resizable.
+    ImGui::SetNextWindowSizeConstraints(ImVec2(g_PanelW, 120.0f),
+                                        ImVec2(g_PanelW, capH));
     ImGui::SetNextWindowBgAlpha(g_PanelOpacity);
 
-    // Settings auto-expand: while the Settings header is open, force the panel
-    // to the larger size so its controls show without scrolling. Done before
-    // Begin() — SetNextWindowSize must precede it.
-    if (g_settingsOpen)
-        ImGui::SetNextWindowSize(ImVec2(g_PanelW, g_PanelH + g_settingsExtraH),
-                                 ImGuiCond_Always);
-
     if (ImGui::Begin("Mystic AI###mai_panel", &g_panelOpen,
-                     ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse))
+                     ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse |
+                     ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize))
     {
-        // Persist a drag-resize once the player releases the window edge. Held
-        // off while Settings is open — the size is forced then, not the
-        // player's, so SaveSettings() always stores the collapsed size.
-        if (!g_settingsOpen)
-        {
-            ImVec2 ws = ImGui::GetWindowSize();
-            float dW = ws.x - g_PanelW, dH = ws.y - g_PanelH;
-            if ((dW > 1.0f || dW < -1.0f || dH > 1.0f || dH < -1.0f)
-                && !ImGui::IsMouseDown(ImGuiMouseButton_Left))
-            {
-                g_PanelW = ws.x;
-                g_PanelH = ws.y;
-                SaveSettings();
-            }
-        }
-
         ImGui::SetWindowFontScale(g_FontScale);
 
         float bsz  = 26.0f * g_ButtonScale;
@@ -1051,7 +1085,6 @@ void DrawPanel(bool reviewMode)
         const ImU32 COL_LEGY  = IM_COL32(150, 112,  40, 235);
         const ImU32 COL_TPRG  = IM_COL32( 56, 110, 120, 235);
         const ImU32 COL_STOP  = IM_COL32(160,  60,  60, 235);
-        const ImU32 COL_CLOSE = IM_COL32( 72,  76,  84, 235);
 
         // --- action buttons, sitting right at the box ---
         // Drawn ABOVE the result so the mouse lands on the buttons, not the
@@ -1141,15 +1174,31 @@ void DrawPanel(bool reviewMode)
         }
 
         ImGui::Spacing();
-        if (ActionButton(nullptr, "Close", "Close this panel.",
-                         COL_CLOSE, 96.0f * g_ButtonScale, btnH))
-            g_panelOpen = false;
-
-        ImGui::Spacing();
         ImGui::Separator();
         ImGui::Spacing();
 
         // --- status / answer ---
+        // The answer is the only variable-height part of the panel, so it is
+        // drawn inside a child region. The budget is the height left under the
+        // cap once the buttons above and the Settings block below are
+        // accounted for. While last frame's measured answer fits the budget the
+        // child is sized to it exactly (so the panel grows to fit); once it
+        // overflows the child is pinned to the budget and scrolls. When the
+        // Settings header is open its controls draw below the child, so more
+        // height is reserved for them — keeping the open block clear of the cap.
+        // g_settingsExtraH already carries the g_FontScale factor.
+        float reserveBelow = 64.0f * g_FontScale
+                             + (g_settingsOpen ? g_settingsExtraH : 0.0f);
+        float budget = capH - ImGui::GetCursorPosY() - reserveBelow;
+        if (budget < 80.0f) budget = 80.0f;
+        bool  overflow   = g_answerContentH > budget;
+        float childH     = overflow
+                           ? budget
+                           : (g_answerContentH > 0.0f ? g_answerContentH : budget);
+        ImGui::BeginChild("##mai_answer", ImVec2(0.0f, childH), false,
+                          overflow ? 0 : ImGuiWindowFlags_NoScrollbar);
+        float answerY0 = ImGui::GetCursorPosY();
+
         if (cs == ClaudeVision::State::Waiting)
         {
             // Animated dots, no digits — a counting number looked like a
@@ -1234,16 +1283,28 @@ void DrawPanel(bool reviewMode)
             ImGui::TextColored(ImVec4(1.0f, 0.45f, 0.45f, 1.0f),
                 "%s", ClaudeVision::GetResult().c_str());
         }
+        else if (!g_panelNotice.empty())
+        {
+            // A region-read keybind fired with nothing saved — show the
+            // instruction on screen so the press is never silent.
+            ImGui::TextColored(ImVec4(1.0f, 0.82f, 0.2f, 1.0f),
+                "%s", g_panelNotice.c_str());
+        }
         else
         {
             ImGui::TextDisabled("Idle.");
         }
 
+        // Measure how tall the answer drew this frame (cursor delta within the
+        // child) so next frame can size — or cap and scroll — the child to fit.
+        g_answerContentH = ImGui::GetCursorPosY() - answerY0
+                           + ImGui::GetStyle().WindowPadding.y * 2.0f;
+        ImGui::EndChild();
+
         // --- settings ---
-        // Opening this header grows the panel; closing it shrinks it back. The
-        // open/closed state is tracked across frames so the size change is
-        // applied (and undone) by the SetNextWindowSize above. The extra height
-        // tracks the Text-size slider so the block always clears the window.
+        // The Settings header (and its open controls) draw below the answer
+        // child; the panel auto-resizes to fit them, so opening Settings just
+        // grows the window — no stored size to bump any more.
         ImGui::Spacing();
         bool settingsOpen = ImGui::CollapsingHeader("Settings###mai_settings");
         g_settingsExtraH  = settingsOpen ? 210.0f * g_FontScale : 0.0f;
@@ -1265,7 +1326,7 @@ void DrawPanel(bool reviewMode)
             ImGui::SetNextItemWidth(-1.0f);
             ImGui::SliderFloat("##mai_opacity", &g_PanelOpacity, 0.2f, 1.0f, "%.2f");
             save |= ImGui::IsItemDeactivatedAfterEdit();
-            ImGui::TextDisabled("Drag the panel's edge to resize it.");
+            ImGui::TextDisabled("The panel grows to fit its text automatically.");
 
             if (g_BookRegionW > 0)
             {

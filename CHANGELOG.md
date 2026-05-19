@@ -7,6 +7,28 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-19] — Mystic AI 1.1.7 — auto-sizing panel
+
+### Changed
+
+- **The results panel now sizes itself.** It auto-grows in height to fit
+  whatever it shows — long Research write-ups no longer come up cramped, and
+  there is nothing to drag taller. Growth is capped at 80% of the game window;
+  past that the panel holds its height and the text area scrolls. The Settings
+  header still composes with this — opening it just grows the panel to fit.
+- **The redundant "Close Panel" button is gone.** The panel's window close (X)
+  and the Esc key already close it, so the extra button has been removed.
+
+### Fixed
+
+- **The TP Region keybind always shows feedback now.** Pressing it with no TP
+  region saved used to do nothing visible (only a spoken hint, which may be
+  inaudible). It now opens the panel with a clear on-screen instruction —
+  "No TP region saved - drag-select an item, then press 'Save TP region'." —
+  and with a region saved it opens the panel and shows the overview progress as
+  before. The Read-Book keybind got the same treatment for the no-book-region
+  case, so neither region keybind can ever silently do nothing.
+
 ## [2026-05-19] — Mystic AI 1.1.6 — book auto-advance, favourites, colour research
 
 ### Added

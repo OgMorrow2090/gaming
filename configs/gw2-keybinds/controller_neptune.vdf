@@ -2,7 +2,7 @@
 {
 	"version"		"3"
 	"revision"		"2413"
-	"title"		"Guild Wars 2 - Og v23.0"
+	"title"		"Guild Wars 2 - Og v24.0"
 	"description"		"#SettingsController_AutosaveDescription"
 	"creator"		"76561198025059559"
 	"progenitor"		"usercloud://1284210/controller_neptune"
@@ -2323,7 +2323,8 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press HOME, Home Instance Portal, , "
+							"binding"		"key_press LEFT_CONTROL, Event Timers, , "
+							"binding"		"key_press F10, Event Timers, , "
 						}
 					}
 				}
@@ -2508,23 +2509,6 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Event Timers, , "
-							"binding"		"key_press F10, Event Timers, , "
-						}
-					}
-				}
-				"disabled_activators"
-				{
-				}
-			}
-			"touch_menu_button_13"
-			{
-				"activators"
-				{
-					"Full_Press"
-					{
-						"bindings"
-						{
 							"binding"		"key_press LEFT_CONTROL, Organizer, , "
 							"binding"		"key_press F9, Organizer, , "
 						}
@@ -2534,7 +2518,7 @@
 				{
 				}
 			}
-			"touch_menu_button_14"
+			"touch_menu_button_13"
 			{
 				"activators"
 				{
@@ -2551,7 +2535,7 @@
 				{
 				}
 			}
-			"touch_menu_button_15"
+			"touch_menu_button_14"
 			{
 				"activators"
 				{
@@ -2568,7 +2552,7 @@
 				{
 				}
 			}
-			"touch_menu_button_16"
+			"touch_menu_button_15"
 			{
 				"activators"
 				{
@@ -2583,8 +2567,7 @@
 				"disabled_activators"
 				{
 				}
-			}
-		}
+			}		}
 		"settings"
 		{
 			"layer"		"1"
@@ -3159,6 +3142,13 @@
 							"binding"		"key_press M, Map, , "
 						}
 					}
+					"Double_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press HOME, Home Instance Portal, , "
+						}
+					}
 					"Long_Press"
 					{
 						"bindings"
@@ -3372,9 +3362,7 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press LEFT_CONTROL, Mystic AI TP Region, , "
-							"binding"		"key_press LEFT_SHIFT, Mystic AI TP Region, , "
-							"binding"		"key_press F10, Mystic AI TP Region, , "
+							"binding"		"key_press KEYPAD_0, Mystic AI TP Region, , "
 						}
 					}
 					"Double_Press"

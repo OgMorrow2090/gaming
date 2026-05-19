@@ -1927,8 +1927,8 @@
 	},
 	{
 		"Alt": false,
-		"Code": 68,
-		"Ctrl": true,
+		"Code": 0,
+		"Ctrl": false,
 		"Identifier": "MYSTIC_AI_READ",
 		"Passthrough": false,
 		"Shift": false,
@@ -1936,11 +1936,11 @@
 	},
 	{
 		"Alt": false,
-		"Code": 68,
-		"Ctrl": true,
+		"Code": 82,
+		"Ctrl": false,
 		"Identifier": "MYSTIC_AI_TP_REGION",
 		"Passthrough": false,
-		"Shift": true,
+		"Shift": false,
 		"Type": 1
 	}
 ]

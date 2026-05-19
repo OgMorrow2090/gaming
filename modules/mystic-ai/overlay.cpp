@@ -131,12 +131,29 @@ std::string g_panelNotice;
 // While the watch is ON, Mystic AI re-reads the book region whenever the page
 // turns. It detects a turn by capturing the region every ~2s on a worker
 // thread, downscaling it to a 32x32 thumbnail and comparing a cheap checksum
-// against the last page. A second Read-Book press, Esc, or any new drag-select
-// capture turns the watch OFF. The watch only ticks while no read is in flight
-// and no speech is playing — so it never interrupts the current page.
+// against the last-read page's baseline. A second Read-Book press, Esc, or any
+// new drag-select capture turns the watch OFF.
+//
+// Sampling is HARD-GATED to the panel being closed and idle (g_mode ==
+// MODE_IDLE) with no read in flight and no speech playing. Otherwise the back-
+// buffer grab would include Mystic AI's own results panel sitting over the
+// region — and the panel's content changes as the read completes, which used
+// to drive false "page turned" hits and a re-read loop. With the panel closed
+// the sample sees only the game. The baseline is taken fresh the moment
+// sampling resumes after any such gap, so a closed-then-reopened panel never
+// leaves a stale, panel-polluted baseline behind.
+//
+// A turn fires only on "changed AND now stable": a sample that differs from
+// the baseline by more than BOOK_SUM_THRESHOLD is held as a candidate, and the
+// read fires only once the NEXT sample confirms that candidate is steady
+// (within BOOK_STABLE_TOL). A real page-turn settles; transient cursor /
+// animation noise flickers and is discarded. After firing, the watch
+// re-baselines to the new page so it does not immediately fire again.
 bool                 g_bookWatch     = false;  // watch armed
 bool                 g_bookHaveSum   = false;  // a baseline checksum is stored
-uint32_t             g_bookSum       = 0;      // last page's thumbnail checksum
+uint32_t             g_bookSum       = 0;      // last-read page's thumbnail checksum
+bool                 g_bookHaveCand  = false;  // a changed-page candidate is pending
+uint32_t             g_bookCandSum   = 0;      // the candidate's checksum
 double               g_bookNextTickMs = 0.0;   // earliest next sample (GetTime ms)
 std::mutex           g_bookMtx;                // guards the watch-worker handoff
 bool                 g_bookSampling  = false;  // a watch sample is in flight
@@ -145,10 +162,16 @@ bool                 g_bookSampleOk  = false;
 uint32_t             g_bookSampleSum = 0;
 
 // Checksum threshold — the 32x32 thumbnail sum is in [0, ~261000]. A turned
-// page rewrites the brightness of many cells (a diff in the thousands), while a
-// flickering cursor or antialiasing noise nudges only a few cells. ~1500 sits
-// well clear of that noise floor without missing a real page turn.
-constexpr uint32_t BOOK_SUM_THRESHOLD = 1500;
+// page rewrites the brightness of many cells, while a flickering cursor or
+// antialiasing noise nudges only a few. ~2500 sits well clear of that noise
+// floor; combined with the changed-and-stable rule below it will not trip on
+// transient flicker. A faint turn that slips under it is harmless — the player
+// just presses Read-Book again.
+constexpr uint32_t BOOK_SUM_THRESHOLD = 2500;
+// A genuinely settled page reads near-identically twice in a row; a real turn
+// that is still mid-animation does not. Two samples within this tolerance count
+// as "stable".
+constexpr uint32_t BOOK_STABLE_TOL    = 500;
 constexpr double   BOOK_TICK_MS       = 2000.0;
 
 inline float Mn(float a, float b) { return a < b ? a : b; }
@@ -318,16 +341,24 @@ void BookWatchWorker(int x, int y, int w, int h)
 // watch is no longer armed.
 void StopBookWatch()
 {
-    g_bookWatch   = false;
-    g_bookHaveSum = false;
-    g_bookSum     = 0;
+    g_bookWatch    = false;
+    g_bookHaveSum  = false;
+    g_bookSum      = 0;
+    g_bookHaveCand = false;
+    g_bookCandSum  = 0;
     std::lock_guard<std::mutex> lk(g_bookMtx);
     g_bookSampleReady = false;
 }
 
 // Leave any active mode. The frozen texture is released at the top of the next
 // frame, never mid-frame — this frame's draw list may still reference it.
-void ExitToIdle(bool stopRead)
+//
+// stopWatch == false leaves an armed book auto-advance watch running: closing
+// the results panel with its X (or it auto-closing) just dismisses the panel,
+// and the watch then samples the book region cleanly with no panel over it —
+// which is exactly what makes page-turn detection reliable. An explicit cancel
+// (Esc, a fresh keybind press, a new capture) passes stopWatch == true.
+void ExitToIdle(bool stopRead, bool stopWatch)
 {
     g_mode        = MODE_IDLE;
     g_dragging    = false;
@@ -340,8 +371,8 @@ void ExitToIdle(bool stopRead)
     g_copyMsg.clear();
     g_panelNotice.clear();
     CopyText::Reset();
-    StopBookWatch();
-    if (stopRead) ClaudeVision::Stop();
+    if (stopWatch) StopBookWatch();
+    if (stopRead)  ClaudeVision::Stop();
 }
 
 void StartCapture()
@@ -410,11 +441,14 @@ void StartBookRead()
         return;
     }
     FireBookRead();
-    // Arm the watch; the first sample is delayed so it lands after this page's
-    // read and narration, not during it.
+    // Arm the watch. Sampling stays suspended (panel open + read in flight)
+    // until the panel is closed and the read / narration finish; AdvanceBook-
+    // Watch then takes a fresh baseline from a clean, panel-free frame.
     g_bookWatch      = true;
     g_bookHaveSum    = false;
     g_bookSum        = 0;
+    g_bookHaveCand   = false;
+    g_bookCandSum    = 0;
     g_bookNextTickMs = ImGui::GetTime() * 1000.0 + BOOK_TICK_MS;
     {
         std::lock_guard<std::mutex> lk(g_bookMtx);
@@ -448,8 +482,10 @@ void StartTpRead()
 
 // Drain the keybind command. The Read command just voices the panel and never
 // disturbs a mode. A second Read-Book press toggles the book watch off even
-// while the book panel is up. Otherwise a keybind press while a mode is active
-// cancels it; from idle it starts a fresh capture / region read.
+// while the book panel is up. The TP-region keybind always (re)starts its
+// overview read — it is a dedicated action, not a cancel. Otherwise a keybind
+// press while a mode is active cancels it; from idle it starts a fresh capture
+// or region read.
 void ProcessCommand()
 {
     int c = g_cmd.exchange(CMD_NONE);
@@ -468,10 +504,24 @@ void ProcessCommand()
         StartBookRead();   // toggles the watch off and stops speech
         return;
     }
+    // The TP-region keybind is a re-read action, not a cancel: it must always
+    // start a fresh overview of the saved rectangle, even with a panel already
+    // open or a prior read's speech still playing. Handled before the generic
+    // "any press cancels the mode" rule so it is never swallowed. Stop any
+    // in-flight read / speech first so the new read does not talk over it.
+    if (c == CMD_TPREGION)
+    {
+        if (ClaudeVision::GetState() == ClaudeVision::State::Waiting
+            || ClaudeVision::IsSpeaking())
+            ClaudeVision::Stop();
+        StopBookWatch();   // a TP read ends any book auto-advance
+        StartTpRead();
+        return;
+    }
 
     if (g_mode != MODE_IDLE)
     {
-        ExitToIdle(true);
+        ExitToIdle(true, true);   // an explicit keybind cancel ends the watch
         return;
     }
     if (ClaudeVision::GetState() == ClaudeVision::State::Waiting
@@ -482,7 +532,6 @@ void ProcessCommand()
     }
     if (c == CMD_TOGGLE)         StartCapture();
     else if (c == CMD_BOOK)      StartBookRead();
-    else if (c == CMD_TPREGION)  StartTpRead();
 }
 
 // Capturing -> Selecting once the worker delivers the frame.
@@ -501,7 +550,7 @@ void AdvanceCapture()
     if (failed)
     {
         if (APIDefs) APIDefs->GUI_SendAlert("Mystic AI: screen capture failed.");
-        ExitToIdle(false);
+        ExitToIdle(false, true);
         return;
     }
     if (!ready) return;   // worker still running — normally ready within a frame or two
@@ -514,7 +563,7 @@ void AdvanceCapture()
     if (!BuildFrozenTexture(px, w, h))
     {
         if (APIDefs) APIDefs->GUI_SendAlert("Mystic AI: could not build the capture texture.");
-        ExitToIdle(false);
+        ExitToIdle(false, true);
         return;
     }
     // Keep the pixels — FinishSelection crops them.
@@ -528,15 +577,45 @@ void AdvanceCapture()
     g_mode     = MODE_SELECTING;
 }
 
-// Book auto-advance tick (render thread). While the watch is armed: once the
-// current page's read and narration are finished, sample the book region every
-// ~2s on a worker thread; a checksum jump means the page turned, so fire a
-// fresh book read. Cheap and a no-op while the watch is off.
+// Book auto-advance tick (render thread). While the watch is armed and Mystic
+// AI is fully idle — panel closed, no read in flight, no speech — it samples
+// the book region every ~2s on a worker thread and fires a fresh book read
+// only when the region has genuinely turned to a NEW, STABLE page. Cheap and a
+// no-op while the watch is off.
+//
+// Why the hard idle gate: CaptureBackBufferRegion grabs the D3D back buffer,
+// which includes Mystic AI's own results panel. If the panel sits over the
+// book region its changing content (status text -> answer text, fade-in)
+// pollutes every sample and used to drive a false "page turned" re-read loop.
+// Sampling only while the panel is closed removes that whole class of noise.
+//
+// Why changed-AND-stable: a real page-turn settles and then reads steady;
+// transient cursor / animation noise flickers. A sample that differs from the
+// baseline is held as a candidate, and the read fires only once the next
+// sample confirms the candidate is steady.
 void AdvanceBookWatch()
 {
     if (!g_bookWatch) return;
 
-    // First, drain a finished worker sample.
+    // Hard gate: only sample while the panel is closed and nothing is in
+    // flight. While suspended, drop the baseline and any candidate so sampling
+    // re-baselines from a clean, panel-free frame the moment it resumes.
+    bool canSample = (g_mode == MODE_IDLE)
+                     && ClaudeVision::GetState() != ClaudeVision::State::Waiting
+                     && !ClaudeVision::IsSpeaking();
+    if (!canSample)
+    {
+        g_bookHaveSum  = false;
+        g_bookHaveCand = false;
+        // Hold the first post-resume sample off by one tick so the baseline is
+        // taken after the panel is fully gone, never mid-close.
+        g_bookNextTickMs = ImGui::GetTime() * 1000.0 + BOOK_TICK_MS;
+        std::lock_guard<std::mutex> lk(g_bookMtx);
+        g_bookSampleReady = false;   // discard a sample taken across the gate
+        return;
+    }
+
+    // Drain a finished worker sample.
     bool haveSample = false, sampleOk = false;
     uint32_t sampleSum = 0;
     {
@@ -553,32 +632,50 @@ void AdvanceBookWatch()
     {
         if (!g_bookHaveSum)
         {
-            // First clean sample after a read — this is the baseline page.
-            g_bookSum     = sampleSum;
-            g_bookHaveSum = true;
+            // First clean sample after sampling (re-)started — the baseline.
+            g_bookSum      = sampleSum;
+            g_bookHaveSum  = true;
+            g_bookHaveCand = false;
         }
         else
         {
             uint32_t diff = (sampleSum > g_bookSum)
                             ? sampleSum - g_bookSum : g_bookSum - sampleSum;
-            if (diff > BOOK_SUM_THRESHOLD)
+            if (diff <= BOOK_SUM_THRESHOLD)
             {
-                // The page turned — read the new page and rebaseline once its
-                // read settles (g_bookHaveSum reset below).
-                g_bookSum     = sampleSum;
-                g_bookHaveSum = false;
-                FireBookRead();
+                // Still the baseline page — any pending candidate was just
+                // flicker that reverted, so drop it.
+                g_bookHaveCand = false;
+            }
+            else if (!g_bookHaveCand)
+            {
+                // First sample that differs — hold it as a candidate and wait
+                // for the next sample to confirm the page has settled.
+                g_bookHaveCand = true;
+                g_bookCandSum  = sampleSum;
+            }
+            else
+            {
+                uint32_t cdiff = (sampleSum > g_bookCandSum)
+                                 ? sampleSum - g_bookCandSum
+                                 : g_bookCandSum - sampleSum;
+                if (cdiff <= BOOK_STABLE_TOL)
+                {
+                    // Changed and now steady — a real page turn. Read it and
+                    // re-baseline to the new page so it does not fire again.
+                    g_bookSum      = sampleSum;
+                    g_bookHaveCand = false;
+                    FireBookRead();
+                    return;   // panel is up now — next tick the gate suspends
+                }
+                // Still moving (mid page-turn animation) — track the latest.
+                g_bookCandSum = sampleSum;
             }
         }
     }
 
-    // Then, post a fresh sample — but only while nothing is in flight: no read
-    // pending, no speech playing, no sample worker already running, and the
-    // tick interval elapsed. This keeps the watch from re-reading mid-page.
-    if (ClaudeVision::GetState() == ClaudeVision::State::Waiting
-        || ClaudeVision::IsSpeaking())
-        return;
-
+    // Post a fresh sample once the tick interval has elapsed and no sample
+    // worker is already running.
     double nowMs = ImGui::GetTime() * 1000.0;
     if (nowMs < g_bookNextTickMs) return;
 
@@ -606,7 +703,7 @@ void FinishSelection(ImVec2 disp)
     ImVec2 b(Mx(g_dragA.x, g_dragB.x), Mx(g_dragA.y, g_dragB.y));
 
     // A stray click (no real drag) cancels the overlay.
-    if (b.x - a.x < 8.0f || b.y - a.y < 8.0f) { ExitToIdle(false); return; }
+    if (b.x - a.x < 8.0f || b.y - a.y < 8.0f) { ExitToIdle(false, true); return; }
 
     // Display coords -> frame pixel coords.
     float sx = disp.x > 0 ? (float)g_srvW / disp.x : 1.0f;
@@ -618,14 +715,14 @@ void FinishSelection(ImVec2 disp)
     if (x1 > g_srvW) x1 = g_srvW;
     if (y1 > g_srvH) y1 = g_srvH;
     int cw = x1 - x0, ch = y1 - y0;
-    if (cw < 8 || ch < 8) { ExitToIdle(false); return; }
+    if (cw < 8 || ch < 8) { ExitToIdle(false, true); return; }
 
     std::vector<uint8_t> crop((size_t)cw * ch * 3);
     {
         std::lock_guard<std::mutex> lk(g_capMtx);
         if (g_capW <= 0 || (int)g_capPixels.size() < g_capW * g_capH * 3)
         {
-            ExitToIdle(false);
+            ExitToIdle(false, true);
             return;
         }
         for (int yy = 0; yy < ch; ++yy)
@@ -1199,7 +1296,16 @@ void DrawPanel(bool reviewMode)
                           overflow ? 0 : ImGuiWindowFlags_NoScrollbar);
         float answerY0 = ImGui::GetCursorPosY();
 
-        if (cs == ClaudeVision::State::Waiting)
+        if (!g_panelNotice.empty())
+        {
+            // A region-read keybind fired with nothing saved — show the
+            // instruction on screen so the press is never silent. Checked
+            // first so it always wins over a stale Done / Error result left by
+            // an earlier read (the keybind handlers do not reset that state).
+            ImGui::TextColored(ImVec4(1.0f, 0.82f, 0.2f, 1.0f),
+                "%s", g_panelNotice.c_str());
+        }
+        else if (cs == ClaudeVision::State::Waiting)
         {
             // Animated dots, no digits — a counting number looked like a
             // countdown. The daemon normally replies within a few seconds.
@@ -1283,13 +1389,6 @@ void DrawPanel(bool reviewMode)
             ImGui::TextColored(ImVec4(1.0f, 0.45f, 0.45f, 1.0f),
                 "%s", ClaudeVision::GetResult().c_str());
         }
-        else if (!g_panelNotice.empty())
-        {
-            // A region-read keybind fired with nothing saved — show the
-            // instruction on screen so the press is never silent.
-            ImGui::TextColored(ImVec4(1.0f, 0.82f, 0.2f, 1.0f),
-                "%s", g_panelNotice.c_str());
-        }
         else
         {
             ImGui::TextDisabled("Idle.");
@@ -1363,7 +1462,9 @@ void DrawPanel(bool reviewMode)
     ImGui::End();
 
     if (!g_panelOpen)
-        ExitToIdle(false);   // panel dismissed — leave any speech running
+        ExitToIdle(false, false);   // panel dismissed — leave any speech AND any
+                                    // armed book watch running; the watch then
+                                    // samples cleanly with no panel over the region
 }
 
 }  // namespace
@@ -1390,7 +1491,7 @@ void RenderMysticAI()
     if (g_escConsumed.exchange(false))
     {
         if (g_mode != MODE_IDLE)
-            ExitToIdle(true);          // ExitToIdle stops the book watch too
+            ExitToIdle(true, true);    // Esc is an explicit cancel — ends the watch
         else
         {
             if (g_bookWatch) StopBookWatch();

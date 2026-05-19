@@ -7,6 +7,35 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-19] — Mystic AI 1.1.8 — TP-region + book auto-advance fixes
+
+### Fixed
+
+- **The TP Region keybind reliably reads now.** Pressing it used to do nothing
+  visible — a brief flicker, no Claude request, no panel — whenever a results
+  panel was already open or a previous read's speech was still playing: the
+  press was swallowed by the generic "any keybind cancels the current mode"
+  rule. The TP-region keybind is a dedicated re-read action, so it is now
+  handled before that rule and always (re)starts a fresh `@action:overview` of
+  the saved rectangle — opening the panel, capturing the region and showing the
+  reading progress, mirroring the Read-Book keybind. Any in-flight read or
+  speech is stopped first so the new read does not talk over it. The
+  no-TP-region on-screen notice is reliable too: the panel notice now wins over
+  any stale result left by an earlier read.
+- **Book auto-advance no longer re-fires reads in a loop.** A single book read
+  could trigger two or three more reads a few seconds apart — speech going
+  start / stop / start / stop. The page-turn watch was sampling the book region
+  while Mystic AI's own results panel sat over it; the panel's changing content
+  (status text → answer text) polluted every checksum and read as a "page
+  turn". The watch now samples **only while the panel is closed and Mystic AI
+  is fully idle** — no read in flight, no speech — so the back-buffer grab sees
+  only the game. It also fires a re-read only on a *changed-and-now-stable*
+  page: a sample that differs from the last-read page is held as a candidate
+  and confirmed by the next sample before the read fires, so transient cursor /
+  animation flicker is rejected. After firing it re-baselines to the new page.
+  Closing the panel with its X leaves an armed watch running (so it can sample
+  cleanly); Esc, a fresh keybind press or a new drag-select still stop it.
+
 ## [2026-05-19] — Mystic AI 1.1.7 — auto-sizing panel
 
 ### Changed

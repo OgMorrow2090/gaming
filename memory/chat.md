@@ -1257,3 +1257,47 @@ this restores the activity log.
 - User testing whether the black screen recurs after regular TV watching (no Moonlight)
 - ~~Login flicker verification at 150% DPI~~ — confirmed fixed 2026-05-14
 - ~~Steam Controller delivery~~ — delivered 2026-05-14, in use
+
+## 2026-05-20 — controller-wake-tv first-wake fix + Mystic Clicker capture thumbnails
+
+Fixed the long-standing "TV doesn't switch on first wake after a bazzite reboot" gap, then built capture-thumbnail-on-hover into Mystic Clicker, iterating size + aspect from user testing, plus a Clear-All-Captures action.
+
+### What was done
+
+- **controller-wake-tv first-wake gap fixed.** `ever_seen_data` and `was_silent` both initialised `False`, so on a fresh boot with the controller asleep, the first Steam-button wake was always swallowed (no prior data → silence-detection never armed → switch gate never fired). Init both `True` so the very first hidraw0 data fires the switch; `last_trigger=0.0` keeps `COOLDOWN` satisfied until then. Memory note `cec-controller-wake-script.md` updated to mark the gap fixed.
+- **Mystic Clicker — capture-slot thumbnails on hover.** When a capture button fires, grab a back-buffer region around the click point and save as `addons/MysticClicker/thumb-<slot>-<W>x<H>.bmp`. Hovering the slot shows the image in the tooltip with a red marker at the click point — visual reminder of which "Accept N" is which when many slots share names. Iterated through user testing:
+  - **3.6.28**: initial 128×128 square thumbnails on hover
+  - **3.6.29**: doubled to 256×256
+  - **3.6.30**: 384×192 wide rectangle (2:1) — matches GW2 dialog button geometry
+  - **3.6.31**: 768×320 (2.4:1) + adaptive display scale — caps at 2× but shrinks to fit ~70%×60% of game window, Deck-safe
+  - **3.6.32**: fat filled red dot (radius 22 with white outline ring) instead of thin `+`, plus "Clear all captures" in Settings with confirm modal; new `Thumbs::DeleteAll()` enumerates and unlinks `thumb-*.bmp`
+  - **3.6.33**: confirm buttons relabeled "Yes" / "No" (matched widths)
+- **Deploy script cleanup.** `deploy-mystic-clicker-dll.sh` and `deploy-nexus-config.sh` still listed the apple-tv / deck-bazzite addons paths from the 2026-05-12 multi-install consolidation — `set -e` made them hard-fail on the first non-existent target. Both scripts now point only at the live two targets (bazzite + deck-native).
+- **Vendored ImGui caveat learned.** `ImGui::GetMainViewport()` doesn't exist in this tree's ImGui copy; CI caught it. Switched to `GetIO().DisplaySize`-based centring. Saved as `memory/vendored-imgui-no-main-viewport.md`.
+
+### Deployed (bazzite `Og@172.16.100.212` + Deck `deck@172.16.100.95`)
+
+| What | Version / hash |
+| --- | --- |
+| `~/bin/controller-wake-tv.py` (bazzite only — host-side wake script) | md5 `9e9f2646` |
+| `addons/mystic-clicker.dll` | 3.6.33 — sha `035caed3` |
+
+### Repo changes
+
+- `modules/mystic-clicker/capture-thumbs.{h,cpp}` (NEW), `capture-ui.cpp`, `entry.cpp`
+- `mystic-clicker.vcxproj` — added the new `.cpp` to `ClCompile`
+- `configs/bazzite/controller-wake-tv.py`
+- `scripts/deploy-{mystic-clicker-dll,nexus-config}.sh`
+- `CHANGELOG.md`
+- `memory/cec-controller-wake-script.md` (gap marked fixed), `memory/vendored-imgui-no-main-viewport.md` (new)
+
+### Operational gotchas (worth knowing next session)
+
+- **`deploy-mystic-clicker-dll.sh` can race a just-finished CI run.** Its "latest successful" lookup (`gh run list --status=success`) doesn't see `in_progress` runs, so if CI just transitioned in-progress → success the script can pick the PREVIOUS success and deploy a stale DLL. Workaround: pass the run ID explicitly (`./scripts/deploy-mystic-clicker-dll.sh <run-id>`). Proper fix (deferred): look up the success run for HEAD's SHA instead of the workflow's most recent overall success.
+- **Nexus has no `Textures` release API.** For texture invalidation (re-capture replacing a file on disk), bump a per-slot version counter and use a fresh identifier — old textures stay cached but orphaned. Pattern is documented in `modules/mystic-clicker/capture-thumbs.cpp`.
+
+### Open / next session
+
+- Possible DPI / cursor-hotspot offset on the capture-click marker — user noted the red dot appears slightly down-left of where they think the cursor tip was. Offered to dump client-rect vs back-buffer dims to diagnose; user said "fine as is" for now.
+- Apple-TV / deck-bazzite multi-install profile dirs are gone; if those profiles ever return, re-add their entries to the deploy scripts.
+- **Conditional `pkill steamwebhelper` in controller-wake-tv** — user raised mid-cleanup: currently the script kills steamwebhelper on every Steam-button press to clear the CEF black-screen overlay, but only needs it sometimes. Wants a detect-then-conditionally-restart logic. To engage next.

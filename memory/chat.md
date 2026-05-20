@@ -1301,3 +1301,16 @@ Fixed the long-standing "TV doesn't switch on first wake after a bazzite reboot"
 - Possible DPI / cursor-hotspot offset on the capture-click marker — user noted the red dot appears slightly down-left of where they think the cursor tip was. Offered to dump client-rect vs back-buffer dims to diagnose; user said "fine as is" for now.
 - Apple-TV / deck-bazzite multi-install profile dirs are gone; if those profiles ever return, re-add their entries to the deploy scripts.
 - **Conditional `pkill steamwebhelper` in controller-wake-tv** — user raised mid-cleanup: currently the script kills steamwebhelper on every Steam-button press to clear the CEF black-screen overlay, but only needs it sometimes. Wants a detect-then-conditionally-restart logic. To engage next.
+
+### Post-cleanup follow-up (same day, controller-wake-tv tuning)
+
+After the cleanup commit, addressed the open item above plus an in-hand-press case the user raised:
+
+- **`f746eec`: conditional steamwebhelper restart** — kill is now gated on `SWH_RESTART_THRESHOLD = 3 h` (oldest steamwebhelper's `etimes` from `ps`). Under the threshold the script logs `skipping restart` and only the TV-switch fires. Real "is the screen black?" framebuffer detection was investigated and rejected: gamescope holds DRM master so `ffmpeg -f kmsgrab` returns `Failed to open DRM device` even with sudo; no Wayland-screencopy tool (`grim` / `wf-recorder` / `gpu-screen-recorder`) is installed in the bazzite session. Process uptime is the available proxy and correlates with CEF state-bloat.
+- **`bcbc267`: `SILENCE_THRESHOLD` 30s → 3s** — the original CEC-era 30s assumed the controller would be fully asleep. With WebOS it just gates out the in-hand "press Steam to flip TV back" case, because the Steam Controller IMU rate-limits to ~2-3 Hz when stationary but rarely produces 30s gaps. 3s is short enough to arm during a brief natural pause but long enough to suppress false fires during continuous active use. Confirmed working in practice — wake fires on off→on and on press-after-3s-idle; no false fires while continuously held.
+- **In-hand press while holding** (no preceding idle): empirical HID sniff on `/dev/hidraw0` did not isolate the Steam button bit cleanly — either it's filtered by the kernel `hid-steam` driver before reaching userspace or the baseline-vs-press value diff was too noisy across 268-Hz sensor bytes. Proposed three alternatives (drop threshold to 1s / dedicated wake chord in VDF / reuse Mystic AI's R1+Menu chord); user said **"leave as it is"** — current 3s threshold covers his actual use cases.
+
+### Operational gotchas added
+
+- **DRM scanout is unreadable while gamescope is master.** `kmsgrab` (ffmpeg) fails as the regular user *and* via sudo with `Failed to open DRM device`. For any future "what's on the screen?" detection, switching to Wayland screencopy (`grim`) or PipeWire screencast via xdg-desktop-portal is the path — needs `grim` layered onto the atomic image first.
+- **GE-Proton auto-updater is working as designed.** Latest upstream release at session end was **GE-Proton10-34** (2026-03-23) and bazzite has 10-32, 10-33, 10-34 all installed via `scripts/proton-ge-update.sh`. No 10-35 yet despite ~2 month gap — nothing to do; the updater will pick up the next release automatically.

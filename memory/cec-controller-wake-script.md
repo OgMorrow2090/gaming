@@ -5,6 +5,8 @@ metadata:
   type: project
 ---
 
+<!-- markdownlint-disable MD041 MD032 -->
+
 The controller wake script (`~/bin/controller-wake-tv.py` on bazzite) switches the LG TV to bazzite's HDMI input via the **WebOS SSAP API** over the local network when the Steam Controller wakes from sleep.
 
 **Why WebOS instead of CEC:**
@@ -26,6 +28,8 @@ The controller wake script (`~/bin/controller-wake-tv.py` on bazzite) switches t
 - 30-second silence threshold = controller powered off
 - 60-second cooldown between triggers
 - Controller takes ~35 seconds to actually power down after holding Steam button
+
+**steamwebhelper restart is conditional, not unconditional (2026-05-20):** after switching TV input the script can `pkill steamwebhelper` to clear the CEF black-screen overlay (see [[cef-overlay-black-screen-after-stream]]). That kill used to fire on every wake — overkill on short sessions where the overlay can't have accumulated yet, and an annoying ~2 s BPM-UI flicker each time. Now gated on **`SWH_RESTART_THRESHOLD = 3h`**: read the oldest steamwebhelper's age from `ps -eo etimes,comm` and only restart it if the helper has been alive that long. Tune the threshold (or set to 0 for legacy "always restart") at the top of `configs/bazzite/controller-wake-tv.py`. Real "is the screen black" framebuffer detection would be cleaner but gamescope holds DRM master and locks out `kmsgrab` (even with sudo) and no Wayland-screencopy tool (`grim`, `wf-recorder`, `gpu-screen-recorder`) is installed in the bazzite session — uptime is the available proxy that correlates with the actual cause.
 
 **First wake after a bazzite reboot (FIXED 2026-05-20):** previously, the
 `ever_seen_data` and `was_silent` gates both initialised `False`, so a fresh

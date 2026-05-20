@@ -19,6 +19,46 @@ HIDRAW = "/dev/hidraw0"
 SILENCE_THRESHOLD = 30
 COOLDOWN = 60
 
+# Restart steamwebhelper only if the oldest one has been alive longer than
+# this. The CEF black-screen overlay only appears after the Steam helper has
+# accumulated render state over a long session ("when bazzite used a while"),
+# so killing it after every Steam-button wake is overkill — does nothing
+# useful on short sessions and disturbs the BPM UI for ~2 seconds while Steam
+# auto-respawns it. 3 hours is the threshold where the overlay starts showing
+# in practice; tune here if it needs to be tighter or looser. Set to 0 to
+# always restart (legacy behaviour); set very high to never restart.
+#
+# Real framebuffer-pixel "is the screen black" detection would be preferable,
+# but gamescope holds DRM master and locks out kmsgrab (even via sudo) and no
+# screenshot tools (grim / wf-recorder / gpu-screen-recorder) are installed
+# in the bazzite session — so we use this process-uptime heuristic instead,
+# which correlates well with the underlying CEF state-bloat cause.
+SWH_RESTART_THRESHOLD = 3 * 60 * 60   # 3 hours, in seconds
+
+
+def steamwebhelper_uptime_secs():
+    """Return the oldest steamwebhelper process's age in seconds, or 0 if
+    none found. Reads from `ps -eo etimes,comm` — etimes is elapsed-seconds
+    since the process started, the most stable signal across reboots."""
+    try:
+        out = subprocess.run(
+            ["ps", "-eo", "etimes=,comm="],
+            capture_output=True, text=True, timeout=3,
+        ).stdout
+    except Exception:
+        return 0
+    max_age = 0
+    for line in out.splitlines():
+        parts = line.strip().split(None, 1)
+        if len(parts) >= 2 and parts[1] == "steamwebhelper":
+            try:
+                age = int(parts[0])
+                if age > max_age:
+                    max_age = age
+            except ValueError:
+                pass
+    return max_age
+
 async def switch_tv():
     send_magic_packet(TV_MAC)
     for attempt in range(4):
@@ -32,9 +72,27 @@ async def switch_tv():
             syslog.syslog(syslog.LOG_INFO,
                           f"Steam Controller wake — switched TV to {TV_INPUT} via WebOS (attempt {attempt + 1})")
             await asyncio.sleep(3)
-            subprocess.run(["pkill", "steamwebhelper"],
-                           capture_output=True, timeout=5)
-            syslog.syslog(syslog.LOG_INFO, "Killed steamwebhelper to clear CEF overlay (Steam auto-restarts it)")
+
+            # Conditional CEF-overlay clear: only restart steamwebhelper if it
+            # has been alive long enough that the black-screen overlay is
+            # plausibly accumulating. Short sessions skip it.
+            age = steamwebhelper_uptime_secs()
+            age_h, age_m = age // 3600, (age % 3600) // 60
+            thr_h = SWH_RESTART_THRESHOLD // 3600
+            if age >= SWH_RESTART_THRESHOLD:
+                subprocess.run(["pkill", "steamwebhelper"],
+                               capture_output=True, timeout=5)
+                syslog.syslog(syslog.LOG_INFO,
+                    f"steamwebhelper alive {age_h}h{age_m}m "
+                    f"(>= {thr_h}h threshold) — restarted to clear "
+                    f"accumulated CEF overlay state")
+            elif age > 0:
+                syslog.syslog(syslog.LOG_INFO,
+                    f"steamwebhelper alive {age_h}h{age_m}m "
+                    f"(< {thr_h}h threshold) — skipping restart")
+            else:
+                syslog.syslog(syslog.LOG_INFO,
+                    "no steamwebhelper process found — nothing to restart")
             return
         except Exception as e:
             syslog.syslog(syslog.LOG_WARNING,

@@ -33,3 +33,4 @@ Index of memory entries for this repo. Each line points at one file in `memory/`
 - [Controller wake TV script](cec-controller-wake-script.md) — WebOS network API replaces CEC for TV input switching; direct HDMI has no CEC adapter; silence-detection on hidraw0 unchanged
 - [Bazzite performance tuning](bazzite-performance-tuning.md) — custom TuneD `gaming-performance` profile, 5GHz all-core, GPU high, all sleep masked; PPD override needed to survive reboot
 - [Vendored ImGui in this tree has no GetMainViewport](vendored-imgui-no-main-viewport.md) — multi-viewport flag not enabled; centre popups via `GetIO().DisplaySize` instead
+- [gw2-favorites-cleanup auto-tidies addon favorites](gw2-favorites-cleanup.md) — bazzite-side script + 30-min systemd timer drops NexusGameWiki / CraftyLegend favorites already unlocked in `/v2/account/skins` or `/v2/account/legendaryarmory`; refuses to mutate while GW2 runs

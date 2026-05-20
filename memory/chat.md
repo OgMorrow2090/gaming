@@ -1314,3 +1314,15 @@ After the cleanup commit, addressed the open item above plus an in-hand-press ca
 
 - **DRM scanout is unreadable while gamescope is master.** `kmsgrab` (ffmpeg) fails as the regular user *and* via sudo with `Failed to open DRM device`. For any future "what's on the screen?" detection, switching to Wayland screencopy (`grim`) or PipeWire screencast via xdg-desktop-portal is the path — needs `grim` layered onto the atomic image first.
 - **GE-Proton auto-updater is working as designed.** Latest upstream release at session end was **GE-Proton10-34** (2026-03-23) and bazzite has 10-32, 10-33, 10-34 all installed via `scripts/proton-ge-update.sh`. No 10-35 yet despite ~2 month gap — and there likely won't be one: Valve has been cooking `proton-11.0-1` in beta since 2026-04-16 (beta1 → beta3 → **beta5 on 2026-05-19**), and GloriousEggroll's pattern on previous major bumps is to skip the last few minor releases of the outgoing series and jump straight to `GE-Proton<N>-1` once Valve cuts the new stable. So expect the next GE drop to be **`GE-Proton11-1`**, not `10-35`. The auto-updater's `sort -V` comparison handles a major-version jump correctly, so nothing changes on our side; the updater will install it automatically.
+
+### New: gw2-favorites-cleanup (commit `3002f3d`)
+
+Built and deployed a new bazzite-side reconciliation script that drops completed favorites from the NexusGameWiki and CraftyLegend addons by checking the live GW2 account API. Runs on a 30-min systemd timer; refuses to mutate JSON while GW2 is alive (the addons rewrite their own files on shutdown, so any concurrent edit gets clobbered).
+
+- **GW2 API key** (gw2efficiency, scopes incl. account/unlocks/inventories) pulled from 1Password Home → "SC - ArenaNet - Guildwars 2" → "gw2efficiency - API", stored in `~/.config/gw2-claude/config.env` as `GW2_API_KEY=…`.
+- **First run** removed 8 of 15 NexusGameWiki favorites — all completed Ambrite weapons (Lepidoptera, Blattodea, Spirobolidae, Diptera, Odonata, Blattellidae, Apidae, Mantodea — skin IDs 5519–5531 already in wardrobe).
+- **CraftyLegend**: kept the one favorite (Aetheric Anchor / Ancora precursor) — Ancora not yet in armory.
+- **Known gap**: precursor *containers* like Aetheric Anchor are kept correctly while in-progress but won't auto-remove once the resulting legendary (Ancora) lands in armory — the favorite stores the container item id (105497), not the legendary item id (105496). Fix is documented in `memory/gw2-favorites-cleanup.md` (wiki-page link scrape); deferred until a real precursor completion is available to test against.
+- **Wiki page → item id resolution**: regex on `{{Weapon\|Armor\|Item\|Equipment\|Trinket\|Backpiece\|Skin infobox \| id = NNNNN}}` in the page's wikitext. GW2 wiki doesn't expose Cargo/SMW query API (`action=cargoquery` returns "Unrecognized value"), so wikitext parsing is the available route.
+
+Memory: new `memory/gw2-favorites-cleanup.md` indexed in `MEMORY.md`.

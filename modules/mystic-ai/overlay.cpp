@@ -1087,7 +1087,7 @@ void DrawPanel()
     ImGui::End();
 
     if (!g_panelOpen)
-        ExitToIdle(false);   // panel dismissed — leave any speech running
+        ExitToIdle(true);    // panel dismissed — stop any in-flight read / speech
 }
 
 }  // namespace

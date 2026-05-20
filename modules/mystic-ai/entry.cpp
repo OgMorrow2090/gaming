@@ -15,6 +15,7 @@
 
 #include "shared.h"
 #include "screen-capture.h"
+#include "claude-vision.h"
 #include "icons.h"
 #include "imgui/imgui.h"
 
@@ -56,7 +57,7 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     AddonDef.Name             = "Mystic AI";
     AddonDef.Version.Major    = 1;
     AddonDef.Version.Minor    = 1;
-    AddonDef.Version.Build    = 14;
+    AddonDef.Version.Build    = 15;
     AddonDef.Version.Revision = 0;
     AddonDef.Author      = "OgMorrow2090";
     AddonDef.Description = "Freeze-frame screen reader for GW2 - drag-select any "
@@ -127,6 +128,12 @@ void AddonLoad(AddonAPI_t* aApi)
  */
 void AddonUnload()
 {
+    // Tell the host-side daemon to stop any in-flight read / speech BEFORE the
+    // DLL goes away. The daemon runs out-of-process (gw2-claude-daemon.service)
+    // and keeps speaking through pw-play unless it sees /tmp/gw2-claude-stop —
+    // without this, closing GW2 mid-read leaves the voice talking to itself.
+    ClaudeVision::Stop();
+
     APIDefs->InputBinds_Deregister(MYSTIC_AI_CAPTURE);
     APIDefs->InputBinds_Deregister(MYSTIC_AI_READ_BOOK);
     APIDefs->InputBinds_Deregister(MYSTIC_AI_READ);

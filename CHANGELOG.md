@@ -7,6 +7,23 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-20] — Mystic AI 1.1.15 — panel-close and GW2-close both stop speech
+
+### Fixed
+
+- **Panel close now stops the in-flight read / speech.** Dismissing the
+  results panel (X, click-outside, Esc) used to call `ExitToIdle(false)` —
+  stale "leave any speech running" semantics from the deleted
+  auto-advance-book watch. Research / TP / drag-select panels would close
+  but the voice kept talking. Now panel-close passes `stopRead = true`.
+- **Closing GW2 mid-read no longer leaves the daemon talking to itself.**
+  `gw2-claude-daemon` runs out-of-process on the host and plays TTS through
+  `pw-play`. The addon writes `/tmp/gw2-claude-stop` to cancel — but
+  `AddonUnload()` never wrote it, so when GW2 exited the daemon kept reading
+  Claude's answer aloud with nobody listening. Added `ClaudeVision::Stop()`
+  to the top of `AddonUnload()` so the stop marker hits disk before the DLL
+  unloads. Daemon picks it up on its next poll.
+
 ## [2026-05-20] — Mystic AI 1.1.14 — Read-Book is one-shot again
 
 ### Changed

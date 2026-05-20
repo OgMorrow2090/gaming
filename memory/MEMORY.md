@@ -30,6 +30,7 @@ Index of memory entries for this repo. Each line points at one file in `memory/`
 - [Bazzite repurpose plan (~2028)](project-bazzite-repurpose-plan.md) — when new TV PC purchased, repurpose current i9-9900K as combined Docker server (replacing thing-pi) + headless Sunshine streaming server
 - [Moonlight client-side app cache](moonlight-client-app-cache.md) — Moonlight caches Sunshine app list locally; `moonlight list` reads cache not server; clear `1\apps\*` entries in config or open GUI to refresh after Sunshine app changes
 - [CEF overlay black screen on TV input switch](cef-overlay-black-screen-after-stream.md) — any TV input switch back to bazzite can trigger CEF overlay covering BPM; may self-recover in ~15 min, or restart gamescope-session
+- [BPM library black after 1h auto-suspend](steam-bpm-autosleep-black-library.md) — Side panels work but library tab is black after BPM auto-suspends on AC. Recovery: `pkill -f "^./steamwebhelper"`. Permanent fix: BPM Settings → Power → Time Until Sleep → Never.
 - [Controller wake TV script](cec-controller-wake-script.md) — WebOS network API replaces CEC for TV input switching; direct HDMI has no CEC adapter; silence-detection on hidraw0 unchanged
 - [Bazzite performance tuning](bazzite-performance-tuning.md) — custom TuneD `gaming-performance` profile, 5GHz all-core, GPU high, all sleep masked; PPD override needed to survive reboot
 - [Vendored ImGui in this tree has no GetMainViewport](vendored-imgui-no-main-viewport.md) — multi-viewport flag not enabled; centre popups via `GetIO().DisplaySize` instead

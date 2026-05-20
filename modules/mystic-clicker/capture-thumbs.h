@@ -1,7 +1,7 @@
 #pragma once
 
 // Per-slot screenshot thumbnails for the capture UI: when a slot's click point
-// is captured, also grab a 128x128 region of the back buffer around it and
+// is captured, also grab a 256x256 region of the back buffer around it and
 // save it to disk. The capture window then shows the thumbnail on hover, with
 // a small red crosshair at the click point so you can see WHERE inside the
 // grab the click lands — handy for remembering which "Accept N" is which.
@@ -10,7 +10,7 @@ struct Texture_t;
 
 namespace Thumbs {
 
-constexpr int SIZE = 128;   // captured + stored at this size
+constexpr int SIZE = 256;   // captured + stored at this size
 
 // Capture a SIZE x SIZE back-buffer region centered on (clickX, clickY) (game
 // window client coords), clamped to the client area, and write it as a 24-bit

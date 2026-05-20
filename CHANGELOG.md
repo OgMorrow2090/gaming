@@ -7,6 +7,17 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-20] — Mystic Clicker 3.6.29 — bigger capture thumbnails
+
+### Changed
+
+- **Capture thumbnails doubled from 128×128 to 256×256.** The display scale
+  in the hover tooltip stays at 2×, so the visible image is now 512 px
+  instead of 256 px — easier to identify the dialog at a glance. Disk cost
+  per thumbnail rises from ~50 KB to ~192 KB; per-slot, per-resolution. Old
+  128 px thumbnails keep working but display at their original 256 px until
+  re-captured.
+
 ## [2026-05-20] — Mystic Clicker 3.6.28 — capture-slot thumbnails on hover
 
 ### Added

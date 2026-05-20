@@ -7,6 +7,27 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-20] — Mystic AI 1.1.14 — Read-Book is one-shot again
+
+### Changed
+
+- **Read-Book keybind is plain one-shot.** Press once → captures the saved
+  book region → daemon reads the page aloud → done. Press again on the next
+  page. The previous "auto-advance watch" that re-fired on detected page-turn
+  was removed — once a book finished, it kept sampling whatever later
+  appeared in the region (inventory pop-ups, dialog, world) and re-reading
+  it, the opposite of what we wanted. Press while a read or narration is in
+  flight stops it (unchanged).
+
+### Removed
+
+- `AdvanceBookWatch`, `BookWatchWorker`, `ThumbChecksum`, `StopBookWatch`
+  and all watch state (`g_bookWatch`, `g_bookSum`, `g_bookCandSum`, sample
+  mutex/flags, `BOOK_SUM_THRESHOLD`, `BOOK_STABLE_TOL`, `BOOK_TICK_MS`).
+- `ExitToIdle`'s `stopWatch` parameter — there's no watch to stop.
+
+Net: ~−120 lines in `modules/mystic-ai/overlay.cpp`.
+
 ## [2026-05-20] — Mystic Clicker 3.6.33 — Clear All confirm buttons "Yes" / "No"
 
 ### Changed

@@ -1326,3 +1326,54 @@ Built and deployed a new bazzite-side reconciliation script that drops completed
 - **Wiki page → item id resolution**: regex on `{{Weapon\|Armor\|Item\|Equipment\|Trinket\|Backpiece\|Skin infobox \| id = NNNNN}}` in the page's wikitext. GW2 wiki doesn't expose Cargo/SMW query API (`action=cargoquery` returns "Unrecognized value"), so wikitext parsing is the available route.
 
 Memory: new `memory/gw2-favorites-cleanup.md` indexed in `MEMORY.md`.
+
+### Continuation (post-compaction, same day): BPM black-library diagnosis + workaround removal + Mystic AI 1.1.14 + Deck-native Mystic AI install
+
+After cleanup, user pressed Steam button at the controller, TV flipped to bazzite, **library page was black** but the Quick Access side panel rendered fine. Multi-pass diagnosis ruled out CEF crash, gamescope crash, TV-input bug. Smoking gun in `steamui_system.txt`:
+
+```
+14:50:27  Switching to power state: [k_ESystemPowerState_Sleep]
+          reason: 'ComputeNextPowerState: active: 3600 < 3600 (k_EACState_Connected)'
+15:36:57  Switching to power state: [k_ESystemPowerState_Normal]
+```
+
+Steam BPM auto-suspended after 1h of inactivity **even on AC** (we run `-steamdeck -steampal -gamepadui` so it inherits Deck handheld auto-sleep). On resume the library SPA failed to repaint while the side-panel React root rendered fine — matches [bazzite#1175](https://github.com/ublue-os/bazzite/issues/1175). User confirmed by checking BPM Settings — "Sleep" was literally set to "1 hour", matching the 3600s in the log. Permanent fix: **Settings → Power → Time Until Sleep → Never** (also Dim Screen + Display Off on a TV-PC).
+
+Recovery used was light-touch: `pkill -f "^./steamwebhelper -nocrashdialog"` — Steam respawned the helper in ~4 s with `-steamid=<real id>` (the stale one had `-steamid=0`, another resume-bad-state symptom). Game mode stayed up, controller stayed paired, TV input held.
+
+- **`d2b9460`**: new memory `steam-bpm-autosleep-black-library.md` + MEMORY.md index. Includes how to distinguish from `cef-overlay-black-screen-after-stream.md` (this one: side panels work, library black, suspend/resume pair in logs; the other: everything black).
+- **`401a9f7`**: removed the now-obsolete steamwebhelper-restart workaround from `controller-wake-tv.py`. The conditional `SWH_RESTART_THRESHOLD = 3h` gate + `steamwebhelper_uptime_secs()` helper + `subprocess` import all gone (−63 lines). Service redeployed + restarted clean on bazzite. `cec-controller-wake-script.md` updated to point forward to the autosleep memory and warn future selves not to reintroduce the automation now that the trigger is gone.
+
+#### NexusGameWiki "default tab Favorites" — researched, deferred
+
+User asked if the wiki addon can open with Favorites as the default tab. Investigated:
+- Local `settings.ini` only has hotkey + 7× `collapse_*_by_default` toggles for article sections, no default-tab knob.
+- Upstream [mestyq/NexusGameWiki](https://github.com/mestyq/NexusGameWiki) README documents no settings keys at all; issue tracker has exactly 1 open issue (icon visibility).
+- Three options offered (file upstream feature request / runtime test if it remembers last tab / fork+build). User did not pick — left as conversation, no code/memory change.
+
+#### Mystic AI 1.1.14 — Read-Book is one-shot again (`099b2c0`)
+
+User reported the 1.1.13 book read kept reading everything that appeared in the saved region after the book closed (inventory pop-ups, dialog, world behind the book). Diagnosis: the auto-advance watch (`AdvanceBookWatch`, `BookWatchWorker`, `ThumbChecksum`, `g_bookWatch` and state machine) sampled the region every 2 s on a worker thread and re-fired a read whenever the checksum "changed-and-settled" — works for a real page-turn, fails once the book is gone.
+
+Reverted to the original one-shot model: press keybind → capture saved region → daemon speaks → done. Press again on next page. The "press while Waiting/Speaking → Stop" branch in `ProcessCommand()` already existed and continues to handle "stop in flight."
+
+Net −297 / +49 lines in `modules/mystic-ai/overlay.cpp`. `ExitToIdle()` now takes a single `bool stopRead` (the `stopWatch` arg was only ever asking "should I also stop the thing I'm about to delete?"). All watch infrastructure (constants, state, worker, mutex, advancer, idle gate) gone. No code outside overlay.cpp referenced any watch symbol, so the rip-out was contained.
+
+#### Deck-native Mystic AI install + deploy script (`a284ef3`)
+
+User corrected me: "Deck has a local GW2 copy" — Mystic AI should be on Deck too, not just bazzite. Investigation found:
+- **`gw2-claude-daemon.py` is ALREADY on Deck** since 2026-05-19, same hash as bazzite (`fa202a3afa5abf31`), service `enabled`+`active`, running 21h. Eight of nine config.env keys present (missing only `GW2_API_KEY` which is used by `gw2-favorites-cleanup` — bazzite-only and not relevant on Deck).
+- What was missing: the addon DLL itself. Created `addons/MysticAI/` on Deck and deployed `mystic-ai.dll` 1.1.14 — first install on Deck, hash `3c54868c8f85743c` matches bazzite.
+
+Created `scripts/deploy-mystic-ai-dll.sh` as a sibling of `deploy-mystic-clicker-dll.sh`. Key differences:
+- Mystic AI artifact name is `mystic-ai`, DLL is `mystic-ai.dll`, lives in `addons/MysticAI/` (subdir), not directly in `addons/`.
+- Adds `ssh "$host" "mkdir -p '$remote_dir'"` before the `scp` so a first-time install on a new host creates the MysticAI subdir cleanly.
+- Otherwise identical pattern: auto-pick latest successful CI build, pre-flight ssh + `pgrep Gw2-64.exe`, timestamped backup of any existing DLL, SHA256-verified per target, warns on unreachable hosts.
+
+Tested end-to-end against CI run `26176639908`: bazzite OK on hash match, Deck happened to sleep between two runs of the script — good demo of the unreachable-host warning path.
+
+### Open items / next sessions
+
+- **Deck `GW2_API_KEY`**: not present in Deck's `~/.config/gw2-claude/config.env`. Only relevant if `gw2-favorites-cleanup` ever needs to run on Deck (currently bazzite-only). One-liner copy if needed.
+- **NexusGameWiki default Favorites tab**: still open — user did not pick a direction. Cheapest next step is a 30 s runtime test (click Favorites once, close + reopen the window, see if it remembers).
+- **Mystic Clicker capture-marker DPI offset**: still flagged "fine as is" from earlier.

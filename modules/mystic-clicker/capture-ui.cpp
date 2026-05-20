@@ -676,7 +676,7 @@ void RenderCaptureWindow()
                 ImGui::TextDisabled("Cannot be undone — every slot returns "
                                     "to the unset state.");
                 ImGui::Spacing();
-                if (ImGui::Button("Yes, clear all", ImVec2(160.0f, 0)))
+                if (ImGui::Button("Yes", ImVec2(120.0f, 0)))
                 {
                     for (int i = 0; i < NUM_TARGETS; ++i)
                     {
@@ -695,7 +695,7 @@ void RenderCaptureWindow()
                     ImGui::CloseCurrentPopup();
                 }
                 ImGui::SameLine();
-                if (ImGui::Button("Cancel", ImVec2(120.0f, 0)))
+                if (ImGui::Button("No", ImVec2(120.0f, 0)))
                     ImGui::CloseCurrentPopup();
                 ImGui::EndPopup();
             }

@@ -7,6 +7,14 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-20] — Mystic Clicker 3.6.33 — Clear All confirm buttons "Yes" / "No"
+
+### Changed
+
+- **Clear All Captures confirm modal** — buttons now read simply "Yes" and
+  "No" (matched widths) instead of "Yes, clear all" / "Cancel". Same
+  behaviour, cleaner labels.
+
 ## [2026-05-20] — Mystic Clicker 3.6.32 — bigger dot + Clear All captures
 
 ### Added

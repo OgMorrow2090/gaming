@@ -660,8 +660,14 @@ void RenderCaptureWindow()
                 ImGui::OpenPopup("ClearAllConfirm");
             ImGui::PopStyleColor(3);
 
-            ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(),
-                                    ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+            {
+                // Vendored ImGui in this tree doesn't expose GetMainViewport;
+                // derive the screen centre from GetIO().DisplaySize instead.
+                ImGuiIO& io2 = ImGui::GetIO();
+                ImGui::SetNextWindowPos(
+                    ImVec2(io2.DisplaySize.x * 0.5f, io2.DisplaySize.y * 0.5f),
+                    ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+            }
             if (ImGui::BeginPopupModal("ClearAllConfirm", nullptr,
                                        ImGuiWindowFlags_AlwaysAutoResize))
             {

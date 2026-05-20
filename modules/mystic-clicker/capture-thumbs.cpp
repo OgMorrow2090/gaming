@@ -5,6 +5,8 @@
  *
  * Storage:
  *   addons/MysticClicker/thumb-<slot>-<W>x<H>.bmp     (24-bit, top-down)
+ *   where <W>x<H> is the game window resolution; the thumbnail itself is
+ *   always WIDTH x HEIGHT (see capture-thumbs.h).
  *
  * Why a per-slot version counter: Nexus has no texture-release API, so we
  * can't reuse the same identifier and have it re-read a changed file. Each
@@ -132,22 +134,22 @@ void CaptureWorker(std::string slot, int clickX, int clickY)
 {
     int maxW = 0, maxH = 0;
     ClientSize(maxW, maxH);
-    if (maxW < Thumbs::SIZE || maxH < Thumbs::SIZE) return;
+    if (maxW < Thumbs::WIDTH || maxH < Thumbs::HEIGHT) return;
 
-    // Centre on the click, then clamp so a full SIZE x SIZE region fits
+    // Centre on the click, then clamp so a full WIDTH x HEIGHT region fits
     // inside the client area.
-    int rx = clickX - Thumbs::SIZE / 2;
-    int ry = clickY - Thumbs::SIZE / 2;
+    int rx = clickX - Thumbs::WIDTH  / 2;
+    int ry = clickY - Thumbs::HEIGHT / 2;
     if (rx < 0) rx = 0;
     if (ry < 0) ry = 0;
-    if (rx + Thumbs::SIZE > maxW) rx = maxW - Thumbs::SIZE;
-    if (ry + Thumbs::SIZE > maxH) ry = maxH - Thumbs::SIZE;
+    if (rx + Thumbs::WIDTH  > maxW) rx = maxW - Thumbs::WIDTH;
+    if (ry + Thumbs::HEIGHT > maxH) ry = maxH - Thumbs::HEIGHT;
 
     std::vector<uint8_t> bgr;
-    if (!CaptureBackBufferRegion(rx, ry, Thumbs::SIZE, Thumbs::SIZE, bgr))
+    if (!CaptureBackBufferRegion(rx, ry, Thumbs::WIDTH, Thumbs::HEIGHT, bgr))
         return;
 
-    WriteBmp24(ThumbPath(slot), bgr, Thumbs::SIZE, Thumbs::SIZE);
+    WriteBmp24(ThumbPath(slot), bgr, Thumbs::WIDTH, Thumbs::HEIGHT);
 
     std::lock_guard<std::mutex> lk(g_mtx);
     g_version[slot]++;

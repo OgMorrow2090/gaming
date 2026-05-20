@@ -563,7 +563,7 @@ void RenderCaptureWindow()
                             if (tex && tex->Resource && tex->Width > 0)
                             {
                                 ImGui::Spacing();
-                                const float scale = 2.0f;  // 128 -> 256 px display
+                                const float scale = 2.0f;  // 384x192 -> 768x384 px display
                                 ImVec2 sz((float)tex->Width  * scale,
                                           (float)tex->Height * scale);
                                 ImVec2 p0 = ImGui::GetCursorScreenPos();

@@ -7,6 +7,17 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-20] — Mystic Clicker 3.6.30 — capture thumbnails as a wide rectangle
+
+### Changed
+
+- **Capture thumbnails are now 384×192 (2:1 wide rectangle), not square.**
+  GW2 dialog buttons are wider than they are tall and live in horizontally-
+  laid-out rows with adjacent label text — a wide-rectangle grab catches the
+  context that actually identifies a slot. Display still scales 2×, so the
+  hover image is 768×384 on screen instead of 512×512. Existing square
+  thumbnails keep working at their stored aspect until re-captured.
+
 ## [2026-05-20] — Mystic Clicker 3.6.29 — bigger capture thumbnails
 
 ### Changed

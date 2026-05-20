@@ -45,8 +45,13 @@ async def switch_tv():
 
 last_data = time.monotonic()
 last_trigger = 0.0
-ever_seen_data = False
-was_silent = False
+# Init both True so the very first data after a fresh boot fires the switch.
+# The original gate required data → silence → data, but on a fresh boot with a
+# sleeping controller there is no "first data" to arm silence detection — so
+# the first wake was always swallowed. last_trigger stays 0.0 until that first
+# fire, so COOLDOWN is satisfied trivially on the initial event.
+ever_seen_data = True
+was_silent = True
 
 while True:
     try:

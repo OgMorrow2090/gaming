@@ -27,12 +27,14 @@ The controller wake script (`~/bin/controller-wake-tv.py` on bazzite) switches t
 - 60-second cooldown between triggers
 - Controller takes ~35 seconds to actually power down after holding Steam button
 
-**Known gap — first wake after a bazzite reboot:** the `ever_seen_data` gate
-only arms after data has been seen → silence → data. After a fresh boot with
-the controller already asleep, the first wake is *swallowed* (no prior data was
-observed during the silence) — the TV does not switch. Subsequent sleep→wake
-cycles work normally. Manual switch meanwhile: run the WebOS `set_input` call
-directly (`aiowebostv` → `client.set_input("HDMI_2")`).
+**First wake after a bazzite reboot (FIXED 2026-05-20):** previously, the
+`ever_seen_data` and `was_silent` gates both initialised `False`, so a fresh
+boot with the controller already asleep never armed silence-detection — the
+first wake was *swallowed* and the TV did not switch (subsequent sleep → wake
+cycles worked normally). Fix: initialise both flags `True` so the very first
+data after a boot fires the switch (`last_trigger` stays `0.0` until then, so
+`COOLDOWN` is satisfied trivially). Manual switch if ever needed: send WOL,
+wait ≥3 s for the TV to come up, then `aiowebostv` → `client.set_input("HDMI_2")`.
 
 **TV WOL prerequisite:**
 

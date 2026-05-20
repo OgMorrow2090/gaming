@@ -45,10 +45,11 @@ else
 fi
 
 # Format: ssh_host:addons_dir|profile_label
+# Multi-install profiles (apple-tv, deck-bazzite) were consolidated to a single
+# main install on 2026-05-12 — see memory/multi-gw2-installs.md (ARCHIVED). If
+# those profiles ever return, re-add the corresponding entries here.
 TARGETS=(
-    "Og@172.16.100.212:/home/Og/.local/share/Steam/steamapps/common/Guild Wars 2/addons|local"
-    "Og@172.16.100.212:/home/Og/Games/gw2-appletv/addons|apple-tv"
-    "Og@172.16.100.212:/home/Og/Games/gw2-deck/addons|deck-bazzite"
+    "Og@172.16.100.212:/home/Og/.local/share/Steam/steamapps/common/Guild Wars 2/addons|bazzite"
     "deck@172.16.100.95:/home/deck/.local/share/Steam/steamapps/common/Guild Wars 2/addons|deck-native"
 )
 

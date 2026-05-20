@@ -563,7 +563,20 @@ void RenderCaptureWindow()
                             if (tex && tex->Resource && tex->Width > 0)
                             {
                                 ImGui::Spacing();
-                                const float scale = 2.0f;  // 384x192 -> 768x384 px display
+                                // Display at 2x where it fits, but shrink to
+                                // stay within ~70% wide / 60% tall of the game
+                                // window — keeps the tooltip readable on a 4K
+                                // bazzite display and prevents 1536-wide
+                                // overflow on the 1280-wide Deck.
+                                ImGuiIO& io = ImGui::GetIO();
+                                float scale = 2.0f;
+                                float maxW  = io.DisplaySize.x * 0.70f;
+                                float maxH  = io.DisplaySize.y * 0.60f;
+                                if ((float)tex->Width  * scale > maxW)
+                                    scale = maxW / (float)tex->Width;
+                                if ((float)tex->Height * scale > maxH)
+                                    scale = maxH / (float)tex->Height;
+                                if (scale < 0.5f) scale = 0.5f;
                                 ImVec2 sz((float)tex->Width  * scale,
                                           (float)tex->Height * scale);
                                 ImVec2 p0 = ImGui::GetCursorScreenPos();

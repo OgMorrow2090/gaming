@@ -7,6 +7,18 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-20] — Mystic Clicker 3.6.31 — capture thumbnails 768×320 + adaptive display
+
+### Changed
+
+- **Capture thumbnails grow to 768×320** (twice as wide as 3.6.30, 67%
+  taller), a 2.4:1 aspect that catches a GW2 dialog button + its label +
+  any neighbouring buttons in a single grab.
+- **Hover-display scale is now adaptive**, not a fixed 2×. The tooltip
+  scales up to 2× where it fits and shrinks to stay within ~70% of the
+  game-window width / 60% of its height. Keeps it large on 4K bazzite
+  while preventing overflow on the 1280-wide Deck display.
+
 ## [2026-05-20] — Mystic Clicker 3.6.30 — capture thumbnails as a wide rectangle
 
 ### Changed

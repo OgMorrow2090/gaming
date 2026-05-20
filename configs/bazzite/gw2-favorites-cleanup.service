@@ -1,0 +1,9 @@
+[Unit]
+Description=Reconcile GW2 NexusGameWiki + CraftyLegend favorites against the GW2 API
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 %h/scripts/gw2-favorites-cleanup.py
+
+[Install]
+WantedBy=default.target

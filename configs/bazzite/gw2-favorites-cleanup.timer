@@ -1,0 +1,16 @@
+[Unit]
+Description=Periodic reconcile of GW2 addon favorites (skips when GW2 running)
+
+[Timer]
+# First run 2 minutes after the timer is started (e.g. after boot or service
+# enable), then every 30 minutes thereafter. The 30-min cadence is a compromise
+# between "fire shortly after GW2 closes" (the user-facing requirement) and
+# "don't hammer the API for nothing". The Python script no-ops cheaply when
+# GW2 is running, so an inactive-game session costs ~5 ms per tick.
+OnBootSec=2min
+OnUnitInactiveSec=30min
+Unit=gw2-favorites-cleanup.service
+Persistent=true
+
+[Install]
+WantedBy=timers.target

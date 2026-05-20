@@ -16,7 +16,16 @@ TV_CLIENT_KEY = "2c37f5beb73ad7247415b32263c9501f"
 TV_INPUT = "HDMI_2"
 
 HIDRAW = "/dev/hidraw0"
-SILENCE_THRESHOLD = 30
+# Silence threshold was 30s for the original CEC version, which assumed the
+# controller would be fully asleep (no data at all) before a wake event.
+# In practice the Steam Controller's IMU rate-limits to ~2-3 reports/sec when
+# held but stationary, so 30s of NO data only happens if the controller is
+# physically set down and inactive — useless for "press Steam button while
+# holding it" which is the actual workflow. Drop to 3s so a brief stillness
+# (typical between user actions) is enough to arm the gate, while continuous
+# active use (still-moving IMU) still suppresses false fires. COOLDOWN (60s)
+# prevents repeat fires within a window.
+SILENCE_THRESHOLD = 3
 COOLDOWN = 60
 
 # Restart steamwebhelper only if the oldest one has been alive longer than

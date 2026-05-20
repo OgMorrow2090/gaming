@@ -582,11 +582,20 @@ void RenderCaptureWindow()
                                 ImVec2 p0 = ImGui::GetCursorScreenPos();
                                 ImGui::Image((ImTextureID)tex->Resource, sz);
 
+                                // Fat filled red dot at the captured click
+                                // point with a white outline for contrast —
+                                // visible against any GW2 dialog backdrop. The
+                                // dot marks the cursor position at capture
+                                // time, which is the location the click will
+                                // fire at — not necessarily the button's
+                                // geometric centre.
                                 ImDrawList* dl = ImGui::GetWindowDrawList();
                                 ImVec2 c(p0.x + sz.x * 0.5f, p0.y + sz.y * 0.5f);
-                                const ImU32 col = IM_COL32(255, 60, 60, 255);
-                                dl->AddLine(ImVec2(c.x - 9.0f, c.y), ImVec2(c.x + 9.0f, c.y), col, 2.0f);
-                                dl->AddLine(ImVec2(c.x, c.y - 9.0f), ImVec2(c.x, c.y + 9.0f), col, 2.0f);
+                                const float radius   = 22.0f;
+                                const ImU32 colFill  = IM_COL32(255,  60,  60, 240);
+                                const ImU32 colRing  = IM_COL32(255, 255, 255, 230);
+                                dl->AddCircleFilled(c, radius, colFill, 32);
+                                dl->AddCircle      (c, radius, colRing, 32, 2.0f);
                             }
                             else
                             {
@@ -635,6 +644,54 @@ void RenderCaptureWindow()
             if (g_WindowOpacity != prevOpacity)
             {
                 SaveButtonPositions();
+            }
+
+            // Clean slate: zero every slot's X/Y, delete every saved
+            // thumbnail BMP, save the config. Two-step via a modal popup so
+            // it's not triggered by a stray click.
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+            ImGui::PushStyleColor(ImGuiCol_Button,        ImVec4(0.55f, 0.20f, 0.20f, 0.85f));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.70f, 0.25f, 0.25f, 0.95f));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive,  ImVec4(0.80f, 0.30f, 0.30f, 1.00f));
+            if (ImGui::Button("Clear all captures...",
+                              ImVec2(-1, 30.0f * g_ButtonScale)))
+                ImGui::OpenPopup("ClearAllConfirm");
+            ImGui::PopStyleColor(3);
+
+            ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(),
+                                    ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+            if (ImGui::BeginPopupModal("ClearAllConfirm", nullptr,
+                                       ImGuiWindowFlags_AlwaysAutoResize))
+            {
+                ImGui::TextUnformatted(
+                    "Clear all captured positions and thumbnails?");
+                ImGui::TextDisabled("Cannot be undone — every slot returns "
+                                    "to the unset state.");
+                ImGui::Spacing();
+                if (ImGui::Button("Yes, clear all", ImVec2(160.0f, 0)))
+                {
+                    for (int i = 0; i < NUM_TARGETS; ++i)
+                    {
+                        *s_Targets[i].posX = 0;
+                        *s_Targets[i].posY = 0;
+                    }
+                    SaveButtonPositions();
+                    Thumbs::DeleteAll();
+
+                    sprintf_s(s_ConfirmMessage,
+                              "Cleared all %d capture slots and thumbnails",
+                              NUM_TARGETS);
+                    APIDefs->Log(LOGL_INFO, "MysticClicker", s_ConfirmMessage);
+                    s_ShowConfirmation = true;
+                    s_ConfirmStart = std::chrono::steady_clock::now();
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Cancel", ImVec2(120.0f, 0)))
+                    ImGui::CloseCurrentPopup();
+                ImGui::EndPopup();
             }
         }
 

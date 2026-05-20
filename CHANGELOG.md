@@ -7,6 +7,23 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-20] — Mystic Clicker 3.6.32 — bigger dot + Clear All captures
+
+### Added
+
+- **"Clear all captures" button in Settings.** Two-step modal — opens a
+  confirm dialog before zeroing every slot's X/Y and deleting every saved
+  `thumb-*.bmp` from the addon directory. Clean slate.
+
+### Changed
+
+- **The click-point marker on hover thumbnails is now a fat filled red dot**
+  (radius 22 with a white outline ring), not a thin 18×18 px `+`. Much
+  easier to spot at a glance. The dot still marks the cursor position at
+  capture time — that's the location the click will fire at, which may not
+  be the dialog button's geometric centre if the cursor wasn't perfectly
+  centred on the button when the countdown ended.
+
 ## [2026-05-20] — Mystic Clicker 3.6.31 — capture thumbnails 768×320 + adaptive display
 
 ### Changed

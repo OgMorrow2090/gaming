@@ -31,4 +31,9 @@ void Capture(const char* slotId, int clickX, int clickY);
 // off-thread on the first call). Cheap to call every frame.
 Texture_t* Get(const char* slotId);
 
+// Delete every thumb-*.bmp in the addon dir and bump every cached version so
+// the next Get() returns nullptr until a fresh capture writes a new file.
+// Used by the Settings "Clear all captures" action; safe to call at any time.
+void DeleteAll();
+
 }  // namespace Thumbs

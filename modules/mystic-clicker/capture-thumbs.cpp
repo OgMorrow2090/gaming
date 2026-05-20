@@ -186,4 +186,34 @@ Texture_t* Get(const char* slotId)
     return APIDefs->Textures_GetOrCreateFromFile(id.c_str(), path.c_str());
 }
 
+void DeleteAll()
+{
+    std::string dir = ThumbDir();
+    if (dir.empty()) return;
+
+    // Enumerate thumb-*.bmp in the addon dir and unlink each. Covers every
+    // resolution variant in one pass — they all share the prefix.
+    std::string pattern = dir + "\\thumb-*.bmp";
+    WIN32_FIND_DATAA fd{};
+    HANDLE h = FindFirstFileA(pattern.c_str(), &fd);
+    if (h != INVALID_HANDLE_VALUE)
+    {
+        do
+        {
+            if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+            {
+                std::string full = dir + "\\" + fd.cFileName;
+                DeleteFileA(full.c_str());
+            }
+        } while (FindNextFileA(h, &fd));
+        FindClose(h);
+    }
+
+    // Bump every cached slot's version so the next Get() mints a fresh
+    // identifier — even if a stale BMP somehow remains, the request is for
+    // a new identifier and Nexus will return nullptr until a new file lands.
+    std::lock_guard<std::mutex> lk(g_mtx);
+    for (auto& kv : g_version) kv.second++;
+}
+
 }  // namespace Thumbs

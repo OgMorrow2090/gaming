@@ -7,6 +7,18 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-20] — Mystic Clicker 3.6.28 — capture-slot thumbnails on hover
+
+### Added
+
+- **Each capture also grabs a 128×128 thumbnail of the click point**, saved as
+  `addons/MysticClicker/thumb-<slot>-<W>x<H>.bmp` per resolution. Hovering a
+  captured slot in the capture window now shows the thumbnail in the tooltip
+  with a small red `+` at the centre, marking where the click lands inside the
+  grab. Helps remember which "Accept N" is which when 12+ slots share the same
+  name. Slots without a thumbnail (existing configs, never captured) fall back
+  to the plain text tooltip — re-capture once to populate.
+
 ## [2026-05-19] — Mystic AI 1.1.13 — remove the standalone TP-region feature
 
 ### Removed

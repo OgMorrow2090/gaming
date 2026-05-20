@@ -107,6 +107,7 @@
     <ClCompile Include="modules\mystic-clicker\screen-capture.cpp" />
     <ClCompile Include="modules\mystic-clicker\config.cpp" />
     <ClCompile Include="modules\mystic-clicker\capture-ui.cpp" />
+    <ClCompile Include="modules\mystic-clicker\capture-thumbs.cpp" />
     <ClCompile Include="modules\mystic-clicker\rescue.cpp" />
     <ClCompile Include="include\imgui\imgui.cpp" />
     <ClCompile Include="include\imgui\imgui_draw.cpp" />

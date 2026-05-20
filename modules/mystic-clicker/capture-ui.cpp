@@ -11,11 +11,13 @@
  */
 
 #include "shared.h"
+#include "capture-thumbs.h"
 #include "imgui/imgui.h"
 #include <cstdio>
 #include <cstring>
 #include <cmath>
 #include <chrono>
+#include <string>
 
 // Capture window state
 bool g_ShowCaptureWindow = false;
@@ -84,6 +86,27 @@ struct CaptureTarget {
     int* posY;
     const char* category;
 };
+
+// Stable slot ID derived from the display name — used as the thumbnail-file
+// suffix and Nexus texture identifier. Spaces -> '_', non-alnum dropped so
+// the result is filesystem and identifier safe.
+//   "Accept 1"           -> "Accept_1"
+//   "Bouncy Meta Complete" -> "Bouncy_Meta_Complete"
+static std::string SlotIdFromName(const char* name)
+{
+    std::string s;
+    for (const char* p = name; *p; ++p)
+    {
+        char c = *p;
+        if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+            (c >= '0' && c <= '9') || c == '_')
+            s += c;
+        else if (c == ' ' || c == '-')
+            s += '_';
+        // everything else dropped
+    }
+    return s;
+}
 
 static CaptureTarget s_Targets[] = {
     // Mystic Forge
@@ -225,6 +248,12 @@ static void PerformCapture(int targetIdx)
         APIDefs->Log(LOGL_INFO, "MysticClicker", s_ConfirmMessage);
 
         SaveButtonPositions();
+
+        // Grab a 128x128 thumbnail of the back buffer around the click point
+        // so the capture window can show it on hover — visual reminder of
+        // which dialog this slot was used for. Detached worker; see
+        // capture-thumbs.cpp.
+        Thumbs::Capture(SlotIdFromName(target.name).c_str(), pt.x, pt.y);
     }
     else
     {
@@ -517,7 +546,47 @@ void RenderCaptureWindow()
                     }
 
                     if (ImGui::IsItemHovered())
-                        ImGui::SetTooltip("%s\n(right-click to clear)", t.description);
+                    {
+                        ImGui::BeginTooltip();
+                        ImGui::TextUnformatted(t.description);
+                        ImGui::TextDisabled("(right-click to clear)");
+
+                        // Show the captured thumbnail with a small red + at
+                        // the centre — that centre is the click point, give
+                        // or take edge-of-screen clamping. Only shown for
+                        // captured slots; uncaptured slots have no file yet.
+                        bool isSet = (*t.posX != 0 || *t.posY != 0);
+                        if (isSet)
+                        {
+                            std::string sid = SlotIdFromName(t.name);
+                            Texture_t* tex  = Thumbs::Get(sid.c_str());
+                            if (tex && tex->Resource && tex->Width > 0)
+                            {
+                                ImGui::Spacing();
+                                const float scale = 2.0f;  // 128 -> 256 px display
+                                ImVec2 sz((float)tex->Width  * scale,
+                                          (float)tex->Height * scale);
+                                ImVec2 p0 = ImGui::GetCursorScreenPos();
+                                ImGui::Image((ImTextureID)tex->Resource, sz);
+
+                                ImDrawList* dl = ImGui::GetWindowDrawList();
+                                ImVec2 c(p0.x + sz.x * 0.5f, p0.y + sz.y * 0.5f);
+                                const ImU32 col = IM_COL32(255, 60, 60, 255);
+                                dl->AddLine(ImVec2(c.x - 9.0f, c.y), ImVec2(c.x + 9.0f, c.y), col, 2.0f);
+                                dl->AddLine(ImVec2(c.x, c.y - 9.0f), ImVec2(c.x, c.y + 9.0f), col, 2.0f);
+                            }
+                            else
+                            {
+                                // Either captured before this version of the
+                                // addon (no file on disk yet) or Nexus is
+                                // still loading. The note is mostly the
+                                // former — telling the player to recapture.
+                                ImGui::Spacing();
+                                ImGui::TextDisabled("(recapture to refresh the thumbnail)");
+                            }
+                        }
+                        ImGui::EndTooltip();
+                    }
                 }
             }
         }

@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2415"
-	"title"		"Guild Wars 2 - Og v24.7"
+	"revision"		"2416"
+	"title"		"Guild Wars 2 - Og v24.8"
 	"description"		"#SettingsController_AutosaveDescription"
 	"creator"		"76561198025059559"
 	"progenitor"		"usercloud://1284210/controller_neptune"
@@ -2567,7 +2567,26 @@
 				"disabled_activators"
 				{
 				}
-			}		}
+			}
+			"touch_menu_button_16"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press LEFT_ALT, Pathing Window, , "
+							"binding"		"key_press LEFT_SHIFT, Pathing Window, , "
+							"binding"		"key_press 1, Pathing Window, , "
+						}
+					}
+				}
+				"disabled_activators"
+				{
+				}
+			}
+		}
 		"settings"
 		{
 			"layer"		"1"

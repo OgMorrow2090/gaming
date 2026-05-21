@@ -1908,8 +1908,8 @@
 		"Type": 1
 	},
 	{
-		"Alt": true,
-		"Code": 68,
+		"Alt": false,
+		"Code": 125,
 		"Ctrl": false,
 		"Identifier": "MYSTIC_AI_CAPTURE",
 		"Passthrough": false,
@@ -1918,16 +1918,16 @@
 	},
 	{
 		"Alt": false,
-		"Code": 68,
+		"Code": 124,
 		"Ctrl": false,
 		"Identifier": "MYSTIC_AI_READ_BOOK",
 		"Passthrough": false,
-		"Shift": true,
+		"Shift": false,
 		"Type": 1
 	},
 	{
 		"Alt": false,
-		"Code": 0,
+		"Code": 126,
 		"Ctrl": false,
 		"Identifier": "MYSTIC_AI_READ",
 		"Passthrough": false,

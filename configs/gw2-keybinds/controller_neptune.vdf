@@ -1,8 +1,8 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"2414"
-	"title"		"Guild Wars 2 - Og v24.6"
+	"revision"		"2415"
+	"title"		"Guild Wars 2 - Og v24.7"
 	"description"		"#SettingsController_AutosaveDescription"
 	"creator"		"76561198025059559"
 	"progenitor"		"usercloud://1284210/controller_neptune"
@@ -3362,14 +3362,16 @@
 					{
 						"bindings"
 						{
-							"binding"		"key_press F14, Mystic AI Capture, , "
+							"binding"		"key_press LEFT_ALT, Mystic AI Capture, , "
+							"binding"		"key_press F10, Mystic AI Capture, , "
 						}
 					}
 					"Long_Press"
 					{
 						"bindings"
 						{
-							"binding"		"key_press F13, Mystic AI Read Book, , "
+							"binding"		"key_press LEFT_SHIFT, Mystic AI Read Book, , "
+							"binding"		"key_press F10, Mystic AI Read Book, , "
 						}
 					}
 				}

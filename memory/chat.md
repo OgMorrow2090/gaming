@@ -1377,3 +1377,46 @@ Tested end-to-end against CI run `26176639908`: bazzite OK on hash match, Deck h
 - **Deck `GW2_API_KEY`**: not present in Deck's `~/.config/gw2-claude/config.env`. Only relevant if `gw2-favorites-cleanup` ever needs to run on Deck (currently bazzite-only). One-liner copy if needed.
 - **NexusGameWiki default Favorites tab**: still open — user did not pick a direction. Cheapest next step is a 30 s runtime test (click Favorites once, close + reopen the window, see if it remembers).
 - **Mystic Clicker capture-marker DPI offset**: still flagged "fine as is" from earlier.
+
+### Continuation (same day): Mystic AI panel overhaul, shadow-loaded DLL, VDF rebind saga, Taimi pathing window keybind
+
+Multi-hour continuation that started "AI keeps reading after I close the book" and ended with two TaimiHUD radial slots cohabiting on the controller. Real lesson: **a DLL that hashes correctly at the deploy path can still be the wrong file in the wrong place.**
+
+#### Mystic AI 1.1.15 → 1.1.16 → 1.1.17 — panel-driven book reads + speech toggle
+
+Three iterations chasing the same goal: book-read should pop the same review panel as a drag-select capture, with a Speech button that toggles speak/stop and a panel-close that kills any in-flight speech.
+
+- **1.1.15** (`...`): `AddonUnload()` now calls `ClaudeVision::Stop()` so closing GW2 kills the speaker mid-utterance (the daemon's `pw-play` was outliving the addon).
+- **1.1.16**: panel-close `ExitToIdle(true)` (was `false`) so closing the review window stops speech; corner status pop-up for in-flight book reads.
+- **1.1.17** (`48f2506`): scrapped the corner pop-up entirely; book reads now route through `BookCaptureWorker` → `AdvanceBookRead()` → `MODE_REVIEW` with the same full review panel as drag-select. Speech button is a toggle: `IsSpeaking()` true → label "Stop" + click calls `ClaudeVision::Stop()`; false → label "Speech" + click calls `Speak(g_spokenText)`. Renamed Read → Speech everywhere.
+
+#### Keybind rebind saga — F13/F14 silently rejected by Steam Input
+
+Mystic AI's defaults `Shift+D` / `Alt+D` collided with WSAD movement. Rebound to F13/F14 thinking they'd be unused. Steam Input silently dropped the bindings — `controller.txt` had `Failed to create digital binding "key_press F14, ..."`. The Nexus side accepts F13–F24 (they're valid Windows scancodes), but Steam Input has a separate closed enum of `key_press` tokens that *doesn't include them*. Parses fine, never fires. Reverted to `LEFT_ALT+F10` (Capture) and `LEFT_SHIFT+F10` (Read Book) — both confirmed working tokens. New memory `steam-input-f13-f24-not-accepted.md` indexed in `MEMORY.md`.
+
+Even after reverting the VDF, Steam kept loading the broken cached layout (`HID: Add to Config Cache - full cache hit`). `systemctl --user restart gamescope-session-plus@steam.service` on bazzite invalidated the cache. mtime-bumps and revision-bumps did not.
+
+#### The shadow-loaded DLL — Nexus loads from `addons/` ROOT only
+
+The crusher of the session. Mystic AI 1.1.14 → 1.1.17 all deployed to `addons/MysticAI/mystic-ai.dll` (subdir), every hash check passing against the CI artifact. **GW2 silently never loaded any of them.** The addon was still running 1.1.13 from a much older `addons/mystic-ai.dll` at the root that I'd mistaken for a stray and neutralised, leaving the subdir deploys with nothing live and silencing the addon.
+
+Confirmed via `grep mystic-ai /proc/$(pgrep Gw2-64.exe)/maps` returning empty. Nexus does **not** scan subdirectories for DLLs — every working sibling (`mystic-clicker.dll`, `mystic-trading.dll`, ArcDPS) sits at `addons/<name>.dll` flat. Subdirs are reserved for per-addon assets read via `Paths_GetAddonDirectory`. No log line, no warning when a DLL is in the wrong place; it just isn't there.
+
+- **`fb3e399`**: `deploy-mystic-ai-dll.sh` now writes to `addons/mystic-ai.dll` (root), identical to `deploy-mystic-clicker-dll.sh`. SUBDIR variable + "stray neutralisation" logic gone.
+- Memory `nexus-dll-shadow-load-from-addons-root.md` rewritten with the correct conclusion (the wrong conclusion from `6fca176` "auto-neutralise stray DLL" is preserved as a historical commit but the file now documents what actually happened).
+
+#### TaimiHUD Pathing Window keybind → Utility Wheel slot 16
+
+User asked to put TaimiHUD's pathing-pack manager on the controller. The pack manager is bound by Taimi's own keybind `pathing-window-toggle` (Code 49 = scancode for `1`, modifiers Alt+Shift) — different from the existing `PATHING_TOGGLE_ALL` (Ctrl+F3) which is the on/off render toggle, not the manager window. Added Utility Wheel slot 16 emitting `LEFT_ALT+LEFT_SHIFT+1` labelled "Pathing Window" (`5905160`, VDF v24.8). Slot 2 "Toggle Paths" stays — both coexist in radial group `id=63`. Deployed bazzite + Deck, layout cache reload via gamescope-session restart only needed on bazzite (Deck is streaming-input-host so its VDF only applies when running native; not actively in use).
+
+Researched Taimi auto-uncheck-completed-on-map upstream: tracked as [issue #59](https://github.com/CataclysmicQuantum/Taimi/issues/59) on `arc/api` branch, not on `main`. TaCO vs Tekkit's Guide marker pack comparison done — left for user to pick.
+
+#### Workflow rule capture
+
+User: "always repo 1st then deploy". Captured as `memory/feedback_repo_first_then_deploy.md`. The shadow-DLL incident and the F13/F14 rebind both had repo→deploy ordering — what bit us in both cases wasn't drift between repo and deploy, it was wrong assumptions about where things go (root vs subdir) and which keys Steam Input accepts. Rule stands; the failure modes were upstream of it.
+
+### Open items / next sessions (continued)
+
+- **Slot 16 in-game verification**: deployed but not yet pressed in-game. If `key_press 1` is also not a valid Steam Input token, `controller.txt` will show "Failed to create digital binding 'key_press 1, ...'" and the chord will do nothing — pick a different emission key. Likely fine (1–9 are standard Steam Input tokens via the chord setup that emits skills) but unverified.
+- **TaimiHUD auto-uncheck-completed**: feature exists on `arc/api` branch (issue #59). Build from that branch if user wants it before main merges.
+- **TaCO vs Tekkit's Guide pack**: user picking; no action.

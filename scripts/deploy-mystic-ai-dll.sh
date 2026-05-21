@@ -100,6 +100,15 @@ for entry in "${REACHABLE[@]}"; do
 
     echo "  [$label] $host:$remote_path"
 
+    # Detect + neutralise a stray mystic-ai.dll sitting at addons/ (parent
+    # folder, no subdir). On 2026-05-21 a legacy 1.1.13 stray at that path
+    # was being loaded by Nexus instead of addons/MysticAI/mystic-ai.dll —
+    # 11 hours of "the fix isn't taking" debugging before it was spotted.
+    # If Nexus finds two copies of the same Signature it can load either;
+    # we want only the subdir one.
+    stray="$addons_dir/$DLL_NAME"
+    ssh -o ConnectTimeout=8 "$host" "[ -f '$stray' ] && { mv -f '$stray' '$stray.stray-$TS'; echo '    NEUTRALISED stray at $stray (moved to .stray-$TS)'; } || true"
+
     # First-time install creates the MysticAI subdir; subsequent deploys back
     # up the existing DLL before overwrite.
     ssh -o ConnectTimeout=8 "$host" "mkdir -p '$remote_dir' && (test -f '$remote_path' && cp -p '$remote_path' '$remote_path.bak-$TS' || true)"

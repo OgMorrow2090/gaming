@@ -20,7 +20,12 @@ REPO="OgMorrow2090/guildwars2"
 WORKFLOW="build.yml"
 ARTIFACT_NAME="mystic-ai"
 DLL_NAME="mystic-ai.dll"
-SUBDIR="MysticAI"   # Mystic AI sits under addons/MysticAI/, not directly in addons/
+# Nexus loads DLLs from addons/ ROOT only — subdirectories are scanned for
+# per-addon assets (config files, etc.) via Paths_GetAddonDirectory, NOT for
+# DLLs. Every working sibling addon (mystic-clicker.dll, mystic-trading.dll,
+# ArcDPS.dll, ...) sits at addons/<name>.dll. We previously deployed to
+# addons/MysticAI/mystic-ai.dll and Nexus silently never loaded it — see
+# memory/nexus-dll-shadow-load-from-addons-root.md.
 
 LOCAL_DLL=""
 RUN_ID=""
@@ -95,23 +100,12 @@ for entry in "${REACHABLE[@]}"; do
     label="${entry#*|}"
     host="${target%%:*}"
     addons_dir="${target#*:}"
-    remote_dir="$addons_dir/$SUBDIR"
-    remote_path="$remote_dir/$DLL_NAME"
+    remote_path="$addons_dir/$DLL_NAME"
 
     echo "  [$label] $host:$remote_path"
 
-    # Detect + neutralise a stray mystic-ai.dll sitting at addons/ (parent
-    # folder, no subdir). On 2026-05-21 a legacy 1.1.13 stray at that path
-    # was being loaded by Nexus instead of addons/MysticAI/mystic-ai.dll —
-    # 11 hours of "the fix isn't taking" debugging before it was spotted.
-    # If Nexus finds two copies of the same Signature it can load either;
-    # we want only the subdir one.
-    stray="$addons_dir/$DLL_NAME"
-    ssh -o ConnectTimeout=8 "$host" "[ -f '$stray' ] && { mv -f '$stray' '$stray.stray-$TS'; echo '    NEUTRALISED stray at $stray (moved to .stray-$TS)'; } || true"
-
-    # First-time install creates the MysticAI subdir; subsequent deploys back
-    # up the existing DLL before overwrite.
-    ssh -o ConnectTimeout=8 "$host" "mkdir -p '$remote_dir' && (test -f '$remote_path' && cp -p '$remote_path' '$remote_path.bak-$TS' || true)"
+    # Backup any existing DLL before overwrite.
+    ssh -o ConnectTimeout=8 "$host" "test -f '$remote_path' && cp -p '$remote_path' '$remote_path.bak-$TS' || true"
 
     scp -q "$WORKDIR/$DLL_NAME" "$host:$remote_path"
 

@@ -1,69 +1,75 @@
 ---
-name: Nexus loads mystic-ai.dll from addons/ root if a stray sits there — shadows the addons/MysticAI/ copy
-description: Nexus scans both addons/ root and one-level subdirs for DLLs. If a stale mystic-ai.dll sits directly in addons/, Nexus loads THAT copy and ignores addons/MysticAI/mystic-ai.dll silently. Every "deploy this fixes it" then has no effect because the live DLL in GW2's memory is the stray, not the deployed version.
+name: Nexus loads addon DLLs from addons/ ROOT only — NOT subdirectories
+description: Nexus scans `addons/*.dll` flat, not recursively. A DLL placed in `addons/MysticAI/mystic-ai.dll` is silently never loaded. Subdirectories are reserved for per-addon config and assets read via Paths_GetAddonDirectory, not for the addon binary. Every sibling addon (mystic-clicker, mystic-trading, ArcDPS, …) sits at the root.
 metadata:
   type: project
 ---
 
 <!-- markdownlint-disable MD041 MD032 -->
 
-## The trap
+## The rule
 
-Mystic AI lives in `addons/MysticAI/mystic-ai.dll`, and the deploy script
-puts the DLL there. But Nexus also scans `addons/` root for DLLs. If a
-stray `addons/mystic-ai.dll` exists (from a legacy deploy convention,
-manual copy, or accidental drag), **Nexus loads the stray** and the
-subdir copy is silently ignored.
+**`addons/<name>.dll`** — the DLL lives at the addons root.
 
-There is no warning. The Nexus addon list shows one entry. The version
-string reports whatever the stray is. Every subsequent deploy looks like
-it succeeded (file hash on disk matches the artifact) but GW2 is running
-the stray in memory.
+**`addons/<Name>/`** — a same-named subdir for per-addon assets, config,
+icons, etc. The addon code reads from here via `Paths_GetAddonDirectory()`.
 
-Confirmed 2026-05-21: a 1.1.13-era stray (mtime May 20 13:57) was loaded
-by Nexus while the deploy script faithfully wrote 1.1.14 → 1.1.15 → 1.1.16
-→ 1.1.17 into `addons/MysticAI/`. None of the fixes ever took effect.
-The smoking gun:
+Nexus does **not** scan subdirectories for DLLs. A DLL placed under a
+subdir is silently never loaded; there is no warning, no log line in
+Nexus's loader, the addon just isn't there.
+
+## How this bit us (2026-05-21)
+
+The original Mystic AI Phase 1 plan assumed `addons/MysticAI/mystic-ai.dll`
+was the right path because Mystic AI has its own subdir for assets. The
+deploy script `scripts/deploy-mystic-ai-dll.sh` and three different
+session-internal hand-deploys all wrote to that subdir. Hash checks
+matched against the CI artifact every time — the file on disk was always
+the correct version. But GW2 silently never loaded the addon.
+
+Symptoms while the bug was live:
+
+- "I deploy a fix but the bug is still there" — nothing fixed because
+  nothing new was running. Survived versions 1.1.14 → 1.1.17.
+- Mystic AI didn't appear in the Nexus addon list.
+- `grep mystic-ai /proc/$(pgrep Gw2-64.exe)/maps` came back empty.
+- An older 1.1.13 DLL that *was* at `addons/mystic-ai.dll` from a much
+  earlier session was the only one ever loaded. We mistook it for a
+  "stray" and moved it aside, leaving the subdir-only deploys with
+  nothing to override and silencing the addon completely.
+
+## Detection recipe
+
+If "the deploy didn't take" / "the addon vanished":
 
 ```bash
-PID=$(pgrep -x Gw2-64.exe)
-loaded_inode=$(grep -i mystic-ai /proc/$PID/maps | head -1 | awk '{print $5}')
-ondisk_inode=$(stat -c %i "$ADDONS/MysticAI/mystic-ai.dll")
-[ "$loaded_inode" = "$ondisk_inode" ] || echo "GW2 has an OLDER DLL loaded than what is on disk"
-find $ADDONS -inum $loaded_inode    # tells you WHERE the stray lives
+# 1. Is the addon DLL even in the addon's process map?
+ssh host 'grep -i <addon> /proc/$(pgrep -x Gw2-64.exe)/maps | head -1'
+# Empty -> Nexus never loaded it.
+
+# 2. Confirm the DLL is at addons/ root (not in a subdir):
+ssh host 'ls -la "<addons-path>/<name>.dll"'
+# No such file -> the DLL is in the wrong place. Move/copy to root.
+
+# 3. Sanity check against a working sibling:
+ssh host 'ls "<addons-path>/" | grep \.dll$ | head'
+# Every one of these is at root — same convention applies.
 ```
 
-## Detection
+## Fixed pattern
 
-If "I deployed the fix but the bug is still there", check inode parity
-between the on-disk DLL and the one GW2 has mmapped. If they differ,
-something else is loading. `find -inum <loaded>` finds it.
-
-## Prevention
-
-The deploy script (`scripts/deploy-mystic-ai-dll.sh`, 2026-05-21+) now
-moves any `addons/mystic-ai.dll` aside as `.stray-<TS>` before writing
-the new DLL into `addons/MysticAI/`. Self-healing on every deploy.
-
-The Mystic Clicker deploy already only writes to `addons/mystic-clicker.dll`
-(no subdir), so this trap doesn't apply there. But if Mystic Clicker ever
-gets its own subdir, mirror the stray-check.
-
-## Why Nexus does this
-
-Nexus's load policy is "any `*.dll` in `addons/` or `addons/<name>/` is a
-candidate". When two DLLs export the same Nexus signature (-54323 for
-Mystic AI), the first one loaded wins. Load order depends on
-`readdir()` scan order — non-deterministic across filesystems / kernel
-versions. So even moving the stray temporarily can produce different
-behaviour across reboots; the fix is to actually delete (or rename out
-of `.dll` extension) the stray.
+`scripts/deploy-mystic-ai-dll.sh` now writes to `addons/mystic-ai.dll`
+(root) — identical to `deploy-mystic-clicker-dll.sh`. Per-resolution
+config files still live in `addons/MysticAI/mystic-ai-<W>x<H>.cfg` (the
+addon writes them via `Paths_GetAddonDirectory`) — that subdir is
+useful, just not for the DLL itself.
 
 ## Related
 
-- [[mystic-clicker-build-and-deploy]] — the auto-deploy watcher pattern
-  that pre-dated the MysticAI/ subdir convention; was the original
-  source of the stray at `addons/mystic-ai.dll`.
-- [[feedback_repo_first_then_deploy]] — same family ("deploy says
-  success but the host doesn't reflect the change"); this one was
-  invisible to the repo-vs-live diff because the file on disk did match.
+- [[mystic-clicker-build-and-deploy]] — Mystic Clicker has always
+  deployed to `addons/mystic-clicker.dll` (root). That's the convention
+  to mirror.
+- [[feedback_repo_first_then_deploy]] — same family of "the live state
+  doesn't match the repo intent". This one was harder to spot because
+  the repo file and the deployed file did match each other; what didn't
+  match was "where Nexus looks for it".

@@ -7,6 +7,27 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-21] — Mystic AI 1.1.17 — Book reads use the full panel
+
+### Changed
+
+- **Book reads now open the same review panel a drag-select capture does.**
+  Press the keybind → the saved region captures off-thread → the panel
+  pops up anchored to the book on screen, showing the captured thumbnail,
+  the answer text, and the full action-button row (Speech, Wiki, Research,
+  Copy, Book, Legendary). The Speech / Stop toggle and the panel-close
+  (X / Esc) all work the same way they do for any other capture — closing
+  the panel stops the in-flight read or narration.
+- Replaces the lightweight corner status pop-up added in 1.1.16. One UI
+  surface for both flows; same shortcuts; less divergent code.
+
+### Why
+
+The 1.1.16 status pop-up was non-interactive — it confirmed a book read
+fired but offered no way to stop it. Combined with the daemon-side
+auto-speak on the book prompt, a stray Menu-button-hold could lock you
+into a 30-second narration with no in-game out.
+
 ## [2026-05-21] — Mystic AI 1.1.16 — Speech toggle button + book-read status pop-up + chord rebind
 
 ### Changed

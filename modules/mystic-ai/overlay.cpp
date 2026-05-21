@@ -120,12 +120,26 @@ bool   g_reposPanel = false;   // snap the panel to the anchor on its next frame
 bool   g_panelOpen  = true;
 
 // --- Book read --------------------------------------------------------------
-// The Read-Book keybind is a plain one-shot: each press captures the saved
-// book region, sends it to the daemon to read aloud, and is done. The user
-// presses it again on the next page. The previous "auto-advance watch" that
-// re-fired on page-turn detection was removed in 1.1.14 — once a book finished
-// the watch kept sampling everything that subsequently appeared in that
-// region, which was the opposite of what people actually want.
+// The Read-Book keybind is a one-shot that routes through the same MODE_REVIEW
+// panel as a drag-select capture: capture the saved region off the render
+// thread, set g_lastCrop + g_haveSel as if we had drag-selected the book,
+// transition to MODE_REVIEW and fire the read. The user gets:
+//   - a visible panel (so the keybind never silently fails),
+//   - a Speech / Stop toggle button (kills in-flight narration),
+//   - the same Esc / X / panel-close path that stops any other read.
+// The earlier "audio-only book read with a separate corner status pop-up" was
+// removed in 1.1.17 — too many divergent code paths for the same intent.
+//
+// Worker-thread handoff. CaptureBackBufferRegion blocks until RT_PostRender,
+// so the capture has to run off the render thread. The render thread polls
+// these vars each frame in AdvanceBookRead() and, when a result lands,
+// promotes it into MODE_REVIEW.
+std::mutex           g_bookCapMtx;
+bool                 g_bookCapPending = false;
+bool                 g_bookCapFailed  = false;
+std::vector<uint8_t> g_bookCapPixels;
+int                  g_bookCapW = 0, g_bookCapH = 0;
+int                  g_bookCapX = 0, g_bookCapY = 0;
 
 inline float Mn(float a, float b) { return a < b ? a : b; }
 inline float Mx(float a, float b) { return a > b ? a : b; }
@@ -268,11 +282,26 @@ void StartCapture()
     std::thread(CaptureWorker).detach();
 }
 
-// Read-Book keybind. Plain one-shot: capture the saved book region, send to the
-// daemon to read aloud, done. The user presses the keybind again on the next
-// page. No panel ever opens for a book read — the daemon speaks the page, so
-// putting the transcribed text on screen would just repeat it. With no saved
-// region we show a Nexus toast so the press is never silent.
+// Book-region capture worker — runs off the render thread (CaptureBackBuffer-
+// Region blocks until RT_PostRender). Hands the pixels back to the render
+// thread via g_bookCap*; AdvanceBookRead() drains it next frame and promotes
+// it to MODE_REVIEW.
+void BookCaptureWorker(int x, int y, int w, int h)
+{
+    std::vector<uint8_t> px;
+    bool ok = (w > 0 && h > 0)
+              && CaptureBackBufferRegion(x, y, w, h, px, 1500);
+    std::lock_guard<std::mutex> lk(g_bookCapMtx);
+    g_bookCapPixels = std::move(px);
+    g_bookCapW = w; g_bookCapH = h;
+    g_bookCapX = x; g_bookCapY = y;
+    g_bookCapFailed  = !ok;
+    g_bookCapPending = true;
+}
+
+// Read-Book keybind. Spawns the capture worker; the rest happens in
+// AdvanceBookRead() once the worker delivers pixels. With no saved region we
+// just show a Nexus toast so the press is never silent.
 void StartBookRead()
 {
     if (g_BookRegionW <= 0 || g_BookRegionH <= 0)
@@ -282,8 +311,72 @@ void StartBookRead()
                                    "book page, then click the Book button to save it.");
         return;
     }
-    ClaudeVision::RequestRegion("Book", BOOK_PROMPT,
-                                g_BookRegionX, g_BookRegionY, g_BookRegionW, g_BookRegionH);
+    std::thread(BookCaptureWorker,
+                g_BookRegionX, g_BookRegionY,
+                g_BookRegionW, g_BookRegionH).detach();
+}
+
+// Render-thread step: drain a finished book-capture worker and pop the same
+// MODE_REVIEW panel a drag-select would. Cheap no-op when nothing is pending.
+void AdvanceBookRead()
+{
+    bool ready = false, failed = false;
+    std::vector<uint8_t> px;
+    int w = 0, h = 0, x = 0, y = 0;
+    {
+        std::lock_guard<std::mutex> lk(g_bookCapMtx);
+        if (!g_bookCapPending) return;
+        ready  = true;
+        failed = g_bookCapFailed;
+        px     = std::move(g_bookCapPixels);
+        w = g_bookCapW; h = g_bookCapH;
+        x = g_bookCapX; y = g_bookCapY;
+        g_bookCapPending = false;
+        g_bookCapFailed  = false;
+    }
+    if (!ready) return;
+    if (failed)
+    {
+        if (APIDefs)
+            APIDefs->GUI_SendAlert("Mystic AI: book region capture failed.");
+        return;
+    }
+
+    // Set up panel state as if the user had drag-selected the book region.
+    g_lastCrop  = px;     // panel re-uses this for action-button re-sends
+    g_lastCropW = w;
+    g_lastCropH = h;
+    g_haveSel = true;
+    g_selX = x; g_selY = y; g_selW = w; g_selH = h;
+
+    // Convert the pixel rect to display coords so the panel anchors near the
+    // book on screen. Game-window pixel size is the reference (display can be
+    // scaled by gamescope).
+    ImVec2 disp = ImGui::GetIO().DisplaySize;
+    int gw = w, gh = h;
+    if (GameWindow)
+    {
+        RECT r;
+        if (GetClientRect(GameWindow, &r))
+        {
+            gw = r.right - r.left;
+            gh = r.bottom - r.top;
+        }
+    }
+    float sx = (gw > 0) ? disp.x / (float)gw : 1.0f;
+    float sy = (gh > 0) ? disp.y / (float)gh : 1.0f;
+    g_boxDisp    = ImVec4((float)x * sx, (float)y * sy,
+                          (float)w * sx, (float)h * sy);
+    g_anchor     = g_boxDisp;
+    g_reposPanel = true;
+    g_panelOpen  = true;
+    g_mode       = MODE_REVIEW;
+
+    // Fire the read with the pre-captured pixels — same path as the panel's
+    // own buttons (Wiki, Research, Copy, Legendary). The daemon will speak
+    // the result (book reads auto-speak via the "in-game Guild Wars 2 book"
+    // marker in BOOK_PROMPT).
+    ClaudeVision::RequestPixels("Book", BOOK_PROMPT, std::move(px), w, h);
 }
 
 // Drain the keybind command. The Read command just voices the panel and never
@@ -1105,70 +1198,6 @@ void DrawPanel()
         ExitToIdle(true);    // panel dismissed — stop any in-flight read / speech
 }
 
-// Small status pop-up shown while a book read is in flight or narrating.
-// Book reads never open the main panel (audio-only), so without this widget
-// there is no visual feedback that the keybind fired — easy to double-press
-// without realising and end up with Claude describing the wrong region. The
-// indicator is anchored to whichever corner is FARTHEST from the saved book
-// region (so it never sits over the page being read) and disappears the
-// moment both the read and the narration are done.
-void DrawBookStatus()
-{
-    // Only render while the most recent / current request is a Book read AND
-    // it is still active (waiting on the daemon, or speaking the answer).
-    if (ClaudeVision::GetLabel() != "Book") return;
-    bool waiting  = (ClaudeVision::GetState() == ClaudeVision::State::Waiting);
-    bool speaking = ClaudeVision::IsSpeaking();
-    if (!waiting && !speaking) return;
-
-    const ImVec2 disp = ImGui::GetIO().DisplaySize;
-    const float  W = 280.0f * g_FontScale;
-    const float  H =  72.0f * g_FontScale;
-    const float  m =  16.0f;                  // margin from the screen edge
-
-    // Pick the corner farthest from the centre of the saved book region. Avoids
-    // sitting on top of the page; falls back cleanly when no region is saved.
-    float bcx = (g_BookRegionW > 0)
-                ? (float)g_BookRegionX + (float)g_BookRegionW * 0.5f
-                : disp.x * 0.5f;
-    float bcy = (g_BookRegionH > 0)
-                ? (float)g_BookRegionY + (float)g_BookRegionH * 0.5f
-                : disp.y * 0.5f;
-    bool right  = bcx <  disp.x * 0.5f;       // book on left -> show on right
-    bool bottom = bcy <  disp.y * 0.5f;       // book on top  -> show at bottom
-    ImVec2 pos(right  ? disp.x - W - m : m,
-               bottom ? disp.y - H - m : m);
-
-    ImGui::SetNextWindowPos(pos, ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(W, H), ImGuiCond_Always);
-    ImGui::SetNextWindowBgAlpha(0.85f);
-    ImGuiWindowFlags fl = ImGuiWindowFlags_NoDecoration
-                        | ImGuiWindowFlags_NoMove
-                        | ImGuiWindowFlags_NoFocusOnAppearing
-                        | ImGuiWindowFlags_NoNav
-                        | ImGuiWindowFlags_NoInputs;
-    if (ImGui::Begin("##mystic-ai-book-status", nullptr, fl))
-    {
-        ImGui::SetWindowFontScale(g_FontScale);
-        ImGui::TextColored(ImVec4(1.0f, 0.85f, 0.3f, 1.0f), "Mystic AI");
-        ImGui::Separator();
-        if (waiting)
-        {
-            // Simple dot-trail spinner — three frames at ~3 Hz.
-            int   dots = ((int)(ImGui::GetTime() * 3.0)) % 4;
-            char  buf[32];
-            snprintf(buf, sizeof buf, "Reading book%.*s",
-                     dots, "...");
-            ImGui::Text("%s", buf);
-        }
-        else
-        {
-            ImGui::Text("Speaking...");
-        }
-    }
-    ImGui::End();
-}
-
 }  // namespace
 
 // ---------------------------------------------------------------------------
@@ -1196,6 +1225,7 @@ void RenderMysticAI()
         ExitToIdle(true);
 
     AdvanceCapture();
+    AdvanceBookRead();   // promotes a finished book-region capture to MODE_REVIEW
 
     if (g_mode == MODE_SELECTING)
     {
@@ -1203,14 +1233,12 @@ void RenderMysticAI()
     }
     else if (g_mode == MODE_REVIEW)
     {
-        DrawFrozenOverlay(false);
+        // Book reads skip the frozen-frame freeze (we only captured the region,
+        // not the whole screen); their MODE_REVIEW shows only the panel.
+        if (ClaudeVision::GetLabel() != "Book")
+            DrawFrozenOverlay(false);
         DrawPanel();
     }
-
-    // Tiny corner pop-up while a book read is in flight — visible feedback
-    // that the keybind actually fired. Renders only while a Book read is
-    // waiting on the daemon or speaking the answer.
-    DrawBookStatus();
 
     // Publish for the WndProc hook whether Mystic AI should own Esc this frame.
     // ONLY while a Mystic AI window is on screen (the freeze overlay or the

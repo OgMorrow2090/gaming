@@ -7,6 +7,33 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-21] — Mystic AI 1.1.16 — Speech toggle button + book-read status pop-up + chord rebind
+
+### Changed
+
+- **Read button renamed to "Speech" and is now a toggle.** Click while
+  silent → speaks the panel content. Click while speaking → stops the
+  narration. Same toggle applies to the `MYSTIC_AI_READ` keybind. Stops
+  the "I clicked Read by mistake and now have to wait for it to finish"
+  case.
+- **Controller VDF** `Guild Wars 2 - Og v24.5` → `v24.6`. The button_menu
+  Full_Press chord now emits **F14** (Mystic AI Capture) and the
+  Long_Press chord emits **F13** (Mystic AI Read Book), matching the
+  Nexus InputBinds.json bindings deployed in the previous commit. The old
+  `LEFT_ALT + F10` / `LEFT_SHIFT + F10` pairs are gone — F13/F14 are
+  single-key chord-only scancodes that can't be typed on any physical
+  keyboard, eliminating the entire collision class.
+
+### Added
+
+- **Book-read status pop-up.** Book reads are audio-only (no main panel),
+  so there was no visual signal that the keybind fired. Now a small
+  corner widget shows "Mystic AI — Reading book..." while the daemon is
+  thinking and "Speaking..." while narrating. Auto-hides when both end.
+  Positions itself in whichever corner is FARTHEST from the saved book
+  region (so it never sits over the page being read). No-input — purely
+  a notification.
+
 ## [2026-05-20] — Mystic AI 1.1.15 — panel-close and GW2-close both stop speech
 
 ### Fixed

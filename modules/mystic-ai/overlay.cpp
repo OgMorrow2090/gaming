@@ -295,10 +295,15 @@ void ProcessCommand()
     int c = g_cmd.exchange(CMD_NONE);
     if (c == CMD_NONE) return;
 
-    // Read — voice the panel's cached content; leaves the mode untouched.
+    // Read keybind — toggle: stop the current narration if one is playing;
+    // otherwise voice the panel's cached content. Same toggle as the
+    // Speech button. Leaves the mode untouched either way.
     if (c == CMD_READ)
     {
-        ClaudeVision::Speak(g_spokenText);
+        if (ClaudeVision::IsSpeaking())
+            ClaudeVision::Stop();
+        else
+            ClaudeVision::Speak(g_spokenText);
         return;
     }
 
@@ -868,12 +873,22 @@ void DrawPanel()
             float bw = (ImGui::GetContentRegionAvail().x - sp * 2.0f) / 3.0f;
             ImGui::SetWindowFontScale(g_FontScale * 0.85f);
 
-            // Row 1 — Read / Wiki / Research.
-            // Read voices the panel's cached SPOKEN line on demand — fire-and-
-            // forget, so the overview keeps showing while speech plays.
-            if (ActionButton(Icons::READ, "Read", "Read this aloud.",
-                             COL_READ, bw, btnH))
-                ClaudeVision::Speak(g_spokenText);
+            // Row 1 — Speech / Wiki / Research.
+            // Speech is a toggle: while a narration is in flight, the button
+            // reads "Stop" and silences it; otherwise it voices the panel's
+            // cached SPOKEN line. Same toggle is mirrored on the Read keybind
+            // in ProcessCommand.
+            {
+                bool speaking = ClaudeVision::IsSpeaking();
+                const char* lbl = speaking ? "Stop"  : "Speech";
+                const char* tip = speaking ? "Stop the current narration."
+                                           : "Speak this aloud.";
+                if (ActionButton(Icons::READ, lbl, tip, COL_READ, bw, btnH))
+                {
+                    if (speaking) ClaudeVision::Stop();
+                    else          ClaudeVision::Speak(g_spokenText);
+                }
+            }
             ImGui::SameLine();
             if (ActionButton(Icons::WIKI, "Wiki", "Queue this for your GW2 wiki "
                              "favorites - added on the next game launch.",
@@ -1090,6 +1105,70 @@ void DrawPanel()
         ExitToIdle(true);    // panel dismissed — stop any in-flight read / speech
 }
 
+// Small status pop-up shown while a book read is in flight or narrating.
+// Book reads never open the main panel (audio-only), so without this widget
+// there is no visual feedback that the keybind fired — easy to double-press
+// without realising and end up with Claude describing the wrong region. The
+// indicator is anchored to whichever corner is FARTHEST from the saved book
+// region (so it never sits over the page being read) and disappears the
+// moment both the read and the narration are done.
+void DrawBookStatus()
+{
+    // Only render while the most recent / current request is a Book read AND
+    // it is still active (waiting on the daemon, or speaking the answer).
+    if (ClaudeVision::GetLabel() != "Book") return;
+    bool waiting  = (ClaudeVision::GetState() == ClaudeVision::State::Waiting);
+    bool speaking = ClaudeVision::IsSpeaking();
+    if (!waiting && !speaking) return;
+
+    const ImVec2 disp = ImGui::GetIO().DisplaySize;
+    const float  W = 280.0f * g_FontScale;
+    const float  H =  72.0f * g_FontScale;
+    const float  m =  16.0f;                  // margin from the screen edge
+
+    // Pick the corner farthest from the centre of the saved book region. Avoids
+    // sitting on top of the page; falls back cleanly when no region is saved.
+    float bcx = (g_BookRegionW > 0)
+                ? (float)g_BookRegionX + (float)g_BookRegionW * 0.5f
+                : disp.x * 0.5f;
+    float bcy = (g_BookRegionH > 0)
+                ? (float)g_BookRegionY + (float)g_BookRegionH * 0.5f
+                : disp.y * 0.5f;
+    bool right  = bcx <  disp.x * 0.5f;       // book on left -> show on right
+    bool bottom = bcy <  disp.y * 0.5f;       // book on top  -> show at bottom
+    ImVec2 pos(right  ? disp.x - W - m : m,
+               bottom ? disp.y - H - m : m);
+
+    ImGui::SetNextWindowPos(pos, ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(W, H), ImGuiCond_Always);
+    ImGui::SetNextWindowBgAlpha(0.85f);
+    ImGuiWindowFlags fl = ImGuiWindowFlags_NoDecoration
+                        | ImGuiWindowFlags_NoMove
+                        | ImGuiWindowFlags_NoFocusOnAppearing
+                        | ImGuiWindowFlags_NoNav
+                        | ImGuiWindowFlags_NoInputs;
+    if (ImGui::Begin("##mystic-ai-book-status", nullptr, fl))
+    {
+        ImGui::SetWindowFontScale(g_FontScale);
+        ImGui::TextColored(ImVec4(1.0f, 0.85f, 0.3f, 1.0f), "Mystic AI");
+        ImGui::Separator();
+        if (waiting)
+        {
+            // Simple dot-trail spinner — three frames at ~3 Hz.
+            int   dots = ((int)(ImGui::GetTime() * 3.0)) % 4;
+            char  buf[32];
+            snprintf(buf, sizeof buf, "Reading book%.*s",
+                     dots, "...");
+            ImGui::Text("%s", buf);
+        }
+        else
+        {
+            ImGui::Text("Speaking...");
+        }
+    }
+    ImGui::End();
+}
+
 }  // namespace
 
 // ---------------------------------------------------------------------------
@@ -1127,6 +1206,11 @@ void RenderMysticAI()
         DrawFrozenOverlay(false);
         DrawPanel();
     }
+
+    // Tiny corner pop-up while a book read is in flight — visible feedback
+    // that the keybind actually fired. Renders only while a Book read is
+    // waiting on the daemon or speaking the answer.
+    DrawBookStatus();
 
     // Publish for the WndProc hook whether Mystic AI should own Esc this frame.
     // ONLY while a Mystic AI window is on screen (the freeze overlay or the

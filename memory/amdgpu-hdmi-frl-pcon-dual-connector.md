@@ -1,11 +1,11 @@
 ---
-name: amdgpu exposes the GPU's HDMI port as TWO connectors (HDMI-A-1 + DP-2) for FRL/HDMI-2.0 dual-mode
-description: RX 9070 XT (and other RDNA3/4 cards) have an on-die DP→HDMI PCON converter on their physical HDMI port. Linux amdgpu enumerates this as two separate DRM connectors — `HDMI-A-1` is the TMDS / HDMI 2.0 fallback path, `DP-2` is the HDMI 2.1 FRL path via PCON. Only one is "connected" at a time depending on which mode the link trained at. Same physical socket, same cable, switched dynamically.
+name: amdgpu exposes the DP→HDMI dongle as TWO DRM connectors (HDMI-A-1 + DP-2) for FRL/HDMI-2.0 dual-mode
+description: An EXTERNAL DP→HDMI 2.1 dongle (PCON adapter) is plugged into one of the RX 9070 XT's DisplayPort outputs; the other end is a real HDMI cable to the TV. Linux amdgpu enumerates this single physical chain as two separate DRM connectors — `HDMI-A-1` is the TMDS / HDMI 2.0 fallback view, `DP-2` is the HDMI 2.1 FRL view via the dongle's PCON. Only one is "connected" at a time depending on which mode the link trained at. The dongle (unlike older passive ones) passes audio. Practical ceiling is ~4K@144 — 4K@165 trains transiently then goes black under load.
 metadata:
   type: project
 ---
 
-<!-- markdownlint-disable MD041 MD032 -->
+<!-- markdownlint-disable MD041 MD032 MD031 MD040 -->
 
 ## What you see
 

@@ -7,6 +7,18 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-25] — Mystic AI 1.1.19 — Pin button icon-only + redundant Esc fallback
+
+### Fixed
+
+- **Pin button is icon-only now.** The fallback path was showing a wide "Pin"
+  text button (cut off in the corner) when the texture wasn't loaded on first
+  paint — now renders a small empty square instead, so layout never breaks.
+- **Esc on the drag-select overlay was unreliable.** Added a redundant
+  `ImGui::IsKeyPressed(Escape)` check alongside the existing WndProc-based
+  path, so Esc cancels MODE_CAPTURING / MODE_SELECTING even if the WndProc
+  hook order means ImGui sees the key first.
+
 ## [2026-05-25] — Mystic AI 1.1.18 — Pin button keeps the panel open across Esc
 
 ### Added

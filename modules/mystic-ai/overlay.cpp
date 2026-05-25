@@ -941,9 +941,12 @@ void DrawPanel()
 
         // Pin toggle — small icon button right-aligned on its own row. When
         // pinned, Esc no longer closes the panel (see RenderMysticAI). The X
-        // on the title bar still works either way.
+        // on the title bar still works either way. Icon-only so the button
+        // stays compact; if the texture isn't loaded yet we render a tiny
+        // square placeholder rather than a wide text-fallback that would
+        // overflow the corner.
         {
-            float pinSz = 22.0f * g_ButtonScale;
+            float pinSz = 24.0f * g_ButtonScale;
             ImGui::SetCursorPosX(ImGui::GetWindowContentRegionMax().x - pinSz);
             Texture_t* pinTex = Icons::Get(Icons::PIN);
             ImU32 pinCol = g_pinned ? IM_COL32(222, 186, 108, 235)
@@ -955,8 +958,7 @@ void DrawPanel()
                 clicked = ImGui::ImageButton((ImTextureID)(intptr_t)pinTex->Resource,
                                              ImVec2(pinSz, pinSz));
             else
-                clicked = ImGui::Button(g_pinned ? "Pinned" : "Pin",
-                                        ImVec2(56.0f, pinSz));
+                clicked = ImGui::Button("##mai_pin_btn", ImVec2(pinSz, pinSz));
             if (clicked) g_pinned = !g_pinned;
             ImGui::PopStyleColor();
             ImGui::PopID();
@@ -1260,7 +1262,14 @@ void RenderMysticAI()
     // When the review panel is pinned, swallow Esc but don't close — the user
     // wants to keep researching. Capture / select modes ignore the pin so Esc
     // can still cancel an unfinished drag.
-    if (g_escConsumed.exchange(false) && g_mode != MODE_IDLE
+    //
+    // Also check ImGui::IsKeyPressed(Esc) as a redundant fallback: in some
+    // input states (e.g. mid-drag on the frozen overlay) ImGui may absorb the
+    // Esc before the Nexus WndProc sees it. ImGui has its own copy of the key
+    // event and reports it here regardless. Same pin guard applies.
+    bool escFromWnd  = g_escConsumed.exchange(false);
+    bool escFromImg  = ImGui::IsKeyPressed(ImGuiKey_Escape, /*repeat=*/false);
+    if ((escFromWnd || escFromImg) && g_mode != MODE_IDLE
         && !(g_pinned && g_mode == MODE_REVIEW))
         ExitToIdle(true);
 

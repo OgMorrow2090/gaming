@@ -1,0 +1,40 @@
+GW2 Steam launch options — auto-login
+=====================================
+
+Set ONCE via Steam UI (Properties → Launch Options on the Guild Wars 2 entry).
+Steam persists this per-user in localconfig.vdf and survives reboots.
+
+    -autologin -nopatchui -maploadinfo
+
+What each flag does:
+  -autologin     use the email/password stored in Local.dat from first login
+  -nopatchui     skip the launcher window after the game finishes patching
+  -maploadinfo   show map names/loading info on the load screen (cosmetic)
+
+First-launch requirement
+------------------------
+The very first time you log in, tick "Remember email" AND enter your password.
+GW2 stores both in Local.dat (next to the game files). Every subsequent launch
+with -autologin reads from that file and goes straight into character select.
+
+Where Local.dat lives (Proton prefix on bazzite)
+------------------------------------------------
+~/.local/share/Steam/steamapps/compatdata/1284210/pfx/drive_c/users/steamuser/AppData/Roaming/Guild Wars 2/Local.dat
+
+If you ever reset the Proton prefix or "delete game files", Local.dat goes with
+it and you'll need to log in once more to re-prime it.
+
+DO NOT do this
+--------------
+    -email you@example.com -password hunter2
+
+  - Visible in `ps aux` while GW2 starts.
+  - Stored in plaintext in localconfig.vdf (world-readable on multi-user boxes).
+  - The -password flag is silently ignored on current GW2 builds anyway.
+
+Steam appid
+-----------
+Guild Wars 2 = 1284210
+
+URI to launch from anywhere on the system:
+    steam steam://rungameid/1284210

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Guild Wars 2 (auto-launch)
+Comment=Launch GW2 via Steam URI on Desktop-mode session start
+Exec=steam -silent steam://rungameid/1284210
+Icon=steam
+Terminal=false
+X-GNOME-Autostart-enabled=true
+OnlyShowIn=KDE;GNOME;XFCE;

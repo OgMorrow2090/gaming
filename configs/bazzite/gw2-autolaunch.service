@@ -1,0 +1,17 @@
+[Unit]
+Description=Auto-launch Guild Wars 2 once gamescope-session is ready
+Documentation=file://%h/scripts/setup-gw2-autologin.sh
+After=gamescope-session-plus@steam.service
+Requires=gamescope-session-plus@steam.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+# Wait for the Steam process to be alive AND have registered its IPC socket
+# before firing the steam:// URI — otherwise the URI is dropped on the floor
+# and the boot lands in Big Picture instead of GW2.
+ExecStartPre=/bin/sh -c 'for i in $(seq 1 60); do pgrep -x steam >/dev/null && [ -S "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/steam/ScreensaverEnabled" ] && break; pgrep -x steam >/dev/null && break; sleep 1; done; sleep 4'
+ExecStart=/usr/bin/steam steam://rungameid/1284210
+
+[Install]
+WantedBy=default.target

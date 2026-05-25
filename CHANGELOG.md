@@ -7,6 +7,32 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-25] — bazzite: GW2 auto-login + Game-Mode auto-launch
+
+### Added
+
+- `configs/bazzite/gw2-launch-options.txt` — documents the Steam launch
+  options that drive GW2 auto-login (`-autologin -nopatchui -maploadinfo`)
+  and why putting `-email`/`-password` on the command line is a bad idea.
+- `configs/bazzite/gw2-autolaunch.service` — systemd user unit that fires
+  `steam steam://rungameid/1284210` once `gamescope-session-plus@steam.service`
+  is up. Makes Game-Mode boot land straight in GW2 instead of Big Picture.
+- `configs/bazzite/gw2-autolaunch.desktop` — equivalent autostart entry for
+  KDE/GNOME Desktop-Mode sessions (the systemd path doesn't fire there).
+- `scripts/setup-gw2-autologin.sh` — idempotent installer. Re-run to
+  reinstall after a reflash; supports `--uninstall` and `--no-autolaunch`
+  (for just the launch-options reminder).
+
+### Notes
+
+- The launch options themselves must be pasted into Steam UI (Properties →
+  Launch Options) once per Steam install — the script prints them. Steam
+  persists them in `localconfig.vdf`; we intentionally don't auto-patch
+  that file to avoid clobbering other tuning.
+- First GW2 launch still needs you to tick "Remember email" + enter the
+  password — that primes `Local.dat` in the Proton prefix. From then on
+  every boot is silent.
+
 ## [2026-05-25] — Mystic AI 1.1.22 — Pinned-Esc hides the frozen-frame overlay (keeps panel floating)
 
 ### Added

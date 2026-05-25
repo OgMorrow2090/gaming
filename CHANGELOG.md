@@ -7,6 +7,20 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-25] — Mystic AI 1.1.20 — Esc cancels drag-select via GetAsyncKeyState
+
+### Fixed
+
+- **Esc on the drag-select overlay still wasn't cancelling.** Both the
+  WndProc-based path (Mystic AI returns 0 from its WndProc hook, which
+  also stops Nexus's ImGui-bridge hook from running) and the
+  `ImGui::IsKeyPressed` fallback added in 1.1.19 missed the key during
+  the frozen-frame mouse-capture state.
+- Added a third path: direct `GetAsyncKeyState(VK_ESCAPE)` poll each
+  frame with edge-detection so a held key doesn't refire. Bypasses both
+  the WndProc chain and ImGui's input system entirely — works regardless
+  of what the surrounding focus/capture state is doing.
+
 ## [2026-05-25] — Mystic AI 1.1.19 — Pin button icon-only + redundant Esc fallback
 
 ### Fixed

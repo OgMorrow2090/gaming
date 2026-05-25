@@ -1253,23 +1253,32 @@ void RenderMysticAI()
     ClaudeVision::Poll();
     ProcessCommand();
 
-    // Esc — the WndProc hook (MysticAIWndProc) swallows the key and posts it
-    // here, so the panel/overlay closes without GW2 also closing the book or
-    // inventory it had open behind it. The hook only swallows Esc while a
-    // Mystic AI window is actually on screen (see the g_uiActive publish
-    // below), so a consumed Esc always means "close that window".
+    // Esc — three converging detection paths because each on its own has
+    // gaps in MODE_SELECTING:
     //
-    // When the review panel is pinned, swallow Esc but don't close — the user
-    // wants to keep researching. Capture / select modes ignore the pin so Esc
-    // can still cancel an unfinished drag.
+    //   1. WndProc hook (MysticAIWndProc) swallows VK_ESCAPE when g_uiActive
+    //      is published, then posts it here via g_escConsumed. Returning 0
+    //      stops GW2 from also seeing the key (so the book/inventory behind
+    //      the overlay stays open). Downside: returning 0 may also stop
+    //      Nexus's ImGui-bridge hook from running, so ImGui::IsKeyPressed
+    //      never registers the key during the drag overlay.
+    //   2. ImGui::IsKeyPressed — works when path 1 didn't swallow first.
+    //   3. GetAsyncKeyState — direct Win32 physical-key read, bypasses both
+    //      the WndProc chain AND ImGui's input system. Catches the case
+    //      where the drag-select mouse-capture state breaks (1) and (2).
     //
-    // Also check ImGui::IsKeyPressed(Esc) as a redundant fallback: in some
-    // input states (e.g. mid-drag on the frozen overlay) ImGui may absorb the
-    // Esc before the Nexus WndProc sees it. ImGui has its own copy of the key
-    // event and reports it here regardless. Same pin guard applies.
+    // The pin guard applies to all three so a pinned panel still ignores Esc.
     bool escFromWnd  = g_escConsumed.exchange(false);
     bool escFromImg  = ImGui::IsKeyPressed(ImGuiKey_Escape, /*repeat=*/false);
-    if ((escFromWnd || escFromImg) && g_mode != MODE_IDLE
+
+    // Edge-detect GetAsyncKeyState so a held key doesn't fire every frame.
+    // The high bit (0x8000) is set while the key is currently down.
+    static bool s_escAsyncPrev = false;
+    bool escAsyncNow  = (GetAsyncKeyState(VK_ESCAPE) & 0x8000) != 0;
+    bool escFromAsync = escAsyncNow && !s_escAsyncPrev;
+    s_escAsyncPrev    = escAsyncNow;
+
+    if ((escFromWnd || escFromImg || escFromAsync) && g_mode != MODE_IDLE
         && !(g_pinned && g_mode == MODE_REVIEW))
         ExitToIdle(true);
 

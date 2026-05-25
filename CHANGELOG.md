@@ -7,6 +7,19 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-25] — Mystic AI 1.1.21 — Capture chord replaces a pinned panel (instead of just closing it)
+
+### Fixed
+
+- **When the review panel is pinned, pressing the Capture chord (R1+Menu)
+  again now starts a fresh capture instead of closing the panel.** Matches
+  the original "new capture replaces pinned" design intent from when pin
+  shipped in 1.1.18. Previously the chord acted as a cancel-toggle in all
+  states, which made pin half-useful on a controller (Esc was guarded but
+  the chord wasn't).
+- Same fix applies to the Read Book chord: re-pressing it on a pinned book
+  panel kicks off a fresh book read.
+
 ## [2026-05-25] — Mystic AI 1.1.20 — Esc cancels drag-select via GetAsyncKeyState
 
 ### Fixed

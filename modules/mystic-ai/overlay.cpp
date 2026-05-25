@@ -410,8 +410,14 @@ void ProcessCommand()
 
     if (g_mode != MODE_IDLE)
     {
-        ExitToIdle(true);
-        return;
+        // Re-pressing the chord while non-idle normally cancels (toggle). But
+        // when the review panel is PINNED, the design intent is "new capture
+        // replaces pinned" — chord should kick off a fresh capture/book read,
+        // not just close the pinned panel. Detect that and fall through.
+        bool wasPinnedReview = (g_mode == MODE_REVIEW && g_pinned);
+        ExitToIdle(true);                          // clears state (incl. pin)
+        if (!wasPinnedReview) return;               // unpinned: plain cancel
+        // pinned review + chord: keep going, StartCapture / StartBookRead below
     }
     if (ClaudeVision::GetState() == ClaudeVision::State::Waiting
         || ClaudeVision::IsSpeaking())

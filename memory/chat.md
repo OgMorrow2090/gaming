@@ -1420,3 +1420,57 @@ User: "always repo 1st then deploy". Captured as `memory/feedback_repo_first_the
 - **Slot 16 in-game verification**: deployed but not yet pressed in-game. If `key_press 1` is also not a valid Steam Input token, `controller.txt` will show "Failed to create digital binding 'key_press 1, ...'" and the chord will do nothing — pick a different emission key. Likely fine (1–9 are standard Steam Input tokens via the chord setup that emits skills) but unverified.
 - **TaimiHUD auto-uncheck-completed**: feature exists on `arc/api` branch (issue #59). Build from that branch if user wants it before main merges.
 - **TaCO vs Tekkit's Guide pack**: user picking; no action.
+
+## 2026-05-25 — Bazzite 4K display saga, Mystic AI wiki diagnosis, Pathing Window keybind fix
+
+Long mixed-bag session that opened on "Xbox plugged in and now 4K@120 is missing from BPM" and ended with the Taimi pathing-window chord rebound and the Mystic AI wiki pipeline diagnosed end-to-end. Three themes.
+
+### Theme 1: amdgpu HDMI-A-1 ↔ DP-2 connector dual-state
+
+User's friend plugged an Xbox into the same TV HDMI port bazzite uses. After bazzite came back, BPM only offered 4K@60 — 4K@120 had vanished. Two-hour archaeology chased the wrong abstraction (TV settings, EDID re-publishing, factory reset, wall power cycle, Quick Start+ disable, Deep Color toggle, HDMI port change to HDMI 1) — none of it moved the needle because **bazzite's kernel had been looking at the wrong connector the whole time**.
+
+Real story: an **external BENFEI DP→HDMI 2.1 dongle** sits between the GPU's DisplayPort output and the TV. amdgpu enumerates that same physical chain as TWO DRM connectors — `HDMI-A-1` is the TMDS / HDMI 2.0 fallback view; `DP-2` is the HDMI 2.1 FRL view via the dongle's on-die PCON. When FRL trains successfully `DP-2` is "connected"; when training fails it falls back to `HDMI-A-1`. The Xbox handshake had dropped FRL state, so the connection was sitting on the `HDMI-A-1` slow path the whole session.
+
+What actually fixed it: `systemctl --user restart gamescope-session-plus@steam.service` re-triggered the connector probe and FRL trained successfully. Connector flipped from `HDMI-A-1` to `DP-2`, mode list expanded to include 4K@120 + 4K@165, gamescope picked the requested mode.
+
+Captured in `memory/amdgpu-hdmi-frl-pcon-dual-connector.md` (commit `2fec5ad`) — corrected in same commit after user clarified it's an external dongle, not on-die GPU PCON.
+
+Further findings:
+
+- **4K@165 is unstable on the BENFEI dongle.** Trained transiently then blacked out under load. The DP source side is DP 1.4 (32.4 Gbps ceiling with DSC) which is too tight for 4K@165 RGB 4:4:4. Cable + dongle margin can't hold it. 4K@120 is the practical ceiling.
+- **DP 2.1 → HDMI 2.1 active adapter category basically doesn't exist as a consumer product yet** (May 2026). Closest is CalDigit's DP 2.0 → HDMI 2.1 at ~£100, marginal improvement only.
+- **Native amdgpu direct-HDMI FRL is coming in kernel 7.2** (expected late 2026; opt-in via `amdgpu.dc_feature_mask=0x400` boot param, default-on in 7.3+). When that lands, the dongle disappears from the chain.
+- Verdict: **stay on 4K@120 with the BENFEI dongle until kernel 7.2 ships on Bazzite.** No engineering needed.
+
+### Theme 2: Mystic AI wiki pipeline — works as designed, but with timing constraint
+
+User flagged that wiki favs added via Mystic AI's screen-grab + Wiki button "don't seem to be adding them even after relaunch". Deep-dive on the pipeline:
+
+- **Daemon flow is correct**: `action_wiki_fav` queues entries in `~/.cache/gw2-claude/pending-favs.json`; main loop `flush_pending_favs()` runs every 10s and writes queued entries into `addons/NexusGameWiki/library.json` — but only when GW2 is closed (to avoid NGW's shutdown-rewrite clobbering the daemon's edit).
+- **NGW's `LoadLibrary` only filters on empty-title** — valid pageId + non-empty title entries are preserved. Confirmed by reading NGW source verbatim (`mestyq/NexusGameWiki` `LoadLibrary`/`ParseSavedPageEntry`/`SerializeSavedPageEntry`).
+- **Live verification**: at session start library.json had only 5 old Ambrite-weapon favs + the daemon's pending queue had 3 entries (Eternity's Garden achievements, Inner Nayos, Eternity's Garden). User closed GW2, daemon flushed the 3 pending entries, GW2 relaunched — library.json then had 8 favs including all 3 daemon adds. **Pipeline works.** Earlier-session "missing favs" was just the ≤10s flush latency racing against rapid GW2 close→open cycles.
+- **My fake injection test (`MYSTIC_AI_TEST_ENTRY` with pageId 999000) WAS dropped** — confirming NGW does silently drop entries with unresolvable wiki pageIds, but real wiki-API-resolved pageIds survive fine.
+- **One real-fav fix shipped**: the daemon's wiki search for "Eternity's Garden" returned the zone page (pageId 415157) when user intended the mastery page. User picked "Visions of Eternity mastery tracks" (pageId 405337) via AskUserQuestion; updated library.json in place (atomic write, GW2 closed).
+
+Decided NOT to do the planned file-watcher PR work (fork NexusGameWiki + CraftyLegend, add background mtime-poll thread, CI workflows, deploy scripts, upstream PRs) — would only buy "in-session visibility" without the close-reopen wait. User confirmed launch-cycle delay is acceptable. **File-watcher PRs parked**; revisit only if delay becomes painful.
+
+### Theme 3: Pathing Window controller chord — scancode vs VK confusion (commit `3b82229`)
+
+Slot 16 chord (Utility Wheel → Pathing Window) didn't open the in-game window. Symptoms:
+
+- Nexus UI showed `pathing-window-toggle` as bound to **Alt+Shift+N** (not Alt+Shift+1 as documented)
+- Controller VDF slot 16 emitted `LEFT_ALT + LEFT_SHIFT + 1` as 3 sequential `key_press` lines
+
+Two compounding bugs:
+
+1. **Scancode/VK mixup from previous session**: Nexus stores Windows **scancodes**, not VK codes. Code=49 is the scancode for **`N`**, not for `1`. Previous session's chat note "Code=49 (= scancode for `1`)" was wrong. The Taimi default binding was Alt+Shift+N all along.
+2. **3-key sequential emission**: Per `steam-input-multi-binding-fires-sequentially.md`, Steam Input emits a `bindings { }` block sequentially — modifiers release between presses. So Alt+Shift+1 emitted as 3 lines fires as Alt-down/up → Shift-down/up → 1-down/up, never as a chord. Even if the binding HAD been "Alt+Shift+1" the chord wouldn't have triggered it.
+
+Fix: switched both sides to a **single key with no modifiers** — `KEYPAD_5` (Code=76 in Nexus scancodes, `KEYPAD_5` token confirmed working in existing VDF). Cleanest possible chord. Deployed VDF v24.9 to bazzite + repo (Deck offline at the time, will deploy on next sync), restarted `gamescope-session-plus` to invalidate Steam Input cache, user confirmed in-game: chord opens the TaimiHUD pathing pack window cleanly.
+
+### Open items / next sessions
+
+- **Deck VDF deploy pending** — Deck was offline during the v24.9 deploy. Push `configs/gw2-keybinds/controller_neptune.vdf` to deck@172.16.100.95 when it comes back.
+- **NGW favs file-watcher PR parked** — only do if launch-cycle wait becomes painful.
+- **TaimiHUD auto-uncheck-completed** — still on `arc/api` upstream branch (issue #59). Build from that branch if user wants it before main merges.
+- **Native amdgpu direct HDMI 2.1 FRL** — wait for kernel 7.2 (Bazzite usually picks up new kernels within weeks of mainline; expected late 2026). When it lands, can drop the BENFEI dongle.

@@ -1474,3 +1474,29 @@ Fix: switched both sides to a **single key with no modifiers** — `KEYPAD_5` (C
 - **NGW favs file-watcher PR parked** — only do if launch-cycle wait becomes painful.
 - **TaimiHUD auto-uncheck-completed** — still on `arc/api` upstream branch (issue #59). Build from that branch if user wants it before main merges.
 - **Native amdgpu direct HDMI 2.1 FRL** — wait for kernel 7.2 (Bazzite usually picks up new kernels within weeks of mainline; expected late 2026). When it lands, can drop the BENFEI dongle.
+
+### Continuation (same day): Mystic AI Pin feature — 5 build iterations (1.1.18 → 1.1.22)
+
+Started "can you add a pin window option, sometimes research something and want the window to stay open". Ended with a working pinned panel that hides the dimmed snapshot on Esc + replaces itself on new capture chord. Five rapid build/deploy iterations driven by sequential bug discovery — felt frustrating in the moment but each cycle exposed a real input/state issue worth documenting.
+
+**1.1.18** (`d013e34`) — first cut. Added `g_pinned` state, pin toggle button in the panel top-right, Esc guard in MODE_REVIEW only. Embedded `pin.png` icon via `assets/generate-icons.py` mirroring the existing icon pipeline (`resources.rc` + `resource.h` + `Icons::PIN`). Session-only by user pick (always opens unpinned, ExitToIdle clears).
+
+**1.1.19** (`b62b557`) — pin button rendering bug + Esc fallback. Pin button text-fallback (`"Pin"/"Pinned"` in a 56px wide button) was overflowing the corner and looked broken when the texture wasn't loaded on first frame. Switched to icon-only rendering with a small empty square placeholder. Also added `ImGui::IsKeyPressed(ImGuiKey_Escape)` alongside the WndProc-based `g_escConsumed` path because user reported Esc on drag-select wasn't cancelling.
+
+**1.1.20** (`f1e0628`) — `GetAsyncKeyState` third Esc path. The 1.1.19 ImGui fallback still didn't fire on drag-select. Diagnosed: Mystic AI's WndProc hook returns 0 (to keep GW2 from seeing Esc), which also stops Nexus's ImGui-bridge hook from running — so ImGui never gets the key. Added a third detection path: direct `GetAsyncKeyState(VK_ESCAPE)` polled each frame with edge detection (static `s_escAsyncPrev`), bypassing both the WndProc chain AND ImGui's input system. Same pin guard applies to all three. Worked — Esc cancels drag-select now.
+
+**1.1.21** (`58b5973`) — pinned panel + capture chord re-press shouldn't just close. User: "press R1+Menu again this close the pinned window" — meaning pin guarded Esc but not the chord. Fixed `ProcessCommand` to detect the pinned-MODE_REVIEW state when CMD_TOGGLE/CMD_BOOK arrives, call `ExitToIdle` to clear state, then **fall through** to `StartCapture`/`StartBookRead` instead of returning. So re-pressing the chord on a pinned panel now starts a fresh capture (the original "new capture replaces pinned" design intent from when pin shipped).
+
+**1.1.22** (`56e9a36`) — pinned-Esc hides the frozen overlay instead of doing nothing. User actual goal: "When I pin press esc it need close down drag logic allow me to play game keep panel open". Added `g_hideOverlay` state. When pinned+Esc, set `g_hideOverlay = true` (instead of ignoring). MODE_REVIEW rendering skips `DrawFrozenOverlay(false)` when `g_hideOverlay`. Result: floating panel only, GW2 fully playable underneath. Cleared in ExitToIdle so next capture is back to normal.
+
+#### What slowed us down
+
+- **Deploy was blocked by GW2 running on the test cycles**. The deploy script correctly refuses to write the DLL with GW2 alive (Nexus would rewrite or the addon would unload mid-edit). After CI green I'd run deploy, it'd block, user wouldn't realise, they'd test the previous version. The 1.1.22 fix wasn't actually on disk for the test that prompted "yhod noy brt hard to fix" — bazzite still had 1.1.21. Once I checked the on-disk hash explicitly (`51b9f5320e9238a3` expected vs `7647027d2fcdcece` actual = 1.1.21), the cause was obvious. **Lesson: after every "close GW2 and I'll redeploy" cycle, verify the on-disk hash actually matches the build artifact before claiming the fix is live.**
+- **Nexus Code 49 was wrong**. Earlier session said "Code=49 = scancode for `1`" — was actually scancode for `N`. The Taimi pathing-window-toggle binding read "Alt+Shift+N" in Nexus UI all along, mismatched to the controller chord emitting Alt+Shift+1. Fixed in the KEYPAD_5 commit (`3b82229`) earlier in this same day's session.
+- **Steam Input sequential emission**. 3-key chord (Alt+Shift+1) doesn't hold modifiers between key_press lines. Worked around with single-key emission (KEYPAD_5) on the controller side.
+
+Final state on bazzite: mystic-ai.dll 1.1.22 (`51b9f5320e9238a3`), confirmed working in-game.
+
+### Open items (continued)
+
+- **Deck deploy of mystic-ai.dll 1.1.22** — still offline at session end. Re-run `scripts/deploy-mystic-ai-dll.sh` when Deck wakes.

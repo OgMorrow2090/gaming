@@ -26,6 +26,7 @@ const IconDef ICONS[] = {
     { Icons::COPY,     IDR_MAI_COPY     },
     { Icons::STOP,     IDR_MAI_STOP     },
     { Icons::BOOK,     IDR_MAI_BOOK     },
+    { Icons::PIN,      IDR_MAI_PIN      },
 };
 
 }  // namespace

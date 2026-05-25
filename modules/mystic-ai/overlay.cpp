@@ -119,6 +119,13 @@ ImVec4 g_anchor{0, 0, 0, 0};   // box the panel anchors to (display coords)
 bool   g_reposPanel = false;   // snap the panel to the anchor on its next frame
 bool   g_panelOpen  = true;
 
+// --- Pin --------------------------------------------------------------------
+// When true, Esc no longer closes the review panel (X button still does, and a
+// fresh capture still replaces it via ExitToIdle). Lets the user research
+// something at length without an accidental Esc dropping the result. Session-
+// only: ExitToIdle clears it so new panels open unpinned.
+bool   g_pinned = false;
+
 // --- Book read --------------------------------------------------------------
 // The Read-Book keybind is a one-shot that routes through the same MODE_REVIEW
 // panel as a drag-select capture: capture the saved region off the render
@@ -258,6 +265,7 @@ void ExitToIdle(bool stopRead)
     g_dragging    = false;
     g_haveSel     = false;
     g_needRelease = true;
+    g_pinned      = false;   // pin is session-only — every fresh panel opens unpinned
     g_lastCrop.clear();
     g_lastCrop.shrink_to_fit();
     g_spokenText.clear();
@@ -931,6 +939,33 @@ void DrawPanel()
     {
         ImGui::SetWindowFontScale(g_FontScale);
 
+        // Pin toggle — small icon button right-aligned on its own row. When
+        // pinned, Esc no longer closes the panel (see RenderMysticAI). The X
+        // on the title bar still works either way.
+        {
+            float pinSz = 22.0f * g_ButtonScale;
+            ImGui::SetCursorPosX(ImGui::GetWindowContentRegionMax().x - pinSz);
+            Texture_t* pinTex = Icons::Get(Icons::PIN);
+            ImU32 pinCol = g_pinned ? IM_COL32(222, 186, 108, 235)
+                                    : IM_COL32( 70,  70,  70, 140);
+            ImGui::PushID("mai_pin");
+            ImGui::PushStyleColor(ImGuiCol_Button, ImGui::ColorConvertU32ToFloat4(pinCol));
+            bool clicked;
+            if (pinTex && pinTex->Resource)
+                clicked = ImGui::ImageButton((ImTextureID)(intptr_t)pinTex->Resource,
+                                             ImVec2(pinSz, pinSz));
+            else
+                clicked = ImGui::Button(g_pinned ? "Pinned" : "Pin",
+                                        ImVec2(56.0f, pinSz));
+            if (clicked) g_pinned = !g_pinned;
+            ImGui::PopStyleColor();
+            ImGui::PopID();
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip("%s", g_pinned
+                    ? "Unpin — Esc closes the panel again."
+                    : "Pin — keep this panel open when Esc is pressed.");
+        }
+
         float bsz  = 26.0f * g_ButtonScale;
         float btnH = bsz + ImGui::GetStyle().FramePadding.y * 2.0f;
         bool  busy = (cs == ClaudeVision::State::Waiting);
@@ -1221,7 +1256,12 @@ void RenderMysticAI()
     // inventory it had open behind it. The hook only swallows Esc while a
     // Mystic AI window is actually on screen (see the g_uiActive publish
     // below), so a consumed Esc always means "close that window".
-    if (g_escConsumed.exchange(false) && g_mode != MODE_IDLE)
+    //
+    // When the review panel is pinned, swallow Esc but don't close — the user
+    // wants to keep researching. Capture / select modes ignore the pin so Esc
+    // can still cancel an unfinished drag.
+    if (g_escConsumed.exchange(false) && g_mode != MODE_IDLE
+        && !(g_pinned && g_mode == MODE_REVIEW))
         ExitToIdle(true);
 
     AdvanceCapture();

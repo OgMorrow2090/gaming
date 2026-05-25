@@ -19,6 +19,7 @@ constexpr const char* RESEARCH  = "MAI_TEX_RESEARCH";
 constexpr const char* COPY      = "MAI_TEX_COPY";
 constexpr const char* STOP      = "MAI_TEX_STOP";
 constexpr const char* BOOK      = "MAI_TEX_BOOK";
+constexpr const char* PIN       = "MAI_TEX_PIN";
 
 // Register every embedded icon with Nexus. Call once from AddonLoad.
 void Load();

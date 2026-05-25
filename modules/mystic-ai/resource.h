@@ -12,3 +12,4 @@
 #define IDR_MAI_COPY      107
 #define IDR_MAI_STOP      108
 #define IDR_MAI_BOOK      109
+#define IDR_MAI_PIN       110

@@ -151,6 +151,20 @@ def icon_book():
     return img
 
 
+def icon_pin():
+    """A thumbtack - the pin-this-panel-open toggle."""
+    img, d = canvas()
+    # Head: rounded cap at top
+    d.rounded_rectangle([px(20), px(15), px(44), px(27)], radius=px(3),
+                        fill=GOLD, outline=DARK, width=W(1))
+    # Neck: narrower band beneath the head
+    d.rectangle([px(28), px(27), px(36), px(33)], fill=GOLD_DEEP)
+    # Shaft: tapered to a point
+    pts = [(px(26), px(33)), (px(38), px(33)), (px(32), px(50))]
+    d.polygon(pts, fill=GOLD, outline=DARK)
+    return img
+
+
 def main():
     save(icon_qa(False),  "qa.png")
     save(icon_qa(True),   "qa_hover.png")
@@ -161,7 +175,8 @@ def main():
     save(icon_copy(),     "copy.png")
     save(icon_stop(),     "stop.png")
     save(icon_book(),     "book.png")
-    print("Mystic AI: generated 9 icons in", HERE)
+    save(icon_pin(),      "pin.png")
+    print("Mystic AI: generated 10 icons in", HERE)
 
 
 if __name__ == "__main__":

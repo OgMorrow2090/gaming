@@ -57,7 +57,7 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     AddonDef.Name             = "Mystic AI";
     AddonDef.Version.Major    = 1;
     AddonDef.Version.Minor    = 1;
-    AddonDef.Version.Build    = 21;
+    AddonDef.Version.Build    = 22;
     AddonDef.Version.Revision = 0;
     AddonDef.Author      = "OgMorrow2090";
     AddonDef.Description = "Freeze-frame screen reader for GW2 - drag-select any "

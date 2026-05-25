@@ -7,6 +7,18 @@ All notable changes to Guild Wars 2 Addons will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2026-05-25] — Mystic AI 1.1.22 — Pinned-Esc hides the frozen-frame overlay (keeps panel floating)
+
+### Added
+
+- **Pinned panel + Esc now hides the dimmed snapshot overlay** but keeps the
+  panel floating. Useful when you want to keep reading the AI result while
+  continuing to play — the panel sits on top of the live game instead of a
+  frozen + dimmed background.
+- The X button on the panel title bar still closes everything (always was).
+- A fresh capture or panel close clears the hide-overlay state, so the next
+  capture's overlay appears as normal.
+
 ## [2026-05-25] — Mystic AI 1.1.21 — Capture chord replaces a pinned panel (instead of just closing it)
 
 ### Fixed

@@ -126,6 +126,12 @@ bool   g_panelOpen  = true;
 // only: ExitToIdle clears it so new panels open unpinned.
 bool   g_pinned = false;
 
+// When pinned + Esc is pressed, instead of closing we hide the frozen-frame
+// overlay (the dimmed snapshot + highlighted box) and leave the panel floating
+// alone. Lets the user keep reading the AI result while continuing to play.
+// Cleared on new capture / ExitToIdle so the next panel shows the overlay again.
+bool   g_hideOverlay = false;
+
 // --- Book read --------------------------------------------------------------
 // The Read-Book keybind is a one-shot that routes through the same MODE_REVIEW
 // panel as a drag-select capture: capture the saved region off the render
@@ -266,6 +272,7 @@ void ExitToIdle(bool stopRead)
     g_haveSel     = false;
     g_needRelease = true;
     g_pinned      = false;   // pin is session-only — every fresh panel opens unpinned
+    g_hideOverlay = false;   // ditto: the hide-overlay flag is per-panel
     g_lastCrop.clear();
     g_lastCrop.shrink_to_fit();
     g_spokenText.clear();
@@ -1284,9 +1291,14 @@ void RenderMysticAI()
     bool escFromAsync = escAsyncNow && !s_escAsyncPrev;
     s_escAsyncPrev    = escAsyncNow;
 
-    if ((escFromWnd || escFromImg || escFromAsync) && g_mode != MODE_IDLE
-        && !(g_pinned && g_mode == MODE_REVIEW))
-        ExitToIdle(true);
+    bool escPressed = (escFromWnd || escFromImg || escFromAsync);
+    if (escPressed && g_mode != MODE_IDLE)
+    {
+        if (g_pinned && g_mode == MODE_REVIEW)
+            g_hideOverlay = true;   // pinned: hide the dimmed snapshot, keep the panel
+        else
+            ExitToIdle(true);
+    }
 
     AdvanceCapture();
     AdvanceBookRead();   // promotes a finished book-region capture to MODE_REVIEW
@@ -1299,7 +1311,9 @@ void RenderMysticAI()
     {
         // Book reads skip the frozen-frame freeze (we only captured the region,
         // not the whole screen); their MODE_REVIEW shows only the panel.
-        if (ClaudeVision::GetLabel() != "Book")
+        // Pinned-Esc also hides the overlay (g_hideOverlay): the panel keeps
+        // floating but the dimmed snapshot behind it is removed.
+        if (ClaudeVision::GetLabel() != "Book" && !g_hideOverlay)
             DrawFrozenOverlay(false);
         DrawPanel();
     }

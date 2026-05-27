@@ -2,11 +2,19 @@
 # bazzite-auto-update.sh — Automated OS + Flatpak updates with alert reporting
 # Runs via systemd timer at 1am daily on Shaun-Bazzite
 # Updates: rpm-ostree (OS/kernel/drivers), flatpak apps
-# Reports results to alerts.itinyk.app, reboots if updates applied
+# Reports results via alerts.itinyk.app (Cloudflare → wednesday nginx →
+# alerts-backend), reboots if updates applied.
+# 2026-05-27: was http://172.16.2.2:8000/api/alerts/ingest — stale pre-
+# migration target on an unreachable host. Bazzite lives on a different
+# VLAN (172.16.100.0/24) and CAN'T route to the wednesday LAN at all, so
+# direct LAN posts (the path the Pi gdrive_backup.py uses) won't work for
+# this host. Switched to the public alerts.itinyk.app endpoint, which has
+# /api/alerts/ingest preserved by nginx specifically for cross-VLAN
+# senders like bazzite. The endpoint is PI_ALERT_SECRET-gated.
 
 set -euo pipefail
 
-ALERT_URL="http://172.16.2.2:8000/api/alerts/ingest"
+ALERT_URL="https://alerts.itinyk.app/api/alerts/ingest"
 ALERT_SECRET_FILE="/var/home/Og/.config/bazzite-update/alert-secret"
 DEVICE="shaun-bazzite"
 LOG_FILE="/var/home/Og/.local/state/bazzite-update.log"

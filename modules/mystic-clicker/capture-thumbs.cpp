@@ -18,7 +18,7 @@
  * practice.
  *
  * Author: OgMorrow2090
- * Repository: https://github.com/OgMorrow2090/guildwars2
+ * Repository: https://github.com/OgMorrow2090/gaming
  */
 
 #include "shared.h"

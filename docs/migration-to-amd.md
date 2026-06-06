@@ -75,7 +75,7 @@ PSU verified: 1200W with 2× free 8-pin PCIe connectors. Case clearance fine
 ## Pre-swap checklist (before powering down 2026-05-12)
 
 - [ ] `rpm-ostree status` — confirm current image is `bazzite-deck-nvidia:stable`
-- [ ] `git -C ~/Developer/GitHub/ogmorrow2090/guildwars2 status` — clean tree
+- [ ] `git -C ~/Developer/GitHub/ogmorrow2090/gaming status` — clean tree
 - [ ] Snapshot current state for rollback:
 
   ```bash

@@ -9,7 +9,7 @@
     <array>
         <string>/bin/bash</string>
         <string>-l</string>
-        <string>/Users/shaunchittenden/Developer/GitHub/ogmorrow2090/guildwars2/scripts/watch-mystic-clicker.sh</string>
+        <string>/Users/shaunchittenden/Developer/GitHub/ogmorrow2090/gaming/scripts/watch-mystic-clicker.sh</string>
     </array>
 
     <!-- Run every 5 minutes. -->

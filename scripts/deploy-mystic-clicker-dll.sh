@@ -15,7 +15,7 @@
 
 set -euo pipefail
 
-REPO="OgMorrow2090/guildwars2"
+REPO="OgMorrow2090/gaming"
 WORKFLOW="build.yml"
 ARTIFACT_NAME="mystic-clicker"
 

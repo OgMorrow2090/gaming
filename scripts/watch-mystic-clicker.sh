@@ -16,7 +16,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-GH_REPO="OgMorrow2090/guildwars2"
+GH_REPO="OgMorrow2090/gaming"
 WORKFLOW="build.yml"
 STATE_DIR="$HOME/.cache/itinyk"
 STATE_FILE="$STATE_DIR/gw2-mystic-clicker-last-sha"

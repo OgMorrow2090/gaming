@@ -1,10 +1,10 @@
 ---
 name: start
-description: Bootstrap a guildwars2 session — Bazzite/Sunshine/Moonlight configs for shaun-bazzite
+description: Bootstrap a gaming session — Bazzite/Sunshine/Moonlight configs for shaun-bazzite
 disable-model-invocation: true
 ---
 
-Start a session for the **guildwars2** project.
+Start a session for the **gaming** project.
 
 ## Project quick context
 
@@ -18,4 +18,4 @@ Start a session for the **guildwars2** project.
 
 1. Run the central checklist: `/Users/shaunchittenden/Developer/GitHub/itinyk/dev-toolkit/session-start-checklist.md`.
 2. **Also scan `memory/MEMORY.md` for deferred multi-session projects.** These don't show up in the most recent session's "Open Items" — surface them explicitly in the status report.
-3. After the checklist, suggest: `/rename guildwars2`.
+3. After the checklist, suggest: `/rename gaming`.

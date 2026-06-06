@@ -118,7 +118,7 @@ This means you only need to capture positions **once per resolution** - switch b
 ## Repository Structure
 
 ```text
-guildwars2/
+gaming/
 ├── readme.md                          # This file
 ├── agents.md                          # AI agent development instructions
 ├── changelog.md                       # Version history
@@ -174,7 +174,7 @@ See [docs/development-setup.md](docs/development-setup.md) for build instruction
 | Nexus Wiki | [Nexus Wiki](https://github.com/RaidcoreGG/Nexus/wiki) |
 | Example Addon | [GW2-Compass](https://github.com/RaidcoreGG/GW2-Compass) |
 | Raidcore Discord | [Discord Invite](https://discord.gg/Mvk7W7gjE4) |
-| This Repository | [OgMorrow2090/guildwars2](https://github.com/OgMorrow2090/guildwars2) |
+| This Repository | [OgMorrow2090/gaming](https://github.com/OgMorrow2090/gaming) |
 
 ## License
 

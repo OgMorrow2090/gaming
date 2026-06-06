@@ -36,7 +36,7 @@ git push  ──►  GitHub Actions windows-latest runner builds .vcxproj
 - Builds `Release|x64` via msbuild
 - Uploads `bin/Release/<module>.dll` as a workflow artifact named after the module
 
-To grab a DLL manually: `gh run download <run-id> --repo OgMorrow2090/guildwars2 --name mystic-clicker`.
+To grab a DLL manually: `gh run download <run-id> --repo OgMorrow2090/gaming --name mystic-clicker`.
 
 ## Deploy script
 
@@ -67,7 +67,7 @@ Same pre-flight pattern as `deploy-nexus-config.sh` and `deploy-controller-vdf.s
 ### Install on a fresh Mac
 
 ```bash
-cp /Users/shaunchittenden/Developer/GitHub/ogmorrow2090/guildwars2/configs/launchd/com.itinyk.gw2-mystic-clicker-watcher.plist \
+cp /Users/shaunchittenden/Developer/GitHub/ogmorrow2090/gaming/configs/launchd/com.itinyk.gw2-mystic-clicker-watcher.plist \
    ~/Library/LaunchAgents/
 launchctl load ~/Library/LaunchAgents/com.itinyk.gw2-mystic-clicker-watcher.plist
 ```

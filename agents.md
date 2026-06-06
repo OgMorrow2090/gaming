@@ -82,7 +82,7 @@ extern "C" __declspec(dllexport) AddonDefinition* GetAddonDef()
     AddonDef.Unload = AddonUnload;
     AddonDef.Flags = EAddonFlags::None;
     AddonDef.Provider = EUpdateProvider::GitHub;
-    AddonDef.UpdateLink = "https://github.com/OgMorrow2090/guildwars2";
+    AddonDef.UpdateLink = "https://github.com/OgMorrow2090/gaming";
     
     return &AddonDef;
 }

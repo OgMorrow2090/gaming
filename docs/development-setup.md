@@ -27,8 +27,8 @@ Install these workloads via Visual Studio Installer:
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/OgMorrow2090/guildwars2.git
-cd guildwars2
+git clone https://github.com/OgMorrow2090/gaming.git
+cd gaming
 ```
 
 ### 2. Get Nexus API Header
@@ -50,7 +50,7 @@ Or manually download from: https://github.com/RaidcoreGG/RCGG-lib-nexus-api
 1. Open Visual Studio 2022
 2. Create new project: **Dynamic-Link Library (DLL)**
 3. Project name: `InventoryHotkeys`
-4. Location: `guildwars2/src/`
+4. Location: `gaming/src/`
 5. Solution name: `GW2Addons`
 
 ### 4. Configure Project Properties
@@ -124,7 +124,7 @@ extern "C" __declspec(dllexport) AddonDefinition* GetAddonDef()
     AddonDef.Unload = AddonUnload;
     AddonDef.Flags = EAddonFlags::None;
     AddonDef.Provider = EUpdateProvider::GitHub;
-    AddonDef.UpdateLink = "https://github.com/OgMorrow2090/guildwars2";
+    AddonDef.UpdateLink = "https://github.com/OgMorrow2090/gaming";
     
     return &AddonDef;
 }

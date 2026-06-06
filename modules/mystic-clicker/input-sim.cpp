@@ -5,7 +5,7 @@
  * Uses Nexus SendWndProcToGameOnly() to send mouse events directly to the game.
  * 
  * Author: OgMorrow2090
- * Repository: https://github.com/OgMorrow2090/guildwars2
+ * Repository: https://github.com/OgMorrow2090/gaming
  * 
  * Capture positions:
  *   Ctrl+Shift+D = Deposit button

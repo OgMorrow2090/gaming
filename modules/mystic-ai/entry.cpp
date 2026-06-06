@@ -10,7 +10,7 @@
  * out of that addon into this dedicated module.
  *
  * Author: OgMorrow2090
- * Repository: https://github.com/OgMorrow2090/guildwars2
+ * Repository: https://github.com/OgMorrow2090/gaming
  */
 
 #include "shared.h"
@@ -69,7 +69,7 @@ extern "C" __declspec(dllexport) AddonDefinition_t* GetAddonDef()
     AddonDef.Flags  = AF_None;
 
     AddonDef.Provider   = UP_GitHub;
-    AddonDef.UpdateLink = "https://github.com/OgMorrow2090/guildwars2";
+    AddonDef.UpdateLink = "https://github.com/OgMorrow2090/gaming";
 
     return &AddonDef;
 }

@@ -6,7 +6,7 @@
  * e.g., mystic-clicker-1920x1080.cfg, mystic-clicker-2560x1440.cfg
  * 
  * Author: OgMorrow2090
- * Repository: https://github.com/OgMorrow2090/guildwars2
+ * Repository: https://github.com/OgMorrow2090/gaming
  */
 
 #include "shared.h"

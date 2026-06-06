@@ -1500,3 +1500,23 @@ Final state on bazzite: mystic-ai.dll 1.1.22 (`51b9f5320e9238a3`), confirmed wor
 ### Open items (continued)
 
 - **Deck deploy of mystic-ai.dll 1.1.22** — still offline at session end. Re-run `scripts/deploy-mystic-ai-dll.sh` when Deck wakes.
+
+## 2026-06-06 — Repo renamed: guildwars2 → gaming
+
+Renamed this repo from `guildwars2` to `gaming` to reflect its broader scope (Bazzite/gaming infra, GW2 addons, and now GW3 spec-tracking after the 2026-06-05 SGF announcement). Full rename across four repos.
+
+**GitHub:** owner (OgMorrow2090) renamed the repo in the web UI (the `github_pat_portal` token is `itinyk` = collaborator only, `admin:false`, so the API rename was not possible from the Pi). Old URL 301-redirects.
+
+**This repo (`gaming`):**
+- Local dir `/srv/docker-data/repos/guildwars2` → `/srv/docker-data/repos/gaming`.
+- Remote URL → `git@github-gaming:OgMorrow2090/gaming.git`.
+- Identity refs updated: 8 `.cpp` `Repository:`/`AddonDef.UpdateLink` lines, 3 deploy scripts' `REPO=`, launchd plist path, `readme.md`, `agents.md`, `docs/*`, `.claude/skills/start`, `memory/mystic-clicker-build-and-deploy.md`.
+- **Left untouched:** all *game* references (`api.guildwars2.com`, `wiki.guildwars2.com`, "Guild Wars 2") and historical `chat.md` log entries (accurate as of when written).
+
+**SSH plumbing:** host `~/.ssh/config` alias `github-guildwars2`→`github-gaming`; container (`itinyk-backend`) `.ssh/config` alias + deploy key `github_guildwars2_id_ed25519`→`github_gaming_id_ed25519`. Verified `git ls-remote` from both host and container.
+
+**dev-toolkit:** skill dir `start-guildwars2`→`start-gaming` (+ SKILL.md), `session-cleanup-checklist.md` paths/prose, `reference_global_claude_skills.md`, `desired-permissions.json` path.
+
+**itinyk-app (portal, deep + redeploy):** `web/backend/scripts_ws.py` repo-access allowlist `/repos/guildwars2`→`/repos/gaming`, `CLAUDE.md`, and memory docs (MEMORY.md repo-list, feedback_github_accounts, feedback_gw2_config_backups, reference_mystic_clicker_deploy, reference_bazzite_sunshine, reference_bazzite_gamescope_4k120, feedback_portal_test_dual_surface). **Left untouched:** game-service `service="guildwars2"` alerts, `scripts/vendors/guildwars2/`, `guildwars2-logo`, CHANGELOG. Backend redeployed (`redeploy.sh backend`) since it builds from origin/main.
+
+**addams_family:** one repo-list mention in `feedback_portal_test_dual_surface.md`.

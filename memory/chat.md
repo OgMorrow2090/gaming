@@ -1547,3 +1547,26 @@ either credential; `gw2-claude-setup.sh` config template + docstring updated.
    `op read 'op://wednesday-pi/claude_code_oauth_token/credential'`
 2. Pull the updated daemon from the repo, `systemctl --user restart gw2-claude-daemon.service`
 3. Verify: log shows `auth: CLAUDE_CODE_OAUTH_TOKEN (subscription)`; do a real in-game read.
+
+### 2026-06-08 (cont.) — Deployed to bazzite + Meraki VLAN exception
+
+Bazzite was unreachable from wednesday — diagnosed via the **Meraki dashboard**
+(key `op://wednesday-pi/meraki_apikey_edit`): the Core switch (C9300, 172.16.1.253)
+ACL has rule "Deny Node → IoT" (`172.16.2.0/24 → 172.16.100.0/24`). bazzite is on
+the IoT VLAN (172.16.100.212) with no per-host exception (unlike Thing/Fester which
+have explicit allows above the deny) — so the block was **by design**, not a bug.
+
+**Changes made (approved):**
+- **Meraki switch ACL**: added 2 rules above "Deny Node → IoT" — `Wednesday ↔ Bazzite
+  SSH` (`172.16.2.1 ↔ 172.16.100.212:22`, SSH-only). Rollback backup of the full
+  114-rule ACL at `~/meraki-acl-backup-20260608-221323.json` on wednesday.
+- **wednesday pubkey** (`wednesday-host-dev`) added to `Og@bazzite` authorized_keys
+  by the user → wednesday can now SSH-deploy to bazzite directly.
+- **Daemon deployed**: new `gw2-claude-daemon.py` copied to `~/scripts/` on bazzite
+  (old one backed up `.bak-*`). `config.env`: `CLAUDE_CODE_OAUTH_TOKEN` set (108 chars,
+  from `op://wednesday-pi/claude_code_oauth_token`), `ANTHROPIC_API_KEY` blanked.
+  venv anthropic 0.102.0 supports `auth_token`. Service restarted → log shows
+  `auth: CLAUDE_CODE_OAUTH_TOKEN (subscription)`. End-to-end vision test passed.
+
+**Still unverified:** the Research action (server-side `web_search`) under OAuth —
+returned `rate_limit_error` in earlier curl test. Core vision reads confirmed working.

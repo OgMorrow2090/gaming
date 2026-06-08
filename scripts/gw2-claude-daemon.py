@@ -30,7 +30,11 @@ Standalone test mode (no addon needed):
     gw2-claude-daemon.py --say "some text"                speak text directly
 
 Config: ~/.config/gw2-claude/config.env  (KEY=VALUE lines, mode 600)
-    ANTHROPIC_API_KEY=sk-ant-...           (required)
+    CLAUDE_CODE_OAUTH_TOKEN=sk-ant-oat01-... (preferred — Max-subscription
+                                            billing, no metered API credits;
+                                            same token as portal.itinyk.app)
+    ANTHROPIC_API_KEY=sk-ant-...           (fallback — pay-per-use API credits)
+    (one of the two above is required; the OAuth token wins if both are set)
     GW2_CLAUDE_MODEL=claude-haiku-4-5       (optional)
     GW2_CLAUDE_RESEARCH_MODEL=claude-sonnet-4-6  (optional — Research action)
     GW2_CLAUDE_TTS=on                       (optional — on/off, default on)
@@ -151,8 +155,9 @@ def load_config():
     except FileNotFoundError:
         log("FATAL: %s missing — run scripts/gw2-claude-setup.sh" % CONFIG_PATH)
         sys.exit(1)
-    if not cfg.get("ANTHROPIC_API_KEY"):
-        log("FATAL: ANTHROPIC_API_KEY not set in %s" % CONFIG_PATH)
+    if not cfg.get("CLAUDE_CODE_OAUTH_TOKEN") and not cfg.get("ANTHROPIC_API_KEY"):
+        log("FATAL: set CLAUDE_CODE_OAUTH_TOKEN (preferred) or ANTHROPIC_API_KEY "
+            "in %s" % CONFIG_PATH)
         sys.exit(1)
     return cfg
 
@@ -1028,7 +1033,6 @@ def run_daemon(client, model, cfg):
 def main():
     cfg = load_config()
     model = cfg.get("GW2_CLAUDE_MODEL") or "claude-opus-4-7"
-    os.environ["ANTHROPIC_API_KEY"] = cfg["ANTHROPIC_API_KEY"]
 
     args = sys.argv[1:]
 
@@ -1039,7 +1043,18 @@ def main():
         return
 
     import anthropic
-    client = anthropic.Anthropic()
+    oauth = cfg.get("CLAUDE_CODE_OAUTH_TOKEN")
+    if oauth:
+        # Max-subscription OAuth token → Bearer auth, billed against the
+        # subscription (no metered API credits). Drop ANTHROPIC_API_KEY from the
+        # environment so the SDK can't prefer the x-api-key path.
+        os.environ.pop("ANTHROPIC_API_KEY", None)
+        client = anthropic.Anthropic(auth_token=oauth)
+        log("auth: CLAUDE_CODE_OAUTH_TOKEN (subscription)")
+    else:
+        os.environ["ANTHROPIC_API_KEY"] = cfg["ANTHROPIC_API_KEY"]
+        client = anthropic.Anthropic()
+        log("auth: ANTHROPIC_API_KEY (pay-per-use)")
 
     if args and args[0] == "--analyze":
         if len(args) < 2:

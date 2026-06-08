@@ -35,7 +35,13 @@ if [ ! -f "$CFGDIR/config.env" ]; then
     cat > "$CFGDIR/config.env" <<'EOF'
 # gw2-claude-daemon config — KEY=VALUE, no quotes.
 
-# Required. Anthropic API key for the GW2 Claude-vision daemon.
+# Credential (set ONE). The daemon prefers the OAuth token if both are present.
+#
+# Preferred: Max-subscription OAuth token — billed against the subscription, no
+# metered API credits. Mint with `claude setup-token` (valid ~1yr); this is the
+# same token portal.itinyk.app uses (op://wednesday-pi/claude_code_oauth_token).
+CLAUDE_CODE_OAUTH_TOKEN=
+# Fallback: pay-per-use Anthropic API key (sk-ant-api03-...).
 ANTHROPIC_API_KEY=
 
 # Optional. Model used to read the screen.
@@ -65,8 +71,8 @@ ELEVENLABS_MODEL=eleven_turbo_v2_5
 EOF
     chmod 600 "$CFGDIR/config.env"
     echo ""
-    echo ">>> Created $CFGDIR/config.env — add your ANTHROPIC_API_KEY before"
-    echo ">>> starting gw2-claude-daemon.service."
+    echo ">>> Created $CFGDIR/config.env — set CLAUDE_CODE_OAUTH_TOKEN (preferred)"
+    echo ">>> or ANTHROPIC_API_KEY before starting gw2-claude-daemon.service."
 fi
 
 echo ""

@@ -39,8 +39,11 @@ GW2 (Nexus addon)                bazzite host (outside sandbox)
   venvs — venv survives OS updates; re-run the script to refresh the SDK.
 - **`configs/bazzite/gw2-claude-daemon.service`** — `systemd --user` unit, mirrors
   `gw2-ocr-daemon.service`. Lives at `~/.config/systemd/user/` on bazzite.
-- **Config**: `~/.config/gw2-claude/config.env` (mode 600) — `ANTHROPIC_API_KEY`
-  (required), `GW2_CLAUDE_MODEL`, and the TTS keys (`GW2_CLAUDE_TTS`,
+- **Config**: `~/.config/gw2-claude/config.env` (mode 600) — credential (set ONE):
+  `CLAUDE_CODE_OAUTH_TOKEN` (**preferred** — Max-subscription Bearer auth, no
+  metered API credits; the daemon prefers it if both are set) or
+  `ANTHROPIC_API_KEY` (pay-per-use fallback). Plus `GW2_CLAUDE_MODEL`, and the
+  TTS keys (`GW2_CLAUDE_TTS`,
   `GW2_CLAUDE_TTS_ENGINE`, `GW2_CLAUDE_TTS_GAIN_DB`, `GW2_CLAUDE_VOICE`,
   `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID`, `ELEVENLABS_MODEL`). Not in the
   repo — secret. The
@@ -75,8 +78,20 @@ caps at 2576px long edge — larger frames are downscaled.
 ## Status / next phases
 
 - **Phase 1 (done)**: daemon + setup + service in the repo and live on bazzite.
-  `ANTHROPIC_API_KEY` deployed from `op://wednesday-pi/anthropic/api-key`, model
-  `claude-haiku-4-5`, `gw2-claude-daemon.service` enabled. End-to-end verified.
+  Model `claude-haiku-4-5`, `gw2-claude-daemon.service` enabled.
+- **Auth switched to subscription OAuth (2026-06-08)**: both Anthropic *API keys*
+  in 1Password went dead — `op://wednesday-pi/anthropic/api-key` and
+  `claude_itinyk_app_ai_cli_edit/token` both return `401 invalid x-api-key`
+  (revoked; `anthropic` item untouched since 2026-03-13). This was the cause of
+  the in-game "AI auth errors". Fix: the daemon now prefers
+  `CLAUDE_CODE_OAUTH_TOKEN` (Bearer `auth_token`) — the **same Max-subscription
+  token portal.itinyk.app uses** (`op://wednesday-pi/claude_code_oauth_token`),
+  so no metered credits and no separate key to keep alive. Verified the SDK path
+  (`anthropic.Anthropic(auth_token=…)` + a vision call) works under the OAuth
+  token. **Caveat:** server-side `web_search` (the Research action) returned a
+  `rate_limit_error` under OAuth — unverified; core vision reads are fine.
+  If the OAuth token expires (~1yr), GW2 *and* the portal break together —
+  re-mint via `claude setup-token` (see itinyk-app `cli-oauth-token-runbook`).
 - **Phase 2 (done — mystic-clicker v3.6.17)**: `claude-vision.{h,cpp}` in the
   addon. "Ask Claude" header in the capture window — Read Screen / Read Tooltip /
   List Items / Read Dialog buttons. Async state machine: capture on a detached

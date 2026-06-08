@@ -1520,3 +1520,30 @@ Renamed this repo from `guildwars2` to `gaming` to reflect its broader scope (Ba
 **itinyk-app (portal, deep + redeploy):** `web/backend/scripts_ws.py` repo-access allowlist `/repos/guildwars2`→`/repos/gaming`, `CLAUDE.md`, and memory docs (MEMORY.md repo-list, feedback_github_accounts, feedback_gw2_config_backups, reference_mystic_clicker_deploy, reference_bazzite_sunshine, reference_bazzite_gamescope_4k120, feedback_portal_test_dual_surface). **Left untouched:** game-service `service="guildwars2"` alerts, `scripts/vendors/guildwars2/`, `guildwars2-logo`, CHANGELOG. Backend redeployed (`redeploy.sh backend`) since it builds from origin/main.
 
 **addams_family:** one repo-list mention in `feedback_portal_test_dual_surface.md`.
+
+## 2026-06-08 — GW2 AI auth errors → switch daemon to subscription OAuth token
+
+**Symptom:** in-game Mystic AI giving auth errors. **Root cause:** the daemon's
+`ANTHROPIC_API_KEY` is revoked — `op://wednesday-pi/anthropic/api-key` returns
+`401 authentication_error: invalid x-api-key` (untouched since 2026-03-13). The
+other Anthropic key (`claude_itinyk_app_ai_cli_edit/token`) is **also** dead (401).
+
+**Fix (repo-side, per "use the CLI key like the portal"):** `gw2-claude-daemon.py`
+now prefers `CLAUDE_CODE_OAUTH_TOKEN` (Bearer `auth_token`) over `ANTHROPIC_API_KEY`
+— the same Max-subscription token portal.itinyk.app uses
+(`op://wednesday-pi/claude_code_oauth_token/credential`, verified alive, HTTP 200).
+No metered credits, no separate key to maintain. `load_config()` now accepts
+either credential; `gw2-claude-setup.sh` config template + docstring updated.
+
+**Verified without bazzite:** throwaway venv, `anthropic 0.107.1`,
+`Anthropic(auth_token=OAT)` + a base64 image vision call → correctly read
+"Mystic Coin x37". The plain-Bearer `/v1/messages` path also works via curl.
+**Caveat:** `web_search` (Research action) returned `rate_limit_error` under OAuth
+— unverified; core vision reads fine.
+
+**Pending — bazzite is offline** (`172.16.100.212:22` timed out). When it's back:
+1. Put the OAuth token in `~/.config/gw2-claude/config.env` as
+   `CLAUDE_CODE_OAUTH_TOKEN=` (and blank/remove `ANTHROPIC_API_KEY`):
+   `op read 'op://wednesday-pi/claude_code_oauth_token/credential'`
+2. Pull the updated daemon from the repo, `systemctl --user restart gw2-claude-daemon.service`
+3. Verify: log shows `auth: CLAUDE_CODE_OAUTH_TOKEN (subscription)`; do a real in-game read.

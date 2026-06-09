@@ -88,8 +88,14 @@ caps at 2576px long edge — larger frames are downscaled.
   token portal.itinyk.app uses** (`op://wednesday-pi/claude_code_oauth_token`),
   so no metered credits and no separate key to keep alive. Verified the SDK path
   (`anthropic.Anthropic(auth_token=…)` + a vision call) works under the OAuth
-  token. **Caveat:** server-side `web_search` (the Research action) returned a
-  `rate_limit_error` under OAuth — unverified; core vision reads are fine.
+  token. **This subscription OAuth token is haiku-only via the API**: tested
+  2026-06-09, `claude-haiku-4-5` returns 200 (incl. with the `web_search`
+  server tool) but **every Opus/Sonnet model returns 429** (rate-limited for
+  this token). So `GW2_CLAUDE_MODEL` *and* `GW2_CLAUDE_RESEARCH_MODEL` must be
+  haiku — the Research action's earlier 429 was the **sonnet-4-6 research
+  model**, not web_search (web search works fine on haiku). Fixed by setting
+  `GW2_CLAUDE_RESEARCH_MODEL=claude-haiku-4-5` + hardening `action_research` to
+  fall back to the main model on failure. All four actions verified working.
   If the OAuth token expires (~1yr), GW2 *and* the portal break together —
   re-mint via `claude setup-token` (see itinyk-app `cli-oauth-token-runbook`).
 - **Phase 2 (done — mystic-clicker v3.6.17)**: `claude-vision.{h,cpp}` in the

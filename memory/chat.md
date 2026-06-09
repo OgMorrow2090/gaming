@@ -1570,3 +1570,19 @@ have explicit allows above the deny) — so the block was **by design**, not a b
 
 **Still unverified:** the Research action (server-side `web_search`) under OAuth —
 returned `rate_limit_error` in earlier curl test. Core vision reads confirmed working.
+
+### 2026-06-09 — Research action 429 → subscription token is haiku-only
+
+User reported an in-game error. Daemon log: `overview` + `wiki-fav` succeeded on
+the OAuth token, but `action=research` 429'd. Isolated via curl with the OAuth
+token: **only `claude-haiku-4-5` works (200, incl. web_search); all Opus/Sonnet
+models 429**. So it wasn't web_search (works on haiku) — it was the research model
+`claude-sonnet-4-6`. Also exposed a daemon bug: the research fallback retried the
+*same* failing model, so it double-429'd instead of degrading.
+
+**Fixes:** (1) bazzite `config.env` → `GW2_CLAUDE_RESEARCH_MODEL=claude-haiku-4-5`;
+(2) hardened `action_research` to try research-model→main-model(web)→main-model(no
+tools). Redeployed daemon (backup `.bak-*`), restarted. Verified end-to-end:
+research with live web search returns a correct GW2 answer. All actions working.
+Repo default research model left at sonnet-4-6 (fine for API-key users; the new
+fallback self-heals on a subscription token).

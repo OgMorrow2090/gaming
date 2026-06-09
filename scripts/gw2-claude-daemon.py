@@ -887,9 +887,13 @@ def action_research(client, cfg, image_path, question):
         {"type": "text", "text": user_text},
     ]
 
-    def _call(tools):
+    main_model = cfg.get("GW2_CLAUDE_MODEL") or "claude-haiku-4-5"
+    web_tool = [{"type": "web_search_20250305", "name": "web_search",
+                 "max_uses": 5}]
+
+    def _call(tools, model):
         kwargs = {
-            "model": research_model,
+            "model": model,
             "max_tokens": 2048,
             "system": RESEARCH_SYSTEM,
             "messages": [{"role": "user", "content": content}],
@@ -900,14 +904,25 @@ def action_research(client, cfg, image_path, question):
         return "".join(b.text for b in resp.content
                         if getattr(b, "type", None) == "text").strip()
 
-    try:
-        text = _call([{"type": "web_search_20250305", "name": "web_search",
-                       "max_uses": 5}])
-    except Exception as e:  # noqa: BLE001
-        # Web search may not be enabled for the org — fall back to a plain
-        # knowledge-based answer rather than failing the whole request.
-        log("WARN: research web search failed (%s) — answering without it" % e)
-        text = _call(None)
+    # Degrade gracefully: a subscription OAuth token can be rate-limited (429)
+    # on larger models while haiku works, and web search may not be enabled at
+    # all. Try the research model with web search, then the (known-good) main
+    # model with web search, then the main model with no tools.
+    text = ""
+    for attempt_model in dict.fromkeys((research_model, main_model)):
+        try:
+            text = _call(web_tool, attempt_model)
+            if text:
+                break
+        except Exception as e:  # noqa: BLE001
+            log("WARN: research (model=%s, web search) failed (%s)" %
+                (attempt_model, e))
+    if not text:
+        try:
+            text = _call(None, main_model)
+        except Exception as e:  # noqa: BLE001
+            log("ERROR: research fallback (model=%s) failed (%s)" %
+                (main_model, e))
     if not text:
         return "(no research result)"
     # "@SECT" flags the result as colour-coded sections for the Mystic AI

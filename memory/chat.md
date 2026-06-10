@@ -1622,3 +1622,21 @@ deploying; the pending item above was stale**, carried forward from the May 25
   morning (Jun 10 08:23, two deploys).
 
 No deploys performed. Deck open items: none.
+
+### 2026-06-10 (cont.) — Backup-file cleanup on bazzite + Deck
+
+Pruned deploy-script backup clutter on both machines, policy = keep the newest
+backup per base file, delete the rest:
+
+- **addons dirs** (`*.dll.bak-*`, `*.stray-*`): bazzite 522 deleted, Deck 71
+  deleted (~170MB freed across both). Kept: newest bak each of mystic-clicker /
+  mystic-ai / mystic-trading.
+- **Steam Controller Configs + ~/scripts** (`*.bak*` incl. VDF and
+  gw2-claude-daemon.py backups): bazzite 27 deleted / 3 kept, Deck 52 deleted /
+  22 kept. VDF `.bak*` files don't end in `.vdf` so Steam Input never loads
+  them — clutter only, no behavior change.
+- Verified live files intact afterwards on both hosts (mystic-ai.dll, the
+  1284210 controller_neptune.vdf, gw2-claude-daemon.py).
+- **Left alone**: Deck home rollback dirs from the 2026-04-26 controller-state
+  incident (`controller-state-backup-*`, `moonlight-controller-backup-*`, 1.6MB
+  total) — small, and they're the documented rollback path.

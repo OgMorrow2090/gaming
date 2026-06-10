@@ -1586,3 +1586,16 @@ tools). Redeployed daemon (backup `.bak-*`), restarted. Verified end-to-end:
 research with live web search returns a correct GW2 answer. All actions working.
 Repo default research model left at sonnet-4-6 (fine for API-key users; the new
 fallback self-heals on a subscription token).
+
+### 2026-06-10 — Deck: OAuth fix deployed (+ Meraki exception 2026-06-09)
+
+Mirrored the bazzite work onto the Steam Deck (`deck@172.16.100.95`):
+- **Meraki ACL** (2026-06-09): `Wednesday ↔ Deck SSH` rules added above "Deny Node
+  → IoT" (SSH-only, .95 pinned). Backup `~/meraki-acl-backup-20260609-191340.json`.
+- wednesday pubkey authorized on the Deck by user.
+- Daemon deployed (backup `.bak-*`), `config.env`: OAuth token set, API key blanked,
+  `GW2_CLAUDE_RESEARCH_MODEL=claude-haiku-4-5`. anthropic 0.103.0. Service restarted
+  → `auth: CLAUDE_CODE_OAUTH_TOKEN (subscription)`. Vision test passed.
+
+**Still pending on Deck (GW2 was running — DLL deploys refused):** mystic-ai.dll
+1.1.22 + controller VDF v24.9. Deploy when GW2 closed.

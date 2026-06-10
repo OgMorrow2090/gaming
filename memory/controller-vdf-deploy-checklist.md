@@ -25,6 +25,8 @@ Apple TV streaming worked. **Deck-stream-via-Moonlight still flickered TP** the 
 
 The minimal command: `grep -rl "<stale pattern>" "<Steam Controller Configs root>"` and patch every result. Do this on BOTH bazzite (`Og@172.16.100.212`) AND Deck native (`deck@172.16.100.95`).
 
+**Verify deployed version by content hash, not the embedded `"title"` string.** The title lags the real version when a commit changes bindings without bumping it (e.g. the v24.9 commit `3b82229` still says "Og v24.8" inside). Compare `sha256sum` of the deployed file against the repo's `configs/gw2-keybinds/controller_neptune.vdf`.
+
 ## Required deploy targets when changing controller VDF
 
 For bazzite at `~/.local/share/Steam/steamapps/common/Steam Controller Configs/64793831/config/`:

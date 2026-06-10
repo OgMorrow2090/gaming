@@ -1599,3 +1599,26 @@ Mirrored the bazzite work onto the Steam Deck (`deck@172.16.100.95`):
 
 **Still pending on Deck (GW2 was running — DLL deploys refused):** mystic-ai.dll
 1.1.22 + controller VDF v24.9. Deploy when GW2 closed.
+
+### 2026-06-10 (cont.) — Deck "pending deploy" was stale; verified already in sync
+
+User said "Deck is done". Verified instead of deploying blind — **nothing needed
+deploying; the pending item above was stale**, carried forward from the May 25
+"Deck offline" note without re-checking:
+
+- **mystic-ai.dll**: Deck and bazzite are byte-identical (sha256 `e56858b0fffc2497`,
+  both mtime May 25 14:58 — the same deploy run hit both targets). Bazzite is the
+  install confirmed working in-game as 1.1.22 at the May 25 session end, so the
+  Deck has been on 1.1.22 since then. Note: chat.md's recorded 1.1.22 hash
+  (`51b9f5320e9238a3`) matches neither machine — likely quoted from a CI artifact
+  superseded by a re-run before the final 14:58 deploy. Don't chase it; the
+  cross-machine identity with the confirmed-good bazzite copy is the ground truth.
+- **Controller VDF**: Deck `1284210/controller_neptune.vdf` is byte-identical to the
+  repo file at the v24.9 commit (`3b82229`), sha256 `7d71aba3f7a7d7a4`, 3×KEYPAD_5
+  bindings present. **Gotcha: the VDF's embedded `"title"` still says "Og v24.8" —
+  the title string was never bumped in the v24.9 commit.** Grepping titles for the
+  version is misleading; verify by content hash against the repo file.
+- mystic-clicker.dll on Deck was separately refreshed by the Mac watcher this
+  morning (Jun 10 08:23, two deploys).
+
+No deploys performed. Deck open items: none.

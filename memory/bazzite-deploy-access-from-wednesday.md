@@ -31,6 +31,10 @@ Two changes removed the block (both approved):
 
 The rule is pinned to bazzite's IP `.212` — relies on that DHCP reservation staying put.
 
+**Steam Deck too (2026-06-09/10):** identical SSH-only exception for
+`deck@172.16.100.95` (backup `~/meraki-acl-backup-20260609-191340.json`) + wednesday
+key authorized — wednesday can now deploy to **both** GW2 hosts directly.
+
 ## How to deploy the GW2 Claude daemon from wednesday
 
 ```bash

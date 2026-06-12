@@ -21,4 +21,6 @@ The new PC will be connected directly to the LG TV for local gaming — no Moonl
 - **OS choice**: Could stay on Bazzite (immutable, already configured) or reinstall as Fedora Server / Debian. Bazzite's immutability is good for gaming but may complicate Docker workflows — evaluate when the time comes.
 - **Network**: the box stays at its current LAN position (172.16.100.212). Deck and Apple TV Moonlight configs won't need updating.
 
+**Distro decision (2026-06-12): staying on Bazzite — CachyOS considered and rejected.** The box is an appliance (TV/BPM autostart, Sunshine host for Deck + Apple TV); atomic updates fit that, rolling Arch doesn't. CachyOS's perf edge is single-digit % and the actual pain points (PCON FRL drops, gamescope state, Steam Input quirks) are distro-agnostic. The memory base here is Bazzite-specific institutional knowledge a migration would reset. If perf itch returns: Proton-CachyOS installs on Bazzite as a custom Proton. Re-evaluate the OS at repurpose time, not before.
+
 Related: [[streaming-input-host-vs-client]], [[gamescope-nested-xwayland-constraint]]

@@ -1640,3 +1640,12 @@ backup per base file, delete the rest:
 - **Left alone**: Deck home rollback dirs from the 2026-04-26 controller-state
   incident (`controller-state-backup-*`, `moonlight-controller-backup-*`, 1.6MB
   total) — small, and they're the documented rollback path.
+
+### 2026-06-12 — Distro decision: staying on Bazzite
+
+Evaluated Bazzite vs CachyOS for the gaming PC. Decision: **stay on Bazzite**,
+re-evaluate only at the ~2028 repurpose. Rationale recorded in
+memory/project-bazzite-repurpose-plan.md (appliance role + atomic updates,
+single-digit % perf delta, pain points are distro-agnostic, memory base is
+Bazzite-specific). Cheap perf experiment if wanted later: Proton-CachyOS as a
+custom Proton version on Bazzite.

@@ -64,6 +64,22 @@ config files still live in `addons/MysticAI/mystic-ai-<W>x<H>.cfg` (the
 addon writes them via `Paths_GetAddonDirectory`) — that subdir is
 useful, just not for the DLL itself.
 
+## Fossil cleanup (2026-06-13)
+
+Root-only deploys do **not** remove a pre-existing subdir copy. Deploying
+v1.1.23 to `addons/mystic-ai.dll` (root) left the old `addons/MysticAI/mystic-ai.dll`
+(`51d4f270…`, 2026-05-21, 268800 B) sitting there — a ~3-week-old fossil from the
+pre-consolidation era. Harmless (Nexus doesn't load it), but a 3-agent adversarial
+verify flagged it as a shadow risk, so it was renamed to
+`mystic-ai.dll.shadow-removed-<ts>`. **Lesson: after any DLL deploy, run a `find`
+shadow check, not just the root hash check:**
+
+```bash
+ssh host 'find "<GW2>" -iname "mystic-ai.dll"'   # must return exactly ONE path (the root)
+```
+
+The Deck likely carries the same 05-21 fossil — check + clean it when deploying there.
+
 ## Related
 
 - [[mystic-clicker-build-and-deploy]] — Mystic Clicker has always

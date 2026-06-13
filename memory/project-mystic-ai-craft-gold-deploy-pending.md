@@ -1,11 +1,11 @@
 ---
 name: project-mystic-ai-craft-gold-deploy-pending
-description: DEFERRED — Mystic AI "Craft for Gold" research section + title-case headings are coded/committed/pushed and the daemon is live on bazzite, but the DLL deploy to bazzite + Deck is PENDING a GitHub auth path on wednesday (user setting up a 1Password service account).
+description: Mystic AI "Craft for Gold" research section + title-case headings — DONE on bazzite (v1.1.23 deployed + adversarially verified 2026-06-13). ONLY the Steam Deck deploy remains (it was powered off); re-run deploy-mystic-ai-dll.sh when deck@172.16.100.95 is awake.
 metadata:
   type: project
 ---
 
-# Mystic AI — Craft-for-Gold research + title-case headings (DLL deploy pending)
+# Mystic AI — Craft-for-Gold research + title-case headings
 
 Feature requested 2026-06-13. Two changes to Mystic AI Research:
 
@@ -19,56 +19,59 @@ Feature requested 2026-06-13. Two changes to Mystic AI Research:
    `^#[A-Z ]+#$`) but the overlay title-cases them for display. New section gets
    a bright-gold heading colour.
 
-## State as of 2026-06-13 (end of session)
+## Status: DONE on bazzite ✅ — Deck pending
 
-- **Code:** committed + pushed on `OgMorrow2090/gaming` main. Feature in `7e779f5`;
-  version bumped to **v1.1.23** (`entry.cpp` Build 22→23) at session-cleanup.
-  - `scripts/gw2-claude-daemon.py` — `RESEARCH_SYSTEM` extended with the new section + rules.
-  - `modules/mystic-ai/overlay.cpp` — `TitleCaseHeader()` helper, `CRAFT FOR GOLD`
-    colour, header rendered title-cased (`<cctype>` added).
-  - `modules/mystic-ai/entry.cpp` — addon version 1.1.22 → **1.1.23**.
-- **CI:** deploy the build for the **latest main commit** (the v1.1.23 bump), not
-  `7e779f5` — that earlier run is still tagged 1.1.22. Confirm the run is green first.
-- **Daemon:** DEPLOYED + restarted on bazzite (`systemctl --user restart
-  gw2-claude-daemon.service`), hash-verified. The Craft-for-Gold section is
-  **live in research output now** — on the OLD DLL it renders in default accent
-  colour + caps (graceful); gold colour + title-case need the new DLL.
-- **DLL deploy: NOT DONE** — blocked, see below.
+- **Code:** `OgMorrow2090/gaming` main. Feature `7e779f5`; version bump to
+  **v1.1.23** `9920483` (`entry.cpp` Build 22→23). CI run `27469988456` = success.
+  - `scripts/gw2-claude-daemon.py` — `RESEARCH_SYSTEM` + the new section/rules.
+  - `modules/mystic-ai/overlay.cpp` — `TitleCaseHeader()`, `CRAFT FOR GOLD` colour, title-cased headers.
+  - `modules/mystic-ai/entry.cpp` — addon version → **1.1.23**.
+- **Daemon:** deployed + restarted on bazzite (sha `3dba307…` == repo). Craft-for-Gold live in research output.
+- **DLL (bazzite):** **DEPLOYED + VERIFIED 2026-06-13 ~16:32**. `addons/mystic-ai.dll`
+  sha256 `523df410099fbb5b…`, 273408 bytes (== CI artifact for run 27469988456).
+  3-agent adversarial verification passed (provenance + daemon + Discord-regression).
+- **Shadow cleanup:** verification found a stale `addons/MysticAI/mystic-ai.dll`
+  (`51d4f270…`, 268800 B, 2026-05-21) — a fossil from before the root-only
+  consolidation. Nexus doesn't recurse into subdirs so it wasn't loaded, but it was
+  renamed to `mystic-ai.dll.shadow-removed-<ts>` to kill all doubt. The `MysticAI/`
+  config asset (`mystic-ai-3840x2160.cfg`) was preserved. See [[nexus-dll-shadow-load-from-addons-root]].
+- **GW2 relaunch needed** to load v1.1.23 (I killed GW2 to deploy — it was a stuck/leftover process; Shaun said it shouldn't have been running).
 
-## The blocker — GitHub auth on wednesday
+## Remaining: Steam Deck deploy
 
-`deploy-mystic-ai-dll.sh` runs `gh run download` to pull the compiled artifact.
-wednesday has git via the SSH deploy key (`github-gaming` alias) — enough for
-`git push`/`pull` and the daemon scp deploy — but the **Actions artifact API
-needs a gh/OAuth or PAT token, NOT the SSH key**. Anonymous download = 401.
+The Deck (`deck@172.16.100.95`) was **powered off** at deploy time — `deploy-mystic-ai-dll.sh`
+skipped it gracefully (unreachable hosts are warned + skipped, not a hard fail). When the
+Deck is awake, re-run the **same one command** (below); it targets bazzite + deck-native and
+will no-op the already-current bazzite copy.
 
-- **gh installed this session:** `gh 2.94.0` at `~/.local/bin/gh` (linux_arm64,
-  no sudo). NOT yet authenticated.
-- **op (1Password CLI):** installed (`/usr/bin/op` v2.34.0) but **not signed in**
-  — `~/.config/op/config` has `accounts: null`, no `OP_SERVICE_ACCOUNT_TOKEN` in
-  env or `.env`. The PAT lives in a 1Password vault ("common" or "wednesday").
-- **User action (next session):** Shaun is setting up a **local 1Password service
-  account** so I can read the PAT non-interactively.
+## How GitHub auth works from wednesday (the bit that was missing)
 
-## Next-session runbook
+wednesday's `github-gaming` SSH deploy key covers `git push`/`pull` only — NOT the
+Actions artifact API. For `gh run download` you need a GitHub token:
 
-1. Confirm op auth: `export OP_SERVICE_ACCOUNT_TOKEN=...` (Shaun's SA) then
-   `op whoami`. Get the exact PAT item ref (GitHub PAT, scope: Actions read +
-   Contents read on `OgMorrow2090/gaming`).
-2. Auth gh: `gh auth login --git-protocol ssh --with-token <<< "$(op read 'op://<vault>/<item>/credential')"`
-   then `gh auth status`.
-3. **Verify GW2 is CLOSED** on bazzite (`ssh Og@172.16.100.212 pgrep -f Gw2-64.exe`)
-   — the deploy script refuses while GW2 runs. It was RUNNING at 14:xx on 06-13.
-4. Deploy: `cd /srv/docker-data/repos/gaming && ./scripts/deploy-mystic-ai-dll.sh <run-id>`
-   — pass the run-id of the **v1.1.23** build explicitly (avoids the stale-success
-   race noted in chat.md ~line 1296). Writes to `addons/mystic-ai.dll` ROOT (not
-   subdir — see [[nexus-dll-shadow-load-from-addons-root]]).
-5. **Verify on-disk DLL hash == CI artifact** before claiming done (chat.md lesson:
-   a "close GW2 and redeploy" cycle once left the old DLL live). Expect addon
-   version **1.1.23** once loaded.
-6. **Deck:** still powered off as of 06-13 — Shaun will turn it on later. Re-run the
-   same deploy (it targets bazzite + deck-native) once the Deck is reachable
-   (`deck@172.16.100.95`). See [[bazzite-deploy-access-from-wednesday]].
+1. The 1Password service-account token is in **`itinyk-agentd`'s** process env, but a
+   fresh `Bash` shell does NOT inherit it. Bridge it:
+   `PID=$(pgrep -f itinyk-agentd|head -1); export OP_SERVICE_ACCOUNT_TOKEN="$(tr '\0' '\n' < /proc/$PID/environ | sed -n 's/^OP_SERVICE_ACCOUNT_TOKEN=//p')"`
+   (If a future session already has `OP_SERVICE_ACCOUNT_TOKEN` set, skip this.)
+2. The PAT: `op read 'op://wednesday-pi/github_pat_portal/password'`.
+3. **Do NOT use `gh auth login --with-token`** — this PAT lacks the `read:org` scope
+   that login-validation demands, so it errors. Instead set it directly:
+   `export GH_TOKEN="$(op read 'op://wednesday-pi/github_pat_portal/password')"` — gh
+   then uses it for the API (artifact download needs `actions:read`, which it has).
+4. Vaults available to the SA: `common-pi`, `wednesday-pi`. `op whoami` → SERVICE_ACCOUNT.
 
-See [[gw2-claude-vision]] for the daemon architecture.
-</content>
+## Deck deploy runbook (when it's awake)
+
+```bash
+PID=$(pgrep -f itinyk-agentd|head -1)
+export OP_SERVICE_ACCOUNT_TOKEN="$(tr '\0' '\n' < /proc/$PID/environ | sed -n 's/^OP_SERVICE_ACCOUNT_TOKEN=//p')"
+export GH_TOKEN="$(op read 'op://wednesday-pi/github_pat_portal/password')"
+ssh -o ConnectTimeout=8 deck@172.16.100.95 'pgrep -x Gw2-64.exe && echo CLOSE_GW2_FIRST || echo OK'   # must be CLOSED
+cd /srv/docker-data/repos/gaming && ./scripts/deploy-mystic-ai-dll.sh 27469988456
+```
+
+Then verify: deployed `addons/mystic-ai.dll` sha == `523df410099fbb5b…`, and `find` shows
+exactly one `mystic-ai.dll` (no `addons/MysticAI/mystic-ai.dll` shadow — the Deck may have
+the same fossil from the 05-21 era; remove it the same way if present).
+
+See [[gw2-claude-vision]] for the daemon architecture, [[bazzite-deploy-access-from-wednesday]] for SSH access.

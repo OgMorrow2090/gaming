@@ -1673,3 +1673,27 @@ committed, pushed (`7e779f5`), daemon live; DLL deploy DEFERRED.**
 - Shaun will set up a local 1Password service account so I can read the PAT next
   session. Full runbook: memory/project-mystic-ai-craft-gold-deploy-pending.md.
 - Deck powered off — its DLL deploy waits until it's turned on.
+
+### 2026-06-13 (cont.) — Mystic AI v1.1.23 DLL DEPLOYED to bazzite + verified
+
+Operator set up a 1Password service account. Auth path that worked: the SA token
+lives in `itinyk-agentd`'s process env (NOT inherited by fresh Bash shells) →
+bridge it from `/proc/$(pgrep itinyk-agentd)/environ`, then
+`op read 'op://wednesday-pi/github_pat_portal/password'`. **`gh auth login
+--with-token` FAILS** (PAT lacks `read:org`); use `export GH_TOKEN=…` instead —
+gh uses it for the Actions API fine (artifact download needs `actions:read`).
+
+- GW2 was a stuck/leftover process on bazzite (operator confirmed it shouldn't be
+  running, authorised the kill); killed it, verified closed.
+- `./scripts/deploy-mystic-ai-dll.sh 27469988456` → bazzite `addons/mystic-ai.dll`
+  = `523df410099fbb5b…`, 273408 B, hash-verified. Deck skipped (offline, graceful).
+- **3-agent adversarial verify** (workflow): provenance ✅ (run 27469988456 = commit
+  9920483 = v1.1.23, all 3 source changes present), daemon+Discord ✅ (active, CRAFT
+  FOR GOLD present, sha matches repo, both-scope flatpak apply, Discord 1.0.142).
+  **Shadow check FAILED** → found stale `addons/MysticAI/mystic-ai.dll` (51d4f270…,
+  05-21 fossil). Nexus doesn't load subdirs so it was inert, but renamed it to
+  `.shadow-removed-<ts>` (kept the MysticAI/ cfg asset). See updated
+  memory/nexus-dll-shadow-load-from-addons-root.md (added a post-deploy `find` check).
+- **Open:** GW2 needs relaunch on bazzite to load v1.1.23. Deck DLL still pending
+  (powered off) — runbook in project-mystic-ai-craft-gold-deploy-pending.md.
+- Installed `gh 2.94.0` at `~/.local/bin/gh` on wednesday this session.

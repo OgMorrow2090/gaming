@@ -51,3 +51,21 @@ $SSH 'systemctl --user restart gw2-claude-daemon.service; sleep 2; tail -3 ~/.lo
 - Auth is now the subscription OAuth token — see [[gw2-claude-vision]].
 - bazzite still **can't reach the wednesday LAN** (IoT→Node deny stands); cross-VLAN
   alerts from bazzite go out via the public `alerts.itinyk.app` endpoint.
+
+## DLL deploys from wednesday need GitHub *API* auth (not the SSH key)
+
+The daemon deploy above is just `scp` and needs no GitHub auth. But the addon **DLL**
+deploy (`deploy-mystic-ai-dll.sh` / `deploy-mystic-clicker-dll.sh`) runs
+`gh run download` to fetch the CI-built artifact — that needs a gh OAuth/PAT token,
+**which the `github-gaming` SSH deploy key does NOT provide**. Anonymous artifact
+download = HTTP 401 (even though the repo is public).
+
+State as of **2026-06-13**:
+- `gh 2.94.0` installed at `~/.local/bin/gh` (linux_arm64, no sudo) — **not yet authenticated**.
+- `op` (1Password CLI) is installed (`/usr/bin/op` v2.34.0) but **not signed in** on
+  wednesday — `~/.config/op/config` has `accounts: null`, no `OP_SERVICE_ACCOUNT_TOKEN`.
+  So `op read` can't pull the PAT from the vault yet.
+- Plan: Shaun sets up a local 1Password **service account**; then
+  `export OP_SERVICE_ACCOUNT_TOKEN=…` →
+  `gh auth login --git-protocol ssh --with-token <<< "$(op read 'op://<vault>/<github-pat>/credential')"`
+  → DLL deploys run from wednesday. PAT scope needed: Actions read + Contents read on `OgMorrow2090/gaming`.

@@ -1649,3 +1649,27 @@ memory/project-bazzite-repurpose-plan.md (appliance role + atomic updates,
 single-digit % perf delta, pain points are distro-agnostic, memory base is
 Bazzite-specific). Cheap perf experiment if wanted later: Proton-CachyOS as a
 custom Proton version on Bazzite.
+
+### 2026-06-13 — Discord phantom-update fix + Mystic AI Craft-for-Gold (DLL deploy deferred)
+
+**1. Discord daily "update" was a phantom — fixed + pushed (`23ca6e0`).**
+`bazzite-auto-update.sh` checked updates as Og (sees user+system flatpaks) but
+applied them as root (system scope only). Discord is the only `--user` flatpak,
+so it was reported "updated" nightly while frozen at the Apr-18 build (0.0.133).
+Split the apply into `--system` (root) + `--user` (Og). One-time `flatpak update
+--user` took Discord to 1.0.142 (Jun-9). All 15 other flatpaks are system-scope
+(fine). Brew confirmed NOT auto-updating (`HOMEBREW_NO_AUTO_UPDATE=1`, no timer/
+cron). Script redeployed to bazzite (hash-verified).
+
+**2. Mystic AI Research: Craft-for-Gold section + title-case headings — coded,
+committed, pushed (`7e779f5`), daemon live; DLL deploy DEFERRED.**
+- New `#CRAFT FOR GOLD#` section (TP-flip profit analysis for materials/craftables)
+  + headings title-cased on screen (wire stays UPPER for colour-match/TTS-strip).
+- Daemon deployed + restarted on bazzite → feature live in research output now
+  (old DLL shows the new section in default colour + caps until DLL updates).
+- DLL deploy BLOCKED: `deploy-mystic-ai-dll.sh` needs `gh run download` = GitHub
+  API token; wednesday only has the SSH deploy key. Installed `gh 2.94.0` at
+  `~/.local/bin/gh`; `op` not signed in (accounts: null). GW2 was running anyway.
+- Shaun will set up a local 1Password service account so I can read the PAT next
+  session. Full runbook: memory/project-mystic-ai-craft-gold-deploy-pending.md.
+- Deck powered off — its DLL deploy waits until it's turned on.

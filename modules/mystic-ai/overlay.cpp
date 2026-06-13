@@ -37,6 +37,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <string>
+#include <cctype>
 
 // Prompts sent to Claude with the captured image.
 static const char* DRAG_PROMPT =
@@ -848,9 +849,9 @@ void DrawOverviewPanel(const OverviewData& ov)
 //
 // action_research in gw2-claude-daemon.py returns its write-up as "@SECT\n"
 // followed by labelled sections. Each section header is a line of the form
-// "#HEADER#" (ABOUT / HOW TO GET / USES / RECIPES / PRICES / TIPS); the prose
-// under it follows on the next lines. We draw each header in its own colour and
-// wrap the prose beneath it.
+// "#HEADER#" (ABOUT / HOW TO GET / USES / RECIPES / CRAFT FOR GOLD / PRICES /
+// TIPS); the prose under it follows on the next lines. We draw each header in
+// its own colour and wrap the prose beneath it.
 // ---------------------------------------------------------------------------
 
 // Map a section name (the text between the # markers) to its heading colour.
@@ -859,10 +860,32 @@ ImVec4 SectionColour(const std::string& header)
     if (header == "ABOUT")      return ImVec4(0.80f, 0.80f, 0.84f, 1.0f);  // light grey
     if (header == "HOW TO GET") return ImVec4(0.36f, 0.82f, 0.86f, 1.0f);  // cyan
     if (header == "USES")       return ImVec4(0.45f, 0.85f, 0.45f, 1.0f);  // green
-    if (header == "RECIPES")    return ImVec4(0.56f, 0.74f, 0.96f, 1.0f);  // light blue
-    if (header == "PRICES")     return ImVec4(0.93f, 0.78f, 0.36f, 1.0f);  // gold
-    if (header == "TIPS")       return ImVec4(0.96f, 0.62f, 0.30f, 1.0f);  // orange
-    return ImVec4(0.62f, 0.78f, 0.96f, 1.0f);                              // default accent
+    if (header == "RECIPES")       return ImVec4(0.56f, 0.74f, 0.96f, 1.0f);  // light blue
+    if (header == "CRAFT FOR GOLD")return ImVec4(0.98f, 0.86f, 0.30f, 1.0f);  // bright gold
+    if (header == "PRICES")        return ImVec4(0.93f, 0.78f, 0.36f, 1.0f);  // gold
+    if (header == "TIPS")          return ImVec4(0.96f, 0.62f, 0.30f, 1.0f);  // orange
+    return ImVec4(0.62f, 0.78f, 0.96f, 1.0f);                                 // default accent
+}
+
+// Title-case a section header for display. The wire protocol keeps headers in
+// upper case (SectionColour matches on them, and the daemon's TTS strip regex
+// is "^#[A-Z ]+#$"), but ALL CAPS reads harshly on screen — so we capitalise
+// only the first letter of each word for the visible label. "HOW TO GET" ->
+// "How To Get", "CRAFT FOR GOLD" -> "Craft For Gold".
+std::string TitleCaseHeader(const std::string& upper)
+{
+    std::string out = upper;
+    bool startOfWord = true;
+    for (char& c : out)
+    {
+        unsigned char uc = (unsigned char)c;
+        if (startOfWord)
+            c = (char)std::toupper(uc);
+        else
+            c = (char)std::tolower(uc);
+        startOfWord = (c == ' ');
+    }
+    return out;
 }
 
 // Render a "@SECT" research result section by section. A "#HEADER#" line is a
@@ -890,7 +913,10 @@ void DrawSectionedResult(const std::string& result)
             std::string name = line.substr(1, line.size() - 2);
             if (!firstSection) ImGui::Spacing();
             firstSection = false;
-            ImGui::TextColored(SectionColour(name), "%s", name.c_str());
+            // Colour matches on the raw upper-case name; the label is shown
+            // title-cased so the heading isn't ALL CAPS.
+            ImGui::TextColored(SectionColour(name), "%s",
+                               TitleCaseHeader(name).c_str());
         }
         else if (!line.empty())
         {

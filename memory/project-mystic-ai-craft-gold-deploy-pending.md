@@ -21,11 +21,14 @@ Feature requested 2026-06-13. Two changes to Mystic AI Research:
 
 ## State as of 2026-06-13 (end of session)
 
-- **Code:** committed + pushed — `7e779f5` on `OgMorrow2090/gaming` main.
+- **Code:** committed + pushed on `OgMorrow2090/gaming` main. Feature in `7e779f5`;
+  version bumped to **v1.1.23** (`entry.cpp` Build 22→23) at session-cleanup.
   - `scripts/gw2-claude-daemon.py` — `RESEARCH_SYSTEM` extended with the new section + rules.
   - `modules/mystic-ai/overlay.cpp` — `TitleCaseHeader()` helper, `CRAFT FOR GOLD`
     colour, header rendered title-cased (`<cctype>` added).
-- **CI:** build.yml run for `7e779f5` = **success** (artifact `mystic-ai` built).
+  - `modules/mystic-ai/entry.cpp` — addon version 1.1.22 → **1.1.23**.
+- **CI:** deploy the build for the **latest main commit** (the v1.1.23 bump), not
+  `7e779f5` — that earlier run is still tagged 1.1.22. Confirm the run is green first.
 - **Daemon:** DEPLOYED + restarted on bazzite (`systemctl --user restart
   gw2-claude-daemon.service`), hash-verified. The Craft-for-Gold section is
   **live in research output now** — on the OLD DLL it renders in default accent
@@ -56,12 +59,13 @@ needs a gh/OAuth or PAT token, NOT the SSH key**. Anonymous download = 401.
    then `gh auth status`.
 3. **Verify GW2 is CLOSED** on bazzite (`ssh Og@172.16.100.212 pgrep -f Gw2-64.exe`)
    — the deploy script refuses while GW2 runs. It was RUNNING at 14:xx on 06-13.
-4. Deploy: `cd /srv/docker-data/repos/gaming && ./scripts/deploy-mystic-ai-dll.sh`
-   (pass the run-id for `7e779f5` explicitly to avoid the stale-success race noted
-   in chat.md ~line 1296). Writes to `addons/mystic-ai.dll` ROOT (not subdir — see
-   [[nexus-dll-shadow-load-from-addons-root]]).
+4. Deploy: `cd /srv/docker-data/repos/gaming && ./scripts/deploy-mystic-ai-dll.sh <run-id>`
+   — pass the run-id of the **v1.1.23** build explicitly (avoids the stale-success
+   race noted in chat.md ~line 1296). Writes to `addons/mystic-ai.dll` ROOT (not
+   subdir — see [[nexus-dll-shadow-load-from-addons-root]]).
 5. **Verify on-disk DLL hash == CI artifact** before claiming done (chat.md lesson:
-   a "close GW2 and redeploy" cycle once left the old DLL live).
+   a "close GW2 and redeploy" cycle once left the old DLL live). Expect addon
+   version **1.1.23** once loaded.
 6. **Deck:** still powered off as of 06-13 — Shaun will turn it on later. Re-run the
    same deploy (it targets bazzite + deck-native) once the Deck is reachable
    (`deck@172.16.100.95`). See [[bazzite-deploy-access-from-wednesday]].

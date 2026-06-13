@@ -50,6 +50,20 @@ GW2 (Nexus addon)                bazzite host (outside sandbox)
   ElevenLabs key lives in 1Password at
   `op://Home/ElevenLabs API Key - GW2 Screen Reader/credential`.
 
+## Reboot recovery (verified 2026-06-13)
+
+The daemon comes back automatically after a full reboot — no manual start needed:
+
+- `gw2-claude-daemon.service` is **enabled**, and **`loginctl … Linger=yes`** for `Og`,
+  so the user systemd instance (and the daemon) starts at boot even with no interactive
+  login. bazzite's sddm autologin into the gamescope session is a second independent path.
+- Auth persists in `~/.config/gw2-claude/config.env` (mode 600), so it authenticates on
+  startup. The DLL is a plain file at `addons/mystic-ai.dll` — survives reboot trivially.
+- Proven live: the 2026-06-13 16:55 reboot → daemon auto-started and served requests within
+  a second. A momentary in-game "timed out — is gw2-claude-daemon.service running" is normal
+  *during* the reboot window (DLL can't reach the daemon for those few seconds); it clears
+  once the box is back up.
+
 ## Protocol (separate `gw2-claude-*` namespace; coexists with tesseract daemon)
 
 | File | Written by | Meaning |

@@ -105,8 +105,15 @@ if [[ -n "$flatpak_updates" ]]; then
     echo "[flatpak] Updates available:"
     echo "$flatpak_updates"
 
-    flatpak_output=$(sudo_cmd flatpak update -y --noninteractive 2>&1) || true
+    # Apply in BOTH scopes. The check above (run as Og) sees user + system
+    # apps, but a root `flatpak update` only manages the system installation
+    # and silently skips user installs. Discord is a --user install, so the
+    # old root-only apply reported it "updated" nightly while it stayed frozen
+    # at the April 2026 build. Update system as root and user as Og. (2026-06-13)
+    flatpak_output=$(sudo_cmd flatpak update --system -y --noninteractive 2>&1) || true
     echo "$flatpak_output"
+    user_flatpak_output=$(flatpak update --user -y --noninteractive 2>&1) || true
+    echo "$user_flatpak_output"
 
     # Build list of updated apps
     app_list=$(echo "$flatpak_updates" | awk '{print $1}' | head -10 | tr '\n' ', ' | sed 's/,$//')

@@ -1697,3 +1697,17 @@ gh uses it for the Actions API fine (artifact download needs `actions:read`).
 - **Open:** GW2 needs relaunch on bazzite to load v1.1.23. Deck DLL still pending
   (powered off) — runbook in project-mystic-ai-craft-gold-deploy-pending.md.
 - Installed `gh 2.94.0` at `~/.local/bin/gh` on wednesday this session.
+
+### 2026-06-14 — Mystic AI v1.1.23 deployed to Steam Deck (feature now complete on both hosts)
+
+Deck was awake + GW2 closed. Ran `deploy-mystic-ai-dll.sh 27469988456` → deployed
+to deck-native (`523df410…`, 273408 B) and re-verified bazzite (no-op). Then found
+the Deck needed the SAME two fixes bazzite did:
+- **Daemon was stale** (`432c6bf9…`, NO Craft-for-Gold) — the Deck runs its own
+  host-side gw2-claude-daemon, so the DLL alone wasn't enough. rsync'd the updated
+  daemon (`3dba307…`, CRAFT FOR GOLD ×2), restarted its `--user` service (active).
+- **Shadow DLL** `addons/MysticAI/mystic-ai.dll` (the 05-21 fossil) — removed
+  (renamed aside); now exactly one mystic-ai.dll at the root.
+Both hosts backed up before overwrite. Feature COMPLETE on bazzite + Deck. Closed out
+the deferred project: renamed project-mystic-ai-craft-gold-deploy-pending.md →
+project-mystic-ai-craft-gold.md (status COMPLETE). No open items remain for this work.

@@ -23,6 +23,6 @@ When the user says "cleanup", "session end", or "synchronize", read and follow t
 - Source of truth: the Git repository for all code and configurations
 - Always commit and push after every change — never leave uncommitted work
 - Lowercase filenames only
-- Platform: Windows only (DLL-based Nexus addon)
-- Language: C++ with Visual Studio 2022
+- Three Nexus addons (mystic-clicker / mystic-trading / mystic-ai) built as Windows DLLs in CI, deployed over SSH to the Bazzite host (and Steam Deck) where they run under Proton — see `agents.md` (Build and deploy)
+- Language: C++17; DLLs compiled with MSVC v143 (x64)
 - **Three GW2 installs on bazzite**: changes to GW2 addon files (`addons/Nexus/*`, `addons/MysticClicker/*`, etc.) must deploy to **all three** profile dirs (`~/.local/share/Steam/steamapps/common/Guild Wars 2/addons/` for the Local profile + `~/Games/gw2-appletv/addons/` for Apple TV + `~/Games/gw2-deck/addons/` for Steam Deck) unless the change is explicitly per-profile (UI position, screen-size-specific). Symlinked files (`Gw2.dat`, `bin64/`, `d3d11.dll`) auto-propagate; the entire `addons/` dir does NOT. See `memory/nexus-multi-deploy-rules.md` and `memory/multi-gw2-installs.md`.

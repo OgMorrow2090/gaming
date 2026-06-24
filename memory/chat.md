@@ -1711,3 +1711,22 @@ the Deck needed the SAME two fixes bazzite did:
 Both hosts backed up before overwrite. Feature COMPLETE on bazzite + Deck. Closed out
 the deferred project: renamed project-mystic-ai-craft-gold-deploy-pending.md →
 project-mystic-ai-craft-gold.md (status COMPLETE). No open items remain for this work.
+
+### 2026-06-24 — Installed GE-Proton11-1 on bazzite
+
+Operator asked to pull the latest GE-Proton (GE-Proton11-1, published 2026-06-24
+02:06 UTC — first build on the new Proton 11 base after a ~4-month gap; headline
+change is a complete video-playback rework). bazzite was at GE-Proton10-34.
+
+- Downloaded the official release tarball + `.sha512sum` to `/tmp`, verified
+  (`sha512sum -c` → OK), extracted into
+  `~/.local/share/Steam/compatibilitytools.d/` (505 MB). `.steam/root` symlinks to
+  `.local/share/Steam`, so one extract covers both paths. Cleaned up /tmp downloads.
+- Installed **alongside** 10-34 (not replacing) so we can fall back if anything
+  misbehaves on the brand-new Proton 11 base. compatibilitytools.d now: 10-32,
+  10-33, 10-34, 11-1.
+- Pre-restart safety check: no GW2 running, Sunshine daemon idle (no established
+  stream sessions) → bounced `gamescope-session-plus@steam.service` (--user) to
+  make Steam rescan compat tools. Steam back up in ~3s, service active.
+- GE-Proton11-1 now selectable in each game's Compatibility → Force Proton version.
+- Nothing wired to use it yet (GW2 unchanged); left as available option.

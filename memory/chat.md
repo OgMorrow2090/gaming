@@ -1730,3 +1730,22 @@ change is a complete video-playback rework). bazzite was at GE-Proton10-34.
   make Steam rescan compat tools. Steam back up in ~3s, service active.
 - GE-Proton11-1 now selectable in each game's Compatibility → Force Proton version.
 - Nothing wired to use it yet (GW2 unchanged); left as available option.
+
+### 2026-06-26 — Deployed GE-Proton11-1 to the Steam Deck
+
+Mirror of the 2026-06-24 bazzite install, now on deck (`deck@172.16.100.95`,
+SteamOS Game Mode).
+- Deck was reachable, ~794G free, no GW2/stream active. compatibilitytools.d
+  baseline matched bazzite: 10-32, 10-33, 10-34.
+- Downloaded official `GE-Proton11-1.tar.gz` + `.sha512sum` to /tmp on the deck,
+  `sha512sum -c` → OK (505M), extracted into
+  `~/.local/share/Steam/compatibilitytools.d/` (`.steam/root` symlinks there, so one
+  extract covers both paths). Cleaned up /tmp downloads.
+- Installed **alongside** 10-32/33/34 (not replacing), same as bazzite — fallback
+  retained on the new Proton 11 base.
+- Rescan: `gamescope-session.service` has `RefuseManualStart` on SteamOS, so used the
+  proper Deck tool `steamos-session-select gamescope` to restart Game Mode cleanly
+  (~8s; Steam relaunched, target + steam-launcher active). GE-Proton11-1 now
+  selectable per-game.
+- Nothing wired to use it yet (GW2 unchanged); left as available option, parity with
+  bazzite.

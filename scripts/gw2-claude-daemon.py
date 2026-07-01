@@ -101,15 +101,24 @@ DEFAULT_PROMPT = (
     "report coin amounts (gold/silver/copper) and item quantities exactly."
 )
 
-# Claude Code identity — REQUIRED as the system-prompt prefix for the Max
-# subscription OAuth token to grant Sonnet/Opus over the raw API. Verified
-# 2026-07-01: bare calls 429 on any non-haiku model; this identity + the
-# oauth-2025-04-20 beta header returns 200 on claude-sonnet-5. Keep it FIRST in
-# every system prompt used with a model call.
+# Claude Code identity — the subscription OAuth token grants Sonnet/Opus over the
+# raw API ONLY when this exact string is the FIRST system block, standing ALONE.
+# Identity concatenated with other text in the same block => 429; a clean
+# separate block => 200 (verified 2026-07-01, with the oauth-2025-04-20 beta
+# header on the client). Build every model system prompt via cc_system().
 CLAUDE_CODE_IDENTITY = "You are Claude Code, Anthropic's official CLI for Claude."
 
+
+def cc_system(rules):
+    """Two-block system prompt: a clean Claude Code identity block first, then
+    the real instructions (cached). Required for Sonnet/Opus on the OAuth token."""
+    return [
+        {"type": "text", "text": CLAUDE_CODE_IDENTITY},
+        {"type": "text", "text": rules, "cache_control": {"type": "ephemeral"}},
+    ]
+
+
 SYSTEM_PROMPT = (
-    CLAUDE_CODE_IDENTITY + "\n\n"
     "You are a screen-reading assistant for the game Guild Wars 2. You receive "
     "a screenshot or a cropped region of the GW2 interface. Your job is to "
     "read out the text that is on screen — nothing more.\n\n"
@@ -196,11 +205,7 @@ def analyze(client, model, image_path, question):
         max_tokens=4096,
         # Stable system prompt — cached so repeated calls only pay full price
         # for the always-unique image + question.
-        system=[{
-            "type": "text",
-            "text": SYSTEM_PROMPT,
-            "cache_control": {"type": "ephemeral"},
-        }],
+        system=cc_system(SYSTEM_PROMPT),
         messages=[{
             "role": "user",
             "content": [
@@ -443,7 +448,7 @@ def _vision(client, model, image_path, instruction, max_tokens=200):
     resp = client.messages.create(
         model=model,
         max_tokens=max_tokens,
-        system=SYSTEM_PROMPT,
+        system=cc_system(SYSTEM_PROMPT),
         messages=[{
             "role": "user",
             "content": [
@@ -862,7 +867,6 @@ def flush_pending_favs():
 
 
 RESEARCH_SYSTEM = (
-    CLAUDE_CODE_IDENTITY + "\n\n"
     "You are a Guild Wars 2 expert. The player has shown you a region of their "
     "screen. Identify the main item, skill, trait, NPC, event, or place, then "
     "research it thoroughly with the GW2 wiki and current web sources and give "
@@ -916,7 +920,7 @@ def action_research(client, cfg, image_path, question):
         kwargs = {
             "model": model,
             "max_tokens": 2048,
-            "system": RESEARCH_SYSTEM,
+            "system": cc_system(RESEARCH_SYSTEM),
             "messages": [{"role": "user", "content": content}],
         }
         if tools:

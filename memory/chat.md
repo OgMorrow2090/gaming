@@ -1800,3 +1800,25 @@ identical bazzite+Deck) but haiku-capped for raw-API calls.
 
 **Open item for next session:** decide — revert daemons to haiku (restore reads
 now) OR fix daemon auth so Sonnet 5 works over the raw API.
+
+### 2026-07-01 — RESOLVED: Sonnet 5 works on both vision daemons (Claude Code request shape)
+
+Fixed the daemon 429 from the entry above. Root cause was **request shape**, not the
+token: the subscription OAuth token grants Sonnet/Opus only when the request looks
+like Claude Code — `anthropic-beta: oauth-2025-04-20` header **plus** the identity
+`"You are Claude Code, Anthropic's official CLI for Claude."` as a **standalone first
+system block**. Identity concatenated into the same block as the rules still 429s
+(my first commit's mistake); a separate clean block → 200.
+
+- Added `cc_system(rules)` helper (two blocks: identity | rules+cache_control) and the
+  oauth beta header on the OAuth client. All three model calls use it — `analyze`,
+  `action_research`, and `_vision` (which had NO system prompt before, so it would have
+  429'd on Sonnet regardless). Commits `08916d7` (first, wrong) → `c4b5e01` (fix).
+- Deployed to BOTH hosts (sha `1dd01ed…` identical), restarted, **verified end-to-end**:
+  `analyze()` → 200, `ok model=claude-sonnet-5`, correctly read a test image on bazzite
+  AND Deck. "Both must work the same" ✓.
+- No token/config change — same `config.env` (already `claude-sonnet-5`), same OAuth
+  token. Revert path if ever needed: `config.env` → `claude-haiku-4-5` (`.bak-sonnet5`).
+
+Open (minor): Deck's *Claude Code CLI* default still not set to sonnet-5 (only bazzite's
+settings.json was). Not the daemon.

@@ -99,22 +99,28 @@ caps at 2576px long edge — larger frames are downscaled.
   `~/.config/gw2-claude/config.env` (env wins over the code `or "..."` defaults);
   `.bak-sonnet5` backups on each host. Sonnet 5 = best speed/intel balance, intro
   pricing $2/$10 MTok through 2026-08-31.
-  **⚠ BLOCKED (2026-07-01) — daemons will 429 on Sonnet 5.** A live probe returned
-  `429 rate_limit_error` on `claude-sonnet-5` on BOTH hosts. This is **not**
-  transient quota — it's the same **haiku-only-token** limit documented in the auth
-  bullet below (Opus/Sonnet → 429 on this OAuth token; verified 2026-06-09 and again
-  today). Token fingerprint sha256 `0c8669…` (suffix `QyJAAA`) is **identical** on
-  bazzite + Deck and matches the canonical 1P `claude_code_oauth_token` — so it's the
-  right long-lived token, just haiku-capped for raw-API use. Net: vision reads are
-  broken on Sonnet 5 until auth is resolved. **Open item:** move the daemons to a
-  long-lived token that grants Sonnet via the raw API — bazzite's *Claude Code CLI*
-  reaches Opus 4.6, so its auth path works for non-haiku ("use the long-lived token
-  like bazzite"; likely needs the Claude-Code-specific `anthropic-beta:
-  oauth-2025-04-20` / client headers the daemon's bare `Anthropic(auth_token=…)`
-  omits). **Interim fix to restore reads:** set both `config.env` models back to
-  `claude-haiku-4-5` (`.bak-sonnet5` has the pre-change file). The bazzite *Claude
-  Code CLI* sonnet-5 change (settings.json) is unaffected — Claude Code accesses
-  Sonnet fine; only the daemons' raw-API path is capped.
+  **✅ RESOLVED (2026-07-01, commit c4b5e01→1dd01ed) — Sonnet unlocked on the OAuth
+  token.** The "haiku-only" limit below was never token-scope — it's *request-shape*
+  scope. This subscription OAuth token grants Sonnet/Opus over the raw API **only
+  when the request looks like Claude Code**, which needs BOTH:
+  1. the **`anthropic-beta: oauth-2025-04-20`** header on the client
+     (`Anthropic(auth_token=…, default_headers={"anthropic-beta":"oauth-2025-04-20"})`), and
+  2. the Claude Code identity **`"You are Claude Code, Anthropic's official CLI for
+     Claude."`** as a **clean, standalone FIRST system block**.
+  The critical gotcha: the identity must be **its own block**. Concatenating identity
+  + your real instructions into one string/block still returns **429** (my first
+  attempt did this). Correct shape — two system blocks:
+  `system=[{"type":"text","text":IDENTITY}, {"type":"text","text":RULES,"cache_control":{"type":"ephemeral"}}]`.
+  In the daemon this is the `cc_system(rules)` helper; all three model calls
+  (`analyze`, `_vision` — which previously sent NO system, and `action_research`) use
+  it. Verified end-to-end on BOTH hosts: `analyze()` returns 200,
+  `ok model=claude-sonnet-5`, and correctly reads a test image. Isolation matrix that
+  proved it: haiku-bare 200; sonnet bare 429; sonnet + header only 429; sonnet +
+  header + identity-only-block 200; sonnet + header + identity＋rules-in-one-block 429;
+  sonnet + header + two-block(identity | rules) 200. Same OAuth token as before
+  (sha `0c8669…`, == 1P `claude_code_oauth_token`, identical bazzite+Deck) — no token
+  change, only request shape. Revert path if ever needed: `config.env` →
+  `claude-haiku-4-5` (`.bak-sonnet5` backups on each host).
 - **Auth switched to subscription OAuth (2026-06-08)**: both Anthropic *API keys*
   in 1Password went dead — `op://wednesday-pi/anthropic/api-key` and
   `claude_itinyk_app_ai_cli_edit/token` both return `401 invalid x-api-key`

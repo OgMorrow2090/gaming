@@ -1749,3 +1749,29 @@ SteamOS Game Mode).
   selectable per-game.
 - Nothing wired to use it yet (GW2 unchanged); left as available option, parity with
   bazzite.
+
+### 2026-07-01 — Switched Claude models to Sonnet 5 (CLI + vision daemon, both hosts)
+
+Operator asked to move things to the new **Claude Sonnet 5** (`claude-sonnet-5`,
+GA 2026-06-09 — postdated my cached model list, so I verified it live before acting;
+best speed/intel balance, adaptive thinking, 1M ctx, intro pricing $2/$10 MTok
+through 2026-08-31, effort defaults to `high` in Claude Code).
+
+- **Bazzite Claude Code CLI**: added `"model": "claude-sonnet-5"` to
+  `~/.claude/settings.json` (was on `claude-opus-4-6` main + `claude-haiku-4-5`
+  background per session logs). Host-local user config, not repo-tracked; `.bak`
+  left. No launchable `claude` binary over SSH (runs via VS Code extension), so
+  verified the prior model from the newest project `.jsonl`, not a live self-report.
+- **GW2 Claude-vision daemon**: repo edits (commit `4df3270`) bumped all three model
+  defaults in `gw2-claude-daemon.py` + the `gw2-claude-setup.sh` template to
+  `claude-sonnet-5`. But the operative value is the live `config.env`
+  (`cfg.get() or default` → env wins); it had `GW2_CLAUDE_MODEL` and
+  `GW2_CLAUDE_RESEARCH_MODEL` pinned to `claude-haiku-4-5`, so changing only the code
+  wouldn't have taken effect. Deployed the updated script (sha match) + switched
+  `config.env` on **both bazzite and Steam Deck** (`deck@172.16.100.95`), restarted
+  the `--user` daemon, verified startup log `model=claude-sonnet-5` on each.
+  `.bak-sonnet5` backups on both hosts. GW2 was running on the Deck during the
+  restart — fine, the vision daemon is a separate host-side worker, not a Nexus addon.
+- Daemon uses no `thinking`/`budget_tokens`/`temperature` params and basic
+  `web_search_20250305`, so no Sonnet-5 400 risk. Auth is subscription OAuth token
+  on both hosts; first on-demand read is the real end-to-end confirmation.

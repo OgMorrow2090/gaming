@@ -92,7 +92,14 @@ caps at 2576px long edge — larger frames are downscaled.
 ## Status / next phases
 
 - **Phase 1 (done)**: daemon + setup + service in the repo and live on bazzite.
-  Model `claude-haiku-4-5`, `gw2-claude-daemon.service` enabled.
+  `gw2-claude-daemon.service` enabled. Model was `claude-haiku-4-5`; **switched to
+  `claude-sonnet-5` on 2026-07-01** (all three daemon defaults + setup.sh template +
+  the live `config.env` `GW2_CLAUDE_MODEL`/`GW2_CLAUDE_RESEARCH_MODEL`), deployed and
+  verified on **both hosts** (bazzite + Steam Deck) — parity. The operative value is
+  `~/.config/gw2-claude/config.env` (env wins over the code `or "..."` defaults);
+  `.bak-sonnet5` backups on each host. Sonnet 5 = best speed/intel balance, intro
+  pricing $2/$10 MTok through 2026-08-31. Note: main vision loop now runs Sonnet 5
+  per-frame (slower/costlier than Haiku) — revert one line in `config.env` if needed.
 - **Auth switched to subscription OAuth (2026-06-08)**: both Anthropic *API keys*
   in 1Password went dead — `op://wednesday-pi/anthropic/api-key` and
   `claude_itinyk_app_ai_cli_edit/token` both return `401 invalid x-api-key`

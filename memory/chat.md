@@ -1775,3 +1775,28 @@ through 2026-08-31, effort defaults to `high` in Claude Code).
 - Daemon uses no `thinking`/`budget_tokens`/`temperature` params and basic
   `web_search_20250305`, so no Sonnet-5 400 risk. Auth is subscription OAuth token
   on both hosts; first on-demand read is the real end-to-end confirmation.
+
+### 2026-07-01 — /clean + CORRECTION: Sonnet 5 blocks the vision daemons (haiku-only token)
+
+Session-cleanup pass. **Correction to the Sonnet 5 entry above:** the daemon
+model switch is NOT functional. The "make sure" probe returned `429` on
+`claude-sonnet-5` on both hosts, and the existing memory already documents why —
+this OAuth token is **haiku-only via the raw API** (Opus/Sonnet → 429; verified
+2026-06-09, reconfirmed today). My earlier "transient shared-quota" read was wrong.
+The token is correct (fingerprint `0c8669…` == 1P `claude_code_oauth_token`,
+identical bazzite+Deck) but haiku-capped for raw-API calls.
+
+- **Working:** bazzite Claude Code CLI → `claude-sonnet-5` (Claude Code reaches
+  Sonnet/Opus fine — it ran Opus 4.6 in prior sessions).
+- **Broken/open:** both vision daemons now on `claude-sonnet-5` will 429 on every
+  read. Interim fix = revert both `config.env` models to `claude-haiku-4-5`
+  (`.bak-sonnet5` on each host). Real fix = a long-lived token that grants Sonnet
+  via raw API "like bazzite" (probably the Claude-Code `oauth-2025-04-20` beta /
+  client headers the daemon's bare `Anthropic(auth_token=…)` omits).
+- Cleanup: gaming repo clean + pushed; security audit clean (only `sk-ant-...`
+  doc placeholders in-repo, no real token); temp `/tmp/gw2_model_probe.py` removed;
+  permissions in sync (0 diffs). itinyk-app has many `lifecycle.json` edits from
+  another process — left untouched (not mine).
+
+**Open item for next session:** decide — revert daemons to haiku (restore reads
+now) OR fix daemon auth so Sonnet 5 works over the raw API.

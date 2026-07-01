@@ -98,8 +98,23 @@ caps at 2576px long edge — larger frames are downscaled.
   verified on **both hosts** (bazzite + Steam Deck) — parity. The operative value is
   `~/.config/gw2-claude/config.env` (env wins over the code `or "..."` defaults);
   `.bak-sonnet5` backups on each host. Sonnet 5 = best speed/intel balance, intro
-  pricing $2/$10 MTok through 2026-08-31. Note: main vision loop now runs Sonnet 5
-  per-frame (slower/costlier than Haiku) — revert one line in `config.env` if needed.
+  pricing $2/$10 MTok through 2026-08-31.
+  **⚠ BLOCKED (2026-07-01) — daemons will 429 on Sonnet 5.** A live probe returned
+  `429 rate_limit_error` on `claude-sonnet-5` on BOTH hosts. This is **not**
+  transient quota — it's the same **haiku-only-token** limit documented in the auth
+  bullet below (Opus/Sonnet → 429 on this OAuth token; verified 2026-06-09 and again
+  today). Token fingerprint sha256 `0c8669…` (suffix `QyJAAA`) is **identical** on
+  bazzite + Deck and matches the canonical 1P `claude_code_oauth_token` — so it's the
+  right long-lived token, just haiku-capped for raw-API use. Net: vision reads are
+  broken on Sonnet 5 until auth is resolved. **Open item:** move the daemons to a
+  long-lived token that grants Sonnet via the raw API — bazzite's *Claude Code CLI*
+  reaches Opus 4.6, so its auth path works for non-haiku ("use the long-lived token
+  like bazzite"; likely needs the Claude-Code-specific `anthropic-beta:
+  oauth-2025-04-20` / client headers the daemon's bare `Anthropic(auth_token=…)`
+  omits). **Interim fix to restore reads:** set both `config.env` models back to
+  `claude-haiku-4-5` (`.bak-sonnet5` has the pre-change file). The bazzite *Claude
+  Code CLI* sonnet-5 change (settings.json) is unaffected — Claude Code accesses
+  Sonnet fine; only the daemons' raw-API path is capped.
 - **Auth switched to subscription OAuth (2026-06-08)**: both Anthropic *API keys*
   in 1Password went dead — `op://wednesday-pi/anthropic/api-key` and
   `claude_itinyk_app_ai_cli_edit/token` both return `401 invalid x-api-key`

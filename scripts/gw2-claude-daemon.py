@@ -35,8 +35,8 @@ Config: ~/.config/gw2-claude/config.env  (KEY=VALUE lines, mode 600)
                                             same token as portal.itinyk.app)
     ANTHROPIC_API_KEY=sk-ant-...           (fallback — pay-per-use API credits)
     (one of the two above is required; the OAuth token wins if both are set)
-    GW2_CLAUDE_MODEL=claude-haiku-4-5       (optional)
-    GW2_CLAUDE_RESEARCH_MODEL=claude-sonnet-4-6  (optional — Research action)
+    GW2_CLAUDE_MODEL=claude-sonnet-5        (optional)
+    GW2_CLAUDE_RESEARCH_MODEL=claude-sonnet-5    (optional — Research action)
     GW2_CLAUDE_TTS=on                       (optional — on/off, default on)
     GW2_CLAUDE_TTS_ENGINE=auto              (optional — auto/piper/elevenlabs)
     GW2_CLAUDE_TTS_GAIN_DB=12               (optional — loudness boost, dB)
@@ -886,7 +886,7 @@ RESEARCH_SYSTEM = (
 
 def action_research(client, cfg, image_path, question):
     """Web-search-backed deep explanation of whatever is in the crop."""
-    research_model = cfg.get("GW2_CLAUDE_RESEARCH_MODEL") or "claude-sonnet-4-6"
+    research_model = cfg.get("GW2_CLAUDE_RESEARCH_MODEL") or "claude-sonnet-5"
     png = prepare_image(image_path)
     b64 = base64.standard_b64encode(png).decode("ascii")
     user_text = "Research what is shown here and explain it."
@@ -898,7 +898,7 @@ def action_research(client, cfg, image_path, question):
         {"type": "text", "text": user_text},
     ]
 
-    main_model = cfg.get("GW2_CLAUDE_MODEL") or "claude-haiku-4-5"
+    main_model = cfg.get("GW2_CLAUDE_MODEL") or "claude-sonnet-5"
     web_tool = [{"type": "web_search_20250305", "name": "web_search",
                  "max_uses": 5}]
 
@@ -1058,7 +1058,7 @@ def run_daemon(client, model, cfg):
 
 def main():
     cfg = load_config()
-    model = cfg.get("GW2_CLAUDE_MODEL") or "claude-opus-4-7"
+    model = cfg.get("GW2_CLAUDE_MODEL") or "claude-sonnet-5"
 
     args = sys.argv[1:]
 

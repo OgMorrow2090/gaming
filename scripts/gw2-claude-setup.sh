@@ -45,10 +45,10 @@ CLAUDE_CODE_OAUTH_TOKEN=
 ANTHROPIC_API_KEY=
 
 # Optional. Model used to read the screen.
-#   claude-haiku-4-5  — cheapest/fastest, solid vision (default — ~0.2c/read)
-#   claude-sonnet-4-6 — stronger reading, mid cost
-#   claude-opus-4-7   — most capable; use when coin-digit precision matters
-GW2_CLAUDE_MODEL=claude-haiku-4-5
+#   claude-haiku-4-5  — cheapest/fastest, solid vision (~0.2c/read)
+#   claude-sonnet-5   — best speed/intelligence balance (default)
+#   claude-opus-4-8   — most capable; use when coin-digit precision matters
+GW2_CLAUDE_MODEL=claude-sonnet-5
 
 # Optional. Text-to-speech — the daemon reads Claude's answer aloud.
 #   GW2_CLAUDE_TTS:        on / off

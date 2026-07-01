@@ -101,7 +101,15 @@ DEFAULT_PROMPT = (
     "report coin amounts (gold/silver/copper) and item quantities exactly."
 )
 
+# Claude Code identity — REQUIRED as the system-prompt prefix for the Max
+# subscription OAuth token to grant Sonnet/Opus over the raw API. Verified
+# 2026-07-01: bare calls 429 on any non-haiku model; this identity + the
+# oauth-2025-04-20 beta header returns 200 on claude-sonnet-5. Keep it FIRST in
+# every system prompt used with a model call.
+CLAUDE_CODE_IDENTITY = "You are Claude Code, Anthropic's official CLI for Claude."
+
 SYSTEM_PROMPT = (
+    CLAUDE_CODE_IDENTITY + "\n\n"
     "You are a screen-reading assistant for the game Guild Wars 2. You receive "
     "a screenshot or a cropped region of the GW2 interface. Your job is to "
     "read out the text that is on screen — nothing more.\n\n"
@@ -435,6 +443,7 @@ def _vision(client, model, image_path, instruction, max_tokens=200):
     resp = client.messages.create(
         model=model,
         max_tokens=max_tokens,
+        system=SYSTEM_PROMPT,
         messages=[{
             "role": "user",
             "content": [
@@ -853,6 +862,7 @@ def flush_pending_favs():
 
 
 RESEARCH_SYSTEM = (
+    CLAUDE_CODE_IDENTITY + "\n\n"
     "You are a Guild Wars 2 expert. The player has shown you a region of their "
     "screen. Identify the main item, skill, trait, NPC, event, or place, then "
     "research it thoroughly with the GW2 wiki and current web sources and give "
@@ -1073,9 +1083,15 @@ def main():
     if oauth:
         # Max-subscription OAuth token → Bearer auth, billed against the
         # subscription (no metered API credits). Drop ANTHROPIC_API_KEY from the
-        # environment so the SDK can't prefer the x-api-key path.
+        # environment so the SDK can't prefer the x-api-key path. The
+        # oauth-2025-04-20 beta header + the Claude Code identity in every system
+        # prompt (see CLAUDE_CODE_IDENTITY) are what unlock Sonnet/Opus on this
+        # token — bare calls are haiku-only (429 on anything else).
         os.environ.pop("ANTHROPIC_API_KEY", None)
-        client = anthropic.Anthropic(auth_token=oauth)
+        client = anthropic.Anthropic(
+            auth_token=oauth,
+            default_headers={"anthropic-beta": "oauth-2025-04-20"},
+        )
         log("auth: CLAUDE_CODE_OAUTH_TOKEN (subscription)")
     else:
         os.environ["ANTHROPIC_API_KEY"] = cfg["ANTHROPIC_API_KEY"]

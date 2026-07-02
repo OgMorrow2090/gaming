@@ -1822,3 +1822,31 @@ system block**. Identity concatenated into the same block as the rules still 429
 
 Open (minor): Deck's *Claude Code CLI* default still not set to sonnet-5 (only bazzite's
 settings.json was). Not the daemon.
+
+### 2026-07-02 — USB profile for friend's Deck: added controller layout + diagnosed Community-share failure
+
+Continuation of the earlier Sonnet-5-fix session. No repo file changes — read-only
+use of already-committed configs, plus troubleshooting chat.
+
+- Clarified for the operator: `addons/Nexus/InputBinds.json`/`GameBinds.xml`
+  (already on the USB) are keyboard/Nexus-addon binds, NOT the Steam controller
+  (button/paddle/trackpad) layout — those are separate Steam Input .vdf files.
+- Added `steam-controller-layout/` to the USB from the repo's existing
+  `configs/steam-controller/`: `moonlight-active.vdf` (renamed
+  `gw2-deck-moonlight-active.vdf`, the current refined mapping),
+  `native-gw2-og-v3.1.vdf` (older native-GW2 layout), the `configset_controller_
+  neptune.vdf` pointer, and a new `CONTROLLER-README.txt` (import instructions:
+  Steam Community link vs manual .vdf import). Updated `INSTALL-on-Steam-Deck.txt`
+  on the USB to reference the new folder (previously said the layout was NOT
+  included — corrected). No repo files modified, only copies made to the USB.
+- Operator tried Steam Community sharing from GW2's native Steam Deck install and
+  the friend couldn't find it. Diagnosed the likely causes (see MEMORY.md entry) —
+  most likely "New Personal Save" vs "New Community Layout" at export time, or
+  profile "Game details" privacy set to non-Public. Recommended falling back to
+  the USB `.vdf` import (already prepped) since Community-layout discovery is
+  unreliable/opaque even when published correctly.
+- Deck (`deck@172.16.100.95`) was unreachable (SSH timeout) when checked —
+  presumably asleep. **Open item:** when it's back online, pull the CURRENT
+  active controller layout (repo backup is from 2026-05-30, may be stale vs
+  whatever the operator just re-tuned) and refresh both the repo backup and the
+  USB copy.

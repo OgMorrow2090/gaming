@@ -1850,3 +1850,34 @@ use of already-committed configs, plus troubleshooting chat.
   active controller layout (repo backup is from 2026-05-30, may be stale vs
   whatever the operator just re-tuned) and refresh both the repo backup and the
   USB copy.
+
+### 2026-07-05 — NEXUS USB converted to Bazzite installer + data partition
+
+Operator asked to back up the USB stick, wipe it, make it a bootable Bazzite
+Desktop (NVIDIA) installer, then restore the files. All done on bazzite via SSH.
+
+- Backed up the stick (195M: addons/, INSTALL-on-Steam-Deck.txt,
+  nexus-loader-fallback/, steam-controller-layout/) to
+  `~/usb-backup-nexus-20260705/` on bazzite — kept as insurance, not deleted.
+- Downloaded `bazzite-nvidia-open-stable-amd64.iso` (8.1 GB, KDE desktop,
+  nvidia-open driver) to `~/Downloads/` on bazzite; sha256 verified against the
+  published `-CHECKSUM` (85e701c0…b24b8). Kept on disk for potential re-flash.
+  NOTE: nvidia-open needs GTX 16xx/RTX or newer; the closed-driver
+  `bazzite-nvidia-stable-amd64.iso` also exists if the target GPU is older.
+  (Target machine is NOT shaun-bazzite — its GPU is an AMD RX 9070 XT.)
+- dd'd the ISO to /dev/sda and verified by read-back hash (matched).
+- Stick is a 128 GB isohybrid GPT after flash: sda1 iso9660 7.5G + sda2 EFI.
+  Ran `sgdisk -e` (relocate backup GPT to disk end), added sda3 in the free
+  ~112 GB, `mkfs.exfat -L NEXUS`, and rsynced the backup onto it.
+  Gotcha: udisksctl refused to mount the fresh sda3 ("not a mountable
+  filesystem") right after mkfs — mounted manually with
+  `mount -t exfat -o uid=$(id -u),gid=$(id -g)` instead.
+- Verified: full `diff -r` against the backup clean; Mystic DLL hashes unchanged
+  (clicker 7b284088…, ai 523df410…, trading ea5b59e5…). Unmounted — safe to pull.
+- Caveat noted to operator: editing the GPT of a dd'd isohybrid to add a data
+  partition is the standard approach but not guaranteed on every firmware; if
+  the stick won't boot on the target PC, re-dd the kept ISO plain (data lives
+  on in the bazzite backup dir).
+
+Open items carried: Deck controller-layout refresh (Deck was asleep 2026-07-02);
+Deck's Claude Code CLI model default (minor).
